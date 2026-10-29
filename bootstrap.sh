@@ -5,14 +5,14 @@ set -eu
 umask 077
 
 main() {
-  bootstrap_commit=5ced16c5c7f864de85a702af3b88cf188e754e5e
-  bootstrap_sha256=804a2e8fa85ae9c45ec1da67cb3b08d01c63ae56e89ac45df607ab3e100f5978
+  bootstrap_commit=f09f727f261214a847aaec13d2cb7c6201240394
+  bootstrap_sha256=8a79c85bb7b50310a60261fa5bc4e678c866509ea42f9a1e4c2ca8549262d8e9
   bootstrap_install_only=0
   case "${1:-}" in '') ;; --install-only) bootstrap_install_only=1; shift;; *) bootstrap_fail 'Usage: bootstrap.sh [--install-only]';; esac
   [ "$#" -eq 0 ] || bootstrap_fail 'Usage: bootstrap.sh [--install-only]'
   [ "$bootstrap_commit" != TO_BE_PINNED ] || bootstrap_fail 'Development bootstrap has no runnable distribution pin yet.'
   case "$(uname -s)/$(uname -m)" in Darwin/arm64|Darwin/x86_64|Linux/x86_64) ;; *) bootstrap_fail 'Supported platforms: macOS arm64/x86_64, Linux x86_64. WSL remains unverified.';; esac
-  for bootstrap_tool in curl tar mktemp diff find sed; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
+  for bootstrap_tool in curl tar mktemp diff find sed tty; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
   if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1; then bootstrap_fail 'SHA-256 verification needs sha256sum or shasum.'; fi
   [ -n "${HOME:-}" ] || bootstrap_fail 'HOME must identify your user directory.'
   bootstrap_data=${XDG_DATA_HOME:-$HOME/.local/share}
@@ -66,9 +66,18 @@ main() {
   printf 'To make lab available in this shell, explicitly run:\n  export PATH='
   bootstrap_quote "$bootstrap_root"
   printf ':"$PATH"\n'
-  if [ "$bootstrap_install_only" = 0 ] && ( : </dev/tty ) 2>/dev/null; then
+  bootstrap_tty=
+  # Preserve the named terminal before command substitution replaces stdout.
+  # Bun 1.4.2 spins reading the /dev/tty alias on macOS; its underlying named
+  # device works. Both identify the same controlling terminal, never the pipe.
+  if [ -t 1 ]; then
+    exec 3>&1; bootstrap_tty=$(tty <&3); exec 3>&-
+  elif [ -t 2 ]; then
+    bootstrap_tty=$(tty <&2)
+  fi
+  if [ "$bootstrap_install_only" = 0 ] && [ -n "$bootstrap_tty" ] && [ -c "$bootstrap_tty" ] && [ "$bootstrap_tty" != /dev/tty ]; then
     # All downloaded script input has been parsed inside main. User input is TTY-only.
-    exec "$bootstrap_launcher" </dev/tty >/dev/tty 2>/dev/tty
+    exec "$bootstrap_launcher" <"$bootstrap_tty" >"$bootstrap_tty" 2>"$bootstrap_tty"
   fi
   printf 'Installation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.\n'
 }

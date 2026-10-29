@@ -10,7 +10,9 @@ function fixture() {
   mkdirSync(home); mkdirSync(bin); mkdirSync(source);
   const executable = (path: string, body: string) => { writeFileSync(path, `#!/bin/sh\n${body}\n`); chmodSync(path, 0o700); };
   executable(join(source, "install.sh"), 'printf "install\\n" >> "$TEST_LOG"; exit "${TEST_INSTALL_STATUS:-0}"');
-  executable(join(source, "lab"), 'printf "launch\\n" >> "$TEST_LOG"; test -t 0 || exit 91; printf "TTY_READY\\n"; read -r answer; printf "TTY_ANSWER:%s\\n" "$answer"');
+  executable(join(source, "lab"), 'printf "launch\\n" >> "$TEST_LOG"; test -t 0 || exit 91; exec "$TEST_REAL_BUN" --no-env-file --no-install "$TEST_TTY_DRIVER"');
+  const ttyDriver = join(root, "tty-driver.ts");
+  writeFileSync(ttyDriver, 'import {createInterface} from "node:readline/promises"; const rl=createInterface({input:process.stdin,output:process.stdout}); const answer=await rl.question("TTY_READY\\n"); rl.close(); console.log("TTY_ANSWER:"+answer);');
   const archive = join(root, "harness.tar.gz");
   const pack = Bun.spawnSync(["tar", "-czf", archive, "-C", root, "source"]); if (pack.exitCode) throw new Error("fixture tar failed");
   const hash = createHash("sha256").update(readFileSync(archive)).digest("hex");
@@ -19,13 +21,13 @@ function fixture() {
     .replace(/bootstrap_commit=[^\n]+/, `bootstrap_commit=${"a".repeat(40)}`)
     .replace(/bootstrap_sha256=[^\n]+/, `bootstrap_sha256=${hash}`);
   writeFileSync(script, text);
-  for (const name of ["uname", "tar", "mktemp", "diff", "find", "sed", "mkdir", "mv", "rm", "chmod", "head", "tail", "grep", "cat", "sh"]) symlinkSync(Bun.which(name)!, join(bin, name));
+  for (const name of ["uname", "tar", "mktemp", "diff", "find", "sed", "mkdir", "mv", "rm", "chmod", "head", "tail", "grep", "cat", "sh", "tty"]) symlinkSync(Bun.which(name)!, join(bin, name));
   const hashName = Bun.which("sha256sum") ? "sha256sum" : "shasum";
   executable(join(bin, hashName), `exec '${Bun.which(hashName)!.replace(/'/g, "'\\''")}' "$@"`);
   executable(join(bin, "curl"), 'while [ "$#" -gt 0 ]; do if [ "$1" = -o ]; then shift; cp "$TEST_ARCHIVE" "$1"; exit 0; fi; shift; done; exit 94');
   symlinkSync(Bun.which("cp")!, join(bin, "cp"));
   for (const tool of ["git", "bun", "pi"]) executable(join(bin, tool), 'printf "unexpected prerequisite\\n" >> "$TEST_LOG"; exit 99');
-  const env = { PATH: `${bin}:/usr/bin:/bin`, HOME: home, TEST_ARCHIVE: archive, TEST_LOG: log, TEST_BOOTSTRAP_SCRIPT: script, SHELL: "/bin/sh", TERM: "xterm-256color" };
+  const env = { PATH: `${bin}:/usr/bin:/bin`, HOME: home, TEST_ARCHIVE: archive, TEST_LOG: log, TEST_BOOTSTRAP_SCRIPT: script, TEST_REAL_BUN: process.execPath, TEST_TTY_DRIVER: ttyDriver, SHELL: "/bin/sh", TERM: "xterm-256color" };
   const run = (args: string[] = [], extra: Record<string, string> = {}) => Bun.spawnSync(["/bin/sh", script, ...args], { env: { ...env, ...extra }, stdout: "pipe", stderr: "pipe", timeout: 10000 });
   const calls = () => { try { return readFileSync(log, "utf8"); } catch { return ""; } };
   return { root, home, script, archive, env, run, calls, destination: join(home, ".local/share/lab-harness/releases", "a".repeat(40)), clean: () => rmSync(root, { recursive: true, force: true }) };
@@ -40,7 +42,7 @@ test("public bootstrap installs outside a checkout without Git/Bun/Pi, reuses ve
     const launcher = readFileSync(join(f.home, ".local/share/lab-harness/lab"), "utf8");
     expect(launcher).toContain("LAB_WORKSPACE_STATE_ROOT");
     expect(Bun.spawnSync(["/bin/sh", "-n", join(f.home, ".local/share/lab-harness/lab")]).exitCode).toBe(0);
-    expect(readFileSync(join(f.destination, "lab"), "utf8")).toContain("TTY_READY");
+    expect(readFileSync(join(f.destination, "lab"), "utf8")).toContain("TEST_REAL_BUN");
   } finally { f.clean(); }
 });
 

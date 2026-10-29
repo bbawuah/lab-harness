@@ -244,7 +244,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "4a9a729b6ce8de3ad8b64a43822c512c21c207916f2b176984a3ac5e1d179b30",
+      "sha256": "9990fc706d8f3e489c2d138eff26bba7920025ec546c49772d9b6917d691f280",
       "status": "added"
     },
     "bun.lock": {
@@ -659,7 +659,7 @@
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
     },
     "tests/bootstrap.test.ts": {
-      "sha256": "69ea9719fcb9c8fada600b26bb2b99755b59663e3755e327ece9b36c97365516",
+      "sha256": "2390bc72c27661ab03e9d8d8bd854fccc32e81160bfeb6f0d3b786e282339122",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
