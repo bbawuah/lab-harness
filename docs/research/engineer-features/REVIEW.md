@@ -31,7 +31,7 @@ Writer verified the findings against current `lab`, `scripts/runtime-bun.sh`,
    repeated setup and check receipts record observed freshness. No assertion
    that a brief benefits every session or hashes prove exactly what a test read.
 
-All three responses were applied and source-checked by the solo writer; there
+All three responses were applied and source-checked by the solo writer; at that checkpoint there
 was no second independent review round. These close documentation findings only.
 The future implementation still needs its own security/design/runtime review.
 
@@ -86,8 +86,8 @@ The future implementation still needs its own security/design/runtime review.
   are intentionally absent from the coordinator-owned manifest. The independent
   publication filename/content scan and immutable Relay pin check passed.
 
-The manifest failure is an outstanding integration action, not waived or
-reported green. Exact added paths and hashes are handed to root for explicit
+At the initial handoff the manifest failure was an outstanding integration
+action, not waived or reported green. Exact added paths and hashes are handed to root for explicit
 allowlist/currentFiles entries (`status: "added"`, no `originalSHA256`). Original
 concept identities and all existing file identities must remain intact.
 
@@ -110,3 +110,37 @@ concept identities and all existing file identities must remain intact.
 Research began at 22:06 UTC; source map was produced at 22:09 UTC. This bounded
 study completed well within the requested approximately 45-minute window.
 Research findings do not authorize implementation or merging main.
+
+## Publication readiness follow-up
+
+Root extended ownership to normal `docs/source-manifest.json` additions/current
+hashes for this directory only. Merged main
+`9a29db3bef718fa5c08c791d98a4c165210b89de` normally; provider/browser research and
+their manifest entries are preserved. Runtime baseline remains unchanged by
+those two documentation PRs. The original source map and comparison are dated
+research snapshots, not claims those research threads are still unmerged.
+
+Read the exact `refresh-publication.ts`, `publication-policy.ts`,
+`check-publication.ts` and publication plan before refresh. The normal script
+recomputes the full allowlist/currentFiles, so compare every pre-existing entry
+against merged main after running it. Independently hash owned files with Python
+SHA-256, compare all entries, and preserve schema/description/export/reviewed
+anchors and the immutable original `files` map. No pin or policy edits allowed.
+
+Added `COMPARISON.png` using T3 `html_preview` of the existing HTML at 728px/dark:
+1003px content/capture height, no console messages. `COMPARISON.json` records
+source commit/byte hash, image hash, capture method/time/theme and limitations.
+The visible DESIGN label and text explicitly disclaim implemented UI/runtime
+evidence. No model call or user browser session was involved.
+
+Original reviewer verdict, verbatim: “Two medium-severity contract gaps; no
+blockers in the research-only scope, upstream ownership, or demand/evidence
+distinction.” The findings and responses are listed above. **Original reviewedSHA
+is unavailable:** that review inspected the uncommitted draft on baseline
+`43a6ac2267d0261998453d56bd7f834956531812`, not an immutable final research commit.
+Do not label `36b3709a2bc9bcc4b61b6c4ccccaab3260735841` independently approved.
+Its post-review changes were the early read-only bootstrap bypass, explicit
+worker toolchain/environment contract, toned-down benefit wording, and the
+author's review record/final formatting. A narrow fresh read-only verification
+round against a frozen readiness commit follows; its verdict and exact SHA will
+be recorded separately from any later record-only changes.

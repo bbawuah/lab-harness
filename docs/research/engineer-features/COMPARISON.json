@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "label": "DESIGN \u2014 research comparison, not implemented LAB UI or runtime proof",
+  "capturedAt": "2026-10-29T22:21:42.998835+00:00",
+  "method": "T3 html_preview",
+  "appearance": "dark",
+  "width": 728,
+  "contentHeight": 1003,
+  "capturedHeight": 1003,
+  "consoleMessages": [],
+  "source": {
+    "path": "docs/research/engineer-features/COMPARISON.html",
+    "commit": "36b3709a2bc9bcc4b61b6c4ccccaab3260735841",
+    "sha256": "cad518fb3756cd97185859c18aa169018634e90d707c5c7d055b84c15b13f47c"
+  },
+  "image": {
+    "path": "docs/research/engineer-features/COMPARISON.png",
+    "mimeType": "image/png",
+    "sha256": "0aa4c777298d5f9f3f01d6f271f5bb0740bda2a09a04c5e800e8954e89303e8a"
+  },
+  "limitations": [
+    "Historical research baseline and coordination snapshot dated 2026-10-29; provider/browser research subsequently merged.",
+    "Browser rendering of static research HTML only; no LAB, Pi, Herdr, WSL, provider, browser-control or model runtime exercised.",
+    "T3 injects theme CSS; pixel reproducibility across renderer/font versions is not claimed."
+  ]
+}

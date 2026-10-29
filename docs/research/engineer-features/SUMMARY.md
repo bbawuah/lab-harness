@@ -61,4 +61,18 @@ quality remain unqualified by this document-only study.
 
 Publication manifest integration belongs to root
 `64847d95-5062-48cb-9506-4d3c9e7f19c5`. This branch changes only
-`docs/research/engineer-features/**`; no runtime or shared manifest edits.
+`docs/research/engineer-features/**` in the initial study; no runtime edits.
+Root subsequently authorized normal publication-manifest entries for these
+artifacts only; see the readiness follow-up in [REVIEW.md](REVIEW.md).
+
+## DESIGN screenshot and readiness update
+
+![DESIGN — research comparison, not implemented LAB UI](COMPARISON.png)
+
+[Capture provenance and hashes](COMPARISON.json) identify the unchanged HTML
+from the original study. This is static documentation evidence, not runtime proof.
+The snapshot above preserves its original baseline/status date. Readiness work
+merged main `9a29db3bef718fa5c08c791d98a4c165210b89de`, retaining the now-merged
+[provider UX research](../provider-connection-ux/SUMMARY.md) and
+[airgap browser research](../airgap-browser/SUMMARY.md). Both remain research,
+not shipped capabilities. PR #12 and root-owned monitoring/merge stay separate.

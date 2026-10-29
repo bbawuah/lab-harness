@@ -128,6 +128,15 @@
     "docs/research/airgap-browser/PREREQUISITES.md",
     "docs/research/airgap-browser/SOURCES.md",
     "docs/research/airgap-browser/SUMMARY.md",
+    "docs/research/engineer-features/COMPARISON.html",
+    "docs/research/engineer-features/COMPARISON.json",
+    "docs/research/engineer-features/COMPARISON.png",
+    "docs/research/engineer-features/CURRENT-VS-GAPS.md",
+    "docs/research/engineer-features/OPPORTUNITIES.md",
+    "docs/research/engineer-features/REVIEW.md",
+    "docs/research/engineer-features/SOURCES.md",
+    "docs/research/engineer-features/SUMMARY.md",
+    "docs/research/engineer-features/TOP-3-CONTRACTS.md",
     "docs/research/model-providers.md",
     "docs/research/provider-connection-ux/SUMMARY.md",
     "docs/research/provider-connection-ux/contracts.md",
@@ -599,6 +608,42 @@
     },
     "docs/research/airgap-browser/SUMMARY.md": {
       "sha256": "f93aea61968ca35ed33f9aa48bdf87b73cc7dadf69cd62e93ac4d465d6da0133",
+      "status": "added"
+    },
+    "docs/research/engineer-features/COMPARISON.html": {
+      "sha256": "cad518fb3756cd97185859c18aa169018634e90d707c5c7d055b84c15b13f47c",
+      "status": "added"
+    },
+    "docs/research/engineer-features/COMPARISON.json": {
+      "sha256": "56b3f362d9a936245469695eace601022dca8a74685b5354b7abcf94cf3aa6f1",
+      "status": "added"
+    },
+    "docs/research/engineer-features/COMPARISON.png": {
+      "sha256": "0aa4c777298d5f9f3f01d6f271f5bb0740bda2a09a04c5e800e8954e89303e8a",
+      "status": "added"
+    },
+    "docs/research/engineer-features/CURRENT-VS-GAPS.md": {
+      "sha256": "821005b532a8fd58083520bb2a753e5061b62eecb460fc4a442771f08856e7d5",
+      "status": "added"
+    },
+    "docs/research/engineer-features/OPPORTUNITIES.md": {
+      "sha256": "f0435adebf04f2e6d751c3418d83ad6ca70d13b344842fa56acb4fcba8ad50e7",
+      "status": "added"
+    },
+    "docs/research/engineer-features/REVIEW.md": {
+      "sha256": "b1053a819583fc58998e0bb4ae524dc0fc4c313f0109fe7bcba5ddceceb08737",
+      "status": "added"
+    },
+    "docs/research/engineer-features/SOURCES.md": {
+      "sha256": "0d3b8bdb94654acc57b0a3a65a08b935be98ae10c411db7be0aac01a9eb6fecf",
+      "status": "added"
+    },
+    "docs/research/engineer-features/SUMMARY.md": {
+      "sha256": "0e661b86ceeba47e7411df53d222ba8707f36d652f6f511ceb4cdd494a82cf99",
+      "status": "added"
+    },
+    "docs/research/engineer-features/TOP-3-CONTRACTS.md": {
+      "sha256": "f809b54d98ac8e8c669f83f9b4d0870d058cd400a786aba489df347e7d66afa4",
       "status": "added"
     },
     "docs/research/model-providers.md": {
