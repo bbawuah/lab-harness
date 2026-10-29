@@ -42,6 +42,7 @@ Playwright's existing extension is an alternative implementation candidate, not 
 **R — enforce before browser access**, outside model instructions:
 
 - A connection record binds run ID, OS user, adapter/version, browser ownership, selected target IDs, allowed origins, action class, artifact roots, generation and expiry. UI labels are not identity.
+- Admission includes connection initialization and teardown, not just later tool calls. Stock Playwright CDP auto-attaches and initializes pages beyond a subsequently selected tab; `noDefaults` reduces overrides but does not remove that behavior. A mixed borrowed profile cannot be advertised as tab-only unless A3b proves the actual adapter respects that scope from first connect through disconnect. See [initialization evidence S11](SOURCES.md#s11).
 - Initially expose finite DOM/AX/screenshot reads. Arbitrary JS evaluation, navigation, clicks, typing, file access, network interception, browser/context creation and protocol passthrough are excluded unless explicitly granted. Reads can reveal sensitive page content; redaction/output approval remains necessary.
 - No cookie, credential, storage-state or password extraction/export tools. No profile copying. Do not log endpoint secrets, URL query/fragment data, form contents or network headers by default.
 - Selected-tab scope includes only explicitly approved frames/descendants. New popups, other origins, new tabs and target replacement pause for scope review. A target ID must never be guessed from title or list order.

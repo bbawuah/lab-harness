@@ -66,6 +66,12 @@ Some Microsoft Learn responses included a generic authorization banner while ret
 - [chromium.ts, channel endpoint discovery](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/chromium.ts#L478-L499): reads profile `DevToolsActivePort`. Not proof of Edge support for a particular enable-debug UI; no profile discovery performed here.
 - [registry/index.ts](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/registry/index.ts#L631-L658): OS-specific Edge channel paths; [download suppression](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/registry/index.ts#L1336-L1339). No cross-OS channel-launch guarantee.
 
+Additional immutable source verified during independent-review resolution:
+
+- [crBrowser.ts:88–100](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/crBrowser.ts#L88-L100): default-context initialization and browser-wide automatic target attachment happen during connection.
+- [crPage.ts:498–552](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/crPage.ts#L498-L552): frame-tree reads, runtime/log events, isolated worlds and focus override. `noDefaults` skips some default-context overrides, not this entire initialization sequence.
+- [crBrowser.ts:358–367](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/crBrowser.ts#L358-L367), together with [chromium.ts:139–144](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/chromium.ts#L139-L144): context-wide download behavior changes unless browser defaults are preserved. No runtime effects or restoration were tested.
+
 ### S12
 
 **S — Playwright MCP release.** [v0.0.83](https://github.com/microsoft/playwright-mcp/releases/tag/v0.0.83), published **2026-09-28T23:17:11Z**; [commit API](https://api.github.com/repos/microsoft/playwright-mcp/commits/v0.0.83) resolves to **f183dad4a52965583e3cc1d59b88cdc279e2e57d**, commit 2026-09-28T23:12:55Z.

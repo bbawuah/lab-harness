@@ -19,6 +19,14 @@ Edge documentation describes closing all Edge instances before a debug-port laun
 
 Playwright 1.64.1 source also resolves channel-name CDP endpoints by reading `DevToolsActivePort` from a default profile directory and prints a remote-debugging UI hint. That is evidence of client discovery logic, **not proof that enterprise Edge exposes that UI or permits attachment**, and is unsuitable as automatic cross-WSL profile discovery. Require an explicitly approved endpoint; no profile scan. [S11]
 
+### Existing-session attachment has effects before tool admission
+
+**S — actual initialization, not only potential authority:** the pinned Playwright CDP connection enables browser-wide target auto-attachment and waits for page initialization. Page initialization reads frame trees, enables runtime/log events and creates isolated execution worlds; it normally enables focus emulation. Default-context initialization can also change context-wide download behavior. Thus an inspect-only tool grant and filtering outputs to selected tab A do **not** establish that unselected tab B was untouched during connection. [S11](SOURCES.md#s11)
+
+The pinned `noDefaults` option preserves the default context's browser download behavior and skips some page overrides, including focus emulation. It does **not** disable target auto-attachment or all page initialization. Do not present it as selected-tab isolation. Disconnect must also be qualified for residual context settings and instrumentation; closing the transport is not evidence that every effect was restored.
+
+**R — route consequence:** broad `connectOverCDP` on a mixed human profile is not qualified for a promise to touch only one selected tab. Require the new A3b acceptance test before offering that promise. If it fails, use an owned browser or separately qualify a target-scoped adapter/extension; no implementation or automatic fallback is authorized here. Browser-wide consent, if ever offered, is a different explicitly broader mode and cannot be relabelled tab-only.
+
 ## Capabilities exposed by a future adapter
 
 | Operation | CDP / Playwright | WebDriver | Debugger extension + host |

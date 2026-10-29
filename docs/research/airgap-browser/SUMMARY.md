@@ -12,6 +12,8 @@ LAB-HARNESS can plausibly control an approved local Edge installation without in
 
 **R — existing user tabs:** treat this as a separate product mode. Prefer an approved MV3 debugger extension with explicit browser-side tab selection and visible revocation, plus a same-user native host/broker, when enterprise deployment permits it. Evaluate Microsoft's Playwright Extension as a reuse candidate before building one; its inspected manifest has broad permissions and no native messaging permission, so it is **not** the proposed native-host design. Its published flow and our offline managed deployment need separate qualification. A dedicated profile remains the fallback; never copy the user's profile or export cookies to simulate attachment. [S06–S08, S12–S15](SOURCES.md)
 
+**Existing-session caveat:** pinned Playwright CDP initialization can inspect/instrument unselected tabs and change context settings before LAB dispatches any tool. `noDefaults` suppresses some overrides but does not remove auto-attachment. Tab-only output filtering is insufficient; [PoC test A3b](POC-PLAN.md) now explicitly gates connect/disconnect effects. [S11](SOURCES.md#s11)
+
 If DevTools policy blocks the intended targets, neither direct CDP nor the debugger extension is an approved workaround. WebDriver is an alternative automation stack, not a policy bypass. If the organization cannot approve either route, the research outcome is **unsupported under current policy**, not a request to weaken it. [S03](SOURCES.md#s03)
 
 ## Decision branches
@@ -67,3 +69,9 @@ The image is the original self-contained HTML render, not a live browser-control
 ## Publication readiness follow-up
 
 The initial publication failure was an absolute user path in the checkpoint record. It has been replaced with a sanitized worktree identifier; citations are unchanged. The unmodified publication checker passes after the normal explicit refresh: 190 allowed files, 189 current hashes and all nine pinned Relay files. Manifest inspection confirms that only the nine research artifacts (the original seven plus PNG/provenance) were added; existing current identities and immutable original anchors are unchanged. Screenshot/provenance hashes and local documentation links were verified. These remain documentation checks, not executed PoC results.
+
+## Independent review and resolution
+
+One isolated, read-only Codex `gpt-6-astra` reviewer ran with high reasoning/default service, without grandchildren. Verdict on `dd74fe62eebdd66a2813e94450691783fd533ee4`: **request changes, one P2** for missing qualification of Playwright's attach-time effects on unselected tabs/context settings. The author verified the cited immutable source and corrected OPTIONS, ARCHITECTURE, SOURCES and POC-PLAN, including `noDefaults` limits and explicit test A3b. No implementation was changed. The original review verdict is not represented as an approval of the corrected head; no second review was commissioned.
+
+The reviewer verified release SHAs/dates, MCP dependency, extension permissions, policy and offline-deployment evidence, and WSL distinctions. Its Edge download-catalog request timed out, leaving that snapshot independently unverified. It confirmed in memory that the sanitization removed the sole scanner match in the original seven files; final manifest/PNG/provenance validation was performed by the author. All interoperability and PoC unknowns remain open.
