@@ -24,6 +24,7 @@ Build API-key and explicitly unauthenticated profiles first: OpenAI, Anthropic
 (Claude API), Ollama, LM Studio/OpenAI-compatible, and existing LiteLLM. Start
 with manual exact model IDs/aliases and optional explicit discovery later.
 Changing profile initially means exit and relaunch into a fresh conversation.
+Native resume/import is refused in P1; preserved session files are not deleted.
 In-process cross-destination switching and subscription OAuth need separate
 proofs; they are not prerequisites for usable API-key support.
 
@@ -408,8 +409,10 @@ produces diagnostics before normal interactive generation.
 P1 disables automatic compaction, including overflow auto-compaction, and agent
 retries. Manual native /compact is still a request through the same wrapper.
 Unknown custom metadata uses explicit labelled operational assumptions rather
-than Pi's injected limits. For the legacy 8192/1024 model use reserveTokens 1024,
-keepTokens 2048 and branchSummary reserveTokens 1024, with output cap 1024.
+than Pi's injected limits. For the legacy 8192/1024 model set
+compaction.enabled=false, compaction.reserveTokens=1024,
+compaction.keepRecentTokens=2048 and branchSummary.reserveTokens=1024, with
+model output cap 1024. keepRecentTokens is the actual pinned setting name.
 These are bounded configuration values, not proof a particular prompt fits.
 Validate positive numeric budgets and reserve + keep + output < context;
 require a configured context of at least 4096 in P1. On overflow show a safe
@@ -441,6 +444,26 @@ tool results will be sent; offer fresh session; preserve originals; never rerun
 old tools, reuse remote state IDs on another endpoint or silently discard
 content. Missing saved profile/model/auth pauses instead of substituting.
 [Conversion](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/api/transform-messages.ts#L62-L223).
+
+P1 must prevent native /resume or session import from bypassing fresh-profile
+semantics. Its trusted extension returns explicit cancellation through supported
+session_before_switch for resume/import, with a clear “routed resume is not yet
+supported; start fresh” message. Do not rely on throwing a request-hook error.
+The LAB CLI does not forward native --session/--resume/--continue arguments.
+Preserve historical files and metadata; do not delete or rewrite them. A new
+fresh session is allowed, but importing an existing transcript remains refused,
+even if its saved model matches, until P3 validates its connection revision.
+The same restriction applies after endpoint/key revision and to legacy history
+whose historical endpoint is unknown.
+[Session switch hook](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/extensions/types.ts),
+[runtime recreation](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/agent-session-runtime.ts#L196-L220).
+
+Acceptance must start profile A with recorded messages/tool results, relaunch B
+and attempt native resume/import. Assert cancellation before any inference and
+zero B requests carrying A content. Repeat for a changed endpoint revision and
+routing-unknown legacy session. Also check repeated reload/switch hooks retain
+the refusal. This is a bounded supported session-lifecycle restriction, not a
+claim that arbitrary native shell/extensions are confined.
 
 ## Network, failures, retries and cost
 
@@ -504,7 +527,9 @@ their extension/shell edits with provider work.
 
 The P1 launch contract must be runtime-tested against a missing/corrupt explicit
 provider/model and poisoned ambient credentials, not inferred from static source
-alone. Test selected-route compaction/retry/summary behavior before broader claims.
+alone. Verify the effective native compaction field names and numeric values,
+8K overflow behavior and manual compaction with tool-result preservation. Test
+selected-route compaction/retry/summary behavior before broader claims.
 Provider fixture success is protocol evidence; it does not qualify paid provider
 accounts, model quality, arbitrary compatible servers, WSL or controlled admission.
 
@@ -517,7 +542,12 @@ and 8K compaction budgets. This revision responds with per-run agent/auth plus
 persistent separate sessions, captured request-level credential, supported
 per-profile fetch/stream wrappers, explicit-none header tombstones and final
 wire stripping, and disabled auto-compaction/retries with bounded budgets.
-Fresh critical round 2 must verify those design responses before D0 clears.
+Round 2 accepted those mechanisms as design responses and found two remaining
+gaps: native resume could replay A history through explicit B, and the retention
+field was incorrectly called keepTokens. This revision refuses native
+resume/import using session_before_switch until P3 and uses actual
+compaction.keepRecentTokens with effective-settings/8K fixtures. Fresh critical
+round 3 must verify these final design responses before D0 clears.
 The mechanisms are source-proven public seams, not implemented/runtime-proven
 privacy or redirect guarantees; P1 acceptance above is mandatory.
 

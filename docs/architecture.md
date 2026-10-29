@@ -121,7 +121,8 @@ Automatic retries/compaction and cache warming start disabled; 8K budgets are
 explicit and validated. Exact locally
 validated provider/model configuration and failed-bootstrap refusal provide a
 bounded initial-launch policy, not general native request admission. Existing
-sessions and their legacy provider binding are preserved. Cross-destination
+sessions and their legacy provider binding are preserved; native resume/import
+is explicitly cancelled in P1 until routed resume is qualified. Cross-destination
 history replay and subscription OAuth require later proofs; no silent profile,
 account, protocol or cloud replacement is authorized by a failure.
 
