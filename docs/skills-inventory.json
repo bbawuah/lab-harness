@@ -1,0 +1,4703 @@
+{
+  "schemaVersion": 1,
+  "hashAlgorithm": "sha256",
+  "coverageComplete": true,
+  "contentComplete": false,
+  "complete": false,
+  "truncated": false,
+  "diagnosticsDropped": 0,
+  "limits": {
+    "maxEntries": 100000,
+    "maxDepth": 64,
+    "maxFilesPerBundle": 10000,
+    "maxFileBytes": 8388608,
+    "maxTotalBytes": 268435456,
+    "maxDiagnostics": 1000
+  },
+  "scannedEntries": 32325,
+  "hashedBytes": 5091601,
+  "roots": [
+    {
+      "id": "codex-user",
+      "kind": "skills",
+      "status": "available",
+      "sourceRevision": null,
+      "metadata": [
+        {
+          "path": ".system/.codex-system-skills.marker",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "626d55b2d6105b5e8ad04dc5a654a2fb922c4f517d9df3239b68c157f01ec0b9",
+          "bytes": 17
+        }
+      ],
+      "exclusions": []
+    },
+    {
+      "id": "claude-user",
+      "kind": "skills",
+      "status": "available",
+      "sourceRevision": null,
+      "metadata": [
+        {
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/manifest.json",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "707031c74249d2559fee05034731e7281a9eee87fd2c765e6f161f465ea0d848",
+          "bytes": 11500
+        }
+      ],
+      "exclusions": []
+    },
+    {
+      "id": "repo-portable",
+      "kind": "repository",
+      "status": "available",
+      "sourceRevision": "364a58052692a6229c85baecdbc124c1e7e5bd15",
+      "metadata": [
+        {
+          "path": "package.json",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "243d7aee44713ae3b06efd0e23ac677a098c8969c5629eeb5b5717cbc216b787",
+          "bytes": 832
+        }
+      ],
+      "exclusions": [
+        ".claude/worktrees",
+        ".git",
+        "apps/goldcoast-operatie/.next",
+        "apps/site/.ds-sync/node_modules",
+        "apps/site/.next",
+        "apps/site/node_modules",
+        "apps/storybook/node_modules",
+        "apps/template/dist",
+        "apps/tmux/dist",
+        "apps/vault-b/.next",
+        "apps/vault-b/node_modules",
+        "apps/watchparty/dist",
+        "node_modules",
+        "packages/brand/dist",
+        "packages/components-css/dist",
+        "packages/components-react/dist",
+        "packages/composer/dist",
+        "packages/tokens/dist",
+        "tools/brein/__pycache__"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill:054b92ecd5445b9d53a731d2dc64727cd83c0685f49eace452e0cc942a84ab2b",
+      "name": "imagegen",
+      "kind": "skill",
+      "contentHash": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba",
+      "instructionBytes": 19201,
+      "bundleHash": "054b92ecd5445b9d53a731d2dc64727cd83c0685f49eace452e0cc942a84ab2b",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9ca574af14580dc7a2a3dc37a1796d17f93cb8850be66501f0799ef8603e9dc0",
+          "bytes": 275
+        },
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/imagegen-small.svg",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cff5f34f57ff60b3ee92eaedd17b15e96dd4b9e776df3e78936c9e00d42be294",
+          "bytes": 2889
+        },
+        {
+          "path": "assets/imagegen.png",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "95952f644064eb9e890f98d8db07216347186526e4c41ad66d3420629eb86e20",
+          "bytes": 1711
+        },
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9",
+          "bytes": 10776
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/cli.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ecfc2e09261a0feb3482517a5fa0ff410cb7d1958e3cbd2ac6b61586f5b81405",
+          "bytes": 9655
+        },
+        {
+          "path": "references/codex-network.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c88298ca4481f6116a16fa7987434fc977f8b311c1bbc0c3d862ffd0c5981148",
+          "bytes": 1779
+        },
+        {
+          "path": "references/image-api.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "dc975d7af8a4888967251a0276014b4a71ea30455294944b762256373ce3e569",
+          "bytes": 6072
+        },
+        {
+          "path": "references/prompting.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b210b051c775860267080941eba968212bf0ac7fce581d75c5dcc217d8293f8b",
+          "bytes": 8282
+        },
+        {
+          "path": "references/sample-prompts.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "70474177d151855b175c6133de2aae1d90b7f146b0dab50ec830972c47d72183",
+          "bytes": 17617
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/image_gen.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b4345cf835e5b593b97df6bb2b70bda493b8a97eee4cabbc99b2fa57dba9b448",
+          "bytes": 34667
+        },
+        {
+          "path": "scripts/remove_chroma_key.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a5893c4bd04b21abced33731ea89d2ac428e81d92a0368eb18ffbe4fda5253e2",
+          "bytes": 13905
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "681ddb4ad6d06a2acc78a3535b583f8d0c1ea800ecda3d56370d3310fd2cd4ba",
+          "bytes": 19201
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": ".system/imagegen/SKILL.md",
+          "bundlePath": ".system/imagegen"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+        ],
+        "publicSourceLinks": [
+          "https://platform.openai.com/api-keys"
+        ]
+      }
+    },
+    {
+      "id": "skill:0572a14c64e83d7b900b0014a6844cc7cc79173201d5e493196b9ee96c6a9ad1",
+      "name": "kibana-connectors",
+      "kind": "skill",
+      "contentHash": "4dd577095518db5419b33dc34475d009d288b34a9ace87589acd6ee189a7cfde",
+      "instructionBytes": 21503,
+      "bundleHash": "0572a14c64e83d7b900b0014a6844cc7cc79173201d5e493196b9ee96c6a9ad1",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/action-design.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5efaf46cefb5b66e649ea716dc8728e4cb17db6dbd6818834b44e2f844f44479",
+          "bytes": 8175
+        },
+        {
+          "path": "references/workflows.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "020c91649addfb09ca74095ad355c319d096fa670c0254a35b9fbbe99d79eee9",
+          "bytes": 10957
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4dd577095518db5419b33dc34475d009d288b34a9ace87589acd6ee189a7cfde",
+          "bytes": 21503
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "kibana-connectors/SKILL.md",
+          "bundlePath": "kibana-connectors"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": [
+          "https://www.elastic.co/docs/api/doc/kibana/group/endpoint-connectors",
+          "https://www.elastic.co/docs/explore-analyze/alerting/alerts/event-log-index",
+          "https://www.elastic.co/docs/reference/kibana/configuration-reference/alerting-settings",
+          "https://www.elastic.co/docs/reference/kibana/connectors-kibana",
+          "https://www.elastic.co/docs/reference/kibana/connectors-kibana/pre-configured-connectors"
+        ]
+      }
+    },
+    {
+      "id": "skill:07755279eb91bb021fdae41b9ab51518da655e466138b2e826e2b4a65d603bf4",
+      "name": "chrome-browser",
+      "kind": "skill",
+      "contentHash": "c8b0afeee246f333529be3c73c49efaf7d9d10a46d8948b4b736cc758cb4e885",
+      "instructionBytes": 5881,
+      "bundleHash": "07755279eb91bb021fdae41b9ab51518da655e466138b2e826e2b4a65d603bf4",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c8b0afeee246f333529be3c73c49efaf7d9d10a46d8948b4b736cc758cb4e885",
+          "bytes": 5881
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/chrome-browser/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/chrome-browser"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "online-retrieval",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:089354fecfeb16737d695b9397310d205b7a4868b833ff10f7a4da93da1a6f3b",
+      "name": "apps/goldcoast-operatie/AGENTS.md",
+      "kind": "agent-instructions",
+      "contentHash": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0",
+      "instructionBytes": 679,
+      "bundleHash": "089354fecfeb16737d695b9397310d205b7a4868b833ff10f7a4da93da1a6f3b",
+      "instructionPath": "AGENTS.md",
+      "resources": [
+        {
+          "path": "AGENTS.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0",
+          "bytes": 679
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "apps/goldcoast-operatie/AGENTS.md",
+          "bundlePath": "apps/goldcoast-operatie"
+        }
+      ],
+      "compatibility": "portable",
+      "dependencyReasons": [],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:09a0cfc188b4e1020a3691335a71d118f11768846ae79b142cca37b9c4598829",
+      "name": "import-memory",
+      "kind": "skill",
+      "contentHash": "5179b0780b7025c93271c181636a23acc8d05cad3b20584639cbaf1cf9c3b07a",
+      "instructionBytes": 10689,
+      "bundleHash": "09a0cfc188b4e1020a3691335a71d118f11768846ae79b142cca37b9c4598829",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5179b0780b7025c93271c181636a23acc8d05cad3b20584639cbaf1cf9c3b07a",
+          "bytes": 10689
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/import-memory/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/import-memory"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:0a3ea13742ac34730d21aeb9871d7924e431e74039bec76b9105f359338ac423",
+      "name": "elasticsearch-esql",
+      "kind": "skill",
+      "contentHash": "ddf79f2841a4c7afa6adcb7d212a6676edb562fdb849976e43906128b646a1a4",
+      "instructionBytes": 17578,
+      "bundleHash": "0a3ea13742ac34730d21aeb9871d7924e431e74039bec76b9105f359338ac423",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "package.json",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "32ef4b05d8a382de7a394ab0e425354ba31cd119305e72e68eb2f5b1ea38fe96",
+          "bytes": 256
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/dsl-to-esql-migration.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0a5b82d3fb799e2eb1e9a6a16b438e3e321e3fec6fe5299e18c9a5670bc53291",
+          "bytes": 19857
+        },
+        {
+          "path": "references/environment-setup.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a2c1b0e4222b515db259aefcea6db209f4721c872748ed9a068068e37d2a5d14",
+          "bytes": 2391
+        },
+        {
+          "path": "references/esql-reference.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6d20244848bcfe88ae8ac6ab344d4d087772f0310b42e1a064b5f14d6cbb1a5a",
+          "bytes": 59708
+        },
+        {
+          "path": "references/esql-search-strategy.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6ed5eb2b5cc8f8ec860b027d0b154ec047d26da0343370ab80d7e8e68a24ca6c",
+          "bytes": 10734
+        },
+        {
+          "path": "references/esql-search.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "41833432f13cdf98fa890a6f8e351297e999e32d5ff01bf7dccfe8344767b9c5",
+          "bytes": 25306
+        },
+        {
+          "path": "references/esql-version-history.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e2d84a568366ba4f5500eb6dcf005f2ce8225d27d0c66ccbe5463177f850cc99",
+          "bytes": 21293
+        },
+        {
+          "path": "references/generation-tips.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8b4222d910952b8644e1dbcc4a43026c994c0124a0d60654add337a7bb3f57dc",
+          "bytes": 21652
+        },
+        {
+          "path": "references/query-patterns.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9f767c0aa41e38bd9290bdc4ecddcd644e35ddd22dff327d09b4a7a254f9d389",
+          "bytes": 13644
+        },
+        {
+          "path": "references/time-series-queries.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "221580b8fe0cdc48767e6bb40c930bf43b16f31192d487311c6bf03f7940e713",
+          "bytes": 14510
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/esql.js",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9c1761965e093c1e722101408106b38d9f2dc529d43e1aa61d0b954a31a2fb7d",
+          "bytes": 22632
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ddf79f2841a4c7afa6adcb7d212a6676edb562fdb849976e43906128b646a1a4",
+          "bytes": 17578
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "elasticsearch-esql/SKILL.md",
+          "bundlePath": "elasticsearch-esql"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": "1.1.0",
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:0f373c19a91c81f0ed9ae3e8dfc1a9d2d2ec9c544408eb8224dc87c462198058",
+      "name": "review-agent",
+      "kind": "skill",
+      "contentHash": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228",
+      "instructionBytes": 2661,
+      "bundleHash": "0f373c19a91c81f0ed9ae3e8dfc1a9d2d2ec9c544408eb8224dc87c462198058",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4d867a46d15e36ac880176484aae160f59855340c6059b2ea6ab9fbc9af084de",
+          "bytes": 252
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "07079efd0dc76f05fade424e5dfb048dce1de2df7626e1a4f56292a4f3f92228",
+          "bytes": 2661
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": ".system/review-agent/SKILL.md",
+          "bundlePath": ".system/review-agent"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:0fd214d2c1af6892ab0bdb7ff88bcadf17ae930b61e11bf0ee07933b187b06b6",
+      "name": "scrawl",
+      "kind": "skill",
+      "contentHash": "d1dec39ce94d8ec976e53958cb780103d18edf3ee0cad9b6fc9efd8450cbef3b",
+      "instructionBytes": 3107,
+      "bundleHash": "0fd214d2c1af6892ab0bdb7ff88bcadf17ae930b61e11bf0ee07933b187b06b6",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d1dec39ce94d8ec976e53958cb780103d18edf3ee0cad9b6fc9efd8450cbef3b",
+          "bytes": 3107
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "scrawl/SKILL.md",
+          "bundlePath": "scrawl"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "external-tool-or-runtime",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:1ff30f40016dc2bd9f46529130a7e268afd6b87d41c0cbc9a6d1ac0937037190",
+      "name": "retro",
+      "kind": "skill",
+      "contentHash": "2ce5828ca2cfaf5bc2f724bf164a482f411a86995c1d19100442eaf21d1179ac",
+      "instructionBytes": 6536,
+      "bundleHash": "1ff30f40016dc2bd9f46529130a7e268afd6b87d41c0cbc9a6d1ac0937037190",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/sessie-samenvatting.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "38309542429eff07e6c373b4e4da351399d689c049552bf4c720831cc1b8e9af",
+          "bytes": 8353
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "2ce5828ca2cfaf5bc2f724bf164a482f411a86995c1d19100442eaf21d1179ac",
+          "bytes": 6536
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "retro/SKILL.md",
+          "bundlePath": "retro"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:2063ef7bf8213e451e991f9d59c4b28e04e84ba3bef99679f616466ea7821b42",
+      "name": "bekijk",
+      "kind": "skill",
+      "contentHash": "df767f9a92849194413963d59762c5b3166bfc5212ed8e1185b5e2dd942c18ab",
+      "instructionBytes": 3147,
+      "bundleHash": "2063ef7bf8213e451e991f9d59c4b28e04e84ba3bef99679f616466ea7821b42",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "df767f9a92849194413963d59762c5b3166bfc5212ed8e1185b5e2dd942c18ab",
+          "bytes": 3147
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": ".claude/skills/bekijk/SKILL.md",
+          "bundlePath": ".claude/skills/bekijk"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "external-tool-or-runtime",
+        "host-environment"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:32da15b9501e3d822a04ca4e8f69ec30e65d1cfc3279eaa34bab8ee37cebc3eb",
+      "name": "skill-installer",
+      "kind": "skill",
+      "contentHash": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee",
+      "instructionBytes": 3367,
+      "bundleHash": "32da15b9501e3d822a04ca4e8f69ec30e65d1cfc3279eaa34bab8ee37cebc3eb",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5ce223d8b1070b82c42298538f1b8d376f788eb9e7a42a987e8c094070d73f0e",
+          "bytes": 221
+        },
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/skill-installer-small.svg",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3928703ff00dc1a681e7a22401843b7edcbd4b2051651ce4c43b75f7e140504e",
+          "bytes": 923
+        },
+        {
+          "path": "assets/skill-installer.png",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d0a230b1a79b71b858b7c215a0fbb0768d6459c14ea4ef80c61592629bf0e605",
+          "bytes": 1086
+        },
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/github_utils.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "61c1bbe2ae217433b4b6f9f09f21aca4df52c12598068343ade719f706e4859b",
+          "bytes": 659
+        },
+        {
+          "path": "scripts/install-skill-from-github.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "38f311b75664bb063808f982c600271ebc4b560830f491705190f88a94e3e781",
+          "bytes": 11917
+        },
+        {
+          "path": "scripts/list-skills.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9d6dfb2abf3afeee7f027a89fb1626b918a973da18f4eb6c25681286301beb41",
+          "bytes": 2948
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d68b77e5bbb34dedab89d134da52855f140fc4b4299b80104f534e3b9e98f8ee",
+          "bytes": 3367
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": ".system/skill-installer/SKILL.md",
+          "bundlePath": ".system/skill-installer"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        ],
+        "publicSourceLinks": [
+          "https://github.com/",
+          "https://github.com/openai/skills/tree/main/skills/.curated",
+          "https://github.com/openai/skills/tree/main/skills/.experimental",
+          "https://github.com/openai/skills/tree/main/skills/.system"
+        ]
+      }
+    },
+    {
+      "id": "skill:374dc795a8788c326c2098fdf32fe375e09ed5cf2d1e605c78f2375c728910c8",
+      "name": "retro",
+      "kind": "skill",
+      "contentHash": "4924f8e9993855b2d9e758f36586f99a6653a3b39febc3be6f57387162e92866",
+      "instructionBytes": 5964,
+      "bundleHash": "374dc795a8788c326c2098fdf32fe375e09ed5cf2d1e605c78f2375c728910c8",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/sessie-samenvatting.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f0cf4724e8f1f741d87af78729a031e461dcba8f6c0be2fdd397c0185e9462c7",
+          "bytes": 8380
+        },
+        {
+          "path": "scripts/test_sessie_samenvatting.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cb63a8bb674fcd6cc2a9434ea6ba4018c9b7b63a030eb82a3317c65f336b10b4",
+          "bytes": 1532
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4924f8e9993855b2d9e758f36586f99a6653a3b39febc3be6f57387162e92866",
+          "bytes": 5964
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "agents/skills/retro/SKILL.md",
+          "bundlePath": "agents/skills/retro"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:39a22b4064d090b70b3083eb851ad82f3392bb525176c35c83b2be29d084a0c9",
+      "name": "xlsx",
+      "kind": "skill",
+      "contentHash": "6712b39718fe815054abca9c3ee72f989613e6f771c8a5c58f30a65a6c905622",
+      "instructionBytes": 8598,
+      "bundleHash": "39a22b4064d090b70b3083eb851ad82f3392bb525176c35c83b2be29d084a0c9",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e62e525673baa71fa2c9f01d637c37b44383146a46c28957ba3d9d41e1a4ba21",
+          "bytes": 3380
+        },
+        {
+          "path": "scripts/office/helpers/pptx_chart.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "47ac266f7d39d11ede6bb0d1f3a19d801394fd2964636f1b48beb701f1832964",
+          "bytes": 5862
+        },
+        {
+          "path": "scripts/office/helpers/pptx_slide.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b9f69b4a5bd6a2d9eabf9e0e3e796d7a421373145f6a8cd11f60b7ba2d6a5d0",
+          "bytes": 1675
+        },
+        {
+          "path": "scripts/office/helpers/pptx_theme.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ebb54c56e9c13807f5f98f0cae22d47cdd0162da8525eaa664e3f2c8c8d6bb03",
+          "bytes": 3510
+        },
+        {
+          "path": "scripts/office/schemas",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+          "bytes": 1963
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+          "bytes": 2515
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+          "bytes": 2856
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+          "bytes": 1344
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+          "bytes": 74984
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+          "bytes": 6956
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+          "bytes": 51302
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+          "bytes": 624
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+          "bytes": 152039
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+          "bytes": 1231
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+          "bytes": 8862
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+          "bytes": 14795
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+          "bytes": 83612
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+          "bytes": 1269
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+          "bytes": 7328
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+          "bytes": 6382
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+          "bytes": 1248
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+          "bytes": 880
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+          "bytes": 2608
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+          "bytes": 3507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+          "bytes": 7507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+          "bytes": 23313
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+          "bytes": 1367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+          "bytes": 242277
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+          "bytes": 26148
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+          "bytes": 25279
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+          "bytes": 535
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+          "bytes": 5712
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+          "bytes": 4010
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+          "bytes": 171367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+          "bytes": 4646
+        },
+        {
+          "path": "scripts/office/schemas/mce",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/mce/mc.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+          "bytes": 3127
+        },
+        {
+          "path": "scripts/office/schemas/microsoft",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2010.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+          "bytes": 26549
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2012.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+          "bytes": 3745
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+          "bytes": 901
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cex-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+          "bytes": 1778
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cid-2016.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+          "bytes": 1002
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+          "bytes": 600
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-symex-2015.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+          "bytes": 745
+        },
+        {
+          "path": "scripts/office/soffice.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c1b83a67bf7e784ce6255d7b3a58999445f3dad19809845821f1293ab4cbf43e",
+          "bytes": 5945
+        },
+        {
+          "path": "scripts/office/validate.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "346a4c89d92fff55e610f11efda48c30228815b29bdb10b987e48f7af70acf1e",
+          "bytes": 6142
+        },
+        {
+          "path": "scripts/office/validators",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/validators/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+          "bytes": 336
+        },
+        {
+          "path": "scripts/office/validators/base.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a5ed6c647ceaf7f48f60386b347ea5c91071073866bdd148532e9eab04c8c347",
+          "bytes": 33721
+        },
+        {
+          "path": "scripts/office/validators/docx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "93d3444c0ef3f043d21a2285c46d2cda478426b930dc33dcf3b11265935517b5",
+          "bytes": 17482
+        },
+        {
+          "path": "scripts/office/validators/pptx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "17eadad2b7a8374ccbe4cda45693bcd6a36f9d61a7d60f9c9ceef9464dec8299",
+          "bytes": 15966
+        },
+        {
+          "path": "scripts/office/validators/redlining.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "25ff68611a7cfcfe88644fe3cf011438c9e9a544ae39bad3ae740d96d99a9d43",
+          "bytes": 18017
+        },
+        {
+          "path": "scripts/recalc.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "dcf6db896993bb103e696632440effd22097fc05711f1d5633d13faad5495056",
+          "bytes": 16274
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6712b39718fe815054abca9c3ee72f989613e6f771c8a5c58f30a65a6c905622",
+          "bytes": 8598
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/xlsx/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/xlsx"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:39da459de50896cd41f94b0c4912601aad1eca781f60d92fc5a622c632fba490",
+      "name": "morning",
+      "kind": "skill",
+      "contentHash": "a7c4dbcb745799736991b027cceae39aae4880cc00ff43871ae5e87b38023bdd",
+      "instructionBytes": 18163,
+      "bundleHash": "39da459de50896cd41f94b0c4912601aad1eca781f60d92fc5a622c632fba490",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/fonts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/fonts/fraunces-latin-600-normal.woff2",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3a1de7711d147bad4422825045f87597fd77cca72e7c96d3b0a81735d00dda82",
+          "bytes": 18096
+        },
+        {
+          "path": "assets/fonts/Fraunces-OFL.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0bc0daaa78b715774d4ad27d7f4ee8b436f48cef8e2f773531a8f22e27c06248",
+          "bytes": 4483
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a7c4dbcb745799736991b027cceae39aae4880cc00ff43871ae5e87b38023bdd",
+          "bytes": 18163
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/morning/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/morning"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:3a61ad7134258368def06bd9f3e5eec62ba78e3f6f7d21ee2d6a109d0b872a05",
+      "name": "naar-mod",
+      "kind": "skill",
+      "contentHash": "6e32c177079645de557560848b80c780d94d01bf4475c5aae4a60f7075a72562",
+      "instructionBytes": 2961,
+      "bundleHash": "3a61ad7134258368def06bd9f3e5eec62ba78e3f6f7d21ee2d6a109d0b872a05",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/deel.sh",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8c07977326a73b5f5df77bd07063cc227fd996ecbad8666f37dc94b8ef286073",
+          "bytes": 2675
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6e32c177079645de557560848b80c780d94d01bf4475c5aae4a60f7075a72562",
+          "bytes": 2961
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "naar-mod/SKILL.md",
+          "bundlePath": "naar-mod"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-tool-or-credentials",
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:3b72c12e826a6fb895c201a1113330a67f560c5e6d96a68aaf4954160b648f4f",
+      "name": "grill-me",
+      "kind": "skill",
+      "contentHash": "4e9eceb44c0cf6c0b555f31840bd3c4bd7771942a2d6f610fc9cd0f625ba28f5",
+      "instructionBytes": 4190,
+      "bundleHash": "3b72c12e826a6fb895c201a1113330a67f560c5e6d96a68aaf4954160b648f4f",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4e9eceb44c0cf6c0b555f31840bd3c4bd7771942a2d6f610fc9cd0f625ba28f5",
+          "bytes": 4190
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "agents/skills/grill-me/SKILL.md",
+          "bundlePath": "agents/skills/grill-me"
+        }
+      ],
+      "compatibility": "portable",
+      "dependencyReasons": [],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:3c644fac6a684d8de0dc28f239971a999365a01f2307ef3c82dd929adb8c1779",
+      "name": "openai-docs",
+      "kind": "skill",
+      "contentHash": "aa6829e21df2223167c85d2e49b6337a7345c84c1033f1ec10182c7882b36d45",
+      "instructionBytes": 5437,
+      "bundleHash": "3c644fac6a684d8de0dc28f239971a999365a01f2307ef3c82dd929adb8c1779",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "44b9efac6be1bae32d869aa2942fecbe4dcae82682ee03e4120f2f9b7d4658ec",
+          "bytes": 370
+        },
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/openai-small.svg",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "45be1f0757eb18889eefb1e7db79668ef46a275dc4e0e78e8df5ebd7f6cdeadc",
+          "bytes": 1091
+        },
+        {
+          "path": "assets/openai.png",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "156cc84d7332bfe95b310350bd470b690d22aa33d65340cc6c2e06022946194c",
+          "bytes": 1429
+        },
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9",
+          "bytes": 10776
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/codex-self-knowledge.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8c8fb00e6e5cb1977924f5164684a6095427fa828bbc765225f17d9aeb79a912",
+          "bytes": 7417
+        },
+        {
+          "path": "references/latest-model.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7e5b9437c6ad98a73da46ba3f7f5c86f88aea2a15242318f32c487eb28a90852",
+          "bytes": 1339
+        },
+        {
+          "path": "references/mcp-diagnostics.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "49bbd2f73df7bbd7f86c80425dea4da2d301c22046080399a36bfc0ca49509e9",
+          "bytes": 2318
+        },
+        {
+          "path": "references/model-migration.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "138c05dd06047b069a7aab09e657b6a6a0d25b6959cbe2473baae95f47e72883",
+          "bytes": 5631
+        },
+        {
+          "path": "references/model-selection.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ba2d164abbca30435a460a0bc3a7d82398dce2bdf092705c98ba55b3f3af38a8",
+          "bytes": 1344
+        },
+        {
+          "path": "references/official-docs.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7962f2dce55089b93bde4115bb89fd42f20993c1597a2b13edd4956f463875b9",
+          "bytes": 3337
+        },
+        {
+          "path": "references/prompting-guide.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5c791edd5bfc9363cb4251ac3ccd3b1dbac3bb2a6654f78606a9d2357c97c172",
+          "bytes": 10128
+        },
+        {
+          "path": "references/upgrade-guide.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "63352ece4bd1ee82b225bb4cb4fa2ea4f0dbf57a308845fa30f2c8d7f1d291d1",
+          "bytes": 1503
+        },
+        {
+          "path": "references/upgrading-to-gpt-6-astra.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cacacdfe0b516f7420af51df10dfa0829bf67c4a670544d58992f6ce4ac22583",
+          "bytes": 19676
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/fetch-codex-manual.mjs",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1ea0ca869e3fdf06e83a9972fc4c602b0505a96b22e4b0d9629656f5b545e5ff",
+          "bytes": 15668
+        },
+        {
+          "path": "scripts/resolve-latest-model-info",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7354dbb030ca0736dd633a7ca1b930cf640abd40370725dea3a458cb51d49523",
+          "bytes": 1038
+        },
+        {
+          "path": "scripts/resolve-latest-model-info.cjs",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "589b89515ab63fff87efde0b9c76eb72e674582aebc3afbc29ceae09abddafe3",
+          "bytes": 3916
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "aa6829e21df2223167c85d2e49b6337a7345c84c1033f1ec10182c7882b36d45",
+          "bytes": 5437
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": ".system/openai-docs/SKILL.md",
+          "bundlePath": ".system/openai-docs"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "online-retrieval"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "4dd13869245e356246a5b770723247bbb80a8f07a181d1d3d873a1734297cdb9"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:3da264f7323da695cf40ddea8cd7d5f610731563379b7af6acf1a48c0fe0430b",
+      "name": "react-grab",
+      "kind": "skill",
+      "bundleHash": "3da264f7323da695cf40ddea8cd7d5f610731563379b7af6acf1a48c0fe0430b",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "symlink",
+          "status": "blocked",
+          "linkHash": "4af41ac82cfc8b0dfd7bf390b1cfa2eba7778e3792b8866eefd7e8b6b7f4ddbf",
+          "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "react-grab/SKILL.md",
+          "bundlePath": "react-grab",
+          "link": {
+            "linkHash": "4af41ac82cfc8b0dfd7bf390b1cfa2eba7778e3792b8866eefd7e8b6b7f4ddbf",
+            "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+          }
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "unavailable-or-incomplete-local-bundle"
+      ],
+      "complete": false,
+      "loadable": false,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:420e9fc9363c1f658dd78e47c45e3198d820a843e7db1cb94cafe04ecde045a5",
+      "name": "skill-creator",
+      "kind": "skill",
+      "contentHash": "1d51c0b077c24489baa7fdb6c7072ff0c94479dab7110dad2fc6039a47a4bed4",
+      "instructionBytes": 36447,
+      "bundleHash": "420e9fc9363c1f658dd78e47c45e3198d820a843e7db1cb94cafe04ecde045a5",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/analyzer.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e92372af8ac9254a905de7392a8d9f8dd7dccf0ea181d16e2bc58ac52ecea0a8",
+          "bytes": 10528
+        },
+        {
+          "path": "agents/comparator.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "fe1fc9787c495d864c5d6eada47396478572325fde1b33a96d78bf4b849b7a3e",
+          "bytes": 7287
+        },
+        {
+          "path": "agents/grader.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a8ab34e7e5e0ae3414c2f067a805cb1f5372f8f3ac02119e1536f0ad60c27d32",
+          "bytes": 9030
+        },
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/eval_review.html",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ce477dcc74dc1c0d1d3352646a79167b5a63634e936b1019160025065974e452",
+          "bytes": 7058
+        },
+        {
+          "path": "eval-viewer",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "eval-viewer/generate_review.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f3764c705765da2e93799f8e2b38133eb1d009d954465bf9194204ed67bd2330",
+          "bytes": 21963
+        },
+        {
+          "path": "eval-viewer/viewer.html",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "43834bfddbffa018e8645f75a760e80a126e07cdd27fffcbf9a4ca3f70a81664",
+          "bytes": 45675
+        },
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+          "bytes": 11357
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/schemas.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "59b0ef8b7e7c469d3edb1ed44e94b8fa6afae7ee417f15f84a3bcc216f42342a",
+          "bytes": 17977
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "scripts/aggregate_benchmark.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "61ee33ebec3ccb19743ebe5866338f4718e56021b48499b0f62ac008b099fe08",
+          "bytes": 20776
+        },
+        {
+          "path": "scripts/generate_report.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "13df7118a3c50c83c4c3250a606d5f2b20b25a3d44cbc392b3d669ec75281453",
+          "bytes": 12847
+        },
+        {
+          "path": "scripts/improve_description.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "87d864570220b699fac52da309d2d6efdb060647bfebc74f768128e646accf80",
+          "bytes": 11116
+        },
+        {
+          "path": "scripts/package_skill.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1a33059b0db1ef73375d46d513e5ea81369d2e8838c970597b0d52ddef8d1c0f",
+          "bytes": 4234
+        },
+        {
+          "path": "scripts/quick_validate.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f65315971b2a723349234947062de2ffae76cad98884b7f441e453e6dbe01892",
+          "bytes": 6021
+        },
+        {
+          "path": "scripts/run_eval.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "43e3b8f80dbf69c343967ba77e268fae991d9fa3ed68b32a0ff02532cd48657f",
+          "bytes": 11464
+        },
+        {
+          "path": "scripts/run_loop.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7bd6f674203168520517eec94c55f493c0d154339b061b4d7c0f0dad187d0f21",
+          "bytes": 13605
+        },
+        {
+          "path": "scripts/utils.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3af8ae62c40c73ab712207436a0d9a981e845f25c5a7040229eb189cc8e45bb1",
+          "bytes": 1661
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1d51c0b077c24489baa7fdb6c7072ff0c94479dab7110dad2fc6039a47a4bed4",
+          "bytes": 36447
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/skill-creator/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/skill-creator"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "host-path",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:441afe55a7c8345f62746b222f6d392453b2352448bc2ac8b9b6f286ce82b03d",
+      "name": "tailnet",
+      "kind": "skill",
+      "contentHash": "3d6f821f1fb7a822ce14047821f31baa7707af05052905f2373c966d51d6a43e",
+      "instructionBytes": 3685,
+      "bundleHash": "441afe55a7c8345f62746b222f6d392453b2352448bc2ac8b9b6f286ce82b03d",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3d6f821f1fb7a822ce14047821f31baa7707af05052905f2373c966d51d6a43e",
+          "bytes": 3685
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "tailnet/SKILL.md",
+          "bundlePath": "tailnet"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials",
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:48a3be3128a7a560b239f1c438124f614a289b4d7a7050aedd06b61c3a091eab",
+      "name": "docx",
+      "kind": "skill",
+      "contentHash": "912cb15683a476a285033f9a40c5099248f9c6a06d581b106b95796f9d33d118",
+      "instructionBytes": 7639,
+      "bundleHash": "48a3be3128a7a560b239f1c438124f614a289b4d7a7050aedd06b61c3a091eab",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "bytes": 1
+        },
+        {
+          "path": "scripts/accept_changes.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0c991d2bc7304a1248e9f3bf9b1498f0b6e76641fc457e7cbd73c99b4eef3a74",
+          "bytes": 4051
+        },
+        {
+          "path": "scripts/comment.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "37d116e5f56bb142b208c6c6a4bbcf960495abf470ddb7c6675ccfac864ba3d7",
+          "bytes": 14054
+        },
+        {
+          "path": "scripts/merge_runs.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3ab367fd7fba4647943d0aa5e65203b15458551410f5ffc821d902616a4b9f40",
+          "bytes": 9398
+        },
+        {
+          "path": "scripts/office",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e62e525673baa71fa2c9f01d637c37b44383146a46c28957ba3d9d41e1a4ba21",
+          "bytes": 3380
+        },
+        {
+          "path": "scripts/office/helpers/pptx_chart.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "47ac266f7d39d11ede6bb0d1f3a19d801394fd2964636f1b48beb701f1832964",
+          "bytes": 5862
+        },
+        {
+          "path": "scripts/office/helpers/pptx_slide.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b9f69b4a5bd6a2d9eabf9e0e3e796d7a421373145f6a8cd11f60b7ba2d6a5d0",
+          "bytes": 1675
+        },
+        {
+          "path": "scripts/office/helpers/pptx_theme.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ebb54c56e9c13807f5f98f0cae22d47cdd0162da8525eaa664e3f2c8c8d6bb03",
+          "bytes": 3510
+        },
+        {
+          "path": "scripts/office/schemas",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+          "bytes": 1963
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+          "bytes": 2515
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+          "bytes": 2856
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+          "bytes": 1344
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+          "bytes": 74984
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+          "bytes": 6956
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+          "bytes": 51302
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+          "bytes": 624
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+          "bytes": 152039
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+          "bytes": 1231
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+          "bytes": 8862
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+          "bytes": 14795
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+          "bytes": 83612
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+          "bytes": 1269
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+          "bytes": 7328
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+          "bytes": 6382
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+          "bytes": 1248
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+          "bytes": 880
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+          "bytes": 2608
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+          "bytes": 3507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+          "bytes": 7507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+          "bytes": 23313
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+          "bytes": 1367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+          "bytes": 242277
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+          "bytes": 26148
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+          "bytes": 25279
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+          "bytes": 535
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+          "bytes": 5712
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+          "bytes": 4010
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+          "bytes": 171367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+          "bytes": 4646
+        },
+        {
+          "path": "scripts/office/schemas/mce",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/mce/mc.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+          "bytes": 3127
+        },
+        {
+          "path": "scripts/office/schemas/microsoft",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2010.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+          "bytes": 26549
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2012.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+          "bytes": 3745
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+          "bytes": 901
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cex-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+          "bytes": 1778
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cid-2016.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+          "bytes": 1002
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+          "bytes": 600
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-symex-2015.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+          "bytes": 745
+        },
+        {
+          "path": "scripts/office/soffice.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c1b83a67bf7e784ce6255d7b3a58999445f3dad19809845821f1293ab4cbf43e",
+          "bytes": 5945
+        },
+        {
+          "path": "scripts/office/validate.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "346a4c89d92fff55e610f11efda48c30228815b29bdb10b987e48f7af70acf1e",
+          "bytes": 6142
+        },
+        {
+          "path": "scripts/office/validators",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/validators/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+          "bytes": 336
+        },
+        {
+          "path": "scripts/office/validators/base.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a5ed6c647ceaf7f48f60386b347ea5c91071073866bdd148532e9eab04c8c347",
+          "bytes": 33721
+        },
+        {
+          "path": "scripts/office/validators/docx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "93d3444c0ef3f043d21a2285c46d2cda478426b930dc33dcf3b11265935517b5",
+          "bytes": 17482
+        },
+        {
+          "path": "scripts/office/validators/pptx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "17eadad2b7a8374ccbe4cda45693bcd6a36f9d61a7d60f9c9ceef9464dec8299",
+          "bytes": 15966
+        },
+        {
+          "path": "scripts/office/validators/redlining.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "25ff68611a7cfcfe88644fe3cf011438c9e9a544ae39bad3ae740d96d99a9d43",
+          "bytes": 18017
+        },
+        {
+          "path": "scripts/templates",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/templates/comments.xml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a08ba83ee8790ac9e3dc61921f4988f19edd7e06ac09d6f1897a877c1581818d",
+          "bytes": 2603
+        },
+        {
+          "path": "scripts/templates/commentsExtended.xml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "544eeecfeceed4b468fff163cd9c366d33641c8b8ab691ce002576197846afe8",
+          "bytes": 2611
+        },
+        {
+          "path": "scripts/templates/commentsExtensible.xml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bad10b3283e6ad6e7ef6d1ca5169683721ed690ee331282c65df04017e080631",
+          "bytes": 2707
+        },
+        {
+          "path": "scripts/templates/commentsIds.xml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "db20f9616e004ec42ef736e80c2384e45db0f8d1194d31dc8b37c7d6ecdd6420",
+          "bytes": 2619
+        },
+        {
+          "path": "scripts/templates/people.xml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "056f63aa1197fd8c9dda980c9f1b9ff016fd5fa4a462df8aec5f384f39d23e37",
+          "bytes": 115
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "912cb15683a476a285033f9a40c5099248f9c6a06d581b106b95796f9d33d118",
+          "bytes": 7639
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/docx/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/docx"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:4f3bfb9d9608fdd12fd9a1ff697b6bc4fa786342493ed5e936870a684043567f",
+      "name": "scrawl",
+      "kind": "skill",
+      "contentHash": "58d77e82578d5fc1c306b6535c965d3f6eab8820c5181c33ee7049fc2fa1261b",
+      "instructionBytes": 3538,
+      "bundleHash": "4f3bfb9d9608fdd12fd9a1ff697b6bc4fa786342493ed5e936870a684043567f",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "58d77e82578d5fc1c306b6535c965d3f6eab8820c5181c33ee7049fc2fa1261b",
+          "bytes": 3538
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "scrawl/SKILL.md",
+          "bundlePath": "scrawl"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:5117f29d506de84abe5589d150737f066322340bf2affffb2e2c996d54b82c88",
+      "name": "built-in-browser",
+      "kind": "skill",
+      "contentHash": "b5a720afbcde0d6a77c1bc1d34ab56f3d4b09d071b92129783b4faf7f2a3fe62",
+      "instructionBytes": 6529,
+      "bundleHash": "5117f29d506de84abe5589d150737f066322340bf2affffb2e2c996d54b82c88",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b5a720afbcde0d6a77c1bc1d34ab56f3d4b09d071b92129783b4faf7f2a3fe62",
+          "bytes": 6529
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/built-in-browser/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/built-in-browser"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "online-retrieval",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:5254f1eae034c432bb4126fab594e61f3e5a6f72f77b2c76e7ffda7d186512b1",
+      "name": "vault",
+      "kind": "skill",
+      "contentHash": "cdd098b04090944e80bf9f264217a61817741c1c7504cc0e45d831e2f2c2dc69",
+      "instructionBytes": 7910,
+      "bundleHash": "5254f1eae034c432bb4126fab594e61f3e5a6f72f77b2c76e7ffda7d186512b1",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cdd098b04090944e80bf9f264217a61817741c1c7504cc0e45d831e2f2c2dc69",
+          "bytes": 7910
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "vault/SKILL.md",
+          "bundlePath": "vault"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:5813b4fa0c4aba55fada8dc7ec38f27026b24f2accd59066d1859100710c9134",
+      "name": "kibana-agent-builder",
+      "kind": "skill",
+      "contentHash": "4d458e03300d25ea59828676782ea5652d7206c0ea7a8e5e3e74b3035a04ed01",
+      "instructionBytes": 13816,
+      "bundleHash": "5813b4fa0c4aba55fada8dc7ec38f27026b24f2accd59066d1859100710c9134",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "package.json",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3ca9d4afd21425087cf31893b8f9f63c81b0b8408db5e343ca76e5f8aa26ab9a",
+          "bytes": 23
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/architecture-guide.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c63eafa908020b1805766762cf29a9b785c8feb1c579a7e842809b4a953f3b75",
+          "bytes": 9490
+        },
+        {
+          "path": "references/use-cases.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c940554a3b8a7e4cdf2e80af4173a5826e70a2bd2ae9a44790901843f94c28b0",
+          "bytes": 12096
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/agent-builder.js",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "94b663eaf164fee6ebade9a3be5173947b714a4beefa4279921a090da48e0f21",
+          "bytes": 17428
+        },
+        {
+          "path": "scripts/kibana-client.js",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "110f6cd89e782d29f2d0a9d4adfe729946fc58e96307ee6d2d365648bdc72ad7",
+          "bytes": 6927
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4d458e03300d25ea59828676782ea5652d7206c0ea7a8e5e3e74b3035a04ed01",
+          "bytes": 13816
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "kibana-agent-builder/SKILL.md",
+          "bundlePath": "kibana-agent-builder"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:58463af79a513f440f99a5686193fbe1ac67458d4d708b9b1165364a2233d7b9",
+      "name": "lead",
+      "kind": "skill",
+      "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+      "instructionBytes": 1819,
+      "bundleHash": "58463af79a513f440f99a5686193fbe1ac67458d4d708b9b1165364a2233d7b9",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/merge-procedure.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0a258a5fe663d6ccf786302ebb3389545160f81929d766bbe160a1d0d8113686",
+          "bytes": 839
+        },
+        {
+          "path": "references/oogst.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "22f9343d695ecc65ee18d88f6f9463280ce1af375b7a0fcd16845f689ebe8b33",
+          "bytes": 468
+        },
+        {
+          "path": "references/opdracht-sjabloon.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "70129b208565c95e274a7c17783c39cdfb5ef74c7e1ec5107521a0d074ae6a2a",
+          "bytes": 741
+        },
+        {
+          "path": "references/sessies-beheren.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1cb41d5db541dbf2ec98fdcf744a3c4d2ea6f689eab520dcd94f3b56d4fcbcb2",
+          "bytes": 890
+        },
+        {
+          "path": "references/sublead.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4c329bd3f8e7dd2e2ea117c730aeb2771e6b649a8498311cbb6e9c1271968f7c",
+          "bytes": 782
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+          "bytes": 1819
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "agents/skills/lead/SKILL.md",
+          "bundlePath": "agents/skills/lead"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:5a9e558a8e2f718f50bb85c8560deda83f98aef1f494ecff09e3cb41e7f98b04",
+      "name": "vault",
+      "kind": "skill",
+      "bundleHash": "5a9e558a8e2f718f50bb85c8560deda83f98aef1f494ecff09e3cb41e7f98b04",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "symlink",
+          "status": "blocked",
+          "linkHash": "1fd51b0281ae8c95f28a441cb27f2e34e9897d7499be9af419e32652997a50e6",
+          "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "vault/SKILL.md",
+          "bundlePath": "vault",
+          "link": {
+            "linkHash": "1fd51b0281ae8c95f28a441cb27f2e34e9897d7499be9af419e32652997a50e6",
+            "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+          }
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "unavailable-or-incomplete-local-bundle"
+      ],
+      "complete": false,
+      "loadable": false,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:5bf3ab7a4516e423bc282f65df183c25c1dfcdf7217c8a375758606c75c310e2",
+      "name": "vercel-preview",
+      "kind": "skill",
+      "contentHash": "b8b632201d03a099aa249f9849c99d4b44f64a1ce20f80a374b4c2f4b1ce943a",
+      "instructionBytes": 2107,
+      "bundleHash": "5bf3ab7a4516e423bc282f65df183c25c1dfcdf7217c8a375758606c75c310e2",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b8b632201d03a099aa249f9849c99d4b44f64a1ce20f80a374b4c2f4b1ce943a",
+          "bytes": 2107
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "vercel-preview/SKILL.md",
+          "bundlePath": "vercel-preview"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "connected-service",
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:6bbfe035f2ae136f5fe27ffdf3cd0bf81eac1a2c329c79bddd06b6a0b9751545",
+      "name": "storybook",
+      "kind": "skill",
+      "contentHash": "25714b54d589b5d8bc5a1ad2460f361f4f5f14d21eeeeace6a98f19e0d2267e7",
+      "instructionBytes": 69242,
+      "bundleHash": "6bbfe035f2ae136f5fe27ffdf3cd0bf81eac1a2c329c79bddd06b6a0b9751545",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "compare.mjs",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "af83862a5d7e1f847b76840e5583be9231b099991ca204bf88e1028044573f89",
+          "bytes": 46110
+        },
+        {
+          "path": "http-serve.mjs",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cdf5f566395627dc7b9db80fb4150408fc34b7e9d0f2dd22731268090fd19509",
+          "bytes": 1865
+        },
+        {
+          "path": "probe.mjs",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c3881006ee164e46904acaed1dc8541e7adec56d3942a12c141d2cc5de342134",
+          "bytes": 7074
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "25714b54d589b5d8bc5a1ad2460f361f4f5f14d21eeeeace6a98f19e0d2267e7",
+          "bytes": 69242
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "apps/site/.ds-sync/storybook/SKILL.md",
+          "bundlePath": "apps/site/.ds-sync/storybook"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:71161f509d6bb2a9b2c59ea329e7398ef9d9c5c5a672415265fc00f5a03f2c5d",
+      "name": "naar-mod",
+      "kind": "skill",
+      "contentHash": "28c6be7712189608904f61177d9c11170205471c326399b2d994c2438376009d",
+      "instructionBytes": 2549,
+      "bundleHash": "71161f509d6bb2a9b2c59ea329e7398ef9d9c5c5a672415265fc00f5a03f2c5d",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/deel.sh",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8c07977326a73b5f5df77bd07063cc227fd996ecbad8666f37dc94b8ef286073",
+          "bytes": 2675
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "28c6be7712189608904f61177d9c11170205471c326399b2d994c2438376009d",
+          "bytes": 2549
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "naar-mod/SKILL.md",
+          "bundlePath": "naar-mod"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:720751557089d752386e080be6ba2cce7d8a49012a42fde9738ab22dcbb3c291",
+      "name": "eagle-review",
+      "kind": "skill",
+      "contentHash": "95aca35aabb482bd40a270666e80b17c52b20093a4c3ffe97e414514c9ed28ec",
+      "instructionBytes": 899,
+      "bundleHash": "720751557089d752386e080be6ba2cce7d8a49012a42fde9738ab22dcbb3c291",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/workflow.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "71cb86abf9637f3f7d3f1a3309d8937920e45d28d42244fb71146bac155dcad0",
+          "bytes": 973
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "95aca35aabb482bd40a270666e80b17c52b20093a4c3ffe97e414514c9ed28ec",
+          "bytes": 899
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "eagle-review/SKILL.md",
+          "bundlePath": "eagle-review"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:7bf853ebf0428f3437f79cc40c4f2929ef96639d4132ce80b3fe7ad78df8d759",
+      "name": "skill-creator",
+      "kind": "skill",
+      "contentHash": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66",
+      "instructionBytes": 15311,
+      "bundleHash": "7bf853ebf0428f3437f79cc40c4f2929ef96639d4132ce80b3fe7ad78df8d759",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "agents",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "agents/openai.yaml",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d07d21b93fcf3d4dc8d9a3399c05fc226a49a333a96d3e1c68b451b8dd9eade6",
+          "bytes": 183
+        },
+        {
+          "path": "assets",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "assets/skill-creator-small.svg",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6591bf8ea9bb9435890dbdea299e0d2bd05f3aa893a335d26e4c535e93c8e7fb",
+          "bytes": 1319
+        },
+        {
+          "path": "assets/skill-creator.png",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a4024b0306ddb05847e1012879d37aaf1e658205199da596f5145ed7a88d9162",
+          "bytes": 1563
+        },
+        {
+          "path": "license.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "bytes": 11358
+        },
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/openai_yaml.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ffac39318e408108141d40f820968e59f70434a891694f9bf1d25be8237b150c",
+          "bytes": 2356
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/generate_openai_yaml.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "816df12072d74faf924d802a6599a139997e1441e90bfe4869ec304f2e5e2851",
+          "bytes": 6669
+        },
+        {
+          "path": "scripts/init_skill.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bf0656a5f9d8d8cdecf0245eaf27e1df8e0e9b6d40ccdda814eb8e3d5f6992c8",
+          "bytes": 10314
+        },
+        {
+          "path": "scripts/quick_validate.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ee6dba90f44d37171c5a6edb8095979c54919ff6822c1a907afca2e78c48738c",
+          "bytes": 4249
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6656e54755638e8efcf275a472b9672eaa8a9a1b9e59dc210e275b03b59e1e66",
+          "bytes": 15311
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": ".system/skill-creator/SKILL.md",
+          "bundlePath": ".system/skill-creator"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:7d330f12571cf97c07c85fd098050fa9950b954e87bbbec8b13c4b0cb1295946",
+      "name": "grill-me",
+      "kind": "skill",
+      "contentHash": "8ed93b093d5d35e987ce6a2cb2dcfa5b7a39d0f0b844dbfe1d58f98c2320d646",
+      "instructionBytes": 4597,
+      "bundleHash": "7d330f12571cf97c07c85fd098050fa9950b954e87bbbec8b13c4b0cb1295946",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8ed93b093d5d35e987ce6a2cb2dcfa5b7a39d0f0b844dbfe1d58f98c2320d646",
+          "bytes": 4597
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "grill-me/SKILL.md",
+          "bundlePath": "grill-me"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:7ed448afe676ea2e3497220ab99bd19a459874608473008e31580efca9a2d534",
+      "name": "lead",
+      "kind": "skill",
+      "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+      "instructionBytes": 1819,
+      "bundleHash": "7ed448afe676ea2e3497220ab99bd19a459874608473008e31580efca9a2d534",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/merge-procedure.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0a258a5fe663d6ccf786302ebb3389545160f81929d766bbe160a1d0d8113686",
+          "bytes": 839
+        },
+        {
+          "path": "references/oogst.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "22f9343d695ecc65ee18d88f6f9463280ce1af375b7a0fcd16845f689ebe8b33",
+          "bytes": 468
+        },
+        {
+          "path": "references/opdracht-sjabloon.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "70129b208565c95e274a7c17783c39cdfb5ef74c7e1ec5107521a0d074ae6a2a",
+          "bytes": 741
+        },
+        {
+          "path": "references/sessies-beheren.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1cb41d5db541dbf2ec98fdcf744a3c4d2ea6f689eab520dcd94f3b56d4fcbcb2",
+          "bytes": 890
+        },
+        {
+          "path": "references/sessies-en-oogst.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f8c0d81a14a5c498aab9d8205ac9605468dca3e3067c82fbb04409b3663e01e6",
+          "bytes": 8055
+        },
+        {
+          "path": "references/sublead.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4c329bd3f8e7dd2e2ea117c730aeb2771e6b649a8498311cbb6e9c1271968f7c",
+          "bytes": 782
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+          "bytes": 1819
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "lead/SKILL.md",
+          "bundlePath": "lead"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:840b5d10bc05670a29f51fdfd2423542783a7ea5db7ee40738f51f36d77abced",
+      "name": "docs",
+      "kind": "skill",
+      "contentHash": "98e4fb5934042152d57bc9cb8c0736d5d8e31c6c0122b13ff5836f4c2411fa3e",
+      "instructionBytes": 1249,
+      "bundleHash": "840b5d10bc05670a29f51fdfd2423542783a7ea5db7ee40738f51f36d77abced",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "98e4fb5934042152d57bc9cb8c0736d5d8e31c6c0122b13ff5836f4c2411fa3e",
+          "bytes": 1249
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/docs/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/docs"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:8ad2fe2af6161e0c6f30ce90d00c6a219eeab9ff9561b2d80fa80089cd46bc4a",
+      "name": "AGENTS.md",
+      "kind": "agent-instructions",
+      "contentHash": "dc5e5eea1137072ffe64c4ceee750d35fa0eb374cb0b051678b6c39b9f26464e",
+      "instructionBytes": 3503,
+      "bundleHash": "8ad2fe2af6161e0c6f30ce90d00c6a219eeab9ff9561b2d80fa80089cd46bc4a",
+      "instructionPath": "AGENTS.md",
+      "resources": [
+        {
+          "path": "AGENTS.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "dc5e5eea1137072ffe64c4ceee750d35fa0eb374cb0b051678b6c39b9f26464e",
+          "bytes": 3503
+        }
+      ],
+      "origins": [
+        {
+          "originId": "repo-portable",
+          "path": "AGENTS.md",
+          "bundlePath": "."
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "external-tool-or-runtime",
+        "host-environment"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:8b0c74c111ecab96b758bee91dea9c28436a9360e3727cee17235a40f20cf2be",
+      "name": "react-grab",
+      "kind": "skill",
+      "contentHash": "1f6e14c54cf812e31ea4d8a87aa3a53ffbe96ce5721f38a6d26a314bb1f7338e",
+      "instructionBytes": 3347,
+      "bundleHash": "8b0c74c111ecab96b758bee91dea9c28436a9360e3727cee17235a40f20cf2be",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1f6e14c54cf812e31ea4d8a87aa3a53ffbe96ce5721f38a6d26a314bb1f7338e",
+          "bytes": 3347
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "react-grab/SKILL.md",
+          "bundlePath": "react-grab"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-tool-or-credentials",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:90cb6d5953c0ad836da3fe10670d397dd6702b45b4ef64dee0f5a10022d39988",
+      "name": "pptx",
+      "kind": "skill",
+      "contentHash": "710a823f644c0187a88e6d9e8c8385bb646b4844ac28570dbc4e8f9bae013860",
+      "instructionBytes": 28872,
+      "bundleHash": "90cb6d5953c0ad836da3fe10670d397dd6702b45b4ef64dee0f5a10022d39988",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "scripts/add_slide.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3922f819ee1f6b8bdc6aa146d1a86de70640f5f919321fe3f01a764482ff69c9",
+          "bytes": 14537
+        },
+        {
+          "path": "scripts/apply_theme.js",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "cd7caefb9d03fedf07d17695929a3988c70c4ae9f653afa07649687f7151e0e1",
+          "bytes": 5334
+        },
+        {
+          "path": "scripts/clean.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5c808cd4dff7e02661ef3c68b5917f4e25097cc6610c92a3a7df4a6366a5c3c1",
+          "bytes": 10415
+        },
+        {
+          "path": "scripts/office",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/helpers/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e62e525673baa71fa2c9f01d637c37b44383146a46c28957ba3d9d41e1a4ba21",
+          "bytes": 3380
+        },
+        {
+          "path": "scripts/office/helpers/pptx_chart.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "47ac266f7d39d11ede6bb0d1f3a19d801394fd2964636f1b48beb701f1832964",
+          "bytes": 5862
+        },
+        {
+          "path": "scripts/office/helpers/pptx_slide.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b9f69b4a5bd6a2d9eabf9e0e3e796d7a421373145f6a8cd11f60b7ba2d6a5d0",
+          "bytes": 1675
+        },
+        {
+          "path": "scripts/office/helpers/pptx_theme.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ebb54c56e9c13807f5f98f0cae22d47cdd0162da8525eaa664e3f2c8c8d6bb03",
+          "bytes": 3510
+        },
+        {
+          "path": "scripts/office/schemas",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-contentTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9e0b7209fc69ab11987900404540969976000c5ebe4d4f58c43dc3842886bf3a",
+          "bytes": 1963
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-coreProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "451958454e8588dfc7cd945981ada142ca06ff3307937f5700df059c2b307fa8",
+          "bytes": 2515
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-digSig.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6de111e11403f7cd49027400755bae0ea1cabef2815f09bd40a24f0017613b24",
+          "bytes": 2856
+        },
+        {
+          "path": "scripts/office/schemas/ecma/fouth-edition/opc-relationships.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f565adfef5a502044abc3a9153e157edc25af78304d335994afb958874b15e26",
+          "bytes": 1344
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chart.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "41b93bd8857cc68b1e43be2806a872d736a9bdd6566900062d8fdb57d7bbb354",
+          "bytes": 74984
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-chartDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3fd0586f2637b98bb9886f0e0b67d89e1cc987c2d158cc7deb5f5b9890ced412",
+          "bytes": 6956
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-diagram.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "29b254ee0d10414a8504b5a08149c7baec35a60d5ff607d6b3f492aa36815f40",
+          "bytes": 51302
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-lockedCanvas.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5cb76dabd8b97d1e9308a1700b90c20139be4d50792d21a7f09789f5cccd6026",
+          "bytes": 624
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5375417f0f5394b8dd1a7035b9679151f19a6b65df309dec10cfb4a420cb00e9",
+          "bytes": 152039
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-picture.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "5d389d42befbebd91945d620242347caecd3367f9a3a7cf8d97949507ae1f53c",
+          "bytes": 1231
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "b4532b6d258832953fbb3ee4c711f4fe25d3faf46a10644b2505f17010d01e88",
+          "bytes": 8862
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/dml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bdad416b096b61d37b71603b2c949484f9070c830bdaeba93bf35e15c8900614",
+          "bytes": 14795
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/pml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d173c3e5d61e42e2e3a97226c632fd2ab7cc481fc4e492365b87024ab546daff",
+          "bytes": 83612
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-additionalCharacteristics.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3c6709101c6aaa82888df5d8795c33f9e857196790eb320d9194e64be2b6bdd8",
+          "bytes": 1269
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-bibliography.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0b364451dc36a48dd6dae0f3b6ada05fd9b71e5208211f8ee5537d7e51a587e2",
+          "bytes": 7328
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-commonSimpleTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e2abacbb9a55ce1365f8961bc1b1395bbc811e512b111000d8c333f98458dece",
+          "bytes": 6382
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlDataProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0ef4bb354ff44b923564c4ddbdda5987919d220225129ec94614a618ceafc281",
+          "bytes": 1248
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-customXmlSchemaProperties.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0d103b99a4a8652f8871552a69d42d2a3760ac6a5e3ef02d979c4273257ff6a4",
+          "bytes": 880
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesCustom.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9c085407751b9061c1f996f6c39ce58451be22a8d334f09175f0e89e42736285",
+          "bytes": 2608
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesExtended.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bc92e36ccd233722d4c5869bec71ddc7b12e2df56059942cce5a39065cc9c368",
+          "bytes": 3507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-documentPropertiesVariantTypes.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7b5b7413e2c895b1e148e82e292a117d53c7ec65b0696c992edca57b61b4a74b",
+          "bytes": 7507
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-math.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3213ef1631606250f5010b42cad7ef716f7c59426367798e33c374c0ec391d3a",
+          "bytes": 23313
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/shared-relationshipReference.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "12264f3c03d738311cd9237d212f1c07479e70f0cbe1ae725d29b36539aef637",
+          "bytes": 1367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/sml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "beffeed56945c22a77440122c8bdc426f3fcbe7f3b12ea0976c770d1f8d54578",
+          "bytes": 242277
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-main.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f5ee623b08b6a66935e5aced2f5d8ad0fc71bf9e8e833cd490150c0fa94b8763",
+          "bytes": 26148
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-officeDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "585bedc1313b40888dcc544cb74cd939a105ee674f3b1d3aa1cc6d34f70ff155",
+          "bytes": 25279
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-presentationDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "133c9f64a5c5d573b78d0a474122b22506d8eadb5e063f67cdbbb8fa2f161d0e",
+          "bytes": 535
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-spreadsheetDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6bdeb169c3717eb01108853bd9fc5a3750fb1fa5b82abbdd854d49855a40f519",
+          "bytes": 5712
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/vml-wordprocessingDrawing.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "475dcae1e7d1ea46232db6f8481040c15e53a52a3c256831d3df204212b0e831",
+          "bytes": 4010
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/wml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c2dd9f61f892deae6acd8d20771ea79b12018af25f3bf8d06639c8542d218cfd",
+          "bytes": 171367
+        },
+        {
+          "path": "scripts/office/schemas/ISO-IEC29500-4_2016/xml.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a539aa2fb154fa50e0f5cc97e6ad7cbc66f8ec3e3746f61ec6a8b0d5d15ecdf2",
+          "bytes": 4646
+        },
+        {
+          "path": "scripts/office/schemas/mce",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/mce/mc.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3a37e461ecf5a8670fdec34029703401f8728ab9c96ec1739a6ae58d55212413",
+          "bytes": 3127
+        },
+        {
+          "path": "scripts/office/schemas/microsoft",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2010.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "568b26ee156cb9549aa439ca2158965f77b7c1602b7e0316f40ac6cf586e35f2",
+          "bytes": 26549
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2012.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0fa75578a000439a7988ba0c59fdc69f774bbd416cbacc14d07125b3f686cb74",
+          "bytes": 3745
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "be0ff793a22dd31384650c3a4da14c2fa8062751c2e97b0e5ee852bda13c60ad",
+          "bytes": 901
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cex-2018.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "fddc2b880cabb9005aebbc7e783e53c19fec1c03df7d0e2f2076a33a0fdfd081",
+          "bytes": 1778
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-cid-2016.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "127ca209fa73d7cb708449cb355c871867948a96e4a74f7bf5811ef62d17991d",
+          "bytes": 1002
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-sdtdatahash-2020.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "842e7163409c8d74f4d7088a8bc99500d80bc75332681a0980055b08f374a604",
+          "bytes": 600
+        },
+        {
+          "path": "scripts/office/schemas/microsoft/wml-symex-2015.xsd",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "16f6f8072249f431370723c2cd8974672e0d9c897e00e97dd918079df934871b",
+          "bytes": 745
+        },
+        {
+          "path": "scripts/office/soffice.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c1b83a67bf7e784ce6255d7b3a58999445f3dad19809845821f1293ab4cbf43e",
+          "bytes": 5945
+        },
+        {
+          "path": "scripts/office/validate.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "346a4c89d92fff55e610f11efda48c30228815b29bdb10b987e48f7af70acf1e",
+          "bytes": 6142
+        },
+        {
+          "path": "scripts/office/validators",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/office/validators/__init__.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "83e0f035c5abea238d3f2c3968afbd511ed022b527b7c9cb60a9434cc34ff987",
+          "bytes": 336
+        },
+        {
+          "path": "scripts/office/validators/base.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a5ed6c647ceaf7f48f60386b347ea5c91071073866bdd148532e9eab04c8c347",
+          "bytes": 33721
+        },
+        {
+          "path": "scripts/office/validators/docx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "93d3444c0ef3f043d21a2285c46d2cda478426b930dc33dcf3b11265935517b5",
+          "bytes": 17482
+        },
+        {
+          "path": "scripts/office/validators/pptx.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "17eadad2b7a8374ccbe4cda45693bcd6a36f9d61a7d60f9c9ceef9464dec8299",
+          "bytes": 15966
+        },
+        {
+          "path": "scripts/office/validators/redlining.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "25ff68611a7cfcfe88644fe3cf011438c9e9a544ae39bad3ae740d96d99a9d43",
+          "bytes": 18017
+        },
+        {
+          "path": "scripts/slide_text.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0deab09d4ae494411ee893f9c69fffc19fe264a6053990a2f066334c0d88d422",
+          "bytes": 4446
+        },
+        {
+          "path": "scripts/thumbnail.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "94ef83a84346aa2d63913de0d42bb2fe902ccdc17bfac6130096ca758381793c",
+          "bytes": 9802
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "710a823f644c0187a88e6d9e8c8385bb646b4844ac28570dbc4e8f9bae013860",
+          "bytes": 28872
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/pptx/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/pptx"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "bundled-code-needs-runtime",
+        "connected-service",
+        "external-tool-or-runtime",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:b85a3c320f0020247f29f73533c9f6c90bfbfc028e51b20d9a5208aa0c36c917",
+      "name": "deep-research",
+      "kind": "skill",
+      "contentHash": "46ae8d5a0b95efad0329ac287ea5248c19fbbe195d8270231c4a78ba6217c024",
+      "instructionBytes": 13132,
+      "bundleHash": "b85a3c320f0020247f29f73533c9f6c90bfbfc028e51b20d9a5208aa0c36c917",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/report-writer.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "832f4f7867e550cd211cdbeb05a58d2f590a9f626fa92fd0e66ea23544461731",
+          "bytes": 6168
+        },
+        {
+          "path": "references/researcher.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "29a8c709c7714f89687495c0ff572ac686be2eb43df3c2a704abae2294686a11",
+          "bytes": 4222
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "46ae8d5a0b95efad0329ac287ea5248c19fbbe195d8270231c4a78ba6217c024",
+          "bytes": 13132
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/deep-research/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/deep-research"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "online-retrieval"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:c008b6c71dd3c9bc41c024889b69466d35e3d0dc23e42c53c9dc7e612d4d81ad",
+      "name": "retro",
+      "kind": "skill",
+      "contentHash": "4924f8e9993855b2d9e758f36586f99a6653a3b39febc3be6f57387162e92866",
+      "instructionBytes": 5964,
+      "bundleHash": "c008b6c71dd3c9bc41c024889b69466d35e3d0dc23e42c53c9dc7e612d4d81ad",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/sessie-samenvatting.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "38309542429eff07e6c373b4e4da351399d689c049552bf4c720831cc1b8e9af",
+          "bytes": 8353
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4924f8e9993855b2d9e758f36586f99a6653a3b39febc3be6f57387162e92866",
+          "bytes": 5964
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "retro/SKILL.md",
+          "bundlePath": "retro"
+        }
+      ],
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:c98b9685556d1233f83e8b44ba1811af4ca4c46540098017055a83f44f57d11b",
+      "name": "lead",
+      "kind": "skill",
+      "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+      "instructionBytes": 1819,
+      "bundleHash": "c98b9685556d1233f83e8b44ba1811af4ca4c46540098017055a83f44f57d11b",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/merge-procedure.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0a258a5fe663d6ccf786302ebb3389545160f81929d766bbe160a1d0d8113686",
+          "bytes": 839
+        },
+        {
+          "path": "references/oogst.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "22f9343d695ecc65ee18d88f6f9463280ce1af375b7a0fcd16845f689ebe8b33",
+          "bytes": 468
+        },
+        {
+          "path": "references/opdracht-sjabloon.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "70129b208565c95e274a7c17783c39cdfb5ef74c7e1ec5107521a0d074ae6a2a",
+          "bytes": 741
+        },
+        {
+          "path": "references/opdracht-sjabloon.md.voor-overdracht",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f18216d9254d71937dba37c38151c291809af3cd6369ad1b396a84c79b3e47f9",
+          "bytes": 4420
+        },
+        {
+          "path": "references/opdracht-sjabloon.md.voor-pocock",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7ae2d126f7da8c069097ce10f1968af56650e4dea4fc8021afa0fbd7b91a7d16",
+          "bytes": 3937
+        },
+        {
+          "path": "references/sessies-beheren.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1cb41d5db541dbf2ec98fdcf744a3c4d2ea6f689eab520dcd94f3b56d4fcbcb2",
+          "bytes": 890
+        },
+        {
+          "path": "references/sessies-en-oogst.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "f8c0d81a14a5c498aab9d8205ac9605468dca3e3067c82fbb04409b3663e01e6",
+          "bytes": 8055
+        },
+        {
+          "path": "references/sessies-en-oogst.md.voor-t3",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "739e2d9eefbe59e4f3af89ca4f20a8c43cb2a393438e67ce30c7ce274605d156",
+          "bytes": 4238
+        },
+        {
+          "path": "references/sublead.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4c329bd3f8e7dd2e2ea117c730aeb2771e6b649a8498311cbb6e9c1271968f7c",
+          "bytes": 782
+        },
+        {
+          "path": "references/sublead.md.voor-t3",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6824e0bb0284ae013d296e9d992006a9908ad0cb031ef723bbb8d70ef1fb56af",
+          "bytes": 3667
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+          "bytes": 1819
+        },
+        {
+          "path": "SKILL.md.voor-kort",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "389811c4cc6faffca7106a0c294cb3113b0c4aaad4a5592a9e032564f3cf6997",
+          "bytes": 17470
+        },
+        {
+          "path": "SKILL.md.voor-lead-hooks",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0f1c6b0bcc2d28cc709955edb391a3f6f5558e3cd9c0c90a3c1948f0b3dedca1",
+          "bytes": 14213
+        },
+        {
+          "path": "SKILL.md.voor-pocock",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9939b6844a9694ff4047c92cae2e26e84b134b1a6b628f957eef9a1f1772fb79",
+          "bytes": 12050
+        },
+        {
+          "path": "SKILL.md.voor-t3",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "2aa48ad73c353a5a3890654842934daf6074d3095656b9b483e8ba456c46f2ac",
+          "bytes": 17142
+        },
+        {
+          "path": "SKILL.md.voor-werkwijze-b",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c63923e7f8a7d6d8042f247da582a578800f9d0170fc0a8f480a89f78a648404",
+          "bytes": 11292
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "lead/SKILL.md",
+          "bundlePath": "lead"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "external-tool-or-runtime",
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:dc64e3b044b8f8e660f90fbdab650c2503d1845d02c230c619b468d14debbf7a",
+      "name": "pdf",
+      "kind": "skill",
+      "contentHash": "9f78b8359fbd4943ad260a7a1e436e5a96503406d6c34e99f69223d647d85b9c",
+      "instructionBytes": 8072,
+      "bundleHash": "dc64e3b044b8f8e660f90fbdab650c2503d1845d02c230c619b468d14debbf7a",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "FORMS.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9530b3f57034792e0242a3abfe8b3c296466329551916f2ff6c5a70db78f7e44",
+          "bytes": 11854
+        },
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "REFERENCE.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "03a5f964f8abecbbe156f363356e927e864d7ee964f1012c84ee1bfc8acbeb95",
+          "bytes": 16692
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/check_bounding_boxes.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "0ced522402dd7b3c82a0be9518cf4e485fa9cc0467d7beab6ddb04cb36fcc3e1",
+          "bytes": 2774
+        },
+        {
+          "path": "scripts/check_fillable_fields.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1fe10b9980a5493c9bbec8c20630c603eaa475b45403751c08f26738736647b8",
+          "bytes": 268
+        },
+        {
+          "path": "scripts/convert_pdf_to_images.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "7f58e292a67e18a8ff000d30bad2469389546731f7e8a698cc1d0aed001ea15d",
+          "bytes": 1008
+        },
+        {
+          "path": "scripts/create_validation_image.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8fa9fd7962c9f940045b81cf6b991e7c1057c1838e3f9cc6d305007a222ffebf",
+          "bytes": 1258
+        },
+        {
+          "path": "scripts/extract_form_field_info.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "bb235b36f497bbb1c7c6821cecf527bbba7213520de11219da99f7b13a38c109",
+          "bytes": 4300
+        },
+        {
+          "path": "scripts/extract_form_structure.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "6814e3fe8f78c2b16d766c132b5a727ff7a31b71d76a7d46bd6e40fe50bc97c5",
+          "bytes": 3945
+        },
+        {
+          "path": "scripts/fill_fillable_fields.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d140872c2e92e41b1e05370ae8d270c5b7f5ebdf55d9905f03bc974a9c708ff5",
+          "bytes": 3819
+        },
+        {
+          "path": "scripts/fill_pdf_form_with_annotations.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "8a56e063a49ed53c0b0e1d312ecf8023af76816ed139486ec3b539873de202fd",
+          "bytes": 3235
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "9f78b8359fbd4943ad260a7a1e436e5a96503406d6c34e99f69223d647d85b9c",
+          "bytes": 8072
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/pdf/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/pdf"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "bundled-code-needs-runtime",
+        "external-tool-or-runtime",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:e052abd1625185f67ab8a4995d2f6bdca22ccd46f2c5bb6bb534e7020a897e5a",
+      "name": "computer-use",
+      "kind": "skill",
+      "contentHash": "ffbf11e989df3b8c135f6c97e188982908a794a4b1ab640a48e6602129a0206b",
+      "instructionBytes": 12857,
+      "bundleHash": "e052abd1625185f67ab8a4995d2f6bdca22ccd46f2c5bb6bb534e7020a897e5a",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "LICENSE.txt",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa",
+          "bytes": 1467
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "ffbf11e989df3b8c135f6c97e188982908a794a4b1ab640a48e6602129a0206b",
+          "bytes": 12857
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/computer-use/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/computer-use"
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "proprietary-host-or-license"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [
+          "79f6d8f5b427252fa3b1c11ecdbdb6bf610b944f7530b4de78f770f38741cfaa"
+        ],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:e467fad22106f93cba18ef1d0cbe6e140b37c2bd48f9ce0cd9ede7013a553903",
+      "name": "tailnet",
+      "kind": "skill",
+      "contentHash": "e7a2153e50e8725ddb118ef2c0f719c13664d11c1f6eec629409a9e03d9fb1b4",
+      "instructionBytes": 3086,
+      "bundleHash": "e467fad22106f93cba18ef1d0cbe6e140b37c2bd48f9ce0cd9ede7013a553903",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "e7a2153e50e8725ddb118ef2c0f719c13664d11c1f6eec629409a9e03d9fb1b4",
+          "bytes": 3086
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "tailnet/SKILL.md",
+          "bundlePath": "tailnet"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "host-environment",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:e55e5ff1e72bcdd1c4b9750a625382415b8f41704ed4fb7d328f9147b6d30955",
+      "name": "google-workspace",
+      "kind": "skill",
+      "contentHash": "073e4f759b4aa054be72a4f5bb9d8f51d3df3f8e02149605cf5c5dad3412bc83",
+      "instructionBytes": 15360,
+      "bundleHash": "e55e5ff1e72bcdd1c4b9750a625382415b8f41704ed4fb7d328f9147b6d30955",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/charts.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "60af1c2fb7d673aec45664ce9bbced7c7e1bf7121ec91dc3b640f34d77167c34",
+          "bytes": 15586
+        },
+        {
+          "path": "references/docs.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "1a0bc6a8cbd98590aaaf2afe295d7332b0019717e7aefb85234675059d2a5554",
+          "bytes": 40889
+        },
+        {
+          "path": "references/sheets.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "d29f5223f3cf5e1aed270df55d4ba750d92c587e56b5f10f6755e9afdc536de8",
+          "bytes": 38818
+        },
+        {
+          "path": "references/slides.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "00ffa114f4e06815509e613a748f8f393481e0057a20b23114a646ffd6f2be59",
+          "bytes": 47213
+        },
+        {
+          "path": "scripts",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "scripts/docs_index.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "735b8ed4e9c292d0e0cc0af46e7b5f054fbf0bd51148a6b3318de774a4299b96",
+          "bytes": 17951
+        },
+        {
+          "path": "scripts/render_export.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "a27468ad1d016cd58bcb33a2b619fd31cdeea59f214948ee937232fe4b6435ba",
+          "bytes": 6308
+        },
+        {
+          "path": "scripts/sheets_helper.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "c6d92a87fae349b235becf6f7fad110e641b9de100a597fd26e023c3d2dacbf4",
+          "bytes": 16118
+        },
+        {
+          "path": "scripts/slides_helper.py",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "40ed9169a005513347aacea800b2fda4860d7b9477e0db50dc9c46705eec1fc8",
+          "bytes": 22731
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "073e4f759b4aa054be72a4f5bb9d8f51d3df3f8e02149605cf5c5dad3412bc83",
+          "bytes": 15360
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/google-workspace/SKILL.md",
+          "bundlePath": "synced/55eb5e59-c7e5-4080-a9c8-cfca7197187d_267cc97a-75ee-41d7-9f2e-c82b4b15a860/google-workspace"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "bundled-code-needs-runtime",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:f22eeff362468d3f2694ec98c2630a1ad3f1777cfe6d032e97e2a903913afe7a",
+      "name": "prod-release",
+      "kind": "skill",
+      "contentHash": "3714e9fc9275d455c5f7a8230dfb441dc8ca8905b029ece97a4354866ca25353",
+      "instructionBytes": 1156,
+      "bundleHash": "f22eeff362468d3f2694ec98c2630a1ad3f1777cfe6d032e97e2a903913afe7a",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "references",
+          "kind": "directory",
+          "status": "available"
+        },
+        {
+          "path": "references/workflow.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "4f7bd5ddeeb2fd67a8886d12c0d128fc65c6f73fff584dbce92a473793e63fd5",
+          "bytes": 44096
+        },
+        {
+          "path": "SKILL.md",
+          "kind": "file",
+          "status": "available",
+          "contentHash": "3714e9fc9275d455c5f7a8230dfb441dc8ca8905b029ece97a4354866ca25353",
+          "bytes": 1156
+        }
+      ],
+      "origins": [
+        {
+          "originId": "codex-user",
+          "path": "prod-release/SKILL.md",
+          "bundlePath": "prod-release"
+        }
+      ],
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials",
+        "external-tool-or-runtime",
+        "host-path",
+        "network-or-tailnet"
+      ],
+      "complete": true,
+      "loadable": true,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    },
+    {
+      "id": "skill:fba17f19ce9dfed51ee8fe6082040b494703392c645ecef7af2ac384389b511b",
+      "name": "grill-me",
+      "kind": "skill",
+      "bundleHash": "fba17f19ce9dfed51ee8fe6082040b494703392c645ecef7af2ac384389b511b",
+      "instructionPath": "SKILL.md",
+      "resources": [
+        {
+          "path": "SKILL.md",
+          "kind": "symlink",
+          "status": "blocked",
+          "linkHash": "1bac9ed4d068f1f9f12af8fed59637f4b4560295c2f8413bdb3e49d711f68137",
+          "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+        }
+      ],
+      "origins": [
+        {
+          "originId": "claude-user",
+          "path": "grill-me/SKILL.md",
+          "bundlePath": "grill-me",
+          "link": {
+            "linkHash": "1bac9ed4d068f1f9f12af8fed59637f4b4560295c2f8413bdb3e49d711f68137",
+            "reason": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+          }
+        }
+      ],
+      "compatibility": "proprietary-unavailable",
+      "dependencyReasons": [
+        "unavailable-or-incomplete-local-bundle"
+      ],
+      "complete": false,
+      "loadable": false,
+      "provenance": {
+        "declaredVersion": null,
+        "packageVersion": null,
+        "redistribution": "not-established",
+        "licenseFileHashes": [],
+        "publicSourceLinks": []
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "originId": "claude-user",
+      "path": "grill-me/SKILL.md",
+      "code": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+    },
+    {
+      "originId": "claude-user",
+      "path": "react-grab/SKILL.md",
+      "code": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+    },
+    {
+      "originId": "claude-user",
+      "path": "vault/SKILL.md",
+      "code": "INSTRUCTION_SYMLINK_OUTSIDE_SELECTED_ROOTS"
+    }
+  ],
+  "conflicts": [
+    {
+      "name": "scrawl",
+      "ids": [
+        "skill:0fd214d2c1af6892ab0bdb7ff88bcadf17ae930b61e11bf0ee07933b187b06b6",
+        "skill:4f3bfb9d9608fdd12fd9a1ff697b6bc4fa786342493ed5e936870a684043567f"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "retro",
+      "ids": [
+        "skill:1ff30f40016dc2bd9f46529130a7e268afd6b87d41c0cbc9a6d1ac0937037190",
+        "skill:374dc795a8788c326c2098fdf32fe375e09ed5cf2d1e605c78f2375c728910c8",
+        "skill:c008b6c71dd3c9bc41c024889b69466d35e3d0dc23e42c53c9dc7e612d4d81ad"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "naar-mod",
+      "ids": [
+        "skill:3a61ad7134258368def06bd9f3e5eec62ba78e3f6f7d21ee2d6a109d0b872a05",
+        "skill:71161f509d6bb2a9b2c59ea329e7398ef9d9c5c5a672415265fc00f5a03f2c5d"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "grill-me",
+      "ids": [
+        "skill:3b72c12e826a6fb895c201a1113330a67f560c5e6d96a68aaf4954160b648f4f",
+        "skill:7d330f12571cf97c07c85fd098050fa9950b954e87bbbec8b13c4b0cb1295946",
+        "skill:fba17f19ce9dfed51ee8fe6082040b494703392c645ecef7af2ac384389b511b"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "react-grab",
+      "ids": [
+        "skill:3da264f7323da695cf40ddea8cd7d5f610731563379b7af6acf1a48c0fe0430b",
+        "skill:8b0c74c111ecab96b758bee91dea9c28436a9360e3727cee17235a40f20cf2be"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "skill-creator",
+      "ids": [
+        "skill:420e9fc9363c1f658dd78e47c45e3198d820a843e7db1cb94cafe04ecde045a5",
+        "skill:7bf853ebf0428f3437f79cc40c4f2929ef96639d4132ce80b3fe7ad78df8d759"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "tailnet",
+      "ids": [
+        "skill:441afe55a7c8345f62746b222f6d392453b2352448bc2ac8b9b6f286ce82b03d",
+        "skill:e467fad22106f93cba18ef1d0cbe6e140b37c2bd48f9ce0cd9ede7013a553903"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "vault",
+      "ids": [
+        "skill:5254f1eae034c432bb4126fab594e61f3e5a6f72f77b2c76e7ffda7d186512b1",
+        "skill:5a9e558a8e2f718f50bb85c8560deda83f98aef1f494ecff09e3cb41e7f98b04"
+      ],
+      "reason": "different-instructions"
+    },
+    {
+      "name": "lead",
+      "ids": [
+        "skill:58463af79a513f440f99a5686193fbe1ac67458d4d708b9b1165364a2233d7b9",
+        "skill:7ed448afe676ea2e3497220ab99bd19a459874608473008e31580efca9a2d534",
+        "skill:c98b9685556d1233f83e8b44ba1811af4ca4c46540098017055a83f44f57d11b"
+      ],
+      "reason": "different-bundles"
+    }
+  ],
+  "duplicateBodies": [
+    {
+      "contentHash": "4924f8e9993855b2d9e758f36586f99a6653a3b39febc3be6f57387162e92866",
+      "ids": [
+        "skill:374dc795a8788c326c2098fdf32fe375e09ed5cf2d1e605c78f2375c728910c8",
+        "skill:c008b6c71dd3c9bc41c024889b69466d35e3d0dc23e42c53c9dc7e612d4d81ad"
+      ],
+      "origins": 2
+    },
+    {
+      "contentHash": "9b14a058b4a260627145b6e757cb8d9aee2281a9da4613bd1e1b247dc722a0aa",
+      "ids": [
+        "skill:58463af79a513f440f99a5686193fbe1ac67458d4d708b9b1165364a2233d7b9",
+        "skill:7ed448afe676ea2e3497220ab99bd19a459874608473008e31580efca9a2d534",
+        "skill:c98b9685556d1233f83e8b44ba1811af4ca4c46540098017055a83f44f57d11b"
+      ],
+      "origins": 3
+    }
+  ],
+  "coverage": {
+    "origins": 47,
+    "bundles": 47,
+    "unavailable": 3,
+    "bySource": {
+      "codex-user": 18,
+      "claude-user": 22,
+      "repo-portable": 7
+    },
+    "byCompatibility": {
+      "portable": 2,
+      "local-dependency": 7,
+      "connected-service": 25,
+      "proprietary-unavailable": 13
+    }
+  }
+}

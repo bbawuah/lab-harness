@@ -1,0 +1,26 @@
+{
+  "fixture": "original deterministic owned text, not production repository",
+  "initialBytes": "Operator guide\nTerminal settlement never accepts a task.\n",
+  "search": {
+    "hits": [
+      {
+        "path": "operator.txt",
+        "contentHash": "13209bcab916067fa2be9279bb60b5a4f9085354e85bee3aa006ab89f2f50583",
+        "lineStart": 2,
+        "lineEnd": 2,
+        "text": "Terminal settlement never accepts a task."
+      }
+    ],
+    "engine": "fallback",
+    "truncated": false,
+    "omissions": []
+  },
+  "before": {
+    "valid": true,
+    "nativePi": "blocked-unqualified"
+  },
+  "after": {
+    "error": "STALE_CONTEXT_SOURCE"
+  },
+  "fixtureCandidateIdentity": true
+}

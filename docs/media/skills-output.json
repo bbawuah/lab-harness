@@ -1,0 +1,84 @@
+{
+  "bundledSkill": {
+    "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+    "name": "terminal-evidence",
+    "kind": "skill",
+    "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+    "instructionBytes": 428,
+    "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+    "instructionPath": "SKILL.md",
+    "resources": [
+      {
+        "path": "SKILL.md",
+        "kind": "file",
+        "status": "available",
+        "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+        "bytes": 428
+      }
+    ],
+    "origins": [
+      {
+        "originId": "bundled-example",
+        "path": "terminal-evidence/SKILL.md",
+        "bundlePath": "terminal-evidence"
+      }
+    ],
+    "compatibility": "portable",
+    "dependencyReasons": [],
+    "complete": true,
+    "loadable": true,
+    "provenance": {
+      "declaredVersion": "1",
+      "packageVersion": null,
+      "redistribution": "not-established",
+      "licenseFileHashes": [],
+      "publicSourceLinks": []
+    }
+  },
+  "selection": {
+    "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+    "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+    "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+    "originId": "bundled-example",
+    "path": "terminal-evidence/SKILL.md"
+  },
+  "committedInventorySha256": "3efa30b2ec9140431fc83ea81122f772a65428f76ebc5b751af25b52a83f4ba2",
+  "committedInventoryCoverage": {
+    "origins": 47,
+    "bundles": 47,
+    "unavailable": 3,
+    "bySource": {
+      "codex-user": 18,
+      "claude-user": 22,
+      "repo-portable": 7
+    },
+    "byCompatibility": {
+      "portable": 2,
+      "local-dependency": 7,
+      "connected-service": 25,
+      "proprietary-unavailable": 13
+    }
+  },
+  "committedInventoryInspection": [
+    {
+      "name": "kibana-connectors",
+      "compatibility": "connected-service",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "connected-service",
+        "connected-tool-or-credentials"
+      ],
+      "loadable": true
+    },
+    {
+      "name": "scrawl",
+      "compatibility": "local-dependency",
+      "dependencyReasons": [
+        "agent-host-adaptation",
+        "external-tool-or-runtime",
+        "host-path"
+      ],
+      "loadable": true
+    }
+  ]
+}

@@ -2,8 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/initial-concept]
+    branches: [main]
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -16,7 +20,9 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-14]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      LAB_HERDR_ACTUAL: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -26,7 +32,35 @@ jobs:
           bun-version-file: .bun-version
       - name: Install exact development dependencies without lifecycle scripts
         run: bun --no-env-file install --frozen-lockfile --ignore-scripts
+      - name: Acquire checksum-pinned Herdr runtime into project-local cache
+        run: bun --no-env-file run setup:herdr
+      - name: Acquire checksum-pinned rg for actual fast-path parity coverage
+        run: |
+          bun --no-env-file run setup:rg
+          echo "$PWD/.tmp/rg" >> "$GITHUB_PATH"
+      - name: Require actual terminal coverage and executable runtime
+        run: |
+          test "$LAB_HERDR_ACTUAL" = "1"
+          test -x .tmp/herdr/herdr
+          test -x .tmp/rg/rg
+          rg --version
+          bun --no-env-file --no-install -e 'import { assertPublishCapability } from "./vendor/relay/src/storage/publish.ts"; assertPublishCapability();'
       - name: Verify tests, types and publication integrity
-        run: bun --no-env-file run check
+        run: bun --no-env-file run check:actual
       - name: Run offline fixture demo
         run: bun --no-env-file run demo
+      - name: Run real owned terminal flow with separate operator acceptance
+        run: bun --no-env-file run demo:terminal
+      - name: Measure deterministic exact search and FTS5 fixture
+        run: bun --no-env-file run benchmark:search -- 1
+      # setup-python exports LD_LIBRARY_PATH on Linux. Relay deliberately refuses
+      # loader redirection, so this separate tool environment starts after Bun.
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14.7"
+      - name: Install exact media audit dependency in project-local environment
+        run: |
+          python -m venv .tmp/media-audit
+          .tmp/media-audit/bin/python -m pip --cache-dir .tmp/pip-cache install --disable-pip-version-check --only-binary=:all: --require-hashes -r docs/demos/requirements-audit.txt
+      - name: Decode media, verify provenance, privacy and recorded behavior
+        run: .tmp/media-audit/bin/python docs/demos/audit.py --check

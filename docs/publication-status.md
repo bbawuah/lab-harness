@@ -1,15 +1,22 @@
-# Initial publication status
+# Publication provenance and development status
 
-This repository packages an offline terminal concept. The exported source,
-tests, protocol and Relay closure are unchanged from the reviewed source
-identified in [`source-manifest.json`](source-manifest.json). Original source
-history, internal evidence and optional inference tools are excluded.
+The initial concept was published in PR #1, merged at
+`9c4f24aa5fdc6271873d6bc2c162b821154ffaa7`. Its original exported file identities
+remain in [`source-manifest.json`](source-manifest.json). Schema 2 retains that
+immutable provenance and adds separate current development hashes, change status
+and an exact file allowlist. Changed files are explicitly identified; they are
+not represented as unchanged concept source. All nine Relay dependency bytes
+remain pinned and unchanged.
 
-The initial publication requires a clean dependency installation, demo, tests,
-strict typecheck and source/allowlist audit, followed by an independent review
-of the exact final commit. Local checks and Linux/macOS CI outcomes are recorded
-on the initial pull request; a configured workflow alone is not a passing run.
+Current development adds actual disposable Herdr integration, offline search,
+source-bound context, a complete origin inventory and safe local skill loader,
+and owner-authorized monochrome branding. Private source history, historical
+reports, raw process evidence, home paths, private skill bodies and proprietary
+bundles remain excluded. Herdr and Pi source/artifact manifests reference
+third-party material without redistributing it or granting a license.
 
-Native Pi admission remains blocked, Herdr is not integrated and WSL is not
-qualified. Earlier tiny-model experiments were incomplete; no model execution
-or download is part of this publication. See the README for the runtime limits.
+Each integration PR records exact-head checks and independent source review.
+A configured workflow is not a passing CI result. Native Pi admission remains
+blocked and WSL remains unverified; actual Herdr process evidence is distinct
+from the fixture-only task envelope and advisory Pi UI. No model invocation or
+download is required. See the README and component reports for exact boundaries.

@@ -1,0 +1,76 @@
+{
+  "repository": "https://github.com/herdrdev/herdr",
+  "sourcePin": "bc8c28988f75c538d4ca058b702f5adbea30566e",
+  "sourceFiles": [
+    {
+      "path": "Cargo.toml",
+      "sha256": "0df0ace6b28a40a76b8c4c27c6d702ddef38ae28f1d70439ed1ed74d43709130"
+    },
+    {
+      "path": "docs/next/website/src/content/docs/socket-api.mdx",
+      "sha256": "1b92d7810e56ae6310f41e318bd771f926e6e8b6a2ce4189e9dfeb4bce9e3d15"
+    },
+    {
+      "path": "src/main.rs",
+      "sha256": "0c7be66cb1c0247d1bfebb68eae6d5fcdf40b8a6931d19d4554b1376becb9c45"
+    },
+    {
+      "path": "src/session.rs",
+      "sha256": "4884c50f5782010f4a1e7b28f7d7d30580a996f839888c91ac3f29fd0ea5d977"
+    },
+    {
+      "path": "src/config/io.rs",
+      "sha256": "a4b7447c874f9f7d10d93485dd6f1e8fd8d44d1933a0492f1e5208d6d06b099b"
+    },
+    {
+      "path": "src/config/model.rs",
+      "sha256": "22a0e0ea19728d63dca866ea8669ca558e516d8d4ccac346a262aba4ec6ad6b2"
+    },
+    {
+      "path": "src/api/schema/panes.rs",
+      "sha256": "e7908b37b9875d4a2064e61b8c7edb64f1fcf35aa2707cd1128ae9400f8f4a4d"
+    },
+    {
+      "path": "src/api/schema/response.rs",
+      "sha256": "0b85658265923fcaa59b0233abc46820cd3fe97199bbc4a22a94c4036ca59226"
+    },
+    {
+      "path": "src/server/socket_paths.rs",
+      "sha256": "28cdddf4e8fa7e5123c2e79abc9b43ae7cd599a0dbb312b345b6b225cc65db96"
+    },
+    {
+      "path": "src/server/headless/bootstrap.rs",
+      "sha256": "a1dcbf3ca7ded85a1b50fe2efc54cc3bc6bfe4eb9aff9ff1ae41dd841c172364"
+    }
+  ],
+  "runtime": {
+    "tag": "v0.9.5",
+    "version": "0.9.5",
+    "releaseCommit": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+    "releaseApi": "https://api.github.com/repos/herdrdev/herdr/releases/tags/v0.9.5",
+    "sourcePinMatch": false,
+    "artifacts": [
+      {
+        "name": "herdr-linux-aarch64",
+        "url": "https://github.com/herdrdev/herdr/releases/download/v0.9.5/herdr-linux-aarch64",
+        "sha256": "17d7536f2da50859523680ef279dffcac8e4a235f4e46fe8da6c2ec44141897c"
+      },
+      {
+        "name": "herdr-linux-x86_64",
+        "url": "https://github.com/herdrdev/herdr/releases/download/v0.9.5/herdr-linux-x86_64",
+        "sha256": "14d9e8bc8b4a9e0118d77c32266f76d461f09b40342eb23752960bd89f59929d"
+      },
+      {
+        "name": "herdr-macos-aarch64",
+        "url": "https://github.com/herdrdev/herdr/releases/download/v0.9.5/herdr-macos-aarch64",
+        "sha256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2"
+      },
+      {
+        "name": "herdr-macos-x86_64",
+        "url": "https://github.com/herdrdev/herdr/releases/download/v0.9.5/herdr-macos-x86_64",
+        "sha256": "5fb0a908ec7f6745e3e245738b06bfad56c46391c391ab3c0955fbead01f1369"
+      }
+    ]
+  },
+  "distribution": "Reference and local acquisition only; no third-party source or binary is redistributed."
+}

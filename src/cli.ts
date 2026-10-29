@@ -7,9 +7,24 @@ import { RelayBus, RELAY_PIN } from "./relay.ts";
 import { canonical, LabError, requireThat } from "./util.ts";
 import type { Candidate, ContextPack, Result, TaskContract } from "./protocol.ts";
 import { Workspace } from "./workspace.ts";
+import { buildContext, verifyContext, type ContextSelection, type ProvenanceContext } from "./context.ts";
+import { SearchService, type SearchOptions } from "./search/index.ts";
+import { discoverSkills, loadSkill, selectSkill, verifySkill, type SkillSelection, type SkillSource } from "./skills/index.ts";
+import { renderHeader, terminalHasColor } from "./pi/header.ts";
 
 function print(value: unknown): void { process.stdout.write(JSON.stringify(value, null, 2) + "\n"); }
 function input(path: string | undefined): unknown { requireThat(path, "INPUT_FILE_REQUIRED"); return JSON.parse(readFileSync(path, "utf8")); }
+function skillOrigins(path: string | undefined): SkillSource[] {
+  const data = input(path) as { origins?: SkillSource[] }; requireThat(Array.isArray(data.origins), "INVALID_SKILL_ORIGINS"); return data.origins;
+}
+function verifyTaskContext(db: Ledger, taskId: string, verify?: (selection: SkillSelection) => boolean): void {
+  const pack = db.readContext(db.get(taskId).contract.contextHash);
+  if ("sourceProvenance" in pack) {
+    const selected = pack as ProvenanceContext;
+    requireThat(typeof selected.workspacePath === "string", "CONTEXT_WORKSPACE_REQUIRED");
+    verifyContext(resolve(CONCEPT_ROOT, selected.workspacePath), selected, verify);
+  }
+}
 function demo(): void {
   mkdirSync(join(CONCEPT_ROOT, ".tmp"), { recursive: true, mode: 0o700 });
   const state = mkdtempSync(join(CONCEPT_ROOT, ".tmp/demo-"));
@@ -35,21 +50,34 @@ function demo(): void {
 }
 
 try {
-  const args = process.argv.slice(2), command = args.shift() ?? "help";
+  const args = process.argv.slice(2);
+  let origins: SkillSource[] | undefined;
+  if (args[0] === "--skill-sources") { args.shift(); origins = skillOrigins(args.shift()); }
+  const verify = origins ? (selection: SkillSelection) => verifySkill(selection, origins!) : undefined;
+  const command = args.shift() ?? "help";
   if (command === "demo") demo();
+  else if (command === "header") { const positional = args.filter(arg => arg !== "--no-color"), columns = positional[0] ? Number(positional[0]) : process.stdout.columns ?? 80, appearance = positional[1] ?? "dark"; requireThat(positional.length <= 2 && Number.isSafeInteger(columns) && columns > 0 && columns <= 1000 && ["light", "dark"].includes(appearance), "INVALID_HEADER_OPTIONS"); process.stdout.write(renderHeader({ columns, appearance: appearance as "light" | "dark", color: terminalHasColor(process.env) && !args.includes("--no-color") }).join("\n") + "\n"); }
+  else if (command === "pi-ui-smoke") { requireThat(args[0] && args[1], "PI_NODE_PATHS_REQUIRED"); print(await (await import("../scripts/pi/smoke-header.ts")).smokeHeader({ herdr: join(CONCEPT_ROOT, ".tmp/herdr/herdr"), pi: resolve(args[0]), node: resolve(args[1]) })); }
+  else if (command === "terminal-demo") print(await (await import("./terminal-demo.ts")).terminalDemo());
+  else if (command === "herdr-smoke") print(await (await import("./herdr/index.ts")).runHerdrSmoke({ stateRoot: join(CONCEPT_ROOT, ".tmp") }));
   else if (command === "admission") print(admission());
   else if (command === "activate-pi") throw new LabError("NATIVE_PI_UNQUALIFIED");
-  else if (command === "search") { requireThat(args[0] && args[1], "SEARCH_ROOT_QUERY_REQUIRED"); print(new Workspace(resolve(args[0])).searchDetailed(args[1])); }
+  else if (command === "search" || command === "files") { requireThat(args[0] && args[1], "SEARCH_ROOT_QUERY_REQUIRED"); const options: SearchOptions = {}; if (args[2]) options.limit = Number(args[2]); if (args[3]) options.engine = args[3] as SearchOptions["engine"]; const service = new SearchService(resolve(args[0]), options); print(command === "search" ? service.text(args[1]) : service.files(args[1])); }
   else if (command === "skill") { requireThat(args[0] && args[1], "SKILL_ROOT_PATH_REQUIRED"); print(new Workspace(resolve(args[0])).skill(args[1])); }
-  else if (command === "help") print({ commands: ["demo", "admission", "activate-pi (blocked)", "--state PATH create FILE", "--state PATH show TASK", "--state PATH claim TASK SESSION", "--state PATH event FILE", "--state PATH accept FILE", "--state PATH cancel TASK", "--state PATH recover"], scope: "concept state only; acceptance is operator workflow, not same-user authentication" });
+  else if (command === "skills") print(discoverSkills(skillOrigins(args[0])));
+  else if (command === "skill-select") { requireThat(args[1], "SKILL_ID_REQUIRED"); const found = discoverSkills(skillOrigins(args[0])).skills.filter(skill => skill.id === args[1] || skill.name === args[1]); requireThat(found.length === 1, "MISSING_OR_AMBIGUOUS_SKILL"); print(selectSkill(found[0]!)); }
+  else if (command === "skill-load") print(loadSkill(input(args[1]) as SkillSelection, skillOrigins(args[0])));
+  else if (command === "context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); print(buildContext(resolve(args[0]), input(args[1]) as ContextSelection, verify)); }
+  else if (command === "verify-context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); const data = input(args[1]) as { pack: ProvenanceContext }; verifyContext(resolve(args[0]), data.pack, verify); print({ valid: true, nativePi: "blocked-unqualified" }); }
+  else if (command === "help") print({ prefix: "--skill-sources ORIGINS.json (required to revalidate selected skills in context/task operations)", commands: ["header [COLUMNS] [light|dark] [--no-color]", "pi-ui-smoke PI_PATH NODE_PATH (no-model startup)", "demo (fixtures)", "terminal-demo (real Herdr; leaves result awaiting acceptance)", "herdr-smoke", "search ROOT QUERY [LIMIT] [auto|fallback|rg]", "files ROOT QUERY [LIMIT]", "skills ORIGINS.json", "skill-select ORIGINS.json ID_OR_UNAMBIGUOUS_NAME", "skill-load ORIGINS.json SELECTION.json (explicit instruction text)", "context ROOT INPUT.json", "verify-context ROOT CONTEXT.json", "skill ROOT PATH", "admission", "activate-pi (blocked)", "--state PATH create FILE", "--state PATH show TASK", "--state PATH claim TASK SESSION", "--state PATH event FILE", "--state PATH accept FILE", "--state PATH cancel TASK", "--state PATH recover"], scope: "owned project subdirectories; acceptance is operator workflow, not same-user authentication" });
   else {
     requireThat(command === "--state", "EXPLICIT_STATE_REQUIRED"); const state = args.shift(); requireThat(state, "EXPLICIT_STATE_REQUIRED"); const operation = args.shift(); const db = new Ledger(resolve(state));
     try {
-      if (operation === "create") { const data = input(args[0]) as { contract: TaskContract; context: ContextPack }; const contextHash = db.context(data.context); requireThat(contextHash === data.contract.contextHash, "CONTEXT_HASH_MISMATCH"); print(db.create(data.contract)); }
+      if (operation === "create") { const data = input(args[0]) as { contract: TaskContract; context: ContextPack; workspaceRoot?: string }; if ("sourceProvenance" in data.context) { const selected = data.context as ProvenanceContext; requireThat(typeof selected.workspacePath === "string", "CONTEXT_WORKSPACE_REQUIRED"); verifyContext(data.workspaceRoot ? resolve(data.workspaceRoot) : resolve(CONCEPT_ROOT, selected.workspacePath), selected, verify); } const contextHash = db.context(data.context); requireThat(contextHash === data.contract.contextHash, "CONTEXT_HASH_MISMATCH"); print(db.create(data.contract)); }
       else if (operation === "show") print(db.get(args[0] ?? ""));
-      else if (operation === "claim") print(db.grant(args[0] ?? "", args[1] ?? ""));
-      else if (operation === "event") print({ disposition: db.apply(input(args[0])) });
-      else if (operation === "accept") { const data = input(args[0]) as Candidate & { taskId: string; resultId: string; reason: string; waived?: string[] }; print(db.accept(data.taskId, data.resultId, data, data.reason, data.waived)); }
+      else if (operation === "claim") { verifyTaskContext(db, args[0] ?? "", verify); print(db.grant(args[0] ?? "", args[1] ?? "")); }
+      else if (operation === "event") { const data = input(args[0]) as { claim?: { taskId: string } }; requireThat(data.claim, "INVALID_CLAIM"); verifyTaskContext(db, data.claim.taskId, verify); print({ disposition: db.apply(data) }); }
+      else if (operation === "accept") { const data = input(args[0]) as Candidate & { taskId: string; resultId: string; reason: string; waived?: string[] }; verifyTaskContext(db, data.taskId, verify); print(db.accept(data.taskId, data.resultId, data, data.reason, data.waived)); }
       else if (operation === "cancel") print(db.cancel(args[0] ?? ""));
       else if (operation === "recover") print({ retired: db.recover() });
       else throw new LabError("UNKNOWN_OPERATOR_COMMAND");

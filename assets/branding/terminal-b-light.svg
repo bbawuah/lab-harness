@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="226 110 694.5 926" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">LAB-HARNESS terminal B</title>
+  <desc id="description">The six original LAB-BAWUAH tiles and open gutters, with the four-spot brand mesh in monochrome for light backgrounds.</desc>
+  <defs>
+    <clipPath id="mark-clip">
+      <path d="M226 110H447.649V688.75C447.649 749.957 398.031 799.574 336.824 799.574H226V110Z"/>
+      <path d="M336.824 1036C275.618 1036 226 986.382 226 925.176L226 814.351H684.074V1036H336.824Z"/>
+      <path d="M698.851 563.149H697.62C698.031 563.149 698.441 563.142 698.851 563.139V563.149ZM697.62 110C820.713 110 920.5 209.787 920.5 332.88V340.269C920.5 462.951 821.378 562.476 698.851 563.139V480.531H462.426V110H697.62Z"/>
+      <path d="M684.075 494.191H462.426V618.561L684.075 799.574V494.191Z"/>
+      <path d="M698.852 577.926C821.265 577.926 920.5 677.161 920.5 799.575H698.852V577.926Z"/>
+      <path d="M920.5 814.352C920.5 936.765 821.264 1036 698.851 1036V814.352H920.5Z"/>
+    </clipPath>
+    <radialGradient id="mesh-0" gradientUnits="userSpaceOnUse" cx="290" cy="240" r="520">
+      <stop offset="0" stop-color="#303030"/>
+      <stop offset="0.45" stop-color="#303030" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#303030" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mesh-1" gradientUnits="userSpaceOnUse" cx="860" cy="300" r="480">
+      <stop offset="0" stop-color="#808080"/>
+      <stop offset="0.45" stop-color="#808080" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#808080" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mesh-2" gradientUnits="userSpaceOnUse" cx="820" cy="1000" r="500">
+      <stop offset="0" stop-color="#515151"/>
+      <stop offset="0.45" stop-color="#515151" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#515151" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mesh-3" gradientUnits="userSpaceOnUse" cx="300" cy="960" r="440">
+      <stop offset="0" stop-color="#080808"/>
+      <stop offset="0.45" stop-color="#080808" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#080808" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g clip-path="url(#mark-clip)">
+    <rect x="226" y="110" width="694.5" height="926" fill="#686868"/>
+    <rect x="226" y="110" width="694.5" height="926" fill="url(#mesh-0)"/>
+    <rect x="226" y="110" width="694.5" height="926" fill="url(#mesh-1)"/>
+    <rect x="226" y="110" width="694.5" height="926" fill="url(#mesh-2)"/>
+    <rect x="226" y="110" width="694.5" height="926" fill="url(#mesh-3)"/>
+  </g>
+</svg>

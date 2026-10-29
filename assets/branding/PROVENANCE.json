@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "owner": "LAB-BAWUAH / Brian Bawuah",
+  "authorization": "Owner explicitly authorized the terminal B mark in this public repository. No general reuse license is granted.",
+  "sourceAlias": "owner-brand",
+  "sourceCommit": "364a58052692a6229c85baecdbc124c1e7e5bd15",
+  "sourceFiles": [
+    {
+      "path": "packages/brand/src/geometry.ts",
+      "sha256": "73ab6e5fc3f48b96c96d1619b3184e5439f89cc2fca6c94c2658235ab8579b43"
+    },
+    {
+      "path": "packages/brand/src/mark.tsx",
+      "sha256": "f7b0210395d5367be3016c535a63c51822f4f4e239b1cb4e39a0377bf6891db6"
+    },
+    {
+      "path": "packages/brand/src/svg.ts",
+      "sha256": "fe5c95d877e2c20ae2c3f85e142b0b5fce617120c4e3c4a3779e5bed0e0bdd64"
+    },
+    {
+      "path": "apps/tmux/src/merk.tsx",
+      "sha256": "6766234063a52a29bc28230583880eb13128d1c051ea933b2512b15f8c422e4a"
+    }
+  ],
+  "adaptation": "Exact six PATHS and GRADIENT_SPOTS geometry; base + four radial overlays; stops 0/0.45/1 and opacity 1/0.8/0; neutral monochrome palettes only. Standalone SVG, no source-repository runtime dependency.",
+  "terminalComposition": "apps/tmux/src/merk.tsx uses the canonical LabMark, no separate terminal glyph.",
+  "palettes": {
+    "light": [
+      "#686868",
+      "#303030",
+      "#808080",
+      "#515151",
+      "#080808"
+    ],
+    "dark": [
+      "#a6a6a6",
+      "#d4d4d4",
+      "#909090",
+      "#c5c5c5",
+      "#fafafa"
+    ]
+  },
+  "socialPreview": {
+    "purpose": "repository social preview; not a user or organization avatar",
+    "width": 1280,
+    "height": 640,
+    "renderer": "T3 html_preview / HeadlessChrome 154.0.8037.92 / device scale 1",
+    "font": "Arial/Helvetica system fallback; no font redistributed",
+    "grayscalePixelsVerified": true,
+    "files": {
+      "social-preview.svg": "5b94e2d0eeb793097258127568d61f8dc571c295bebcb0200cb993269a5557f9",
+      "social-preview.html": "839553df473058ccd8db1beeb8481740fb50fdea57523595cbb92f7fb90af796",
+      "social-preview.png": "8c66bb44a0593fd092906510401e8472975c2654cc6d09b5ff2fb5f9cfeb0410"
+    }
+  }
+}
