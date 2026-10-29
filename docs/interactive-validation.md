@@ -24,10 +24,32 @@ This source includes the caller-project implementation and named-terminal fix.
 The wrapper's distribution pin is separate from the commit containing the wrapper,
 so the archive hash has no circular dependency on itself.
 
+The final hosted test ran the immutable candidate bootstrap from B with a fresh
+user HOME and system-only PATH, installed runtime A from the pinned archive,
+completed hidden-key route setup and native folder trust, then passed the same
+prompt/search/project-skill/exit checks. The quoted absolute launcher subsequently
+ran `--offline` from B, returned `READY` and B-only source hits, and exited 0.
+All **4,978 installed entries** had unchanged recorded path/type/mode/size/mtime/
+ctime metadata; startup separately verifies executable/bundle byte identities.
+Both runs verified complete owned process/socket cleanup.
+[Hosted and subsequent evidence](evidence/hosted-project.json),
+[first-run terminal](evidence/hosted-project-terminal.ansi) and
+[subsequent terminal](evidence/subsequent-project-terminal.ansi) retain the
+sanitized observations. State and sessions remained outside A and B.
+
+The current bound-project bridge also passed an actual native Pi JSON/print
+model tool round trip with the reduced prompt and only `lab_search`: model
+call → B-only.md hashed result → final model answer. [Native tool events](evidence/bound-project-tool-events.jsonl).
+This is distinct from the full TUI's prompt and operator command evidence.
+
 The integrated caller-project check passed **190 tests**, TypeScript and
-publication integrity, retaining all nine Relay pins. First-round isolated
-launch fixtures assert no writes to installation/project; the hosted install and
-subsequent-launch release snapshot check is recorded separately at final handoff.
+publication integrity, retaining all nine Relay pins. Fresh independent round 3
+reviewed `5ed473c`, passed 17 focused tests and approved project binding, private
+state, read-only launch, named-terminal handling and README readability/commands.
+Its only blocker was the older runtime pin in that source snapshot. Commit
+`0b7b879` changed only the bootstrap's commit/hash literals plus docs/evidence/
+publication metadata, closing that blocker with the reviewed runtime. No runtime,
+CLI or README implementation changed after `5ed473c`.
 
 ## Earlier bounded integration observations
 

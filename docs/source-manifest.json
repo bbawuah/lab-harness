@@ -68,11 +68,15 @@
     "docs/demos/capture.py",
     "docs/demos/render.py",
     "docs/demos/requirements-audit.txt",
+    "docs/evidence/bound-project-tool-events.jsonl",
+    "docs/evidence/hosted-project-terminal.ansi",
+    "docs/evidence/hosted-project.json",
     "docs/evidence/interactive-terminal.ansi",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
     "docs/evidence/project-events.json",
     "docs/evidence/project-terminal.ansi",
+    "docs/evidence/subsequent-project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
     "docs/interactive-validation.md",
@@ -322,6 +326,18 @@
       "sha256": "63625b0b44d03d8ad195157c26e3b5e3bb8bf1d24b983b9dc96bf6e8293c5b5b",
       "status": "added"
     },
+    "docs/evidence/bound-project-tool-events.jsonl": {
+      "sha256": "c646b37bb5a2334b17314a4d15c80b46b7e2d7378d255ba4c2618d4985c90956",
+      "status": "added"
+    },
+    "docs/evidence/hosted-project-terminal.ansi": {
+      "sha256": "9a74b98af6958f9691c1d44f1d64f9d3e7dfcc65b5adba2892a2b737e4c9c52f",
+      "status": "added"
+    },
+    "docs/evidence/hosted-project.json": {
+      "sha256": "b4ceb7b0917b21a2a2364bd5a6cac7b60089f17f30035281521a010756f89883",
+      "status": "added"
+    },
     "docs/evidence/interactive-terminal.ansi": {
       "sha256": "23536b34f802979184a489b30d0bea96652516ee1e8d146f68fda1510d479b20",
       "status": "added"
@@ -342,6 +358,10 @@
       "sha256": "c9270ceb4fd443e7d641468b249a3c659aec73522d917748137d9f8d729b678a",
       "status": "added"
     },
+    "docs/evidence/subsequent-project-terminal.ansi": {
+      "sha256": "e4f29afc2fa95f1a3b6d045517b9556111d2148c08d67720968b4f9dd5dac476",
+      "status": "added"
+    },
     "docs/herdr.md": {
       "sha256": "368b00305830b893bc83563ea4aedacf21490652083d9375cafe8dee860fc8ba",
       "status": "added"
@@ -351,7 +371,7 @@
       "status": "added"
     },
     "docs/interactive-validation.md": {
-      "sha256": "115ab6e7db66d5b2b9a0cb605deb7a1993f256567725cdc52770e318ede06f9e",
+      "sha256": "b0edf6159290ea0f499a9beee21d28da35bc9d935272d61aa754047c0d558dc7",
       "status": "added"
     },
     "docs/media/PROVENANCE.json": {

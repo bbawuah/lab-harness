@@ -1,0 +1,60 @@
+{
+  "label": "actual-hosted-project-install-and-subsequent-launch",
+  "bootstrapSourceCommit": "0b7b8795204361602ebd425978f0b1c65547d9a7",
+  "runtimeCommit": "5ed473cca54de6275acc51aac1a53308358697ec",
+  "archiveURL": "https://codeload.github.com/bbawuah/lab-harness/tar.gz/5ed473cca54de6275acc51aac1a53308358697ec",
+  "archiveSHA256": "fbb50acec187dd0835d58c1c253600cbf1527d85192272722e493ac862f39a49",
+  "host": "macOS arm64 development mini",
+  "environment": "Fresh user HOME, PATH=/usr/bin:/bin; project B with spaces separate from installed release A; no checkout or globally installed Pi/Bun/Node in child PATH",
+  "firstLaunch": {
+    "command": "curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/0b7b879/bootstrap.sh | sh",
+    "cwd": "project B with spaces",
+    "routeSetup": "local loopback endpoint, explicit model alias, blank private key",
+    "nativeProjectTrust": "Fixture operator selected its own B; native prompt preserved",
+    "nativeCwdMatched": true,
+    "modelReply": "READY",
+    "searchHit": "B-only.md with byte hash; fixture .env excluded",
+    "skillLoad": "PROJECT_B_SKILL_BODY from B, instruction/bundle hashes retained",
+    "exitCode": 0,
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "subsequentLaunch": {
+    "code": 0,
+    "mode": "quoted absolute launcher --offline from B",
+    "runtimeCommit": "5ed473cca54de6275acc51aac1a53308358697ec",
+    "project": "project B with spaces",
+    "before": {
+      "entries": 4978,
+      "sha256": "be1035b353f7e1ab37bd6bec04f428db6fc2a0a4bf300b974f792ecb07f79b2a"
+    },
+    "after": {
+      "entries": 4978,
+      "sha256": "be1035b353f7e1ab37bd6bec04f428db6fc2a0a4bf300b974f792ecb07f79b2a"
+    },
+    "runtimeUnchanged": true,
+    "modelReply": "READY",
+    "search": "B-only.md",
+    "nativeCwdMatched": true,
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "installationSnapshotMethod": "All installed entries recursively: relative path, type, mode, size, mtimeMs, ctimeMs; access time ignored. SHA-256 is over serialized metadata rows, not a content hash. Runtime executables/bundle are also byte-verified by startup.",
+  "limitations": [
+    "No user MacBook or WSL execution qualification.",
+    "Full TUI default-prompt tiny-model coding/tool reliability remains unqualified.",
+    "Controlled LAB request admission remains unqualified; ledger acceptance unchanged."
+  ],
+  "evidenceSHA256": {
+    "hosted-project-terminal.ansi": "9a74b98af6958f9691c1d44f1d64f9d3e7dfcc65b5adba2892a2b737e4c9c52f",
+    "subsequent-project-terminal.ansi": "e4f29afc2fa95f1a3b6d045517b9556111d2148c08d67720968b4f9dd5dac476"
+  }
+}
