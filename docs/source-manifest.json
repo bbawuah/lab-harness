@@ -73,6 +73,14 @@
     "docs/evidence/command-help.html",
     "docs/evidence/command-help.json",
     "docs/evidence/command-help.png",
+    "docs/evidence/fullscreen/actual-text.html",
+    "docs/evidence/fullscreen/actual-text.png",
+    "docs/evidence/fullscreen/fixtures/native-display.ts",
+    "docs/evidence/fullscreen/fixtures/screen.ts",
+    "docs/evidence/fullscreen/report.md",
+    "docs/evidence/fullscreen/run.json",
+    "docs/evidence/fullscreen/screens.json",
+    "docs/evidence/fullscreen/terminal.ansi",
     "docs/evidence/herdr-readiness.html",
     "docs/evidence/herdr-readiness.json",
     "docs/evidence/herdr-readiness.png",
@@ -159,6 +167,7 @@
     "docs/skills-inventory.json",
     "docs/skills.md",
     "docs/source-manifest.json",
+    "docs/tui/fullscreen-contract.md",
     "docs/tui/split-contract.md",
     "docs/user-guide.md",
     "examples/skills/terminal-evidence/SKILL.md",
@@ -229,6 +238,7 @@
     "tests/ledger.test.ts",
     "tests/pi-acquire.test.ts",
     "tests/pi-advisory.test.ts",
+    "tests/pi-fullscreen-actual.test.ts",
     "tests/pi-header.test.ts",
     "tests/pi-workspace-config.test.ts",
     "tests/pi-workspace-extension.test.ts",
@@ -402,6 +412,38 @@
     },
     "docs/evidence/command-help.png": {
       "sha256": "e05fe5de29c0b75030c486a87b6327d8c560234c87c7371e9461a5b3596042cb",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/actual-text.html": {
+      "sha256": "fce987bd2b2891b2a86300b8e6005d253fb7bfebf6929cdd68583e0cf1a75139",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/actual-text.png": {
+      "sha256": "6ef9492ca4cbcddcd8a43e62c35b6cf7ce844e7a721a65f68bde795a4bf6362f",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/fixtures/native-display.ts": {
+      "sha256": "afb096ec9e2203193414bfea6f16a850d45dabc8643c6fcdf0b783b7b973f2f6",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/fixtures/screen.ts": {
+      "sha256": "e857295992730a7960513ad9d39414b828196fcdbb107f97b6367cd994444362",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/report.md": {
+      "sha256": "0dd65f90834d0bbb39d03197decb150403ebaca482ec21401534d55b96a6e553",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/run.json": {
+      "sha256": "2741e7035bec83d746f49efa64ccd85845b6f334e6ffecd9b9f8940f63e7a2df",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/screens.json": {
+      "sha256": "cabc92501d8372b82f0025c5f8ea05210372561258e03e6e237de66ce9c3e80b",
+      "status": "added"
+    },
+    "docs/evidence/fullscreen/terminal.ansi": {
+      "sha256": "dece8b426c772e9a33344fe7903497f1e9ceb98b6df30b6ea0b828c0507e275f",
       "status": "added"
     },
     "docs/evidence/herdr-readiness.html": {
@@ -744,6 +786,10 @@
       "sha256": "9929990ae0c52cb30cec0cae797db65df0e1e91678b9dc014a33859b0981e6fa",
       "status": "added"
     },
+    "docs/tui/fullscreen-contract.md": {
+      "sha256": "153f9a2c6f1f8111927002a96386921238a3f0a316a21cbc693b0f3df8b3cf59",
+      "status": "added"
+    },
     "docs/tui/split-contract.md": {
       "sha256": "52b513cb9abd883f72f383b39daf1de98935eea0f7ee26bba6eaa86114748cb5",
       "status": "added"
@@ -1038,6 +1084,10 @@
     },
     "tests/pi-advisory.test.ts": {
       "sha256": "8683d643bbe949309879226cad81573ec612f20b20c4cb8ea6b8a26da0089f42",
+      "status": "added"
+    },
+    "tests/pi-fullscreen-actual.test.ts": {
+      "sha256": "f30da5bee63e3cfc328a4d715545616bb8ab4ae398c6d0e0fa8d25fd90192d6b",
       "status": "added"
     },
     "tests/pi-header.test.ts": {
