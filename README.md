@@ -12,7 +12,9 @@ mail between workspace sessions. Connect a local
 model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
 **[User guide: five-minute start and command reference](docs/user-guide.md)**.
-Inside the workspace, use /lab-help.
+Inside the workspace, use /lab-help. Pi opens on the left and your regular
+interactive shell on the right; use Ctrl+B then h/l to change focus.
+For a narrow terminal, use `lab --single-pane`.
 
 ## Install and start
 
@@ -75,6 +77,9 @@ Or select an existing project explicitly, including paths with spaces:
 ```sh
 "${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab" --project "/path/to/my project"
 ```
+
+Use `/lab-appearance` to preview light/dark/terminal themes, semantic colors
+and spacing, then Apply, Cancel or Reset. Fonts remain terminal settings.
 
 The TUI shows the selected project. Pi's working directory, LAB source search
 and project skills all use that folder. The installed harness and private model

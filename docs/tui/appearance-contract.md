@@ -87,3 +87,16 @@ The copied Pi theme color constants in `src/pi/appearance-theme.ts` identify the
 The synchronous caller validates and opens the existing private state root as a no-follow directory FD, then starts an owned bounded Bun helper with that FD inherited as descriptor 3. Preferences and scope travel as bounded stdin JSON, never as argv paths or credentials. The helper lazily loads the fixed one-argument POSIX `fchdir` from the protected system library, after rejecting loader-redirection variables; on Linux use only the absolute root-owned libc candidates and ancestor checks used by the existing immutable-publication guard. Unsupported backends fail with canonical `IO`. The child `fchdir`s to descriptor 3, creates or opens the fixed private `appearance` directory, opens and pins it with a second `fchdir`, and uses fixed relative names for all subsequent operations. The caller never changes the UI process cwd. No `/dev/fd` path, variadic FFI, compiler, new dependency or environment mutation is needed.
 
 Exclusive private lock and revision comparison serialize cooperating writers; validate scope and binding before and during Apply. Open files no-follow and check owner, mode, regular type, link count and size; write an exclusive private temporary file, fsync it, atomically rename within the pinned directory and fsync the directory. An IO error after helper spawn or a terminated child has an unknown commit/durability outcome: the caller must reload, not claim rollback. A killed helper can leave the lock or temporary file; subsequent writes fail `CONFLICT` without deleting a stale lock or sidecar. Pinning prevents redirecting writes through a replaced directory name; it does not sandbox a malicious process with the same user identity. Fixed relative operations, time/output bounds, canonical errors and no inherited credentials are required. Regression tests replace the directory name after its FD is opened and prove no write lands in the replacement.
+
+Coordinator integration revision (2026-10-30): generated Pi settings and themes
+belong to a private per-run agent directory. A project's appearance must not
+rewrite another running project's theme. Persisted preferences remain in the
+reviewed user store; Apply updates this runner and future launches, while other
+open runners keep their current appearance. Preserve the historical agent tree
+without importing its authentication. Pass the existing project's native session
+directory through supported `--session-dir`; preserve its exact Pi 1.4.0 encoded
+cwd naming (source `session-manager.ts:getDefaultSessionDirPath`, release
+`4a080252f06caf63a525d7873c5d94d3c23887e0`). Theme migration reads only private
+appearance fields from historical settings, never native auth. The operator-only
+appearance dialog owns staged preview, Apply/Cancel/Reset, native resource reload,
+and help. No model tools or provider protocol/authentication changes are added.

@@ -18,7 +18,7 @@ test("native launch uses caller or explicit project B while all startup writes s
   for(const path of [join(install,"src/pi"),join(install,"src/runtime"),join(install,"src/herdr"),join(install,"src/relay"),join(install,"contracts"),join(install,".tmp/rg"),project,home]) mkdirSync(path,{recursive:true,mode:0o700});
   // Exercise the actual entry/config/project code in an isolated installation.
   // Only pinned dependency verification and terminal attachment are fixture adapters.
-  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","herdr/shell.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
+  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","pi/appearance.ts","pi/appearance-store.ts","pi/appearance-store-helper.ts","pi/appearance-theme.ts","pi/appearance-read.ts","pi/workspace-appearance.ts","pi/workspace-appearance-store.ts","herdr/shell.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
   writeFileSync(join(install,"src/runtime/pi.ts"),'export function verifyPiRuntime(){return {command:["/verified/pi"],version:"fixture"};}\n');
   writeFileSync(join(install,"src/herdr/interactive.ts"),'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.CAPTURE_PATH,JSON.stringify(options));return 0;}\n');
   writeFileSync(join(install,"src/relay/workspace.ts"),'import {writeFileSync} from "node:fs";import {join} from "node:path";export function provisionWorkspaceRelayRun(options){const path=join(options.runRoot,"relay-run.json");writeFileSync(path,"fixture",{mode:0o600});return path;}\n');
@@ -44,7 +44,10 @@ test("native launch uses caller or explicit project B while all startup writes s
     expect(launch.environment.LAB_INSTALL_ROOT).toBe(install);
     expect(launch.environment.LAB_WORKSPACE_USER_HOME).toBe(home);
     expect(launch.environment.LAB_RELAY_RUN_REF.startsWith(join(state,"runs/h-"))).toBe(true);
-    expect(launch.environment.PI_CODING_AGENT_DIR).toBe(join(state,"agent"));
+    expect(launch.environment.PI_CODING_AGENT_DIR).toBe(join(launch.stateRoot,"agent"));
+    expect(launch.command).toContain("--session-dir");
+    expect(launch.command).toContain(join(state,"agent/sessions",`--${project.replace(/^[/\\]/,"").replace(/[/\\:]/g,"-")}--`));
+    expect(launch.environment.LAB_WORKSPACE_AGENT_DIR).toBe(launch.environment.PI_CODING_AGENT_DIR);
     expect(launch.executable).toBe(join(install,".tmp/herdr/herdr"));
     expect(launch.command).toContain(join(install,"src/pi/workspace-extension.ts"));
     expect(launch.command).toContain("/verified/pi");

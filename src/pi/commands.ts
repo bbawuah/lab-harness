@@ -19,6 +19,7 @@ export function workspaceHelp(): string {
   return ["LAB-HARNESS commands",
     ...workspaceCommands.map(command => "/" + command.name + (command.usage ? " " + command.usage : "") + " — " + command.description),
     ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
+    "/lab-appearance — Preview light/dark/terminal mode, colors and spacing; Apply/Cancel/Reset.",
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",

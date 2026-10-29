@@ -1,7 +1,7 @@
 # Native Pi interactive workspace
 
 `src/pi/workspace.ts` exports
-`runInteractiveWorkspace(options?: { configure?: boolean; project?: string; relayGroup?: string }): Promise<number>`.
+`runInteractiveWorkspace(options?: { configure?: boolean; project?: string; relayGroup?: string; singlePane?: boolean }): Promise<number>`.
 The coordinator's `./lab` launcher calls it; `./lab --configure` repeats route
 setup. The selected project is `options.project ?? process.cwd()`, canonically
 bound through `src/project.ts`. `./lab --project '/path/to/project B'` selects
@@ -71,7 +71,8 @@ in the private user app directory. No user session
 is discovered, attached, listed for cleanup or signalled.
 
 The adapter pings the owned socket, checks the runtime version, creates an
-owned workspace, applies a pane with explicit argv, and spawns `herdr client`
+owned workspace, replaces its bootstrap tab with a 60/40 Pi + regular shell
+layout (or Pi alone for --single-pane), using explicit argv, and spawns `herdr client`
 with inherited terminal stdio and the same socket environment. This hidden
 client command is implemented by the inspected Herdr source and was exercised
 against the actual pinned release. Herdr owns the Pi PTY and meaningfully
@@ -85,7 +86,7 @@ through the supported `ctx.shutdown()` API. Pi exit stops attachment and returns
 its status. Detaching the Herdr client closes this invocation's owned pane and
 server; native Pi session files persist. It does not leave a background Pi
 process running. Parent SIGTERM/SIGHUP also trigger cleanup. Parent SIGINT is
-forwarded to the owned pane; ordinary terminal Ctrl-C travels through the native
+forwarded to the currently focused owned pane (focus can race an external signal); ordinary terminal Ctrl-C travels through the native
 client. Startup has a bounded deadline; native interactive use has no timeout.
 
 Cleanup closes only the owned pane, requests owned server shutdown, and waits
@@ -230,3 +231,29 @@ native process resume; the original receipt is reused. Its large-context and
 disabled-helper settings are fixture configuration, not the default route's
 capacity or model-quality qualification. No paid provider or real model call is
 needed for this gate. Captures distinguish actual pane text from rendered views.
+
+
+## Appearance integration
+
+`/lab-appearance` is an operator command over the reviewed pure preference/store
+module, not a model tool. Staging uses a bounded local component; no native theme
+change or save occurs before Apply. Apply uses the private Bun bridge, CAS store,
+complete native theme files and supported `ctx.reload()`. The registered native
+UI APIs come from pinned release `4a080252…` extension types; reload rereads
+settings and resources before rebuilding the runtime. Light/dark theme pairs use
+Pi's native terminal-appearance selection rather than a new OS detector.
+
+Each runner has its own private `runs/h-*/agent` directory. Only private historical
+appearance fields are migrated; native auth is not read or imported. Supported
+`--session-dir` retains the original `agent/sessions/<encoded-cwd>` location;
+encoding matches pinned `session-manager.ts:getDefaultSessionDirPath` (remove the
+leading path separator, replace path separators/colon with hyphens, surround with
+`--`). No transcript is rewritten. Separate runners cannot overwrite each other's
+generated palettes/settings. User/project preferences live outside runtime and
+project in `appearance/preferences.json`. Existing open runners do not live-sync.
+
+Generated no-color themes use empty/native-default colors. This establishes LAB
+artifact behavior, not universal NO_COLOR handling in Herdr or the user's shell.
+Contrast checks apply to the eight semantic palette roles and staged sample;
+whole-app contrast, physical mouse, IME, clipboard, tmux and WSL remain separate
+qualification. The standalone delayed-SGR baseline remains FAIL 11/12.

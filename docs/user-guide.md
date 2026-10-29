@@ -80,6 +80,29 @@ The [standalone qualification report](evidence/fullscreen/report.md) documents a
 remaining delayed fragmented mouse-input case; it does not establish physical
 mouse behavior in every terminal. Keyboard navigation remains available.
 
+Use /lab-appearance to change LAB appearance. Its staged sample has numbered
+controls: Scope, Mode, Palette, editor/transcript padding, Reset, Apply and
+Cancel. Use arrows or j/k and Enter, or press a number. Esc cancels. Mode offers
+light, dark and terminal; terminal follows Pi's reported terminal appearance,
+with dark fallback when it cannot be determined. This does not detect OS mode.
+The Standard palette has readable light/dark colors; Custom edits semantic
+#RRGGBB colors and refuses poor contrast against the chosen background.
+
+Choose User defaults or explicitly choose This project only. Apply saves and
+reloads Pi resources while keeping the right shell running. Other open sessions
+keep their current appearance; future launches read the new defaults. Cancel
+discards the draft without saving or changing the active theme. Reset removes
+that scope's override: projects inherit user defaults, and removing all LAB
+preferences restores native appearance settings. The dialog sample is not a
+preview of shell styling or every native Pi component.
+
+NO_COLOR makes the LAB sample plain and generated Pi theme colors use terminal
+defaults. This does not force the independent Herdr frame or your shell to be
+monochrome. Indexed/16-color terminals may differ; full-app contrast and physical
+terminal behavior need terminal-specific validation. Font family, font size and
+line height belong to your terminal app; LAB does not change profiles or send
+terminal-setting escape sequences. Use terminal preferences for these controls.
+
 If the command is not available, use the exact stable launcher:
 
 ~~~sh
@@ -128,6 +151,7 @@ Model tools are functions the model may call, rather than commands you type.
 | Shell | lab --offline | Require cached runtime dependencies; inference network still possible |
 | Shell | lab --relay-group ID | Select an explicitly prepared cross-project Relay allowlist; unnecessary for normal project sessions |
 | Shell | lab --help | Show current launcher help without opening Pi |
+| TUI | /lab-appearance | Stage theme/colors/spacing; Apply, Cancel or Reset; no model request |
 | TUI | /lab-help | List LAB commands; native /hotkeys shows shortcuts and typing / opens the command menu |
 | TUI | /lab-search TEXT | Literal bounded project text search with lines/hashes |
 | TUI | /lab-files NAME | Find project filenames |
@@ -260,12 +284,15 @@ A local cancellation or timeout does not prove a remote server stopped work.
 This pinned Pi has no built-in /help command; unrecognized slash text can become
 a model prompt. Use /lab-help for LAB and /hotkeys for native shortcuts.
 
-Private route, key, agent/sessions and owned run reports live beneath
+Private route, key, appearance/preferences.json, agent/sessions and owned run reports live beneath
 $HOME/.local/share/lab-harness/workspace. Releases live beneath
 ${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/releases/&lt;commit&gt;.
 The stable launcher points at a verified release. Keys are private file
 contents, not command arguments. Keep state private; never paste keys into chat,
 prompts or support logs. LAB does not automatically import vendor credentials.
+Each launch keeps generated native config/themes in runs/h-*/agent, separate
+from the persistent project session directory under agent/sessions. Historical
+native auth is retained without being imported into the new runner.
 Relay bus/control state lives under the same private workspace root, outside
 the project and installed release. Sender and inbox are fixed to the native
 session; they are not model-supplied overrides. This is a trusted adapter for
