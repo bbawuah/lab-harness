@@ -131,3 +131,20 @@ no network request; discovery is an explicit bounded metadata action. Native
 Pi offline startup flags are not inference egress isolation. Cache warming is
 disabled for the first profile phase. The ledger, acceptance semantics and
 immutable Relay closure remain unchanged.
+
+## Built-in interactive Relay messaging
+
+Native workspace messaging directly uses the frozen message/directory/storage
+closure through a separate bound adapter. It does not use the operator ledger's
+ingest-and-ack path or legacy policy systems. Project buses survive release
+upgrades; explicit private group manifests are the only cross-project opt-in.
+Native session identity and a private run capability bind sender/inbox.
+
+A separate private control DB serializes ownership and generation checks with
+each vendor operation, records crash-recoverable registration/rebind intent and
+journals outbound request keys before enqueue. Each operation supplies one
+timestamp to adapter and vendor expiry checks. Reading is not ack; foreign ack
+is refused before partial mutation. Heartbeats maintain leases without model
+calls. Native shutdown/reload releases only the current owner; stale helpers
+cannot send/read/ack/renew/release a replacement. Bounded inbox polling never
+claims a wakeup dispatcher. See the [frozen integration contract](relay-workspace-contract.md).

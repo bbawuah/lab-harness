@@ -101,21 +101,86 @@ Model tools are functions the model may call, rather than commands you type.
 | Shell | lab --project DIR | Select an existing project, quote shell paths with spaces |
 | Shell | lab --configure | Change explicit endpoint/model/private key |
 | Shell | lab --offline | Require cached runtime dependencies; inference network still possible |
+| Shell | lab --relay-group ID | Select an explicitly prepared cross-project Relay allowlist; unnecessary for normal project sessions |
 | Shell | lab --help | Show current launcher help without opening Pi |
 | TUI | /lab-help | List LAB commands; native /hotkeys shows shortcuts and typing / opens the command menu |
 | TUI | /lab-search TEXT | Literal bounded project text search with lines/hashes |
 | TUI | /lab-files NAME | Find project filenames |
 | TUI | /lab-skills | Inventory skills and exact IDs; load nothing |
 | TUI | /lab-skill ID [ORIGIN PATH] | Explicitly load a verified skill |
+| TUI | /relay-peers [OFFSET] | Discover readable peers in the selected project bus |
+| TUI | /relay-send PEER REQUEST_KEY MESSAGE | Store an explicit message; reuse the same key/payload to retry |
+| TUI | /relay-inbox [WAIT_MS] | Read your unacknowledged mail; optional wait is at most 10 seconds |
+| TUI | /relay-ack MESSAGE_ID [MESSAGE_ID ...] | Explicitly acknowledge handled mail in your own inbox |
 | TUI | /exit | Exit with owned terminal cleanup; native /quit also works |
 | Model tool | lab_search | Model-callable source search |
 | Model tool | lab_files | Model-callable filename search |
+| Model tools | relay_peers, relay_send, relay_inbox, relay_ack | Session-bound peer discovery, send, read and explicit acknowledgement |
 
-The model gets both LAB tools automatically; successful use depends on the
-model's tool-calling support. You can always use operator slash commands.
-Native Pi supplies its own file/shell coding tools. No Relay tools or broader
-provider menus are claimed by this guide; those features require their own
-reviewed runtime changes.
+The model gets LAB search and Relay tools automatically; successful use depends
+on tool-calling support. Operator slash commands work without a model turn.
+Native Pi supplies its own file/shell coding tools. Broader provider-profile
+menus remain separately reviewed work; they are not implied by Relay support.
+
+## Message another workspace session
+
+Open lab in two terminals on the same project. Each native Pi session
+automatically registers a distinct readable peer. There is no MCP server to
+configure. In each TUI:
+
+~~~text
+/relay-peers
+~~~
+
+Copy the other session's displayed peer ID or alias. Send from session A:
+
+~~~text
+/relay-send OTHER_PEER intro-1 Hello from session A
+~~~
+
+Replace OTHER_PEER; intro-1 is your request key. A stored receipt means the
+message is durable, not that the recipient read or acknowledged it. If the
+outcome is unknown, retry the same recipient, body and key. Changed payload with
+the same key is refused; keys have a bounded 30-day retry horizon.
+
+In session B, read:
+
+~~~text
+/relay-inbox
+~~~
+
+Reading again returns the same unacknowledged message. After handling it:
+
+~~~text
+/relay-ack MESSAGE_ID
+/relay-send FIRST_PEER reply-1 --reply-to MESSAGE_ID Reply from B
+~~~
+
+Replace the displayed IDs. A foreign inbox cannot be acknowledged. Reply
+references preserve the conversation between those peers. Ack is message
+acknowledgement; it never completes or accepts a LAB task.
+
+The model is instructed to check inbox when coordinating or before handoff.
+Mail does not wake a model, start another agent or cause continuous model
+polling. Only explicit message bodies are shared; no transcript, skill body or
+private history is copied automatically. Same-project sessions share a private
+durable bus across runtime upgrades. Distinct projects/worktrees are isolated
+unless the operator explicitly selects a private allowlisted group with
+--relay-group ID. [Advanced scope/lifecycle contract](relay-workspace-contract.md)
+describes the private version1 project-binding manifest; no group setup is
+needed for normal same-project messaging.
+
+Presence is lease-based, not proof a model is listening. Normal exit marks its
+peer offline; a crashed process becomes stale after its 60-second lease.
+Reload while ownership is healthy preserves the logical session's peer/mailbox
+and fences old helpers. After an expired lease or changed binding, exit and
+launch lab again, then use native /resume to reopen the same session. A fresh
+launcher run supplies the new ownership capability; /reload alone cannot recover
+an expired run. New sessions get new peers. Messages/receipts remain for recovery.
+Body limit is 16,000 UTF-8 bytes; inbox defaults to five/max ten messages, peer
+pages default twenty/max fifty, and /relay-inbox WAIT_MS is bounded to 10,000ms.
+Use the next offset for more peers. Model-tool waits support cancellation;
+session shutdown cancels active waits without acknowledging mail.
 
 ## Search and skills
 
@@ -176,6 +241,10 @@ ${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/releases/&lt;commit&gt;.
 The stable launcher points at a verified release. Keys are private file
 contents, not command arguments. Keep state private; never paste keys into chat,
 prompts or support logs. LAB does not automatically import vendor credentials.
+Relay bus/control state lives under the same private workspace root, outside
+the project and installed release. Sender and inbox are fixed to the native
+session; they are not model-supplied overrides. This is a trusted adapter for
+same-user coordination, not an OS sandbox.
 
 ## Common problems
 
@@ -191,6 +260,7 @@ prompts or support logs. LAB does not automatically import vendor credentials.
 | Another lab exists | Keep it intact and use LAB's absolute launcher; do not overwrite an unknown command |
 | Missing/corrupt runtime while offline | Rerun installation online to repair verified bytes; no cloud model fallback is selected |
 | Source/skill refused | Check the selected project, excluded/changed paths and exact skill origin/ID; refresh the inventory |
+| Relay operation refused | Check peer ID, unchanged request key/payload and project/group binding. For an expired lease, exit, launch lab again and use native /resume for the same session; reload alone cannot renew the run |
 
 Without a controlling terminal, bootstrap installs only and prints the launcher.
 Open a terminal to select the project/configure a model. Supported runtime

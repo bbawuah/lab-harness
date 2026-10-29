@@ -86,6 +86,12 @@
     "docs/evidence/provider-design.html",
     "docs/evidence/provider-design.json",
     "docs/evidence/provider-design.png",
+    "docs/evidence/relay-model-tool-events.jsonl",
+    "docs/evidence/relay-recipient-screen.txt",
+    "docs/evidence/relay-sender-screen.txt",
+    "docs/evidence/relay-workspace.html",
+    "docs/evidence/relay-workspace.json",
+    "docs/evidence/relay-workspace.png",
     "docs/evidence/subsequent-project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
@@ -119,6 +125,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/relay-workspace-contract.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
     "docs/research/airgap-browser/DESIGN.json",
@@ -187,6 +194,7 @@
     "src/pi/advisory-extension.ts",
     "src/pi/commands.ts",
     "src/pi/header.ts",
+    "src/pi/relay-extension.ts",
     "src/pi/terminal-mark.json",
     "src/pi/workspace-config.ts",
     "src/pi/workspace-extension.ts",
@@ -195,6 +203,7 @@
     "src/project.ts",
     "src/protocol.ts",
     "src/relay.ts",
+    "src/relay/workspace.ts",
     "src/runtime/pi.ts",
     "src/runtime/verify.ts",
     "src/search/index.ts",
@@ -227,8 +236,12 @@
     "tests/project-selection.test.ts",
     "tests/project.test.ts",
     "tests/publication.test.ts",
+    "tests/relay-bridge.test.ts",
+    "tests/relay-extension.test.ts",
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
+    "tests/relay-pi-actual.test.ts",
+    "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
     "tests/search.test.ts",
@@ -266,7 +279,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "b6afc0e7beda65b1ea947cf84f9d3a14f1e7282695c78998f8e888117d165f41",
+      "sha256": "a89fc8af4d9272c2ada40b2c8e806457b8e2593c70beed37abedc9c067128bed",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -298,7 +311,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "d8f05b3d7d9aa9c7fa8555ad2e0e0308081be6df9b0d98479142b7ee1948aabf",
+      "sha256": "81f54d6a9597950f366a615bf86dbebfd6a045a314f666f1615ec3f404d59a3f",
       "status": "added"
     },
     "bun.lock": {
@@ -335,7 +348,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "88d6a11e00e96876811272e3c1394d78df79516dc22f3e787c0732e4c321f6fb",
+      "sha256": "499878b3d273c4060edf107a8d8601916cdba8285e10bd1e2f417ef75bb462e1",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -440,6 +453,30 @@
     },
     "docs/evidence/provider-design.png": {
       "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
+      "status": "added"
+    },
+    "docs/evidence/relay-model-tool-events.jsonl": {
+      "sha256": "dbdd168b02179d5d303ef02ca4c8fe675a80d4852dbd0d23aa67dc7eb94985d4",
+      "status": "added"
+    },
+    "docs/evidence/relay-recipient-screen.txt": {
+      "sha256": "f89cc7808ec25121f7803bab1349efe1e361f111db2599750b964c83f7ef2e75",
+      "status": "added"
+    },
+    "docs/evidence/relay-sender-screen.txt": {
+      "sha256": "a1bc6090051b0b578c7e3ceeacd798f31eb3634a00b371e3cbeb7e72652103e3",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.html": {
+      "sha256": "5beadbb75473c5dfa1cb92bf27c3569595a7a11ef2eab4986ceb57aa238b4299",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.json": {
+      "sha256": "cf1f978152a905916c42d7c17d39663302875a47bfbd1fcb8896494d0941fcb7",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.png": {
+      "sha256": "e73c82a14b33ba11627f9a35de15cfb412547745df25033aca6afea68579b7e8",
       "status": "added"
     },
     "docs/evidence/subsequent-project-terminal.ansi": {
@@ -563,7 +600,7 @@
       "status": "added"
     },
     "docs/pi-workspace.md": {
-      "sha256": "3790b1c04ea966585aeec481b375343c1f7c076a724986e4077bb9927780119f",
+      "sha256": "8f65449e1e4d3f23bd496d06a1e22d5d0d7edc8d53367882f2b3c42dd7616910",
       "status": "added"
     },
     "docs/publication-plan.md": {
@@ -572,6 +609,10 @@
     },
     "docs/publication-status.md": {
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
+      "status": "added"
+    },
+    "docs/relay-workspace-contract.md": {
+      "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
       "status": "added"
     },
     "docs/research/airgap-browser/ARCHITECTURE.md": {
@@ -703,7 +744,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "8571e15817d2c2d9bf99ae11b3f68c64674e7e83a8ff63f08e7f298d90add586",
+      "sha256": "a02d888abdafb8a4e80c7fb17292e87e8ff9913f9142aef0786e44b211deda1c",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -715,7 +756,7 @@
       "status": "added"
     },
     "lab": {
-      "sha256": "a547df47872c60f2cd604d82bbd14df49d9d4f6d35b1ae8b3dd008ea475839f7",
+      "sha256": "1004e4d3cdad90d3d24a7be1d12e7f62f5a17e7f1b23afcaf39ebf25d50f1147",
       "status": "added"
     },
     "package.json": {
@@ -779,7 +820,7 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "bc4bce7dbad743d2914d29429dea63a472b1ac7beebc88c1c56fa9f7f17b013b",
+      "sha256": "db3eeecd82e12dd54f0ff8fe9b4db3fbd982ec1793e283d11f921333fe700ff9",
       "status": "added"
     },
     "src/admission.ts": {
@@ -841,11 +882,15 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "d796947239aa823b039ad25516db193f40525269db05159035dd77ab84fb7a0d",
+      "sha256": "f250815b2d5180281faf0dc0801fffeb4f425ef9dacf919cad38f2221562ff77",
       "status": "added"
     },
     "src/pi/header.ts": {
       "sha256": "b1fb14217ddc76ab615aab5585a8a4a9986d20d505804cbe93ec5dc1be2e8f7f",
+      "status": "added"
+    },
+    "src/pi/relay-extension.ts": {
+      "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -857,7 +902,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "c40e35d5bff9afb4b51a14d37e8077dfd052ea73fcdf6ce8682b4e92c794dd6b",
+      "sha256": "4c5619c33b52ccfdf12e456a65867d7b2e5dc2d40fc13e18297ccf987a68e6dd",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -865,7 +910,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "51d5ba4eeeb6e3969ff4f5748311c210c068cfba1fdd8aab0e1c7bc029845825",
+      "sha256": "5f7f72b3993c9ddf54b602b219a9749aa40478a29eec20a1db21a9844c95812c",
       "status": "added"
     },
     "src/project.ts": {
@@ -881,6 +926,10 @@
       "sha256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58",
       "status": "unchanged",
       "originalSHA256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58"
+    },
+    "src/relay/workspace.ts": {
+      "sha256": "5be557bc597b051f9f5d2e8eb40510b78253db7db0f3302614ed619c1b3623ad",
+      "status": "added"
     },
     "src/runtime/pi.ts": {
       "sha256": "f9a01a5c4657c9a0ea7c5132596bda53521eb5ea1b0953cd935575ff62730fb0",
@@ -995,11 +1044,11 @@
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
-      "sha256": "c3976d0c8f21b1dee3038b6a67bbada2155ccf5c0890d40d1992c885ce165a73",
+      "sha256": "2295e4a0f9e4f863f973ed25d9814c78284fe5004c0c66dd25ee8ed3d8ecb099",
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "14616b86055d0908bc483df3072e7a54a91a630e5063f7270624d82c4070c14f",
+      "sha256": "9c0b57a5a5780d5222d5b54ac30f023baa9defea5ce7554eaecf08920dccffcc",
       "status": "added"
     },
     "tests/process-crash.test.ts": {
@@ -1008,7 +1057,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "370fcf353cf1f289aea71f776392331ae72a06c003cb77667e5a440d795de889",
+      "sha256": "4afc8969484e13c8ec699f320dff1713a8bfa559ab3aede8ca4809ddb8670c2c",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -1019,12 +1068,28 @@
       "sha256": "db6a3500c2c8abfd5da2d12dde52e4abf54c2b3455d60215aedb58c963503790",
       "status": "added"
     },
+    "tests/relay-bridge.test.ts": {
+      "sha256": "a584740b9fb29942e23806b7e0b26c1871793763b32193538f0a219826070405",
+      "status": "added"
+    },
+    "tests/relay-extension.test.ts": {
+      "sha256": "f7b5238901ed9c5ddcb343e114ce98a40ddfac8128e567347ccd236a726355ae",
+      "status": "added"
+    },
     "tests/relay-loader-env-child.ts": {
       "sha256": "599c6255118e44ea2cf73f5728875f8fc025e1e865c67b81c17af2b0174148ae",
       "status": "added"
     },
     "tests/relay-loader-env.test.ts": {
       "sha256": "99c3dce6869c2d0bb99e020c9b82beeb38683fa472258354352c810e8d245e2a",
+      "status": "added"
+    },
+    "tests/relay-pi-actual.test.ts": {
+      "sha256": "63a9d5f3d797c4fba21a4c3d45c18b022f8cc4dbed3b054f267c3e08fe5c70d3",
+      "status": "added"
+    },
+    "tests/relay-workspace.test.ts": {
+      "sha256": "e9acb4d1e3398490e7f5b46408dd70c3945de91c8ed48ba29e59d0e17b1df949",
       "status": "added"
     },
     "tests/relay.test.ts": {
@@ -1050,7 +1115,7 @@
       "status": "added"
     },
     "tests/workspace-help.test.ts": {
-      "sha256": "2b4fd504f82678bd8469c1757c7243e68924988a2e64e9e5a6cc9daacec410c8",
+      "sha256": "35120344dfe372127ee12a49d081d65067e420c725154134553d81048aeecaa4",
       "status": "added"
     },
     "tests/workspace.test.ts": {
