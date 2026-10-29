@@ -144,3 +144,37 @@ worker toolchain/environment contract, toned-down benefit wording, and the
 author's review record/final formatting. A narrow fresh read-only verification
 round against a frozen readiness commit follows; its verdict and exact SHA will
 be recorded separately from any later record-only changes.
+
+### Fresh narrow verification result
+
+**Actual verdict:** “no blockers in this narrow verification round.”
+**Reviewed SHA:** `cbd6ef927add35c66aaa3ce23710b7d3c0d07d8a`.
+The same independent read-only reviewer received the original brief, prior
+findings, author responses and frozen candidate SHA for this separate round.
+No grandchildren, file writes, installs, model trials, CI polling or PR monitoring.
+
+Reviewer independently confirmed all three prior findings closed at the
+**documentation-contract level**: early doctor bootstrap/repair bypass and
+read-only missing-runtime handling; explicit worker toolchain/environment and
+fixtures; hypothesis/observed-input wording. It verified clean frozen HEAD,
+main `9a29db3` ancestry, exactly nine owned manifest additions, all prior entries
+and provenance anchors preserved, every currentFiles SHA-256, PNG/source hashes
+and 728×1003 dimensions, source HTML byte equality to the recorded commit,
+visible DESIGN/no-runtime labels, unchanged runtime paths and whitespace checks.
+The publication checker passed: **209 allowed files, 208 current hashes and all
+nine pinned Relay files**. No retroactive approval of `36b3709` is claimed.
+
+Author additionally checked 41 local Markdown links, fenced-code balance,
+self-contained HTML, PNG signature/dimensions, the ten-path PR scope (nine owned
+artifacts plus manifest), and byte-identical retained provider/browser artifacts.
+Root inspected the old-head CI failure at `36b3709`: install stopped at the same
+publication-allowlist mismatch; no later CI failure was established. This follow-up
+addresses that cause without rerunning the unchanged old head. Root retains its
+watcher and holds merge until PR #12 lands.
+
+**Post-review delta:** only this verification record in `REVIEW.md` and its
+corresponding `docs/source-manifest.json` current hash. The final record-only
+commit is author-checked, **not independently re-reviewed**. No contract,
+recommendation, screenshot, provenance, runtime or prior manifest entry changes
+after the reviewed SHA. These checks qualify documentation publication only;
+all implementation/WSL/model/accessibility unknowns above remain open.
