@@ -159,6 +159,7 @@
     "docs/skills-inventory.json",
     "docs/skills.md",
     "docs/source-manifest.json",
+    "docs/tui/split-contract.md",
     "docs/user-guide.md",
     "examples/skills/terminal-evidence/SKILL.md",
     "install.sh",
@@ -741,6 +742,10 @@
     },
     "docs/skills.md": {
       "sha256": "9929990ae0c52cb30cec0cae797db65df0e1e91678b9dc014a33859b0981e6fa",
+      "status": "added"
+    },
+    "docs/tui/split-contract.md": {
+      "sha256": "52b513cb9abd883f72f383b39daf1de98935eea0f7ee26bba6eaa86114748cb5",
       "status": "added"
     },
     "docs/user-guide.md": {
