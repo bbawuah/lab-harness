@@ -18,7 +18,7 @@ test("native launch uses caller or explicit project B while all startup writes s
   for(const path of [join(install,"src/pi"),join(install,"src/runtime"),join(install,"src/herdr"),join(install,"contracts"),join(install,".tmp/rg"),project,home]) mkdirSync(path,{recursive:true,mode:0o700});
   // Exercise the actual entry/config/project code in an isolated installation.
   // Only pinned dependency verification and terminal attachment are fixture adapters.
-  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
+  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
   writeFileSync(join(install,"src/runtime/pi.ts"),'export function verifyPiRuntime(){return {command:["/verified/pi"],version:"fixture"};}\n');
   writeFileSync(join(install,"src/herdr/interactive.ts"),'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.CAPTURE_PATH,JSON.stringify(options));return 0;}\n');
   const rg="fixture pinned binary";

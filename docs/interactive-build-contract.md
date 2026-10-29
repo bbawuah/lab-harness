@@ -118,3 +118,19 @@ authorized with checksum/license, bounded context/CPU/tokens, no cloud fallback.
 Record sanitized actual raw terminal/screenshot evidence, test results, exact
 head SHA and platform-specific CI state. macOS mini, user's different MacBook,
 Ubuntu CI and WSL are distinct evidence targets.
+
+## Follow-up: project selection from home
+
+The merged workspace guard refuses home because private application state must
+remain beneath home and outside the selected project. The launcher now offers
+an explicit existing-project choice before state, route or Pi startup when the
+caller is home or overlaps the application directories. It never defaults to
+searching home. Blank input, Ctrl-C and Ctrl-D cancel; no TTY means bootstrap
+install-only or an actionable launch refusal. Valid project launches keep their
+existing binding and state separation. This coordinator-owned follow-up adds no
+controlled-task authority and requires a new verified runtime archive pin.
+
+The same immediate follow-up removes the loopback-only self-hosted route rule.
+Saved `kind: local` routes remain compatible; arbitrary valid HTTP(S) hosts are
+allowed without labelling them LiteLLM. Embedded URL credentials/query/fragment
+remain refused. Provider expansion is a separate researched design and build.

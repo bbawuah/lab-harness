@@ -3,7 +3,8 @@ import { lstatSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
-import { bindProjectRoot, verifyProjectBinding } from "../project.ts";
+import { verifyProjectBinding } from "../project.ts";
+import { selectWorkspaceProject } from "./workspace-project.ts";
 import { verifyPiRuntime } from "../runtime/pi.ts";
 import { runHerdrInteractive, verifyHerdrInteractive } from "../herdr/interactive.ts";
 import rgSource from "../../contracts/ripgrep-source.json";
@@ -20,7 +21,7 @@ export function verifyWorkspaceRg(): string {
 /** Starts native Pi coding. No ledger task grant, ingest, or acceptance exists here. */
 export async function runInteractiveWorkspace(options: { configure?: boolean; project?: string } = {}): Promise<number> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error("LAB interactive workspace requires a terminal");
-  const project = bindProjectRoot(options.project ?? process.cwd());
+  const project = await selectWorkspaceProject(options.project ?? process.cwd(), installRoot);
   const runtime = verifyPiRuntime();
   const herdr = join(installRoot, ".tmp/herdr/herdr");
   verifyHerdrInteractive(herdr); const rg = verifyWorkspaceRg();

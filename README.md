@@ -8,11 +8,11 @@
 LAB-HARNESS is an AI coding workspace for your terminal and the project you are
 in. Pi provides the conversation and coding tools, Herdr runs the interactive
 terminal, and LAB adds source search and explicit skill loading. Connect a local
-model server or your existing LiteLLM endpoint.
+model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
 ## Install and start
 
-Run this **from your project folder**. You do not need a LAB-HARNESS checkout,
+Run this from your project folder **or your home folder**. You do not need a LAB-HARNESS checkout,
 Git, Bun, Node or Pi already installed:
 
 ```sh
@@ -20,9 +20,15 @@ curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.
 ```
 
 The command installs the harness in your user directory, then opens setup and
-the LAB TUI in your current project. First run asks for:
+the LAB TUI in your current project. From home (or a folder containing LAB's
+installation/state), it first asks you to select an existing project folder,
+such as `~/Projects/my-app`. Enter the path without shell quotes; spaces work.
+Blank input, Ctrl-C or Ctrl-D cancels. LAB never selects home for source search.
+Model setup then asks for:
 
-1. `local` or `litellm`.
+1. `local` for a local/self-hosted OpenAI-compatible server, or `litellm` for
+   your existing LiteLLM endpoint. Self-hosted URLs may be on any HTTP(S) host,
+   including LAN and tailnet addresses.
 2. The existing OpenAI-compatible base URL, including `/v1` when required.
 3. The exact local model ID or existing LiteLLM alias, then its API key.
    Key input is hidden; leave it blank for an unauthenticated local server.
@@ -66,7 +72,7 @@ For an existing LAB-HARNESS clone, the equivalent setup and start are:
 ```sh
 cd lab-harness
 ./install.sh
-./lab
+./lab --project "/path/to/my project"
 ```
 
 You can also invoke that clone's absolute `lab` path from another project.
@@ -134,6 +140,12 @@ Rerun the public install command to verify/reuse the pinned release and update
 the LAB-owned launcher. Source archives and runtime artifacts have fixed hashes.
 Modified release source and unrecognized existing launchers are refused rather
 than overwritten. Old releases and user state are retained.
+
+If startup asks for a project, choose an existing code folder outside LAB's
+release and private-state folders. Home itself cannot be the workspace. You
+can also `cd` into your project and run the launcher, or use `--project DIR`.
+Without a TTY, bootstrap installs only; open the printed launcher in a terminal
+to select the project and configure a model.
 
 ## Secondary demonstrations and developer checks
 
