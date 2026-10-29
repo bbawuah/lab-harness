@@ -69,10 +69,21 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
   const marker = `PI_READY_${root.slice(-6)}`;
   // All values and startup files here are synthetic; never consult the user's RC.
   const presence = name === "bash" ? `[ "$TMPDIR" = '${root}' ] && [ "$XDG_CONFIG_HOME" = '${home}/config' ]` : `[ "${"${TMPDIR+x}"}" = '' ] && [ "${"${XDG_CONFIG_HOME+x}"}" = '' ] && [ "$ZDOTDIR" = '${home}' ]`;
-  writeFileSync(join(home, rc), `printf started > '${root}/rc-started'\n[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '${shellExecutable}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n`);
+  const promptHook = `_lab_prompt_count=0\n_lab_prompt_ready() { _lab_prompt_count=$((_lab_prompt_count + 1)); printf '%s' "$_lab_prompt_count" > '${root}/prompt-count'; }\n` + (name === "bash" ? "PROMPT_COMMAND=_lab_prompt_ready\n" : "precmd_functions+=(_lab_prompt_ready)\n");
+  writeFileSync(join(home, rc), `printf started > '${root}/rc-started'\n[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '${shellExecutable}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n` + promptHook);
   const worker = join(root, "pi.sh"), driver = join(root, "driver.ts");
   writeFileSync(worker, `#!/bin/sh\ntrap 'stty size > "$1/resized"' WINCH\nprintf '${marker}\\n'\n[ "$LAB_WORKSPACE_API_KEY" = 'pi-only-key' ] && [ "$LAB_RELAY_RUN_REF" = 'pi-only-relay' ] && [ "$PI_CODING_AGENT_DIR" = 'pi-only-dir' ] && printf ok > "$1/pi-env"\nwhile :; do read -r line || continue; printf '%s' "$line" > "$1/pi-input"; [ "$line" = done ] && break; done\nprintf 0 > "$1/exit"\n`, { mode: 0o700 });
-  const captured = { HOME: home, PATH: "/usr/bin:/bin", SHELL: shellExecutable, LANG: "C", ...(name === "zsh" ? { ZDOTDIR: home } : { TMPDIR: root, XDG_CONFIG_HOME: `${home}/config` }), LAB_WORKSPACE_API_KEY: "incoming-key", LAB_RELAY_RUN_REF: "incoming-ref", PI_CODING_AGENT_DIR: "incoming-dir" };
+  const captured = { HOME: home, PATH: "/usr/bin:/bin", SHELL: shellExecutable, LANG: "C", ...(name === "zsh" ? { ZDOTDIR: home } : { TMPDIR: root, XDG_CONFIG_HOME: `${home}/config` }), LAB_WORKSPACE_API_KEY: "incoming-key", LAB_RELAY_RUN_REF: "incoming-ref", PI_CODING_AGENT_DIR: "incoming-dir" } as Record<string, string>;
+  if (name === "zsh" && process.platform === "linux") {
+    // Audit runner defaults for diagnosis, then use only the packaged Completion
+    // directory in this synthetic fixture. Production inherits the user's FPATH.
+    // The actual interactive shell still runs /etc/zsh/zshrc and compinit normally.
+    const audit = Bun.spawnSync([shellExecutable, "-f", "-c", "autoload -Uz compaudit; compaudit"], { env: captured, timeout: 1500, maxBuffer: 16384 });
+    if (audit.exitCode !== 0) console.error("Synthetic zsh default completion audit:", JSON.stringify({ exit: audit.exitCode, paths: audit.stdout.toString().slice(0, 1600), diagnostic: audit.stderr.toString().slice(0, 500) }));
+    captured.FPATH = "/usr/share/zsh/functions/Completion";
+    const packaged = Bun.spawnSync([shellExecutable, "-f", "-c", "autoload -Uz compinit compaudit; [[ -r $fpath[1]/compinit && -r $fpath[1]/compaudit ]] && compaudit"], { env: captured, timeout: 1500, maxBuffer: 16384 });
+    if (packaged.exitCode !== 0) throw new Error(`Packaged synthetic zsh completion prerequisite failed: ${JSON.stringify({ exit: packaged.exitCode, stdout: packaged.stdout.toString().slice(0, 1000), stderr: packaged.stderr.toString().slice(0, 500) })}`);
+  }
   writeFileSync(driver, `import {runHerdrInteractive} from ${JSON.stringify(resolve("src/herdr/interactive.ts"))};\nimport {buildRegularShell} from ${JSON.stringify(resolve("src/herdr/shell.ts"))};\nconst code=await runHerdrInteractive({executable:${JSON.stringify(resolve(".tmp/herdr/herdr"))},command:['/bin/sh',${JSON.stringify(worker)},${JSON.stringify(root)}],cwd:${JSON.stringify(project)},stateRoot:${JSON.stringify(root)},exitFile:${JSON.stringify(join(root,"exit"))},environment:{LAB_WORKSPACE_API_KEY:'pi-only-key',LAB_RELAY_RUN_REF:'pi-only-relay',PI_CODING_AGENT_DIR:'pi-only-dir'},shell:buildRegularShell(${JSON.stringify(captured)})}); await Bun.write(${JSON.stringify(join(root,"result"))}, String(code));`);
   let raw = "";
   const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", driver], { terminal: { cols: 150, rows: 40, data(_term, data) { raw += new TextDecoder().decode(data); } } });
@@ -81,7 +92,7 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
     const end = Date.now() + 10000;
     while (!predicate()) {
       if (Date.now() > end || child.exitCode !== null) {
-        const flags = Object.fromEntries(["shell-ready", "pi-env", "rc-started", "shell-pid", "env-ok"].map(file => [file, existsSync(join(root, file))]));
+        const flags = Object.fromEntries(["shell-ready", "pi-env", "rc-started", "shell-pid", "env-ok", "prompt-count"].map(file => [file, existsSync(join(root, file))]));
         const diagnostic = { description, shellExecutable, markerRendered: raw.includes(marker), flags, driverExit: child.exitCode, native: await startupDiagnostics(child.pid, Date.now() + 750), tail: raw.slice(-800) };
         writeFileSync(join(root, "startup-diagnostic.json"), JSON.stringify(diagnostic));
         throw new Error(`${name}: waiting for ${description}; evidence ${root}; ${JSON.stringify(diagnostic)}`);
@@ -93,6 +104,8 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
   const timeout = setTimeout(() => child.kill("SIGTERM"), 25000);
   try {
     await wait("both startup markers", () => raw.includes(marker) && has("shell-ready") && has("pi-env"));
+    await wait("initial interactive shell prompt", () => has("prompt-count") && Number(readFileSync(join(root, "prompt-count"), "utf8")) > 0);
+    const promptCount = () => Number(readFileSync(join(root, "prompt-count"), "utf8"));
     expect(has("env-ok")).toBe(true);
     expect(readFileSync(join(root, "shell-cwd"), "utf8").trim()).toBe(project);
     expect(readFileSync(join(root, "shell-after-rc"), "utf8").trim()).toBe(join(project, "after-rc"));
@@ -106,10 +119,12 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
     expect(readFileSync(join(root, "shell-pid-after"), "utf8")).toBe(readFileSync(join(root, "shell-pid"), "utf8"));
     expect(readFileSync(join(root, "pi-input"), "utf8")).toBe("first");
     child.terminal!.write(`printf busy > '${root}/busy'; sleep 30\r`); await wait("foreground job", () => has("busy"));
-    child.terminal!.write("\x03"); await pause(250);
+    const beforeCtrlC = promptCount();
+    child.terminal!.write("\x03"); await wait("shell prompt after native Ctrl-C", () => promptCount() > beforeCtrlC);
     child.terminal!.write(`printf alive > '${root}/shell-alive'\r`); await wait("shell after Ctrl-C", () => has("shell-alive"));
     child.terminal!.write(`printf busy > '${root}/busy-again'; sleep 30\r`); await wait("second foreground job", () => has("busy-again"));
-    child.kill("SIGINT"); await pause(250);
+    const beforeSignal = promptCount();
+    child.kill("SIGINT"); await wait("shell prompt after parent SIGINT", () => promptCount() > beforeSignal);
     child.terminal!.write(`printf alive > '${root}/shell-after-signal'\r`); await wait("shell after parent SIGINT", () => has("shell-after-signal"));
     expect(readFileSync(join(root, "pi-input"), "utf8")).toBe("first");
     child.terminal!.write("\x02\t"); await pause(250);
