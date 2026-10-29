@@ -13,6 +13,16 @@ const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
 const source = resolve(import.meta.dir, "..");
 type Peer = { session_id: string; peer_id: string; name: string; generation: number; phase: string; lease_until: number };
+function initialWalSidecarsPending(error: unknown, path: string, readiness: { seenSession: boolean }): boolean {
+  const sqlite = error as { code?: string; errno?: number } | null;
+  if (readiness.seenSession || sqlite?.code !== "SQLITE_CANTOPEN" || sqlite.errno !== 14) return false;
+  const header = Buffer.alloc(100), fd = openSync(path, "r");
+  let count: number;
+  try { count = readSync(fd, header, 0, 100, 0); } finally { closeSync(fd); }
+  return count === 100 && header.subarray(0, 16).toString() === "SQLite format 3\0" && header[18] === 2 && header[19] === 2
+    && header.readUInt32BE(60) === 1 && header.readUInt32BE(68) === 0x4c525931
+    && (!existsSync(path + "-wal") || !existsSync(path + "-shm"));
+}
 function committedPeerRows(db: Database, path: string, readiness: { seenSession: boolean }): Peer[] {
   // This is a read-only observer, not a production Relay opener. A freshly
   // created control inode precedes its schema transaction's commit. Observe
@@ -31,15 +41,7 @@ function committedPeerRows(db: Database, path: string, readiness: { seenSession:
     // A readonly handle opened before WAL activation cannot create the first
     // WAL sidecars. Retry only this initial, marked, header-confirmed window;
     // all other SQLite failures and every post-readiness failure propagate.
-    const sqlite = error as { code?: string; errno?: number };
-    if (!readiness.seenSession && sqlite.code === "SQLITE_CANTOPEN" && sqlite.errno === 14) {
-      const header = Buffer.alloc(100), fd = openSync(path, "r");
-      let count: number;
-      try { count = readSync(fd, header, 0, 100, 0); } finally { closeSync(fd); }
-      if (count === 100 && header.subarray(0, 16).toString() === "SQLite format 3\0" && header[18] === 2 && header[19] === 2
-        && header.readUInt32BE(60) === 1 && header.readUInt32BE(68) === 0x4c525931
-        && (!existsSync(path + "-wal") || !existsSync(path + "-shm"))) return [];
-    }
+    if (initialWalSidecarsPending(error, path, readiness)) return [];
     throw error;
   }
 }
@@ -56,7 +58,16 @@ test("readonly observer waits for schema commit and first WAL sidecars, refusing
     writer.exec("COMMIT");
     writer.exec("PRAGMA journal_mode=WAL");
     expect(existsSync(path + "-shm")).toBe(false);
-    expect(rows()).toEqual([]); // Marked WAL header, sidecars not yet published.
+    const cantopen = { code: "SQLITE_CANTOPEN", errno: 14 };
+    // Exercise classification deterministically; Linux may successfully read
+    // the committed rows here while Darwin's pre-WAL handle needs a retry.
+    expect(initialWalSidecarsPending(cantopen, path, { seenSession: false })).toBe(true);
+    expect(initialWalSidecarsPending(cantopen, path, { seenSession: true })).toBe(false);
+    expect(initialWalSidecarsPending({ code: "SQLITE_CORRUPT", errno: 11 }, path, { seenSession: false })).toBe(false);
+    expect(initialWalSidecarsPending({ code: "SQLITE_CANTOPEN", errno: 1 }, path, { seenSession: false })).toBe(false);
+    const initialWalRows = rows();
+    if (initialWalRows.length) expect(initialWalRows).toEqual([{ session_id: "fixture-session", peer_id: "fixture-peer", name: "fixture", generation: 0, phase: "active", lease_until: 123 }]);
+    else expect(initialWalRows).toEqual([]);
     writer.exec("UPDATE sessions SET lease_until=124");
     expect(rows()).toEqual([{ session_id: "fixture-session", peer_id: "fixture-peer", name: "fixture", generation: 0, phase: "active", lease_until: 124 }]);
     expect(readiness.seenSession).toBe(true);
