@@ -4,7 +4,7 @@ Research date: 2026-10-29. Research only; no browser attachment or runtime quali
 
 ## First checkpoint
 
-Verified before writes: cwd `/Users/labbawuah/.t3/worktrees/lab-harness/research-airgap-browser-connection`, branch `research/airgap-browser-connection`, HEAD `43a6ac2267d0261998453d56bd7f834956531812`, clean status. No AGENTS.md found in the worktree or checked ancestor directories. Read lead skill and review discipline; solo research, no subagents/provider calls. Read `docs/architecture.md` and `docs/research/model-providers.md`; they remain unchanged.
+Verified before writes: cwd verified as the app-bound `lab-harness/research-airgap-browser-connection` worktree (absolute user path omitted from publication), branch `research/airgap-browser-connection`, HEAD `43a6ac2267d0261998453d56bd7f834956531812`, clean status. No AGENTS.md found in the worktree or checked ancestor directories. Read lead skill and review discipline; solo research, no subagents/provider calls. Read `docs/architecture.md` and `docs/research/model-providers.md`; they remain unchanged.
 
 Initial source map: Microsoft Edge DevTools protocol and WebDriver/EdgeOptions; Edge enterprise debugging/extension/native messaging policies; Microsoft WSL networking; Chromium debugger API; Playwright browser types/channels and release source; Playwright MCP release source; MCP transport specification. Primary findings: existing tabs need a pre-enabled debugging endpoint or approved extension; WSL NAT does not imply Windows loopback reachability; extension debugger is also subject to DevTools policy. MCP adds tool transport, not permission to attach.
 

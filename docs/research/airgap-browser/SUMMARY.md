@@ -42,7 +42,7 @@ The repository's [architecture](../../architecture.md) and [provider design](../
 - [SOURCES.md](SOURCES.md): dated primary evidence, immutable source pins and drift caveats.
 - [POC-PLAN.md](POC-PLAN.md): **NOT EXECUTED**, falsifiable tests and decision gates.
 
-**D** means official documentation; **S** means inspected source at an immutable commit; **R** means LAB recommendation/inference; **U** means unqualified. No live tabs, profiles, authentication, private sites or browser endpoints were inspected. No packages installed, services started, browser flags enabled, policies/firewall changed, models called or subagents used. Only public research and repository reads were performed before authoring these documents. Local documentation checks are recorded in the PR and handoff; none are interoperability tests.
+**D** means official documentation; **S** means inspected source at an immutable commit; **R** means LAB recommendation/inference; **U** means unqualified. No live tabs, profiles, authentication, private sites or browser endpoints were inspected. During the initial study no packages were installed, services started, browser flags enabled, policies/firewall changed, runtime models called or subagents used. A subsequent, separately authorized independent read-only Codex review is part of publication readiness. Only public research and repository reads were performed before authoring these documents. Local documentation checks are recorded in the PR and handoff; none are interoperability tests.
 
 ## Questions that block choosing a production route
 
@@ -57,3 +57,13 @@ These do not block this study; answer before authorizing the PoC:
 ## Actual documentation validation
 
 On 2026-10-29: local Markdown file-link existence and code-fence balance checks passed for all six Markdown files; HTML had no external resource references and retained its DESIGN label. T3 `html_preview` rendered the self-contained mockup at 728px/light (667px content height) and 360px/dark (1029px), both with empty console messages. Staged `git diff --check` passed; seven added files are exclusively inside this research directory. These checks do not test Edge, WSL, SSO, browser policies or the proposed bridge. No product tests/full gate or CI watcher was run for this docs-only study.
+
+## DESIGN visual evidence
+
+![DESIGN ONLY — proposed browser connection flow, not implemented or tested](DESIGN.png)
+
+The image is the original self-contained HTML render, not a live browser-control screenshot. [HTML source](DESIGN.html) and [capture provenance and byte hashes](DESIGN.json) identify the exact artifact.
+
+## Publication readiness follow-up
+
+The initial publication failure was an absolute user path in the checkpoint record. It has been replaced with a sanitized worktree identifier; citations are unchanged. The unmodified publication checker passes after the normal explicit refresh: 190 allowed files, 189 current hashes and all nine pinned Relay files. Manifest inspection confirms that only the nine research artifacts (the original seven plus PNG/provenance) were added; existing current identities and immutable original anchors are unchanged. Screenshot/provenance hashes and local documentation links were verified. These remain documentation checks, not executed PoC results.

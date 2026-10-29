@@ -1,0 +1,23 @@
+{
+  "kind": "rendered-design-mockup",
+  "implemented": false,
+  "browserControlEvidence": false,
+  "designSourceCommit": "dd74fe62eebdd66a2813e94450691783fd533ee4",
+  "capturedOn": "2026-10-29",
+  "environment": "T3 html_preview headless browser, light appearance",
+  "viewport": {
+    "width": 728,
+    "height": 667
+  },
+  "consoleMessages": [],
+  "html": {
+    "path": "docs/research/airgap-browser/DESIGN.html",
+    "sha256": "82083285567f8d8a8e6ace598a65ef90c7a1ac94acf445d30f3f4577cdcec2b0"
+  },
+  "image": {
+    "path": "docs/research/airgap-browser/DESIGN.png",
+    "sha256": "41c8517ff178167a708a9ca1570f8283f8744ff23c2a1a0bdf0bb571d9f9857c"
+  },
+  "privacy": "DESIGN-labelled synthetic flow only; no user tabs, profiles, authentication or live sites",
+  "reproduction": "Render the self-contained DESIGN.html with T3 html_preview at width 728/light. PNG saved from the original successful render, without image edits. Theme/browser rendering may vary; hashes identify the exact saved evidence. Not proof of Edge attachment, WSL interoperability or runtime success."
+}
