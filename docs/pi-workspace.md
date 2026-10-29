@@ -1,7 +1,7 @@
 # Native Pi interactive workspace
 
 `src/pi/workspace.ts` exports
-`runInteractiveWorkspace(options?: { configure?: boolean; project?: string }): Promise<number>`.
+`runInteractiveWorkspace(options?: { configure?: boolean; project?: string; relayGroup?: string }): Promise<number>`.
 The coordinator's `./lab` launcher calls it; `./lab --configure` repeats route
 setup. The selected project is `options.project ?? process.cwd()`, canonically
 bound through `src/project.ts`. `./lab --project '/path/to/project B'` selects
@@ -28,10 +28,10 @@ The integration requires coordinator SearchService support for the explicit
 `projectBinding` option with the exact selected directory identity.
 Default SearchService callers retain their existing owned-subdirectory rules.
 
-First run requires an actual terminal. Choose `local` with an explicit loopback
-OpenAI-compatible base URL and exact model ID, or `litellm` with an existing
-HTTP(S) endpoint, alias and key. Local currently means `localhost`, `127.0.0.1`
-or `[::1]`; it does not describe a LAN server. Setup does not select a service,
+First run requires an actual terminal. Choose `local` with an explicit
+self-hosted OpenAI-compatible HTTP(S) base URL and exact model ID, or `litellm`
+with an existing HTTP(S) endpoint, alias and key. Self-hosted destinations may
+use loopback, LAN, tailnet or another valid host. Setup does not select a service,
 start LiteLLM, download weights or fall back to a cloud provider. Endpoint URLs
 cannot contain credentials, query strings or fragments. Include `/v1` when the
 server requires it. Remote LiteLLM is an explicitly selected existing route;

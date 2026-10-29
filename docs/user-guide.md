@@ -176,7 +176,8 @@ Reconnect/reload preserves the logical session's peer/mailbox and fences old
 helpers. New sessions get new peers. Messages/receipts remain for recovery.
 Body limit is 16,000 UTF-8 bytes; inbox defaults to five/max ten messages, peer
 pages default twenty/max fifty, and /relay-inbox WAIT_MS is bounded to 10,000ms.
-Use the next offset for more peers. An inbox wait can be cancelled without ack.
+Use the next offset for more peers. Model-tool waits support cancellation;
+session shutdown cancels active waits without acknowledging mail.
 
 ## Search and skills
 

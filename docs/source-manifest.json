@@ -572,7 +572,7 @@
       "status": "added"
     },
     "docs/pi-workspace.md": {
-      "sha256": "39106b0c8026f77dfc5787a46a5824eaa7f1dbf4a68c69b0b1e59eb15bd0f0f9",
+      "sha256": "8f65449e1e4d3f23bd496d06a1e22d5d0d7edc8d53367882f2b3c42dd7616910",
       "status": "added"
     },
     "docs/publication-plan.md": {
@@ -604,7 +604,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "a94c38f06ae9b3a56d6f2e0222925c3111adffd4d60ccb2f8de8d3988f7d803a",
+      "sha256": "fac4e8837e910709ea15d7483300b0b9261345f7fc63225e426a1c2a312f8ca6",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
