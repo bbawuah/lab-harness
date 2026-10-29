@@ -5,86 +5,147 @@
 
 # LAB-HARNESS
 
-An interactive Pi coding workspace with LAB branding, bounded source search,
-explicit skill loading and a persistent terminal owned by Herdr. The separate
-LAB ledger keeps durable task evidence and explicit operator acceptance.
+LAB-HARNESS is an AI coding workspace for your terminal and the project you are
+in. Pi provides the conversation and coding tools, Herdr runs the interactive
+terminal, and LAB adds source search and explicit skill loading. Connect a local
+model server or your existing LiteLLM endpoint.
 
-## Install and open LAB
+## Install and start
 
-From your terminal, outside any checkout:
+Run this **from your project folder**. You do not need a LAB-HARNESS checkout,
+Git, Bun, Node or Pi already installed:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.sh | sh
 ```
 
-**This public command becomes available when this change is merged.** The
-bootstrap downloads a SHA-256-pinned immutable harness archive and installs
-Bun 1.4.2 when needed, Pi 1.4.0 standalone, Herdr 0.9.5, ripgrep, fd and frozen
-JavaScript dependencies. No Git, global Pi, Node, sudo or shell profile edit is
-required. Supported platforms are macOS arm64/x86_64 and Linux x86_64 with
-standard `curl`, `tar`, `unzip` and SHA-256 tools. WSL remains unverified.
+The command installs the harness in your user directory, then opens setup and
+the LAB TUI in your current project. First run asks for:
 
-Installation then opens the interactive setup and TUI through `/dev/tty`;
-piped script bytes are never read as answers. Without a controlling terminal,
-installation finishes and prints the exact launcher path. For installation
-only, append `| sh -s -- --install-only` instead of `| sh`.
+1. `local` or `litellm`.
+2. The existing OpenAI-compatible base URL, including `/v1` when required.
+3. The exact local model ID or existing LiteLLM alias, then its API key.
+   Key input is hidden; leave it blank for an unauthenticated local server.
 
-First start asks for an existing local OpenAI-compatible endpoint and exact
-model ID, or an existing LiteLLM endpoint, alias and private API key. Key input
-is hidden and stored in private user-local state. Installation sends no model
-prompt, chooses no paid model and downloads no weights. Start your local model
-server separately, then enter its `/v1` URL and model ID. LiteLLM remains a
-client destination; LAB installs no gateway. Once configured, type a prompt.
+Pi may also ask whether you trust the selected project folder. Review that native
+prompt and make your choice; LAB does not bypass it.
 
-The stable launcher is `${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab`.
-Setup prints an explicit PATH command if you want to run `lab` by name; profiles
-are untouched. Releases live under the adjacent `releases/<commit>` directory;
-route, key and native Pi sessions persist beneath
-`$HOME/.local/share/lab-harness/workspace`, including when releases use an
-external `XDG_DATA_HOME`.
-Rerun the public command to install the pinned release, verify existing source,
-repair missing runtimes, and update the owned launcher. Unrecognized existing
-launchers or modified source are refused with instructions. Old releases remain
-available; no user state is silently deleted.
+**You provide the model endpoint.** Start your local model server separately,
+or use an existing LiteLLM service. Installation does not deploy LiteLLM, download
+model weights, send a model prompt or choose a paid model. Once the TUI opens,
+type a prompt. Use `/exit` to leave.
 
-From an existing checkout, including a fresh pull on your MacBook:
+Supported: **macOS arm64/Intel and Linux x86_64**; WSL is not yet verified.
+Standard `curl`, `tar`, `unzip` and SHA-256 utilities are needed. First install
+needs GitHub/npm access to acquire verified Pi 1.4.0, Herdr 0.9.5, ripgrep,
+fd and Bun 1.4.2 when missing. No sudo or shell profile changes are made.
+Without an interactive terminal, the command installs only and prints the
+launcher. Explicit install-only mode is `| sh -s -- --install-only`.
+
+## Start again in your project
+
+From the project you want to work on, run this exact command:
 
 ```sh
+"${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab"
+```
+
+Or select an existing project explicitly, including paths with spaces:
+
+```sh
+"${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab" --project "/path/to/my project"
+```
+
+The TUI shows the selected project. Pi's working directory, LAB source search
+and project skills all use that folder. The installed harness and private model
+settings stay separate. Sessions are stored by project; normal startup creates
+a new session, with previous ones available through Pi's session controls.
+
+For an existing LAB-HARNESS clone, the equivalent setup and start are:
+
+```sh
+cd lab-harness
 ./install.sh
 ./lab
 ```
 
-`./lab` also acquires missing verified runtime dependencies on demand. Use
-`./lab --configure` to change routes and `./lab --offline` to require complete
-local caches with no acquisition network access. `./install.sh --offline` also
-requires cached frozen JavaScript dependencies. Normal reruns reuse valid
-caches and repair partial/corrupt runtime downloads atomically. A first install
-needs GitHub/npm access; a missing offline dependency produces an error.
-Bun caches, Pi, Herdr, fd and ripgrep remain beneath the checkout's `.tmp`.
+You can also invoke that clone's absolute `lab` path from another project.
+Bare `lab` requires an explicit PATH addition; setup prints the optional command.
+For the current shell only:
 
-## In the workspace
+```sh
+export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness:$PATH"
+```
 
-Type a prompt to use the model you selected. `/lab-search TEXT` and
-`/lab-files NAME` perform bounded literal search with source hashes; the model
-also has `lab_search` and `lab_files` tools. `/lab-skills` lists available local
-repository, Codex and Claude skill metadata. `/lab-skill ID` explicitly loads
-verified instructions; ambiguous origins require the exact displayed origin
-and path. Discovery does not execute skill scripts. Native Pi provides its
-coding tools and session behavior. `/exit` exits the workspace.
+## Try it
 
-**LAB does not submit this workspace as a controlled ledger task.** Controlled
-`activate-pi` execution remains unavailable: request admission is unqualified
-across retries, compaction, auth/routing and native session behavior. The TUI
-runs useful native Pi coding while the separate operator ledger retains explicit
-acceptance. Native shell/file tools run as your user; this workflow separation is
-not an OS sandbox. [Mode boundary and source evidence](docs/pi-seam.md).
+Type a simple first prompt:
 
-## Secondary demonstrations
+```text
+Reply with exactly READY as plain text. Do not call tools.
+```
 
-The demos below demonstrate ledger/search/terminal contracts and do not open the
-AI workspace. `bun --no-env-file run demo:terminal` runs a harmless real Herdr
-worker; `bun --no-env-file run demo` uses fixture workers. Historical no-model
-branding and output-slide captures are described in [the media guide](docs/demos/README.md).
+Then try the LAB commands:
+
+```text
+/lab-search TODO
+/lab-files README
+/lab-skills
+```
+
+Search returns matching project files, lines and byte hashes. The model also
+has `lab_search` and `lab_files` tools. `/lab-skills` lists project, bundled and
+local user skills without loading or running them. To load the bundled example,
+replace `ID` with its displayed `terminal-evidence` ID:
+
+```text
+/lab-skill ID examples terminal-evidence/SKILL.md
+```
+
+Other skills can use `/lab-skill ID` when their source is unambiguous. Loading
+rechecks instruction/resource identities and does not run scripts. Native Pi
+provides the usual file and shell coding tools.
+
+This is a **native Pi coding workspace**. Controlled LAB ledger-task execution
+remains unavailable; terminal output never accepts a LAB task. Native shell and
+file tools run as your user, so project binding is not an OS sandbox. Details
+and the unqualified request-admission boundary are explained below.
+
+[Actual current terminal/model evidence](docs/interactive-validation.md) records
+what was tested, including the small local model's tool-use limits. Historical
+screenshots below are separate observations.
+
+## Settings, caches and updates
+
+Use the same launcher with `--configure` to change endpoint/model/key, or with
+`--offline` to require complete local runtime caches. `./install.sh --offline`
+also requires the frozen JavaScript package cache. A healthy launch reads the
+verified runtime and keeps working/session state outside the installation and
+project. Missing/corrupt dependencies need repair; offline repair fails clearly
+when bytes are unavailable.
+
+Releases live under
+`${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/releases/<commit>`. Private
+route, key, sessions and owned terminal state stay under
+`$HOME/.local/share/lab-harness/workspace`, including when releases use external
+`XDG_DATA_HOME`. Keys are private file contents, not command arguments.
+
+Rerun the public install command to verify/reuse the pinned release and update
+the LAB-owned launcher. Source archives and runtime artifacts have fixed hashes.
+Modified release source and unrecognized existing launchers are refused rather
+than overwritten. Old releases and user state are retained.
+
+## Secondary demonstrations and developer checks
+
+These commands demonstrate task/search/terminal contracts; they do not start the
+AI workspace. `demo:terminal` uses a harmless real Herdr worker; `demo` uses
+fixture workers. Developer checks require the source Git checkout.
+
+![Historical no-model Pi startup text; not the current interactive workspace](docs/media/pi-startup-text.png)
+
+This historical image captures startup text at source commit `93a831c4`, before
+the interactive workspace. It is a text reconstruction, not a current screenshot
+or proof of inference. [Historical capture guide](docs/demos/README.md).
 
 ### Advanced manual setup
 

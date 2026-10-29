@@ -11,6 +11,8 @@ test("explicit unrelated project with spaces retains source guards and refuses r
   try {
     writeFileSync(join(project, "notes.md"), "EXTERNAL_PROJECT_NEEDLE\n");
     writeFileSync(join(project, ".env"), "EXTERNAL_PROJECT_NEEDLE private\n");
+    mkdirSync(join(project, ".ssh")); writeFileSync(join(project, ".ssh/id_ed25519"), "EXTERNAL_PROJECT_NEEDLE private\n");
+    writeFileSync(join(project, "certificate.pem"), "EXTERNAL_PROJECT_NEEDLE private\n");
     symlinkSync(join(parent, "outside"), join(project, "escape")); writeFileSync(join(parent, "outside"), "EXTERNAL_PROJECT_NEEDLE outside");
     const binding = bindProjectRoot(project); expect(verifyProjectBinding(binding)).toEqual(binding);
     expect(() => new SearchService(project)).toThrow("STATE_OUTSIDE_CONCEPT");

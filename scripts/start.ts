@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, resolve } from "node:path";
 import { verifyInstalledRuntime } from "../src/runtime/verify.ts";
 
 const root = resolve(import.meta.dir, "..");
@@ -9,7 +9,8 @@ const caller = process.env.LAB_CALLER_CWD;
 for (let index = 0; index < args.length; index++) {
   if (args[index] === "--project") {
     if (project || !args[index + 1] || args[index + 1]!.startsWith("--")) { console.error("LAB: use --project DIR once."); process.exit(2); }
-    project = resolve(caller ?? process.cwd(), args[++index]!);
+    const value = args[++index]!;
+    project = isAbsolute(value) ? resolve(value) : resolve(caller ?? process.cwd(), value);
   } else if (!["--help", "--configure", "--offline"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
 }
 if (args.includes("--help")) {
@@ -35,7 +36,7 @@ try {
 } catch (error) {
   // These are local startup errors. Never dump arbitrary provider or input payloads.
   const code = error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : "WORKSPACE_START_FAILED";
-  const message = code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
+  const message = code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
     ? error.message : `${code}. Check installation and local route; use ./lab --configure to change it.`;
   console.error(`LAB: ${message}`);
   process.exitCode = 1;

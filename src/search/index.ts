@@ -20,7 +20,9 @@ export type SearchOptions = ContractOptions & {
 type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot" | "projectBinding">>;
 const defaults: Bounds = { engine: "auto", limit: 5, maxEntries: 10000, maxFileBytes: 1024 * 1024, maxTotalBytes: 32 * 1024 * 1024, maxDepth: 20, maxSnippetBytes: 400 };
 const caps = { limit: 1000, maxEntries: 100000, maxFileBytes: 1024 * 1024, maxTotalBytes: 256 * 1024 * 1024, maxDepth: 40, maxSnippetBytes: 4096 };
-const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") || [".git", ".lab", ".tmp", "node_modules"].includes(name);
+const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") ||
+  [".git", ".lab", ".tmp", ".ssh", ".aws", ".gnupg", "node_modules"].includes(name) ||
+  /^(?:auth\.json|credentials?(?:\..*)?|secrets?(?:\..*)?|id_(?:rsa|ed25519))$|\.(?:pem|key|p12)$/i.test(name);
 const order = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 const same = (a: Stats, b: Stats): boolean => a.dev === b.dev && a.ino === b.ino && a.size === b.size && a.mtimeMs === b.mtimeMs && a.ctimeMs === b.ctimeMs && b.nlink === 1;
 const snippet = (line: string, bytes: number): string => {
