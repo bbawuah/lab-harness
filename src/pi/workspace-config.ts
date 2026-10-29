@@ -1,6 +1,7 @@
 /** Project-local route setup. Native Pi remains an interactive coding workspace. */
 import { constants, lstatSync, mkdirSync, openSync, readFileSync, closeSync, fstatSync, writeFileSync, renameSync, chmodSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, isAbsolute, join, resolve, sep } from "node:path";
+import { homedir } from "node:os";
 import { createInterface } from "node:readline/promises";
 import { randomUUID } from "node:crypto";
 
@@ -16,9 +17,30 @@ export function validateRoute(value: unknown): WorkspaceRoute {
   return { version: 1, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model };
 }
 export function privateDirectory(path: string): void {
+  let cursor = resolve(path);
+  for (;;) {
+    const ancestor = lstatSync(cursor, { throwIfNoEntry: false });
+    if (ancestor && (!ancestor.isDirectory() || ancestor.isSymbolicLink())) throw new Error("Workspace state ancestor must be a real directory, without symlinks");
+    if (dirname(cursor) === cursor) break;
+    cursor = dirname(cursor);
+  }
   const stat = lstatSync(path, { throwIfNoEntry: false });
-  if (stat && (!stat.isDirectory() || stat.isSymbolicLink())) throw new Error("Unsafe workspace state directory");
+  if (stat && (stat.uid !== process.getuid?.() || !stat.isDirectory() || stat.isSymbolicLink())) throw new Error("Workspace state directory must be owned by this user");
   mkdirSync(path, { recursive: true, mode: 0o700 }); chmodSync(path, 0o700);
+}
+/** Only the explicit launcher override can select stable user-owned app state. */
+export function workspaceStateRoot(projectRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT): string {
+  if (override === undefined) return join(projectRoot, ".tmp/workspace");
+  const home = resolve(homedir()), root = resolve(override);
+  if (!isAbsolute(override) || !root.startsWith(home + sep) || root === home) throw new Error("LAB_WORKSPACE_STATE_ROOT must be an absolute application directory beneath this user's home");
+  let cursor = root;
+  while (cursor !== home) {
+    const stat = lstatSync(cursor, { throwIfNoEntry: false });
+    if (stat && (!stat.isDirectory() || stat.isSymbolicLink() || stat.uid !== process.getuid?.() || (stat.mode & 0o022) !== 0)) throw new Error("Stable workspace state requires user-owned ancestors without symlinks or shared write access");
+    cursor = dirname(cursor);
+  }
+  privateDirectory(root);
+  return root;
 }
 export function readPrivate(path: string): string {
   const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
