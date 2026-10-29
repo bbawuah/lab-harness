@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { Database } from "bun:sqlite";
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, existsSync, writeFileSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, lstatSync, existsSync, writeFileSync, rmSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { verifyPiRuntime } from "../src/runtime/pi.ts";
@@ -13,6 +13,36 @@ const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
 const source = resolve(import.meta.dir, "..");
 type Peer = { session_id: string; peer_id: string; name: string; generation: number; phase: string; lease_until: number };
+function committedPeerRows(db: Database): Peer[] {
+  // This is a read-only observer, not a production Relay opener. A freshly
+  // created control inode precedes its schema transaction's commit. Observe
+  // markers/schema/data in one snapshot, and retry only that exact empty state.
+  return db.transaction(() => {
+    const app = (db.query("PRAGMA application_id").get() as { application_id: number }).application_id;
+    const version = (db.query("PRAGMA user_version").get() as { user_version: number }).user_version;
+    const tables = db.query("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'").all() as { name: string }[];
+    if (app === 0 && version === 0 && tables.length === 0) return [];
+    if (app !== 0x4c525931 || version !== 1 || !tables.some(table => table.name === "sessions")) throw new Error("Unexpected committed Relay observer schema");
+    return db.query("SELECT session_id,peer_id,name,generation,phase,lease_until FROM sessions ORDER BY session_id").all() as Peer[];
+  }).deferred();
+}
+test("readonly session observer waits for the schema commit and refuses foreign/partial committed schemas", () => {
+  const root = mkdtempSync(join(homedir(), ".lab-relay-observer-")), path = join(root, "control.sqlite");
+  const writer = new Database(path);
+  writer.exec("PRAGMA user_version=0");
+  const observer = new Database(path, { readonly: true, strict: true });
+  try {
+    expect(committedPeerRows(observer)).toEqual([]);
+    writer.exec("BEGIN IMMEDIATE; CREATE TABLE sessions(session_id TEXT,peer_id TEXT,name TEXT,generation INTEGER,phase TEXT,lease_until INTEGER); PRAGMA application_id=1280465201; PRAGMA user_version=1; INSERT INTO sessions VALUES ('fixture-session','fixture-peer','fixture',0,'active',123)");
+    expect(committedPeerRows(observer)).toEqual([]); // Schema is uncommitted.
+    writer.exec("COMMIT");
+    expect(committedPeerRows(observer)).toEqual([{ session_id: "fixture-session", peer_id: "fixture-peer", name: "fixture", generation: 0, phase: "active", lease_until: 123 }]);
+    writer.exec("PRAGMA application_id=7");
+    expect(() => committedPeerRows(observer)).toThrow("Unexpected committed");
+    writer.exec("PRAGMA application_id=1280465201; DROP TABLE sessions");
+    expect(() => committedPeerRows(observer)).toThrow("Unexpected committed");
+  } finally { observer.close(); writer.close(); rmSync(root, { recursive: true, force: true }); }
+});
 function ownedServerSockets(fields: string): string[] {
   // Linux lsof appends "type=STREAM" to the n field; Darwin ends at the path.
   return fields.split("\n").flatMap(line => {
@@ -74,10 +104,12 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       if (!existsSync(base)) return [];
       const key = readdirSync(base)[0]; if (!key) return [];
       busRoot = join(base, key);
-      if (!existsSync(join(busRoot, "control.sqlite"))) return [];
-      control = new Database(join(busRoot, "control.sqlite"), { readonly: true, strict: true });
+      const path = join(busRoot, "control.sqlite");
+      const entry = lstatSync(path, { throwIfNoEntry: false });
+      if (!entry || entry.size === 0) return []; // Owned initial inode, no committed SQLite header yet.
+      control = new Database(path, { readonly: true, strict: true });
     }
-    return control.query("SELECT session_id,peer_id,name,generation,phase,lease_until FROM sessions ORDER BY session_id").all() as Peer[];
+    return committedPeerRows(control);
   }
   async function wait(check: () => boolean, label: string, ms = 12000) {
     const until = Date.now() + ms;
