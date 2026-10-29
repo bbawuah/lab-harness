@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "version": "1.4.0",
+  "repository": "https://github.com/earendil-works/pi",
+  "releaseURL": "https://github.com/earendil-works/pi/releases/tag/v1.4.0",
+  "metadataURL": "https://api.github.com/repos/earendil-works/pi/releases/420119608",
+  "releasePublishedAt": "2026-10-21T22:49:48Z",
+  "inspectedAt": "2026-10-29",
+  "releaseTag": "v1.4.0",
+  "releaseCommit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+  "historicalSourcePin": "b857fbd8a9225ab7b0c15d7a6965b2f109c9317a",
+  "sourcePinMatch": false,
+  "checksumURL": "https://github.com/earendil-works/pi/releases/download/v1.4.0/SHA256SUMS",
+  "checksumSHA256": "8b66581fc7439ac791cfc4a7dd9b88809a5ecd30c573327b30c4fab738be2a22",
+  "license": {
+    "spdx": "MIT",
+    "copyright": "Copyright (c) 2025 Mario Zechner",
+    "url": "https://raw.githubusercontent.com/earendil-works/pi/4a080252f06caf63a525d7873c5d94d3c23887e0/LICENSE",
+    "sha256": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48",
+    "text": "MIT License\n\nCopyright (c) 2025 Mario Zechner\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
+  },
+  "treeHashFormat": "SHA256 of entries sorted by relative path (ASCII), directories as D <path>\\n, files as F <path> <decimal byte length> <SHA256>\\n; paths relative to archive pi/ root; root omitted",
+  "artifacts": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "name": "pi-darwin-arm64.tar.gz",
+      "url": "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-darwin-arm64.tar.gz",
+      "archiveBytes": 31098931,
+      "archiveSHA256": "79d9979d76a2a5adb7c28e27e9b44629928ccd0dc9fbb6ae7217860bd5e8be5d",
+      "binarySHA256": "b4d93b78e542ca8d1792242cf6c1a875ef4e6fb644141fb4cf67ec7c81ef9b14",
+      "treeSHA256": "34e8b644b7ec49b405e4c94658cb57623417d2d3e53f636393802788f8d2079a",
+      "fileCount": 211,
+      "entryCount": 237,
+      "unpackedBytes": 84513829
+    },
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "name": "pi-darwin-x64.tar.gz",
+      "url": "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-darwin-x64.tar.gz",
+      "archiveBytes": 33558360,
+      "archiveSHA256": "1bdefc9e1074c1de458ea9f2e43e6013ce49cd05326009b3de144037036585e2",
+      "binarySHA256": "b8e0bd3c24cd8f91a6cf37aa7cecbc3a931702cbffd0f709b26d5a79daeaa48a",
+      "treeSHA256": "2588c64e32f6138a2c920d5af9f37b19aa9b335adecea1fe251fba5dfe4372b6",
+      "fileCount": 211,
+      "entryCount": 237,
+      "unpackedBytes": 90105563
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "name": "pi-linux-x64.tar.gz",
+      "url": "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-linux-x64.tar.gz",
+      "archiveBytes": 42645744,
+      "archiveSHA256": "f2e4e4329603223d03260cdb8bd5033dbdc1f73ba58ab8939db2e56546e115d2",
+      "binarySHA256": "0d7611d0b86d38ec8f65dda8e8bee9c5e907c7bae381e9cfff9161b21e8087d0",
+      "treeSHA256": "9c9413f9974e17c276a27f47d6e63012d5b28915812dc29ae4febcc73de8a661",
+      "fileCount": 211,
+      "entryCount": 237,
+      "unpackedBytes": 114560099
+    }
+  ],
+  "inspectedSources": [
+    {
+      "commit": "b857fbd8a9225ab7b0c15d7a6965b2f109c9317a",
+      "path": "packages/coding-agent/package.json",
+      "sha256": "f9c21f2fe252a5f988a19f6e4097bb058c411cb98e2eb60e39f85e88c54f05c9"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": "packages/coding-agent/package.json",
+      "sha256": "df6883685382d6a914e5797232744c26579fe7db5576ea0e9c859d018ca2d54e"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": ".github/workflows/build-binaries.yml",
+      "sha256": "dc797816b5afc2a8b956c48de53dc354fbdddf30dd7130ed82cd95613d042faa"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": "scripts/build-binaries.sh",
+      "sha256": "a828fcda33c9691b2098caed7de88205d4cfebb385bb6cb4429561fbd9c1a88a"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": "packages/coding-agent/src/main.ts",
+      "sha256": "bc76d755332764fc80eddc9c1bfb84f70e70c2b55d958e44f98000b05f08930c"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": "packages/coding-agent/src/config.ts",
+      "sha256": "b3b77644910d3fac28a06625e90f993a8c1bc6c9458f148c723e64e0c99eb23e"
+    },
+    {
+      "commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "path": "packages/coding-agent/src/core/settings-manager.ts",
+      "sha256": "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98"
+    }
+  ]
+}
