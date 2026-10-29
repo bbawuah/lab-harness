@@ -1,0 +1,22 @@
+{
+  "label": "actual-pi-no-model-owned-herdr-startup",
+  "runtimeVersion": "1.4.0",
+  "piBundleSha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+  "herdrVersion": "0.9.5",
+  "herdrBinarySha256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2",
+  "herdrSourcePinMatch": false,
+  "promptSubmitted": false,
+  "providerRequest": "not invoked; startup observation only",
+  "nativeLabActivation": "blocked-unqualified",
+  "taskAcceptance": "unchanged",
+  "cleanup": {
+    "errors": [],
+    "paneCloseAcknowledged": true,
+    "serverStopAcknowledged": true,
+    "serverExited": true,
+    "socketsRemoved": true,
+    "workerStopped": true
+  },
+  "paneText": "\n▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄\n▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀\n▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀\n▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS\n▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi\n▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Native LAB activation: BLOCKED\n▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Request admission unqualified\n▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀\n▀▀▀▀▀      ▀ ▀▀▀▀▀\n▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄\n▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀\n ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀\n\n[Extensions]\n  header.ts\n\n\n Warning: fd not found. Offline mode enabled, skipping download.\n Warning: ripgrep not found. Offline mode enabled, skipping download.\n\n Warning: No models available. Use /login to log into a provider via OAuth or API key. See:\n   [PI_PACKAGE]/docs/providers.md\n   [PI_PACKAGE]/docs/models.md\n",
+  "colorAttributes": "not returned by pane.read, including strip_ansi=false"
+}

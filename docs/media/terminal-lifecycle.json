@@ -1,0 +1,22 @@
+{
+  "scenes": [
+    {
+      "title": "Terminal lifecycle · 1 / 3",
+      "caption": "REAL Herdr / SQLite / Relay · FIXTURE task envelope · no Pi/model",
+      "text": "$ bun --no-env-file --no-install src/cli.ts terminal-demo\n(output projection)\n\n{\n  \"label\": \"REAL HERDR/SQLITE/RELAY; FIXTURE TASK ENVELOPE; NO PI OR MODEL\",\n  \"state\": \"result_available\",\n  \"acceptance\": null,\n  \"actualModelCalls\": 0\n}",
+      "durationMs": 6000
+    },
+    {
+      "title": "Result available · 2 / 3",
+      "caption": "REAL Herdr / SQLite / Relay · FIXTURE task envelope · no Pi/model",
+      "text": "$ bun --no-env-file --no-install src/cli.ts --state [OWNED_RUN]/lab show [TASK]\n(output projection)\n\n{\n  \"state\": \"result_available\",\n  \"acceptance\": null,\n  \"cleanup\": {\n    \"serverExited\": true,\n    \"socketsRemoved\": true,\n    \"workerStopped\": true,\n    \"errors\": [],\n    \"paneCloseAcknowledged\": true,\n    \"stopAcknowledged\": true,\n    \"exitCode\": 0,\n    \"signal\": null\n  },\n  \"taskAcceptance\": \"unchanged\"\n}",
+      "durationMs": 6000
+    },
+    {
+      "title": "Explicit test operator · 3 / 3",
+      "caption": "Separate accept command AFTER inspection · no model acceptance",
+      "text": "$ bun --no-env-file --no-install src/cli.ts --skill-sources [OWNED_RUN]/skill-origins.json\n  --state [OWNED_RUN]/lab accept [OWNED_RUN]/review.json\n(output projection)\n\n{\n  \"state\": \"accepted\",\n  \"outcome\": \"settled\",\n  \"acceptance\": {\n    \"reason\": \"Operator inspected the terminal evidence and explicitly accepts this bounded example.\",\n    \"waived\": []\n  }\n}",
+      "durationMs": 6000
+    }
+  ]
+}

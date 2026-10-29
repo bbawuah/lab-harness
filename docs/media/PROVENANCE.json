@@ -1,0 +1,113 @@
+{
+  "sourceSHA": "93a831c4dbfe774f3c4a025f7c70334ae0f3e6b4",
+  "captureDate": "2026-10-29",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "bun": "1.4.2",
+  "node": "v22.23.3",
+  "python": "3.14.7",
+  "pillow": "12.0.0",
+  "freetype": "2.14.1",
+  "wheel": {
+    "name": "pillow-12.0.0-cp314-cp314-macosx_11_0_arm64.whl",
+    "sha256": "266cd5f2b63ff316d5a1bba46268e603c9caf5606d44f38c2873c380950576ad",
+    "origin": "PyPI Pillow 12.0.0 official distribution"
+  },
+  "font": {
+    "name": "Menlo.ttc",
+    "sha256": "f2d400484a6aace67980730ec0a9ef24ce9e535a2604f118e6fdc2510021b85f",
+    "redistributed": false
+  },
+  "sourceFiles": {
+    "src/cli.ts": "5b03a48ea02cf2125dcb7aadace7fb30b0298b81d6a56a1017dbe90ef6d90578",
+    "src/terminal-demo.ts": "5e04492e6dc3a8b617154f73ef1f9ab3a655d4ff1284fe7c8671f6225d51b092",
+    "src/context.ts": "da9e5b01c2953bea6cbf46f6b6217ef9ec940b8a9be8fb3df45177513132bbce",
+    "src/search/index.ts": "6f39fa26f247f9135487f2d39c091c9e23fb1ae37c70d93d9594cbdcedb6173e",
+    "src/skills/index.ts": "5c20679aaa4e7a20a6a3368916bcb827b8afafe23543dfedce0cfa915a639a0d",
+    "src/herdr/index.ts": "1b60b3ba12f8d5e2af95f82844d09241be2bdf26fe137af76cbbf1a229b35c92",
+    "src/pi/header.ts": "c60de10a4d41d3cd3ed491920a2cfa892627c6847a1be416fda83cf3b93e38d8",
+    "src/pi/terminal-mark.json": "d85b2cafcc8e6184e953b09a9ce374b4c4524b8e87f2ef6e63058497e03baea4",
+    "scripts/pi/smoke-header.ts": "3716179aa4aa9db63d59063a0dc06dfcf35c983792ba5eeedc30df2329222a38",
+    "scripts/pi/render-header.ts": "d9286effb4e262ddcfc06b1bdbdb44bfe4fbc0396581311869ce04db8c8dc595",
+    "contracts/herdr-source.json": "c0ddd9ca6fa802a2df44a1144e37d6bd7b4bb37a9644ef76a65018c33ca0a014",
+    "docs/skills-inventory.json": "3efa30b2ec9140431fc83ea81122f772a65428f76ebc5b751af25b52a83f4ba2",
+    "assets/branding/terminal-b-dark.svg": "5a46de364f7019736c6202e0f81384fc8ac1d87d68a46f515b740d2ebc5b8c29",
+    "assets/branding/terminal-b-light.svg": "8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71"
+  },
+  "renderer": {
+    "path": "docs/demos/render.py",
+    "sha256": "a271833f3cf34cd5a508ab6eaefd9f4fe0845341b2092f4fc7e0b09684de9b81"
+  },
+  "captures": {
+    "path": "docs/demos/capture.py",
+    "sha256": "4db9eade25e1484560128d035649d4887d160fa465a700c2cf7fe4d96fc3992a"
+  },
+  "assets": {
+    "header-dark.png": {
+      "bytes": 18129,
+      "sha256": "8ab723f0ee339f1e283469991c8bf1a7cb545e1452207ba2b7f978073fdb3bb8",
+      "width": 728,
+      "height": 386
+    },
+    "header-light.png": {
+      "bytes": 18615,
+      "sha256": "322cde0e82da5fc3ec2a33e6db56517b85b4efbf8f39aaf2be8daaed16fb2e72",
+      "width": 728,
+      "height": 386
+    },
+    "offline-search.gif": {
+      "bytes": 54704,
+      "sha256": "3699beec4dbb72580dc8f87ba6ecb23df076bb3a09fe98011b7632b256b84554",
+      "width": 728,
+      "height": 620,
+      "frames": 3,
+      "frameDurationsMs": [
+        6000,
+        6000,
+        6000
+      ],
+      "durationMs": 18000
+    },
+    "pi-startup-text.png": {
+      "bytes": 39633,
+      "sha256": "e9f42f57fde828636e6a48b1150670db577d7e57aa9188c85e86be4722cba2a0",
+      "width": 728,
+      "height": 638
+    },
+    "skills-discovery.gif": {
+      "bytes": 58876,
+      "sha256": "23bdd9a3a9a1871dfb299be3ee5c525b52ea4918b606679dc9051b2a18cffd9a",
+      "width": 728,
+      "height": 680,
+      "frames": 3,
+      "frameDurationsMs": [
+        6000,
+        6000,
+        6000
+      ],
+      "durationMs": 18000
+    },
+    "terminal-lifecycle.gif": {
+      "bytes": 52634,
+      "sha256": "dd87f807c15369a55067570aa1c4dd76568db984c876432335c49a4220eacb6a",
+      "width": 728,
+      "height": 620,
+      "frames": 3,
+      "frameDurationsMs": [
+        6000,
+        6000,
+        6000
+      ],
+      "durationMs": 18000
+    }
+  },
+  "audit": {
+    "ansiCellHalfSamples": 864,
+    "privatePathRefusal": true,
+    "noPublishedUUIDs": true,
+    "frameBounds": true,
+    "visualInspection": "First/middle/last of all three GIFs inspected with view_image; palette pair and startup image inspected separately."
+  }
+}

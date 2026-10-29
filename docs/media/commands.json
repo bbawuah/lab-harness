@@ -1,0 +1,74 @@
+[
+  {
+    "name": "startup",
+    "argv": "bun --no-env-file --no-install scripts/pi/smoke-header.ts --herdr [HERDR] --pi [PI] --node [NODE]",
+    "exitCode": 0,
+    "elapsedSeconds": 1.627
+  },
+  {
+    "name": "palette-dark",
+    "argv": "bun --no-env-file --no-install scripts/pi/render-header.ts --columns 80 --appearance dark",
+    "exitCode": 0,
+    "elapsedSeconds": 0.015
+  },
+  {
+    "name": "palette-light",
+    "argv": "bun --no-env-file --no-install scripts/pi/render-header.ts --columns 80 --appearance light",
+    "exitCode": 0,
+    "elapsedSeconds": 0.01
+  },
+  {
+    "name": "terminal-demo",
+    "argv": "bun --no-env-file --no-install src/cli.ts terminal-demo",
+    "exitCode": 0,
+    "elapsedSeconds": 1.276
+  },
+  {
+    "name": "show-before",
+    "argv": "bun --no-env-file --no-install src/cli.ts --state [OWNED_RUN]/lab show terminal-[ID]",
+    "exitCode": 0,
+    "elapsedSeconds": 0.024
+  },
+  {
+    "name": "test-operator-accept",
+    "argv": "bun --no-env-file --no-install src/cli.ts --skill-sources [OWNED_RUN]/skill-origins.json --state [OWNED_RUN]/lab accept [OWNED_RUN]/review.json",
+    "exitCode": 0,
+    "elapsedSeconds": 0.022
+  },
+  {
+    "name": "search",
+    "argv": "bun --no-env-file --no-install src/cli.ts search [CHECKOUT]/.tmp/media/search-fixture 'Terminal settlement' 5 fallback",
+    "exitCode": 0,
+    "elapsedSeconds": 0.016
+  },
+  {
+    "name": "context",
+    "argv": "bun --no-env-file --no-install src/cli.ts context [CHECKOUT]/.tmp/media/search-fixture [CHECKOUT]/.tmp/media/selection.json",
+    "exitCode": 0,
+    "elapsedSeconds": 0.014
+  },
+  {
+    "name": "verify-before",
+    "argv": "bun --no-env-file --no-install src/cli.ts verify-context [CHECKOUT]/.tmp/media/search-fixture [CHECKOUT]/.tmp/media/context.json",
+    "exitCode": 0,
+    "elapsedSeconds": 0.014
+  },
+  {
+    "name": "verify-after",
+    "argv": "bun --no-env-file --no-install src/cli.ts verify-context [CHECKOUT]/.tmp/media/search-fixture [CHECKOUT]/.tmp/media/context.json",
+    "exitCode": 1,
+    "elapsedSeconds": 0.013
+  },
+  {
+    "name": "skills",
+    "argv": "bun --no-env-file --no-install src/cli.ts skills [CHECKOUT]/.tmp/media/origins.json",
+    "exitCode": 0,
+    "elapsedSeconds": 0.014
+  },
+  {
+    "name": "skill-select",
+    "argv": "bun --no-env-file --no-install src/cli.ts skill-select [CHECKOUT]/.tmp/media/origins.json terminal-evidence",
+    "exitCode": 0,
+    "elapsedSeconds": 0.014
+  }
+]

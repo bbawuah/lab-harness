@@ -1,0 +1,8 @@
+{
+  "state": "accepted",
+  "outcome": "settled",
+  "acceptance": {
+    "reason": "Operator inspected the terminal evidence and explicitly accepts this bounded example.",
+    "waived": []
+  }
+}

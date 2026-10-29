@@ -1,0 +1,28 @@
+{
+  "sourceSHA": "93a831c4dbfe774f3c4a025f7c70334ae0f3e6b4",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "bun": "1.4.2",
+  "node": "v22.23.3",
+  "nodeBinarySha256": "b6b6b6b6e02bd01534233cfa2a185b900d65ab214804e737691b5cca9873eae5",
+  "capturePython": "3.15.0",
+  "sourceFiles": {
+    "src/cli.ts": "5b03a48ea02cf2125dcb7aadace7fb30b0298b81d6a56a1017dbe90ef6d90578",
+    "src/terminal-demo.ts": "5e04492e6dc3a8b617154f73ef1f9ab3a655d4ff1284fe7c8671f6225d51b092",
+    "src/context.ts": "da9e5b01c2953bea6cbf46f6b6217ef9ec940b8a9be8fb3df45177513132bbce",
+    "src/search/index.ts": "6f39fa26f247f9135487f2d39c091c9e23fb1ae37c70d93d9594cbdcedb6173e",
+    "src/skills/index.ts": "5c20679aaa4e7a20a6a3368916bcb827b8afafe23543dfedce0cfa915a639a0d",
+    "src/herdr/index.ts": "1b60b3ba12f8d5e2af95f82844d09241be2bdf26fe137af76cbbf1a229b35c92",
+    "src/pi/header.ts": "c60de10a4d41d3cd3ed491920a2cfa892627c6847a1be416fda83cf3b93e38d8",
+    "src/pi/terminal-mark.json": "d85b2cafcc8e6184e953b09a9ce374b4c4524b8e87f2ef6e63058497e03baea4",
+    "scripts/pi/smoke-header.ts": "3716179aa4aa9db63d59063a0dc06dfcf35c983792ba5eeedc30df2329222a38",
+    "scripts/pi/render-header.ts": "d9286effb4e262ddcfc06b1bdbdb44bfe4fbc0396581311869ce04db8c8dc595",
+    "contracts/herdr-source.json": "c0ddd9ca6fa802a2df44a1144e37d6bd7b4bb37a9644ef76a65018c33ca0a014",
+    "docs/skills-inventory.json": "3efa30b2ec9140431fc83ea81122f772a65428f76ebc5b751af25b52a83f4ba2",
+    "assets/branding/terminal-b-dark.svg": "5a46de364f7019736c6202e0f81384fc8ac1d87d68a46f515b740d2ebc5b8c29",
+    "assets/branding/terminal-b-light.svg": "8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71"
+  },
+  "driver": "python3 docs/demos/capture.py --pi [PI] --node [NODE] --test-operator-accept"
+}

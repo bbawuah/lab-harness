@@ -1,0 +1,22 @@
+{
+  "scenes": [
+    {
+      "title": "Offline search · 1 / 3",
+      "caption": "Deterministic owned fixture · actual fallback search · no model",
+      "text": "$ bun --no-env-file --no-install src/cli.ts search [OWNED_FIXTURE] \"Terminal settlement\" 5 fallback\n\n{\n  \"hits\": [\n    {\n      \"path\": \"operator.txt\",\n      \"contentHash\": \"13209bcab916067fa2be9279bb60b5a4f9085354e85bee3aa006ab89f2f50583\",\n      \"lineStart\": 2,\n      \"lineEnd\": 2,\n      \"text\": \"Terminal settlement never accepts a task.\"\n    }\n  ],\n  \"engine\": \"fallback\",\n  \"truncated\": false,\n  \"omissions\": []\n}",
+      "durationMs": 6000
+    },
+    {
+      "title": "Bind source bytes · 2 / 3",
+      "caption": "Actual context verification · fixture candidate identity",
+      "text": "$ bun --no-env-file --no-install src/cli.ts context [OWNED_FIXTURE] selection.json\n$ bun --no-env-file --no-install src/cli.ts verify-context [OWNED_FIXTURE] context.json\n\n{\n  \"valid\": true,\n  \"nativePi\": \"blocked-unqualified\"\n}\n\nSelected source:\n{\n  \"path\": \"operator.txt\",\n  \"contentHash\": \"13209bcab916067fa2be9279bb60b5a4f9085354e85bee3aa006ab89f2f50583\",\n  \"lineStart\": 2,\n  \"lineEnd\": 2,\n  \"text\": \"Terminal settlement never accepts a task.\"\n}",
+      "durationMs": 6000
+    },
+    {
+      "title": "Changed source refused · 3 / 3",
+      "caption": "Only disposable fixture bytes edited · original reference retained",
+      "text": "Fixture input replaced: operator.txt\n$ bun --no-env-file --no-install src/cli.ts verify-context [OWNED_FIXTURE] context.json\n\n{\"error\":\"STALE_CONTEXT_SOURCE\"}\n\nexit: 1",
+      "durationMs": 6000
+    }
+  ]
+}

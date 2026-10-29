@@ -1,0 +1,53 @@
+Discover skills · 1 / 3
+Bundled example only · actual metadata discovery · no skill execution
+$ bun --no-env-file --no-install src/cli.ts skills [OWNED_ORIGINS].json
+(output projection)
+
+{
+  "name": "terminal-evidence",
+  "compatibility": "portable",
+  "dependencyReasons": [],
+  "loadable": true,
+  "complete": true
+}
+
+Seal identity · 2 / 3
+Actual skill-select · no instruction body published
+$ bun --no-env-file --no-install src/cli.ts skill-select [OWNED_ORIGINS].json terminal-evidence
+
+{
+  "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+  "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+  "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+  "originId": "bundled-example",
+  "path": "terminal-evidence/SKILL.md"
+}
+
+Inspect dependencies · 3 / 3
+COMMITTED sanitized inventory · static hints, no live source scan
+Recorded metadata: docs/skills-inventory.json (projection)
+
+[
+  {
+    "name": "kibana-connectors",
+    "compatibility": "connected-service",
+    "dependencyReasons": [
+      "agent-host-adaptation",
+      "connected-service",
+      "connected-tool-or-credentials"
+    ],
+    "loadable": true
+  },
+  {
+    "name": "scrawl",
+    "compatibility": "local-dependency",
+    "dependencyReasons": [
+      "agent-host-adaptation",
+      "external-tool-or-runtime",
+      "host-path"
+    ],
+    "loadable": true
+  }
+]
+
+No dependency installed or skill executed.

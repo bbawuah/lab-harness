@@ -1,0 +1,46 @@
+Offline search · 1 / 3
+Deterministic owned fixture · actual fallback search · no model
+$ bun --no-env-file --no-install src/cli.ts search [OWNED_FIXTURE] "Terminal settlement" 5 fallback
+
+{
+  "hits": [
+    {
+      "path": "operator.txt",
+      "contentHash": "13209bcab916067fa2be9279bb60b5a4f9085354e85bee3aa006ab89f2f50583",
+      "lineStart": 2,
+      "lineEnd": 2,
+      "text": "Terminal settlement never accepts a task."
+    }
+  ],
+  "engine": "fallback",
+  "truncated": false,
+  "omissions": []
+}
+
+Bind source bytes · 2 / 3
+Actual context verification · fixture candidate identity
+$ bun --no-env-file --no-install src/cli.ts context [OWNED_FIXTURE] selection.json
+$ bun --no-env-file --no-install src/cli.ts verify-context [OWNED_FIXTURE] context.json
+
+{
+  "valid": true,
+  "nativePi": "blocked-unqualified"
+}
+
+Selected source:
+{
+  "path": "operator.txt",
+  "contentHash": "13209bcab916067fa2be9279bb60b5a4f9085354e85bee3aa006ab89f2f50583",
+  "lineStart": 2,
+  "lineEnd": 2,
+  "text": "Terminal settlement never accepts a task."
+}
+
+Changed source refused · 3 / 3
+Only disposable fixture bytes edited · original reference retained
+Fixture input replaced: operator.txt
+$ bun --no-env-file --no-install src/cli.ts verify-context [OWNED_FIXTURE] context.json
+
+{"error":"STALE_CONTEXT_SOURCE"}
+
+exit: 1
