@@ -119,6 +119,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/relay-workspace-contract.md",
     "docs/research/model-providers.md",
     "docs/search.md",
     "docs/skills-inventory.json",
@@ -544,6 +545,10 @@
     },
     "docs/publication-status.md": {
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
+      "status": "added"
+    },
+    "docs/relay-workspace-contract.md": {
+      "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
       "status": "added"
     },
     "docs/research/model-providers.md": {
