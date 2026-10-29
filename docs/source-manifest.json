@@ -43,30 +43,45 @@
     ".gitignore",
     "NOTICE.md",
     "README.md",
+    "assets/branding/PROVENANCE.json",
+    "assets/branding/terminal-b-dark.svg",
+    "assets/branding/terminal-b-light.svg",
     "bun.lock",
+    "contracts/herdr-source.json",
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
     "docs/architecture.md",
+    "docs/branding-preview.html",
     "docs/build-plan.md",
+    "docs/herdr.md",
     "docs/pi-seam.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/search.md",
     "docs/source-manifest.json",
     "package.json",
+    "scripts/benchmark-search.ts",
     "scripts/check-publication.ts",
+    "scripts/herdr/acquire.ts",
+    "scripts/herdr/smoke.ts",
     "scripts/publication-policy.ts",
     "scripts/refresh-publication.ts",
     "src/admission.ts",
     "src/bound-worker.ts",
+    "src/candidate.ts",
     "src/cli.ts",
     "src/context.ts",
     "src/fixtures.ts",
+    "src/herdr/index.ts",
+    "src/herdr/protocol.ts",
     "src/integration-contracts.ts",
     "src/ledger.ts",
     "src/owned-processes.ts",
     "src/pi/advisory-extension.ts",
     "src/protocol.ts",
     "src/relay.ts",
+    "src/search/index.ts",
+    "src/terminal-demo.ts",
     "src/util.ts",
     "src/workspace.ts",
     "tests/cleanup-child.ts",
@@ -75,12 +90,17 @@
     "tests/crash-child.ts",
     "tests/first-owner-crash-child.ts",
     "tests/helpers.ts",
+    "tests/herdr-actual.test.ts",
+    "tests/herdr-protocol.test.ts",
+    "tests/herdr.test.ts",
     "tests/ledger.test.ts",
     "tests/pi-advisory.test.ts",
     "tests/process-crash.test.ts",
     "tests/publication.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
+    "tests/search.test.ts",
+    "tests/terminal-demo.test.ts",
     "tests/workspace.test.ts",
     "tsconfig.json",
     "vendor/relay/SOURCE.json",
@@ -108,15 +128,31 @@
       "status": "added"
     },
     "NOTICE.md": {
-      "sha256": "309b3209192fd236afd7d05d2d16a06e32cc33a76939d67d19afdde8ceae7e58",
+      "sha256": "04d1927a4679dcb3cc66d5d0c8608313c320429539b3d778518ab9b908819b69",
       "status": "added"
     },
     "README.md": {
       "sha256": "04278ae9ef485e6440e0834562687339ae1fc00b801e9cc882cc3baa70532dab",
       "status": "added"
     },
+    "assets/branding/PROVENANCE.json": {
+      "sha256": "d6c247b47874aaa85b06ad5046cfc47583ffeb0fa257c2ac0ecbba9d31195e81",
+      "status": "added"
+    },
+    "assets/branding/terminal-b-dark.svg": {
+      "sha256": "5a46de364f7019736c6202e0f81384fc8ac1d87d68a46f515b740d2ebc5b8c29",
+      "status": "added"
+    },
+    "assets/branding/terminal-b-light.svg": {
+      "sha256": "8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71",
+      "status": "added"
+    },
     "bun.lock": {
       "sha256": "9200d7ebbe1425a70e5583cd9fdc719d7ef96e84f05a66a42145d443aae7e588",
+      "status": "added"
+    },
+    "contracts/herdr-source.json": {
+      "sha256": "c0ddd9ca6fa802a2df44a1144e37d6bd7b4bb37a9644ef76a65018c33ca0a014",
       "status": "added"
     },
     "contracts/pi-source.json": {
@@ -129,11 +165,19 @@
       "originalSHA256": "1bce50a34f8a41051350c5cfb8392955baf8c4713909e946ff3734deff813492"
     },
     "docs/architecture.md": {
-      "sha256": "04c76356930a87749386dae0a83bf1b7afea3ad95721ee7534ef3946bd608f8e",
+      "sha256": "be28df924b9fee18dd4331d618096120146d63cd8746bba539c9047c6ede642c",
+      "status": "added"
+    },
+    "docs/branding-preview.html": {
+      "sha256": "fc5ef6237c5185d4882820ae2aba2842895b013da52ef4cbac6977a5da4430ca",
       "status": "added"
     },
     "docs/build-plan.md": {
       "sha256": "60371cb83ab19c0e82982470f5c957d299969ec8b8bda01d01bf91f7e9b1bd84",
+      "status": "added"
+    },
+    "docs/herdr.md": {
+      "sha256": "368b00305830b893bc83563ea4aedacf21490652083d9375cafe8dee860fc8ba",
       "status": "added"
     },
     "docs/pi-seam.md": {
@@ -148,12 +192,28 @@
       "sha256": "d1a5a2b1669f3a2cf19ca4e5ce2fc3209bb128ce530d148d48c53015a60321b8",
       "status": "added"
     },
+    "docs/search.md": {
+      "sha256": "b64e9649a7817c9ea21b8c79a54e901e35c22aa71661e2ca7b86286150911597",
+      "status": "added"
+    },
     "package.json": {
       "sha256": "3f5efaf719422995d6323719fc01622028136168ab32415f836bb3a9a786433f",
       "status": "added"
     },
+    "scripts/benchmark-search.ts": {
+      "sha256": "8cf0c8b46c280364fcb9875f0ba506f4226e74c994f1b2b3f4858fe10b5a4f01",
+      "status": "added"
+    },
     "scripts/check-publication.ts": {
       "sha256": "0706d5852dff7db60a595c77e89def267ef9b5aee2f2117178bdda10a4f75646",
+      "status": "added"
+    },
+    "scripts/herdr/acquire.ts": {
+      "sha256": "6b0df97b72fabe3963c5dc90c0fca02a044aa7cde2f37f7bcd7a40d302b279ab",
+      "status": "added"
+    },
+    "scripts/herdr/smoke.ts": {
+      "sha256": "d0892b139641d1d0cc25fff88133d3a9cc585f2a2abe49b4c7d74412214b2b2a",
       "status": "added"
     },
     "scripts/publication-policy.ts": {
@@ -174,8 +234,12 @@
       "status": "unchanged",
       "originalSHA256": "b085014d6ef2e456cdd736ef846935cbd0f92be0bd10ce6a11907598c89798d3"
     },
+    "src/candidate.ts": {
+      "sha256": "224a31c39b2925ade563eeb30ed5867862a2a8dbdc36c702b99584b9778ff514",
+      "status": "added"
+    },
     "src/cli.ts": {
-      "sha256": "29abcbb30a419b4e0890050b71f41e51fbb4d7a5e3d47504c48ba91a3fcca4ab",
+      "sha256": "4ac1d6975280e792043054545d6ac2c3f3aa6f36295533750f128b2af89502b7",
       "status": "modified",
       "originalSHA256": "07ac03b02cc45c9ed94a31265795011b46b91292cbb230f5847a8c6bf7dad92f"
     },
@@ -187,6 +251,14 @@
       "sha256": "f7feb3f10e72c3a4dc61bfe3e57f225dcd6bb1f7d03e724d3d4740a1cd34fbc1",
       "status": "unchanged",
       "originalSHA256": "f7feb3f10e72c3a4dc61bfe3e57f225dcd6bb1f7d03e724d3d4740a1cd34fbc1"
+    },
+    "src/herdr/index.ts": {
+      "sha256": "1b60b3ba12f8d5e2af95f82844d09241be2bdf26fe137af76cbbf1a229b35c92",
+      "status": "added"
+    },
+    "src/herdr/protocol.ts": {
+      "sha256": "b5e731a1adabfb4043afd231edb2c7e3b518f5aab40e1ea1c60955b49a82b71f",
+      "status": "added"
     },
     "src/integration-contracts.ts": {
       "sha256": "1c36f02dcd483b60172d752b4e73681f7ba81d8c299a516abec8f592cdbe6320",
@@ -215,6 +287,14 @@
       "sha256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58",
       "status": "unchanged",
       "originalSHA256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58"
+    },
+    "src/search/index.ts": {
+      "sha256": "6f39fa26f247f9135487f2d39c091c9e23fb1ae37c70d93d9594cbdcedb6173e",
+      "status": "added"
+    },
+    "src/terminal-demo.ts": {
+      "sha256": "81fd3b9382f7ca61a2d3cc1506532e964b6f875d0f37ba8d39fdcd172dd9dd3a",
+      "status": "added"
     },
     "src/util.ts": {
       "sha256": "37048c8c24feba1216bd4d69faa8fe0f49e2af609bfff3ba328099971b763de7",
@@ -255,6 +335,18 @@
       "status": "unchanged",
       "originalSHA256": "bbf85636d66fb8f4292d84a9696eb1575c952f2d9219872499e73619dcc95234"
     },
+    "tests/herdr-actual.test.ts": {
+      "sha256": "b698cbc5330578aa0f15b255266b03152c209ddd50ed7d44d1c10021308560cf",
+      "status": "added"
+    },
+    "tests/herdr-protocol.test.ts": {
+      "sha256": "dc9d3c93bd636693e59bb1cafc19552a0b57c14700e38e1b39826fb8c8629b94",
+      "status": "added"
+    },
+    "tests/herdr.test.ts": {
+      "sha256": "35f93c6624a9593500c5f532f8f0a6265608e5175aec91d22b748921260120c4",
+      "status": "added"
+    },
     "tests/ledger.test.ts": {
       "sha256": "c71f22e648d011f782dac8c216fffbcb1ceaba87ce83a683d1a2a70e3493698c",
       "status": "unchanged",
@@ -282,6 +374,14 @@
       "sha256": "d18e65f0c7f44d2855f4efa7e891536c31a7801a9f2e8dff0f904512b6a6df14",
       "status": "unchanged",
       "originalSHA256": "d18e65f0c7f44d2855f4efa7e891536c31a7801a9f2e8dff0f904512b6a6df14"
+    },
+    "tests/search.test.ts": {
+      "sha256": "3fc9e298866a25c0d27049ac31f57004ebc1392a9822a995fa8c409ae6fb8558",
+      "status": "added"
+    },
+    "tests/terminal-demo.test.ts": {
+      "sha256": "486d9fb3ad5bb6a6071e2db3ac6cf44e9ef1905352dc75ec0119dbc21070811b",
+      "status": "added"
     },
     "tests/workspace.test.ts": {
       "sha256": "00a54ff67fe6fdc48739be97a0643ae8a5da07466993e9a04ad8009bd809fd65",

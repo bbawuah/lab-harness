@@ -16,3 +16,10 @@ claiming an open-source license.
 Development dependencies are installed separately and retain their respective
 upstream notices in their packages. No Bun executable, TypeScript distribution,
 model weights, inference runtime or other third-party source is vendored here.
+
+The terminal B assets adapt the repository owner's canonical LAB-BAWUAH mark
+with explicit authorization for this publication. The six tile paths and mesh
+geometry retain their origin; neutral palettes are specific to LAB-HARNESS.
+See `assets/branding/PROVENANCE.json`. This authorization adds no general reuse
+license. Herdr and Pi are referenced by source/artifact manifests and are not
+vendored or relicensed here.

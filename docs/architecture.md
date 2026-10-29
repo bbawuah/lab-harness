@@ -70,3 +70,16 @@ approvals and sandbox behavior remain in use. Existing LiteLLM is client-only.
 Linux under WSL is the target; macOS is the development host. Linux CI proves
 only its Ubuntu runner. WSL, native Pi admission and backend routing remain
 unqualified until directly exercised on their actual targets.
+
+## Owner branding addition
+
+The owner authorized the canonical terminal B with its four-spot mesh in neutral
+monochrome, as standalone light/dark SVGs and in the actual terminal UI. Exact
+geometry, open gutters and source-byte provenance are kept in `assets/branding`.
+`apps/tmux` uses the same canonical mark, not a separate terminal glyph. A bounded
+Pi header worker may own `src/pi/header.ts`, `src/pi/terminal-mark.json`,
+`tests/pi-header*`, `scripts/pi/**` and `docs/pi-header.md`; coordinator owns SVGs,
+README, CLI/package/CI and all existing files. Use Pi's supported `setHeader`
+extension API, preserve attribution and provide no-color/narrow fallbacks.
+Actual owned no-model startup may use the installed Pi 1.4.0 in isolated state;
+never activate LAB or run inference to validate branding.

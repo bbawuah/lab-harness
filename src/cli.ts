@@ -8,6 +8,7 @@ import { canonical, LabError, requireThat } from "./util.ts";
 import type { Candidate, ContextPack, Result, TaskContract } from "./protocol.ts";
 import { Workspace } from "./workspace.ts";
 import { buildContext, verifyContext, type ContextSelection, type ProvenanceContext } from "./context.ts";
+import { SearchService, type SearchOptions } from "./search/index.ts";
 
 function print(value: unknown): void { process.stdout.write(JSON.stringify(value, null, 2) + "\n"); }
 function input(path: string | undefined): unknown { requireThat(path, "INPUT_FILE_REQUIRED"); return JSON.parse(readFileSync(path, "utf8")); }
@@ -38,13 +39,15 @@ function demo(): void {
 try {
   const args = process.argv.slice(2), command = args.shift() ?? "help";
   if (command === "demo") demo();
+  else if (command === "terminal-demo") print(await (await import("./terminal-demo.ts")).terminalDemo());
+  else if (command === "herdr-smoke") print(await (await import("./herdr/index.ts")).runHerdrSmoke({ stateRoot: join(CONCEPT_ROOT, ".tmp") }));
   else if (command === "admission") print(admission());
   else if (command === "activate-pi") throw new LabError("NATIVE_PI_UNQUALIFIED");
-  else if (command === "search") { requireThat(args[0] && args[1], "SEARCH_ROOT_QUERY_REQUIRED"); print(new Workspace(resolve(args[0])).searchDetailed(args[1])); }
+  else if (command === "search" || command === "files") { requireThat(args[0] && args[1], "SEARCH_ROOT_QUERY_REQUIRED"); const options: SearchOptions = {}; if (args[2]) options.limit = Number(args[2]); if (args[3]) options.engine = args[3] as SearchOptions["engine"]; const service = new SearchService(resolve(args[0]), options); print(command === "search" ? service.text(args[1]) : service.files(args[1])); }
   else if (command === "skill") { requireThat(args[0] && args[1], "SKILL_ROOT_PATH_REQUIRED"); print(new Workspace(resolve(args[0])).skill(args[1])); }
   else if (command === "context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); print(buildContext(resolve(args[0]), input(args[1]) as ContextSelection)); }
   else if (command === "verify-context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); const data = input(args[1]) as { pack: ProvenanceContext }; verifyContext(resolve(args[0]), data.pack); print({ valid: true, nativePi: "blocked-unqualified" }); }
-  else if (command === "help") print({ commands: ["demo", "admission", "activate-pi (blocked)", "--state PATH create FILE", "--state PATH show TASK", "--state PATH claim TASK SESSION", "--state PATH event FILE", "--state PATH accept FILE", "--state PATH cancel TASK", "--state PATH recover"], scope: "concept state only; acceptance is operator workflow, not same-user authentication" });
+  else if (command === "help") print({ commands: ["demo (fixtures)", "terminal-demo (real Herdr; leaves result awaiting acceptance)", "herdr-smoke", "search ROOT QUERY [LIMIT] [auto|fallback|rg]", "files ROOT QUERY [LIMIT]", "context ROOT INPUT.json", "verify-context ROOT CONTEXT.json", "skill ROOT PATH", "admission", "activate-pi (blocked)", "--state PATH create FILE", "--state PATH show TASK", "--state PATH claim TASK SESSION", "--state PATH event FILE", "--state PATH accept FILE", "--state PATH cancel TASK", "--state PATH recover"], scope: "owned project subdirectories; acceptance is operator workflow, not same-user authentication" });
   else {
     requireThat(command === "--state", "EXPLICIT_STATE_REQUIRED"); const state = args.shift(); requireThat(state, "EXPLICIT_STATE_REQUIRED"); const operation = args.shift(); const db = new Ledger(resolve(state));
     try {
