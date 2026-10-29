@@ -45,6 +45,45 @@ function committedPeerRows(db: Database, path: string, readiness: { seenSession:
     throw error;
   }
 }
+async function peerSnapshot(db: Database, path: string, readiness: { seenSession: boolean }, deadline: number): Promise<Peer[]> {
+  let busy: unknown;
+  for (;;) {
+    if (Date.now() >= deadline) throw busy ?? new Error("Relay observer snapshot deadline");
+    try { return committedPeerRows(db, path, readiness); }
+    catch (error) {
+      const sqlite = error as { code?: string; errno?: number };
+      if (sqlite.code !== "SQLITE_BUSY" || sqlite.errno !== 5 || Date.now() >= deadline) throw error;
+      busy = error;
+      await pause(Math.min(10, Math.max(0, deadline - Date.now())));
+    }
+  }
+}
+test("readonly observer retries only SQLITE_BUSY until the existing snapshot deadline", async () => {
+  const root = mkdtempSync(join(homedir(), ".lab-relay-observer-lock-")), path = join(root, "control.sqlite");
+  const writer = new Database(path);
+  writer.exec("CREATE TABLE sessions(session_id TEXT,peer_id TEXT,name TEXT,generation INTEGER,phase TEXT,lease_until INTEGER); PRAGMA application_id=1280465201; PRAGMA user_version=1; INSERT INTO sessions VALUES ('fixture-session','fixture-peer','fixture',0,'active',123)");
+  const observer = new Database(path, { readonly: true, strict: true }), readiness = { seenSession: false };
+  let release: ReturnType<typeof setTimeout> | undefined;
+  try {
+    expect(committedPeerRows(observer, path, readiness)).toHaveLength(1);
+    writer.exec("BEGIN EXCLUSIVE; UPDATE sessions SET lease_until=124");
+    let unlocked = false;
+    release = setTimeout(() => { writer.exec("COMMIT"); unlocked = true; }, 30);
+    const rows = await peerSnapshot(observer, path, readiness, Date.now() + 500);
+    expect(unlocked).toBe(true); expect(rows[0]?.lease_until).toBe(124);
+    writer.exec("BEGIN EXCLUSIVE");
+    const deadline = Date.now() + 30;
+    const failure = await peerSnapshot(observer, path, readiness, deadline).then(() => undefined, error => error);
+    expect(failure).toMatchObject({ code: "SQLITE_BUSY", errno: 5 });
+    expect(Date.now()).toBeGreaterThanOrEqual(deadline);
+    writer.exec("ROLLBACK; PRAGMA application_id=7");
+    await expect(peerSnapshot(observer, path, readiness, Date.now() + 500)).rejects.toThrow("Unexpected committed");
+  } finally {
+    if (release) clearTimeout(release);
+    try { writer.exec("ROLLBACK"); } catch {}
+    observer.close(); writer.close(); rmSync(root, { recursive: true, force: true });
+  }
+});
 test("readonly observer waits for schema commit and first WAL sidecars, refusing foreign/partial schemas", () => {
   const root = mkdtempSync(join(homedir(), ".lab-relay-observer-")), path = join(root, "control.sqlite");
   const writer = new Database(path);
@@ -133,7 +172,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
   const observerReadiness = { seenSession: false };
   const evidence = join(source, ".tmp", "relay-pi-actual-" + root.slice(-6));
   mkdirSync(evidence, { recursive: true, mode: 0o700 });
-  function rows(): Peer[] {
+  async function rows(deadline = Date.now() + 1000): Promise<Peer[]> {
     if (!control) {
       const base = join(state, "relay/projects");
       if (!existsSync(base)) return [];
@@ -144,17 +183,18 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       if (!entry || entry.size === 0) return []; // Owned initial inode, no committed SQLite header yet.
       control = new Database(path, { readonly: true, strict: true });
     }
-    return committedPeerRows(control, join(busRoot, "control.sqlite"), observerReadiness);
+    return peerSnapshot(control, join(busRoot, "control.sqlite"), observerReadiness, deadline);
   }
-  async function wait(check: () => boolean, label: string, ms = 12000) {
+  async function wait(check: (deadline: number) => boolean | Promise<boolean>, label: string, ms = 12000) {
     const until = Date.now() + ms;
-    while (!check()) {
+    while (!await check(until)) {
       if (Date.now() > until || actors.some(actor => actor.child.exitCode !== null && !actor.peer)) throw new Error("Actual Relay timeout: " + label);
       await pause(40);
     }
   }
   async function start() {
-    const known = new Set(rows().map(peer => peer.peer_id));
+    const startDeadline = Date.now() + 20000;
+    const known = new Set((await rows(startDeadline)).map(peer => peer.peer_id));
     const actor = { child: undefined as any, raw: "", peer: undefined as Peer | undefined, socket: undefined as string | undefined };
     actor.child = Bun.spawn([join(source, "lab"), "--offline"], { cwd: project, env, terminal: { cols: 160, rows: 60, data(terminal, bytes) {
       const text = new TextDecoder().decode(bytes); actor.raw += text;
@@ -163,11 +203,11 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     } } });
     actors.push(actor);
     let trusted = false;
-    await wait(() => {
+    await wait(async deadline => {
       if (!trusted && actor.raw.includes("Trust project folder?")) { trusted = true; actor.child.terminal!.write("\r"); }
-      actor.peer = rows().find(peer => peer.phase === "active" && !known.has(peer.peer_id));
+      actor.peer = (await rows(deadline)).find(peer => peer.phase === "active" && !known.has(peer.peer_id));
       return !!actor.peer && actor.raw.includes(actor.peer.name);
-    }, "native peer registration and client rendering", 20000);
+    }, "native peer registration and client rendering", Math.max(0, startDeadline - Date.now()));
     const pids: number[] = [];
     function children(pid: number) {
       const result = Bun.spawnSync([Bun.which("pgrep")!, "-P", String(pid)]);
@@ -232,17 +272,17 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     expect(reply.replyTo).toBe(message.id); expect(reply.conversationId).toBe(message.conversationId);
     const oldGeneration = b.peer!.generation;
     await paste(b, "/reload");
-    await wait(() => rows().some(peer => peer.peer_id === b.peer!.peer_id && peer.generation === oldGeneration + 1 && peer.phase === "active"), "native reload reconnect");
+    await wait(async deadline => (await rows(deadline)).some(peer => peer.peer_id === b.peer!.peer_id && peer.generation === oldGeneration + 1 && peer.phase === "active"), "native reload reconnect");
     // The ready notification is transient. A fresh successful inbox command
     // proves the reloaded handler can use the renewed binding.
     await paste(b, "/relay-inbox"); await visible(b, '"messages": []');
     await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, '"duplicate": true');
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(0);
-    const lease = rows().find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until;
-    await wait(() => rows().find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until > lease, "host-only heartbeat", 18000);
+    const lease = (await rows()).find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until;
+    await wait(async deadline => (await rows(deadline)).find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until > lease, "host-only heartbeat", 18000);
     expect(modelRequests).toBe(0); // Inbox/presence never starts a model turn.
     await quit(a); await quit(b);
-    expect(rows().every(peer => peer.phase === "released")).toBe(true);
+    expect((await rows()).every(peer => peer.phase === "released")).toBe(true);
     const cleanup = [a, b].map(actor => {
       const run = control!.query("SELECT run_root FROM runs WHERE session_id=?").get(actor.peer!.session_id) as { run_root: string };
       const result = JSON.parse(readFileSync(join(run.run_root, "attachment.json"), "utf8")).cleanup;
@@ -288,14 +328,14 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     const resumed = await modelRun(join(sessionDir, files[0]!));
     expect(resumed.result.id).toBe(first.result.id); expect(resumed.result.duplicate).toBe(true);
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
-    expect(rows().every(peer => peer.phase === "released")).toBe(true);
+    expect((await rows()).every(peer => peer.phase === "released")).toBe(true);
     await modelRun(undefined, true);
     expect(modelRequests).toBe(5); // Two tool requests per run + one plaintext stream; slash adds none.
-    expect(rows().every(peer => peer.phase === "released")).toBe(true);
+    expect((await rows()).every(peer => peer.phase === "released")).toBe(true);
     writeFileSync(join(evidence, "model-tool-events.jsonl"), [...first.events, ...resumed.events].filter(event => event.type === "tool_execution_end").map(event => sanitize(JSON.stringify(event))).join("\n") + "\n");
     const sourceSHA = Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: source }).stdout.toString().trim();
     const dirty = !!Bun.spawnSync(["git", "status", "--porcelain"], { cwd: source }).stdout.toString().trim();
-    writeFileSync(join(evidence, "result.json"), JSON.stringify({ source: sourceSHA, dirty, environment: process.platform + "-" + process.arch, label: "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality", nativePeers: rows().map(({ peer_id, name, generation, phase }) => ({ peer_id, name, generation, phase })), operatorMessaging: true, repeatedReadNotAck: true, foreignAckRefused: true, nativeReloadReconnected: true, noWakeupModelCalls: true, toolProtocolRequests: modelRequests, streamingSlashNonTriggering: true, processResumeSameReceipt: true, cleanup }, null, 2));
+    writeFileSync(join(evidence, "result.json"), JSON.stringify({ source: sourceSHA, dirty, environment: process.platform + "-" + process.arch, label: "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality", nativePeers: (await rows()).map(({ peer_id, name, generation, phase }) => ({ peer_id, name, generation, phase })), operatorMessaging: true, repeatedReadNotAck: true, foreignAckRefused: true, nativeReloadReconnected: true, noWakeupModelCalls: true, toolProtocolRequests: modelRequests, streamingSlashNonTriggering: true, processResumeSameReceipt: true, cleanup }, null, 2));
   } finally {
     for (const actor of actors) {
       if (actor.child.exitCode === null) { actor.child.kill("SIGTERM"); await actor.child.exited; }
