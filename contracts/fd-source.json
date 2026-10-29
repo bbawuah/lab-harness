@@ -1,0 +1,35 @@
+{
+  "version": "10.3.0",
+  "release": "https://github.com/sharkdp/fd/releases/tag/v10.3.0",
+  "license": "MIT OR Apache-2.0",
+  "licenseUrl": "https://github.com/sharkdp/fd/tree/v10.3.0",
+  "artifacts": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "url": "https://github.com/sharkdp/fd/releases/download/v10.3.0/fd-v10.3.0-aarch64-apple-darwin.tar.gz",
+      "archiveBytes": 1337349,
+      "archiveSHA256": "0570263812089120bc2a5d84f9e65cd0c25e4a4d724c80075c357239c74ae904",
+      "member": "fd-v10.3.0-aarch64-apple-darwin/fd",
+      "binarySHA256": "14134aadba85ab2cfe4494d0f44253145f897b77a23fd4d7df2cb4929b53c786"
+    },
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "url": "https://github.com/sharkdp/fd/releases/download/v10.3.0/fd-v10.3.0-x86_64-apple-darwin.tar.gz",
+      "archiveBytes": 1430203,
+      "archiveSHA256": "50d30f13fe3d5914b14c4fff5abcbd4d0cdab4b855970a6956f4f006c17117a3",
+      "member": "fd-v10.3.0-x86_64-apple-darwin/fd",
+      "binarySHA256": "e3936d70c47bf8439797aa2c6c1ddff868424ff6bc418fc8501e819a2d58ccad"
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "url": "https://github.com/sharkdp/fd/releases/download/v10.3.0/fd-v10.3.0-x86_64-unknown-linux-musl.tar.gz",
+      "archiveBytes": 1759301,
+      "archiveSHA256": "2b6bfaae8c48f12050813c2ffe1884c61ea26e750d803df9c9114550a314cd14",
+      "member": "fd-v10.3.0-x86_64-unknown-linux-musl/fd",
+      "binarySHA256": "9f48273b6c780a5f4f084ef30bc67d98cbd7d10c55c4605cf3a6ee29b741af87"
+    }
+  ]
+}

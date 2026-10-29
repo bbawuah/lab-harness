@@ -54,7 +54,7 @@ test("installer resolves spaces/wrong cwd, installs frozen without scripts, scop
     const calls = f.calls();
     expect(calls.map(call => call.args.at(-1))).toEqual([
       'import { assertPublishCapability } from "./vendor/relay/src/storage/publish.ts"; assertPublishCapability();',
-      join(f.project, ".tmp/bun-cache"), "setup:herdr", "setup:rg", "setup:pi", "check", "smoke:herdr",
+      join(f.project, ".tmp/bun-cache"), "setup:herdr", "setup:rg", "setup:fd", "setup:pi", "check", "smoke:herdr",
     ]);
     for (const call of calls) {
       expect(call.cwd).toBe(f.project);
@@ -64,7 +64,7 @@ test("installer resolves spaces/wrong cwd, installs frozen without scripts, scop
     }
     expect(calls[1]!.args).toEqual(["--no-env-file", "install", "--frozen-lockfile", "--ignore-scripts", "--prefer-offline", "--cache-dir", join(f.project, ".tmp/bun-cache")]);
     expect(calls[1]!.nodeEnv).toBe("development");
-    expect(calls[4]!.path).toBe(`${f.project}/.tmp/rg:${f.bin}:${f.bin}`);
+    expect(calls[4]!.path).toBe(`${f.project}/.tmp/fd:${f.project}/.tmp/rg:${f.bin}:${f.bin}`);
     expect(result.stdout.toString()).toContain(`${f.project}/lab`);
     expect(result.stdout.toString()).toContain("interactive LAB workspace");
     expect(result.stdout.toString()).toContain("Controlled LAB task execution remains unavailable");
@@ -90,7 +90,7 @@ for (const [name, env, missing, message] of [
   });
 }
 
-for (const stage of ["capability", "install", "setup:herdr", "setup:rg", "setup:pi", "check", "smoke:herdr"]) {
+for (const stage of ["capability", "install", "setup:herdr", "setup:rg", "setup:fd", "setup:pi", "check", "smoke:herdr"]) {
   test(`installer propagates ${stage} failure and never reports success`, () => {
     const f = fixture();
     try {

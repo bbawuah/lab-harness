@@ -11,6 +11,6 @@ done
 cd -- "$project_root"
 export BUN_INSTALL_CACHE_DIR="$project_root/.tmp/bun-cache"
 export BUN_RUNTIME_TRANSPILER_CACHE_PATH="$project_root/.tmp/bun-transpiler-cache"
-export PATH="$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
+export PATH="$project_root/.tmp/fd:$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
 if [ "$lab_offline" = 1 ]; then export LAB_INSTALL_OFFLINE=1; fi
 exec "$lab_bun" --no-env-file --no-install "$project_root/scripts/start.ts" "$@"

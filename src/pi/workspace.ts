@@ -47,7 +47,7 @@ export async function runInteractiveWorkspace(options: { configure?: boolean } =
   process.stdout.write("Starting LAB interactive workspace. Controlled LAB tasks remain unavailable.\nExit Pi with /exit; native sessions persist in the configured workspace state directory.\n");
   return runHerdrInteractive({ executable: herdr, command, cwd: projectRoot, stateRoot: run, exitFile,
     environment: {
-      PATH: `${dirname(rg)}:${dirname(process.execPath)}:/usr/bin:/bin`, TERM: process.env.TERM ?? "xterm-256color", COLORTERM: process.env.COLORTERM,
+      PATH: `${join(projectRoot, ".tmp/fd")}:${dirname(rg)}:${dirname(process.execPath)}:/usr/bin:/bin`, TERM: process.env.TERM ?? "xterm-256color", COLORTERM: process.env.COLORTERM,
       ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}),
       PI_CODING_AGENT_DIR: agent, PI_OFFLINE: "1", LAB_WORKSPACE_API_KEY: key || "lab-local-no-key",
       LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_ROOT: projectRoot, LAB_WORKSPACE_USER_HOME: homedir(),

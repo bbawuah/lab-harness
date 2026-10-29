@@ -27,7 +27,8 @@
     "check:brand": "bun --no-env-file --no-install scripts/pi/derive-terminal-mark.ts --check",
     "setup:rg": "bun --no-env-file --no-install scripts/acquire-rg.ts",
     "setup:pi": "bun --no-env-file --no-install scripts/pi/acquire.ts",
-    "start": "./lab"
+    "start": "./lab",
+    "setup:fd": "bun --no-env-file --no-install scripts/acquire-fd.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",

@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.
 
 **This public command becomes available when this change is merged.** The
 bootstrap downloads a SHA-256-pinned immutable harness archive and installs
-Bun 1.4.2 when needed, Pi 1.4.0 standalone, Herdr 0.9.5, ripgrep and frozen
+Bun 1.4.2 when needed, Pi 1.4.0 standalone, Herdr 0.9.5, ripgrep, fd and frozen
 JavaScript dependencies. No Git, global Pi, Node, sudo or shell profile edit is
 required. Supported platforms are macOS arm64/x86_64 and Linux x86_64 with
 standard `curl`, `tar`, `unzip` and SHA-256 tools. WSL remains unverified.
@@ -58,7 +58,7 @@ local caches with no acquisition network access. `./install.sh --offline` also
 requires cached frozen JavaScript dependencies. Normal reruns reuse valid
 caches and repair partial/corrupt runtime downloads atomically. A first install
 needs GitHub/npm access; a missing offline dependency produces an error.
-Bun caches, Pi, Herdr and ripgrep remain beneath the checkout's `.tmp`.
+Bun caches, Pi, Herdr, fd and ripgrep remain beneath the checkout's `.tmp`.
 
 ## In the workspace
 
@@ -93,6 +93,7 @@ specify a project-local one:
 bun --no-env-file install --frozen-lockfile --ignore-scripts --cache-dir .tmp/bun-cache
 bun --no-env-file run setup:herdr
 bun --no-env-file run setup:rg
+bun --no-env-file run setup:fd
 bun --no-env-file run setup:pi
 bun --no-env-file run check
 bun --no-env-file run smoke:herdr

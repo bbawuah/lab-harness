@@ -13,7 +13,7 @@ cd -- "$project_root"
 command -v tar >/dev/null 2>&1 || fail 'tar is required to extract pinned runtime archives.'
 export BUN_INSTALL_CACHE_DIR="$project_root/.tmp/bun-cache"
 export BUN_RUNTIME_TRANSPILER_CACHE_PATH="$project_root/.tmp/bun-transpiler-cache"
-export PATH="$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
+export PATH="$project_root/.tmp/fd:$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
 if [ "$lab_offline" = 1 ]; then export LAB_INSTALL_OFFLINE=1; fi
 
 step 'Checking real Relay publication capability (loader refusals remain visible)'
@@ -24,9 +24,10 @@ if [ "$lab_offline" = 1 ]; then
 else
   NODE_ENV=development "$lab_bun" --no-env-file install --frozen-lockfile --ignore-scripts --prefer-offline --cache-dir "$BUN_INSTALL_CACHE_DIR"
 fi
-step 'Acquiring checksum-pinned Herdr, ripgrep and standalone Pi'
+step 'Acquiring checksum-pinned Herdr, ripgrep, fd and standalone Pi'
 "$lab_bun" --no-env-file run setup:herdr
 "$lab_bun" --no-env-file run setup:rg
+"$lab_bun" --no-env-file run setup:fd
 "$lab_bun" --no-env-file run setup:pi
 step 'Running repository tests, typecheck and publication integrity'
 "$lab_bun" --no-env-file run check

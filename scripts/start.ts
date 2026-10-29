@@ -10,7 +10,7 @@ if (args.includes("--help")) {
 
 try {
   // Acquisitions validate/reuse warm caches. Installation sends no model prompts.
-  for (const script of ["scripts/herdr/acquire.ts", "scripts/acquire-rg.ts", "scripts/pi/acquire.ts"]) {
+  for (const script of ["scripts/herdr/acquire.ts", "scripts/acquire-rg.ts", "scripts/acquire-fd.ts", "scripts/pi/acquire.ts"]) {
     const code = await new Promise<number>((done, reject) => {
       const child = spawn(process.execPath, ["--no-env-file", "--no-install", join(root, script), ...(args.includes("--offline") ? ["--offline"] : [])], { cwd: root, stdio: "inherit" });
       child.once("error", reject); child.once("exit", code => done(code ?? 1));
