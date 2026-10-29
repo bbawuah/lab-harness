@@ -1,0 +1,95 @@
+{
+  "kind": "actual-owned-Herdr-PTY-test-report",
+  "capturedOn": "2026-10-29",
+  "source": "302e73386b96329040d985a51e4a8223010008d0",
+  "base": "752ff368f387b3be7d13c4a1a3e7851438bb149e",
+  "environment": "macOS arm64, Bun1.4.2, actual pinned Herdr0.9.5; CI=true",
+  "runtimeSHA256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2",
+  "runtimeReleaseSource": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+  "contractSourcePin": "bc8c28988f75c538d4ca058b702f5adbea30566e",
+  "diagnosis": "Worker starts before native client focus; old fixed400ms input can be lost before first snapshot. New test waits rendered unique worker marker and worker SIGWINCH size acknowledgement.",
+  "controlledCases": [
+    {
+      "case": "query-stage",
+      "passed": false,
+      "summary": "Ran 2 tests across 1 file. [11.14s]",
+      "first": null,
+      "second": null,
+      "before": null,
+      "after": null,
+      "resized": null,
+      "exit": null,
+      "driver-result": "143",
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "case": "delayed",
+      "passed": false,
+      "summary": "Ran 2 tests across 1 file. [11.37s]",
+      "first": null,
+      "second": null,
+      "before": null,
+      "after": null,
+      "resized": null,
+      "exit": null,
+      "driver-result": "143",
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "case": "delayed-fixed",
+      "passed": true,
+      "summary": "Ran 2 tests across 1 file. [2.25s]",
+      "first": "first",
+      "second": "second",
+      "before": "23 53\n",
+      "after": "39 83\n",
+      "resized": "39 83\n",
+      "exit": "130\n",
+      "driver-result": "130",
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "case": "delayed-query-fixed",
+      "passed": true,
+      "summary": "Ran 2 tests across 1 file. [1.59s]",
+      "first": "first",
+      "second": "second",
+      "before": "23 53\n",
+      "after": "39 83\n",
+      "resized": "39 83\n",
+      "exit": "130\n",
+      "driver-result": "130",
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "case": "focused-actual",
+      "passed": true,
+      "summary": "Ran 4 tests across 2 files. [3.88s]"
+    }
+  ],
+  "limits": "Controlled delays in ignored adapter copies only; committed change is test-only. No model/provider/user messages. Original CI cause reproduced, not proof arbitrary hardware cannot fail.",
+  "reproduction": [
+    "CI=true LAB_HERDR_ACTUAL=1 bun --no-env-file --no-install test tests/herdr-interactive.test.ts tests/herdr-actual.test.ts"
+  ],
+  "unchangedAssertions": "Exact first/second keys; worker trap and driver130; both PTY dimensions increase; EOF; all4 owned cleanup flags; original deadlines."
+}

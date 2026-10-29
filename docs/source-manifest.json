@@ -69,6 +69,9 @@
     "docs/demos/render.py",
     "docs/demos/requirements-audit.txt",
     "docs/evidence/bound-project-tool-events.jsonl",
+    "docs/evidence/herdr-readiness.html",
+    "docs/evidence/herdr-readiness.json",
+    "docs/evidence/herdr-readiness.png",
     "docs/evidence/hosted-project-terminal.ansi",
     "docs/evidence/hosted-project.json",
     "docs/evidence/interactive-terminal.ansi",
@@ -330,6 +333,18 @@
     },
     "docs/evidence/bound-project-tool-events.jsonl": {
       "sha256": "c646b37bb5a2334b17314a4d15c80b46b7e2d7378d255ba4c2618d4985c90956",
+      "status": "added"
+    },
+    "docs/evidence/herdr-readiness.html": {
+      "sha256": "c6a6e1c355d22d424184c46a291dd628a536eb6620bb77d907f7813cf46fd5df",
+      "status": "added"
+    },
+    "docs/evidence/herdr-readiness.json": {
+      "sha256": "8f1273a3232987c443e8c2fcc3fa6fd7e7fb5624999b2e4b26ee17313db448f2",
+      "status": "added"
+    },
+    "docs/evidence/herdr-readiness.png": {
+      "sha256": "16ee17614ac56e64766b6e58ba4982b3c8c9bfc12fce15fe9d23aa37e4a5f2d6",
       "status": "added"
     },
     "docs/evidence/hosted-project-terminal.ansi": {
@@ -752,7 +767,7 @@
       "status": "added"
     },
     "tests/herdr-interactive.test.ts": {
-      "sha256": "4172a31ec321bf1a8a776dca5c9d9085fe72cfe8e381397c5de59b449e6d9a49",
+      "sha256": "2184f9554084fd2d35fb40983fab407272dedb6059b50375814982426fc863ea",
       "status": "added"
     },
     "tests/herdr-protocol.test.ts": {
