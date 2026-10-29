@@ -109,6 +109,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/research/model-providers.md",
     "docs/search.md",
     "docs/skills-inventory.json",
     "docs/skills.md",
@@ -293,7 +294,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "d6533e657d57bd2e9ee874b88cbaa1dcebe909677be3364c93fdce6db7e2bb41",
+      "sha256": "838a639f087f8f8ac293817d64f3d5d56470fc447e53d3801613c80421269acc",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -301,7 +302,7 @@
       "status": "added"
     },
     "docs/build-plan.md": {
-      "sha256": "60371cb83ab19c0e82982470f5c957d299969ec8b8bda01d01bf91f7e9b1bd84",
+      "sha256": "09ba699b127836ab0b9427b6ddce08b1ded1fbb470db8b462a3de619e6e3588a",
       "status": "added"
     },
     "docs/ci.md": {
@@ -490,6 +491,10 @@
     },
     "docs/publication-status.md": {
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
+      "status": "added"
+    },
+    "docs/research/model-providers.md": {
+      "sha256": "44a8f281cf6e87523ce8119715472bf17bd7bbb8cc01595896c76cf56d195c98",
       "status": "added"
     },
     "docs/search.md": {
