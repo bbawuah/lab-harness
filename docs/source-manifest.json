@@ -1146,7 +1146,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "c60266f9c44ee8181a6c7201b1c0f4331a7f47bba4b3cb4213afaf63436b4611",
+      "sha256": "ffbc5a20d06b61373fda4b45b8db2480319bd5f01134678d3fb065712f689739",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
