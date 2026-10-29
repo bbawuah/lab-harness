@@ -109,7 +109,8 @@ Accept any explicitly entered valid HTTP(S) host, IPv6, LAN or tailnet address.
 Refuse embedded URL credentials, query/fragment secrets and non-HTTP schemes.
 Show the normalized destination before a key is attached. Changing an endpoint
 creates a new connection revision and requires explicit confirmation of the
-credential destination. No redirects carrying credentials to another origin.
+credential destination. P1 rejects all inference redirects, including same-origin
+redirects, through the supported per-request fetch mechanism defined below.
 
 ### API keys and subscription login are different products
 
@@ -219,6 +220,26 @@ are forwarded through controlled interpolation, never inserted as Pi's executabl
 !command syntax. Current private-file ownership, no-symlink/no-hardlink, size and
 0600 checks remain required. [Pi value resolution](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/resolve-config-value.ts#L28-L85).
 
+Every launch uses a fresh private per-run PI_CODING_AGENT_DIR with a new
+auth/config store, never the preserved historical agent auth.json. Keep native
+session storage separately through supported --session-dir; retaining sessions
+does not mean importing their credentials. A trusted profile wrapper captures
+the selected revision/key and supplies the request-level API-key override itself.
+It validates the exact model/provider/API/destination, rather than accepting
+caller-supplied auth or route mutation. Concurrent runs have independent config,
+credential objects and fetch closures. Historical auth is retained untouched.
+[Directory controls](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/config.ts#L584-L625),
+[request override precedence](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/auth/resolve.ts#L56-L92).
+
+For explicit none, Pi receives a fixed public nonsecret sentinel only to satisfy
+its native adapter's local nonempty-key requirement. Header tombstones suppress
+SDK authorization, and the profile fetch removes Authorization, x-api-key,
+proxy-authorization, cookie and other supported credential headers case
+insensitively before transmission. The wire promise is no credential headers,
+including no dummy bearer token. No stored or ambient fallback is consulted.
+authHeader:false alone is insufficient because the SDK generates authentication.
+[Header tombstones](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/types.ts#L160-L218).
+
 Precedence: explicit session/profile argument, then previously confirmed project
 preference, then user default. Project preferences may reference an existing
 approved profile only; they cannot supply a new endpoint, secret, executable
@@ -324,10 +345,56 @@ PATH setup is incomplete or a foreign lab command exists.
 **S:** supported surfaces include models.json; registerProvider/unregisterProvider;
 ModelRuntime; ModelRegistry refresh/find/getAvailable/getError; and native
 credential/auth APIs. A configured-auth check is not an endpoint test. Refresh
-can explicitly disable model-network access. Use static models.json first and
-Pi's supported provider objects only for dynamic discovery/auth needs.
+can explicitly disable model-network access. Static models.json describes exact
+models, but P1 also needs a narrow trusted provider wrapper for credential,
+transport and error policy; static configuration alone is insufficient.
 [Extension APIs](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/extensions/types.ts#L1787-L1986),
 [registry](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/model-registry.ts#L44-L125).
+
+### Narrow provider wrapper, not another protocol engine
+
+Use supported registerProvider(name, ProviderConfig) with streamSimple and a
+stable unique LAB provider identity. Capture the native adapter factory once
+and delegate directly, avoiding recursive registry dispatch. The standalone's
+embedded root @earendil-works/pi-ai exports openAICompletionsApi,
+openAIResponsesApi, anthropicMessagesApi and AssistantMessageEventStream.
+Do not assume arbitrary deep /api imports exist in the binary.
+[Embedded modules](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/extensions/virtual-modules.ts#L14-L40),
+[native factory exports](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/compat.ts#L13-L34).
+
+The supported ProviderRequestOptions.fetch passes through SimpleStreamOptions
+to all three selected native SDK adapters. Build a fetch closure for the frozen
+profile: validate effective URL origin and approved base-path boundary, normalize
+Request/header inputs, force redirect:manual, and reject every 3xx without
+following Location. Cancel its body and return a fixed safe policy failure.
+Validate before sending, not after response.redirected becomes true. Override
+any caller redirect option. No global fetch mutation, SDK fork, second protocol
+parser or local gateway is required.
+[Public request options](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/types.ts#L160-L218),
+[forwarding](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/api/simple-options.ts#L36-L65),
+[upstream fetch tests, inspected not executed](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/test/fetch-option.test.ts#L34-L100).
+
+Wrap native AssistantMessageEventStream before forwarding any event to Pi's
+agent loop. Detach event/partial-message objects because native adapters mutate
+them. Replace errorMessage with fixed allowlisted categories and remove/rebuild
+diagnostics, nested raw errors/stacks/details, including successful Anthropic
+strict-tool fallback diagnostics. Own the wrapper terminal event and .result();
+never return the unsanitized native final result. Cover setup throws, iteration
+errors, missing terminal events and abort. P1 omits onProviderStreamEvent, which
+would expose raw provider events before this boundary, and keeps SDK debug
+environment variables absent.
+[Stream result contract](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/utils/event-stream.ts#L97-L134),
+[native diagnostics](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/ai/src/api/anthropic-messages.ts#L664-L687),
+[agent consumption before persistence](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/agent/src/agent-loop.ts#L412-L477).
+
+The wrapper records safe HTTP status/code itself and may use Pi's exported
+context/retry classifiers as internal heuristics. Raw vendor text stays within
+the boundary; no promise that a text heuristic establishes billing semantics.
+Disable both automatic agent and provider retries initially. Compaction and
+branch summaries normally reuse the same agent stream function and must traverse
+the wrapper; prove those paths with fixtures before enabling automatic helpers.
+This is a supported implementation seam, not a runtime qualification or the
+controlled LAB admission gate.
 
 Phase-one launch compiles an exactly validated single-profile configuration with
 a unique provider ID, exact model entry and only its explicit credential. Keep
@@ -337,6 +404,20 @@ bypasses startup default restoration; malformed unique-provider configuration
 produces diagnostics before normal interactive generation.
 [Startup source](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/main.ts#L798-L853),
 [diagnostic exit](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/main.ts#L915-L952).
+
+P1 disables automatic compaction, including overflow auto-compaction, and agent
+retries. Manual native /compact is still a request through the same wrapper.
+Unknown custom metadata uses explicit labelled operational assumptions rather
+than Pi's injected limits. For the legacy 8192/1024 model use reserveTokens 1024,
+keepTokens 2048 and branchSummary reserveTokens 1024, with output cap 1024.
+These are bounded configuration values, not proof a particular prompt fits.
+Validate positive numeric budgets and reserve + keep + output < context;
+require a configured context of at least 4096 in P1. On overflow show a safe
+error and offer a shorter/new conversation, without automatic summary/model
+substitution. Qualify 8K threshold/overflow and manual compaction/tool-result
+preservation with fixtures.
+[Default budgets](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/settings-defaults.ts#L9-L25),
+[automatic compaction short-circuit](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/agent-session.ts#L3011-L3016).
 
 This is a **bounded initial-launch policy**, not generation admission or an OS
 sandbox. Pi's resolver can fuzzily match or synthesize unknown models, so LAB
@@ -374,8 +455,9 @@ without claiming downstream locality or airgap enforcement.
 
 LAB never selects a replacement profile, cloud provider, account or protocol
 after failure. Same-route retry is different from failover. Use pinned Pi's
-supported timeout/retry settings, initially provider retries zero, visible agent
-retry/cancel state and cacheWarming off. Do not add another nested retry loop.
+supported timeout/retry settings, initially provider retries zero and automatic
+agent retries disabled, visible cancel state and cacheWarming off. Do not add
+another nested retry loop.
 Pi exposes HTTP idle timeout, provider timeout/retry/delay cap and agent retry
 settings; actual endpoint behavior still needs fixtures.
 [Supported settings](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/settings.md#L124-L136).
@@ -414,7 +496,7 @@ their extension/shell edits with provider work.
 | --- | --- | --- |
 | D0 | This research + ADR; fresh critical design review | Check source/version/auth claims, migration, privacy, fallback/history limits; no provider code ahead of review |
 | P1 | Versioned profiles, local migration, private auth and presets; exact fresh launch; native Pi adapters | Every requested preset; v1 local/LiteLLM preserved; no network on save/list/select; corrupt/version/permission/symlink/partial-write/lock/cancel tests; remote URLs and aliases with spaces rejected only where model syntax requires; metadata marked unknown/legacy correctly |
-| P1 protocol gate | Actual pinned Pi against owned loopback provider fixtures, no cloud accounts | Assert Chat SSE, Responses and Anthropic paths/headers/body/model; fragmented streams/errors, tool call/result, abort; no request to unselected host or real cloud; sentinel-secret redaction; no invented tool parsing |
+| P1 protocol gate | Actual pinned Pi against owned loopback provider fixtures, no cloud accounts | Assert Chat SSE, Responses and Anthropic paths/headers/body/model; fragmented streams/errors, tool call/result, abort; two-origin 301/302/303/307/308 refusal with zero destination requests; Request/header casing; none has no auth/cookie headers; poisoned historical auth and concurrent profiles; echoed secret HTTP/SSE errors/fallback diagnostics absent in terminal and sessions; no invented tool parsing |
 | P1 install gate | Public immutable archive and clean install; user commands documented | No global Pi prerequisite; existing saved route; exact launcher/project/configure/profile/help; private state outside release/project; normal exit and owned cleanup; Ubuntu/macOS exact-head CI |
 | P2 | Explicit metadata discovery, cached/stale status | Bounded bytes/time/model count; 401/403/404/empty/malformed/oversize/TLS/timeout/redirect tests; no generate/load/pull; manual alias always possible |
 | P3 | In-process selection and explicitly routed resume | Active stream/retry/compaction/tool boundary; smaller context, images/reasoning and missing tool results; no tool re-execution, silent loss or cross-server state-ID reuse; absent profile/auth pauses; preserve native transcripts |
@@ -431,10 +513,13 @@ accounts, model quality, arbitrary compatible servers, WSL or controlled admissi
 Critical design review round 1 requested changes before implementation:
 persisted native credential precedence, sanitizing native vendor errors before
 render/persistence, inference redirect enforcement, explicit-none wire behavior
-and 8K compaction budgets. A bounded pinned-source seam investigation is in
-progress; D0 is not cleared. These are known design blockers, not runtime fixes
-or validated privacy guarantees. The next revision must record mechanisms and
-acceptance evidence before broad provider build.
+and 8K compaction budgets. This revision responds with per-run agent/auth plus
+persistent separate sessions, captured request-level credential, supported
+per-profile fetch/stream wrappers, explicit-none header tombstones and final
+wire stripping, and disabled auto-compaction/retries with bounded budgets.
+Fresh critical round 2 must verify those design responses before D0 clears.
+The mechanisms are source-proven public seams, not implemented/runtime-proven
+privacy or redirect guarantees; P1 acceptance above is mandatory.
 
 - Exact model-catalog extraction from the standalone bundle for cloud presets:
   use supported public data/API, or operator entry with declared limits; do not

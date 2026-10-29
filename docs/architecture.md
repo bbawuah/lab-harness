@@ -111,7 +111,14 @@ OpenAI, Anthropic/Claude API, Ollama, LM Studio/OpenAI-compatible and existing
 LiteLLM. Hostname is independent of provider/protocol; LiteLLM remains client-only.
 
 The first switching contract is explicit exit/relaunch into a fresh session.
-Only the chosen profile credential enters the isolated runner. Exact locally
+Each run has fresh private native agent/auth state and explicitly separate
+persistent session storage; historical auth is retained but never imported.
+A narrow supported Pi provider wrapper freezes the selected credential,
+rejects redirects through per-request fetch, strips credential headers for
+explicit none and sanitizes error events/results before native persistence.
+It delegates every protocol to the existing native adapter, with no gateway.
+Automatic retries/compaction and cache warming start disabled; 8K budgets are
+explicit and validated. Exact locally
 validated provider/model configuration and failed-bootstrap refusal provide a
 bounded initial-launch policy, not general native request admission. Existing
 sessions and their legacy provider binding are preserved. Cross-destination
