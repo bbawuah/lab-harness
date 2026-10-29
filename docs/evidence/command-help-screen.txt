@@ -1,0 +1,59 @@
+
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Interactive coding workspace
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Controlled LAB tasks: unavailable
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+
+ [lab-help]
+
+ LAB-HARNESS commands
+ /lab-search TEXT — Find literal project text with source hashes.
+ /lab-files NAME — Find project filenames with source hashes.
+ /lab-skills — List skills and exact IDs; does not load instructions.
+ /lab-skill ID [ORIGIN PATH] — Explicitly load a listed skill after rechecking its bytes.
+ /lab-help — Show these LAB commands.
+ /exit — Leave the workspace; native Pi /quit also works.
+ The model receives lab_search and lab_files automatically. Skills load only through your explicit command.
+ Use native Pi /help for its own commands. Controlled LAB tasks remain unavailable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+1.8%/8.2k (auto)                                                                                                  fixture-no-inference

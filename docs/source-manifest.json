@@ -69,6 +69,10 @@
     "docs/demos/render.py",
     "docs/demos/requirements-audit.txt",
     "docs/evidence/bound-project-tool-events.jsonl",
+    "docs/evidence/command-help-screen.txt",
+    "docs/evidence/command-help.html",
+    "docs/evidence/command-help.json",
+    "docs/evidence/command-help.png",
     "docs/evidence/hosted-project-terminal.ansi",
     "docs/evidence/hosted-project.json",
     "docs/evidence/interactive-terminal.ansi",
@@ -333,6 +337,22 @@
     },
     "docs/evidence/bound-project-tool-events.jsonl": {
       "sha256": "c646b37bb5a2334b17314a4d15c80b46b7e2d7378d255ba4c2618d4985c90956",
+      "status": "added"
+    },
+    "docs/evidence/command-help-screen.txt": {
+      "sha256": "a63dbbb1226d880545be89211f80fbf532069e02200edb24aa6fdf595a3cbd2f",
+      "status": "added"
+    },
+    "docs/evidence/command-help.html": {
+      "sha256": "e572cb51a3413db0417f106fa084253b4d9d411b67a4869a36a06aa9aaf23e51",
+      "status": "added"
+    },
+    "docs/evidence/command-help.json": {
+      "sha256": "9d3738c459d6a8978f318ca7298fc18e629523441167888c0dcc442688e91e5a",
+      "status": "added"
+    },
+    "docs/evidence/command-help.png": {
+      "sha256": "f01e49a9fe072537f7cc6ed881ead7d43a202d41bbd51a148669e8b48e1b6e89",
       "status": "added"
     },
     "docs/evidence/hosted-project-terminal.ansi": {

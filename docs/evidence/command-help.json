@@ -1,0 +1,56 @@
+{
+  "source": "d30e0fe2dcdad615ba6d696e3ee9c4b187c38dbf",
+  "environment": "macOS arm64, actual Pi1.4.0/Herdr0.9.5/Bun1.4.2",
+  "mode": "actual /lab-help through native Pi, owned pane.read visible capture",
+  "code": 0,
+  "cleanup": {
+    "serverExited": true,
+    "clientExited": true,
+    "workerStopped": true,
+    "socketsRemoved": true
+  },
+  "noModelPrompt": true,
+  "shellHelp": {
+    "exit": 0,
+    "output": "LAB-HARNESS \u2014 interactive AI coding in your project\nUsage: lab [--project DIR] [--configure] [--offline] [--help]\nRun lab from a project; from home, choose an existing project folder.\n  --project DIR  Open another existing project (paths with spaces work).\n  --configure  Change the saved endpoint, model and private key.\n  --offline  Require cached runtime dependencies; model requests may still use the network.\n  --help  Show this help without starting Pi or a model request.\nSetup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.\nYou provide the model server or service. Setup sends no model prompt and installs no weights.\nIn Pi: /lab-help for LAB search/skills commands; /exit to leave.\nGuide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md\nControlled LAB task execution remains unavailable.\n"
+  },
+  "bootstrapCases": {
+    "kind": "actual shell bootstrap with stubbed verified archive/dependency acquisition, synthetic home",
+    "cases": {
+      "verified": {
+        "exit": 0,
+        "stdout": "LAB: downloading pinned harness aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLAB command verified on this PATH: lab\nUse: lab [--project DIR] [--configure] [--offline] [--help]\n\nLAB is installed. Launcher: $HOME/.local/share/lab-harness/lab\nInstallation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.\n",
+        "stderr": ""
+      },
+      "missing-path": {
+        "exit": 0,
+        "stdout": "LAB: downloading pinned harness aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLAB command installed at $HOME/.local/bin/lab. To enable it in this shell, run:\n  export PATH='$FIXTURE_ROOT/home '\\'' with spaces/.local/bin':\"$PATH\"\nThen verify: command -v lab\nFor future terminals, add that PATH line to your own zsh/bash startup file. No profiles were edited.\n\nLAB is installed. Launcher: $HOME/.local/share/lab-harness/lab\nInstallation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.\n",
+        "stderr": ""
+      },
+      "collision": {
+        "exit": 0,
+        "stdout": "LAB: downloading pinned harness aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nLAB: existing lab command at $FIXTURE_ROOT/bin/lab was left untouched. Use the full launcher printed below.\n\nLAB is installed. Launcher: $HOME/.local/share/lab-harness/lab\nInstallation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.\n",
+        "stderr": ""
+      }
+    }
+  },
+  "tuiCapture": {
+    "kind": "actual native Pi pane.read visible text, subsequently browser-rendered",
+    "file": "command-help-screen.txt",
+    "noModelRequest": true,
+    "nativeQuitAndOwnedCleanup": true
+  },
+  "reproduction": [
+    "./lab --help",
+    "bun --no-env-file --no-install test tests/bootstrap.test.ts tests/workspace-help.test.ts",
+    "Launch owned fixture project and configured no-provider route; /lab-help, then /exit; use Herdr pane.read to retain visible screen."
+  ],
+  "capture": {
+    "kind": "browser-rendered actual stdout and actual native pane text",
+    "width": 1100,
+    "height": 1151,
+    "appearance": "light",
+    "htmlSHA256": "e572cb51a3413db0417f106fa084253b4d9d411b67a4869a36a06aa9aaf23e51",
+    "imageSHA256": "f01e49a9fe072537f7cc6ed881ead7d43a202d41bbd51a148669e8b48e1b6e89"
+  }
+}

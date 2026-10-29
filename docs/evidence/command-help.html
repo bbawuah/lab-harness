@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Actual LAB help and command evidence</title><style>body{margin:0;color:var(--foreground,#1e2633);font:16px/1.5 system-ui}h1{font-size:28px}h2{font-size:20px}pre{white-space:pre-wrap;word-break:break-word;font:12px/1.6 ui-monospace,monospace;background:#171b23;color:#edf1f7;padding:18px;border-radius:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}small{color:var(--muted-foreground,#667181)}@media(max-width:650px){.grid{grid-template-columns:1fr}}</style><h1>Actual help, visible commands and safe PATH setup</h1><p>Captured command output and real Pi visible-screen text. Re-rendered for reading; not a live TUI screenshot or model inference test.</p><div class="grid"><section><h2>lab --help</h2><pre>LAB-HARNESS — interactive AI coding in your project
+Usage: lab [--project DIR] [--configure] [--offline] [--help]
+Run lab from a project; from home, choose an existing project folder.
+  --project DIR  Open another existing project (paths with spaces work).
+  --configure  Change the saved endpoint, model and private key.
+  --offline  Require cached runtime dependencies; model requests may still use the network.
+  --help  Show this help without starting Pi or a model request.
+Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.
+You provide the model server or service. Setup sends no model prompt and installs no weights.
+In Pi: /lab-help for LAB search/skills commands; /exit to leave.
+Guide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md
+Controlled LAB task execution remains unavailable.</pre><h2>Verified command and collision</h2><pre>LAB: downloading pinned harness aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+LAB command verified on this PATH: lab
+Use: lab [--project DIR] [--configure] [--offline] [--help]
+
+LAB is installed. Launcher: $HOME/.local/share/lab-harness/lab
+Installation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.
+
+LAB: downloading pinned harness aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+LAB: existing lab command at $FIXTURE_ROOT/bin/lab was left untouched. Use the full launcher printed below.
+
+LAB is installed. Launcher: $HOME/.local/share/lab-harness/lab
+Installation only (no controlling terminal or --install-only). Run the launcher in your terminal to configure a model.
+</pre></section><section><h2>/lab-help in actual Pi</h2><pre>▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Interactive coding workspace
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Controlled LAB tasks: unavailable
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+ [lab-help]
+
+ LAB-HARNESS commands
+ /lab-search TEXT — Find literal project text with source hashes.
+ /lab-files NAME — Find project filenames with source hashes.
+ /lab-skills — List skills and exact IDs; does not load instructions.
+ /lab-skill ID [ORIGIN PATH] — Explicitly load a listed skill after rechecking its bytes.
+ /lab-help — Show these LAB commands.
+ /exit — Leave the workspace; native Pi /quit also works.
+ The model receives lab_search and lab_files automatically. Skills load only through your explicit command.
+ Use native Pi /help for its own commands. Controlled LAB tasks remain unavailable.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+1.8%/8.2k (auto)                                                                                                  fixture-no-inference</pre><p>Native /exit returned0; server, client and worker stopped; sockets removed.</p></section></div><p><small>Source d30e0fe2dcdad615ba6d696e3ee9c4b187c38dbf; captured2026-10-29, macOS arm64/Bun1.4.2/Pi1.4.0/Herdr0.9.5. Bootstrap cases use synthetic home and stubbed archive acquisition; command and collision behavior runs the actual shell. TUI is actual native pane.read text with blank lines compacted only in this view. Synthetic project/route, no model request/credentials/user data. Full text and reproduction: command-help.json, command-help-screen.txt.</small></p></html>
