@@ -72,10 +72,13 @@ export async function executeWorkspaceRequest(request: Request): Promise<unknown
   const sources = [ { id: "repository", root, kind: "repository" as const }, { id: "codex", root: join(userHome, ".codex/skills"), kind: "skills" as const }, { id: "claude", root: join(userHome, ".claude/skills"), kind: "skills" as const } ];
   const inventory = discoverSkills(sources);
   if (request.action === "skills") return { complete: inventory.coverageComplete, skills: inventory.skills.map(skill => ({ id: skill.id, name: skill.name, compatibility: skill.compatibility, loadable: skill.loadable, contentHash: skill.contentHash, bundleHash: skill.bundleHash, origins: skill.origins.map(origin => ({ originId: origin.originId, path: origin.path })) })) };
-  const skill = inventory.skills.find(skill => skill.id === request.query);
-  if (!skill || skill.origins.length !== 1) throw new Error("AMBIGUOUS_OR_UNAVAILABLE_SKILL");
-  const loaded = loadSkill(selectSkill(skill, skill.origins[0]!), sources, inventory);
-  return `Explicit LAB skill load. Instruction SHA-256: ${loaded.selection.contentHash}; bundle SHA-256: ${loaded.selection.bundleHash}\nOrigin: ${loaded.selection.originId}/${loaded.selection.path}\nResources remain at the original local bundle; loading does not execute scripts.\n\n${loaded.text}`;
+  const [id, originId, ...pathParts] = (request.query ?? "").split(" ");
+  const skill = inventory.skills.find(skill => skill.id === id);
+  const locations = skill?.origins.filter(origin => !originId || origin.originId === originId && origin.path === pathParts.join(" "));
+  if (!skill || locations?.length !== 1) throw new Error("AMBIGUOUS_OR_UNAVAILABLE_SKILL");
+  const loaded = loadSkill(selectSkill(skill, locations[0]!), sources, inventory);
+  const source = sources.find(source => source.id === loaded.selection.originId)!;
+  return `Explicit LAB skill load. Instruction SHA-256: ${loaded.selection.contentHash}; bundle SHA-256: ${loaded.selection.bundleHash}\nOrigin: ${loaded.selection.originId}/${loaded.selection.path}\nLocal instruction path: ${join(source.root, loaded.selection.path)}\nResources remain at the original local bundle; loading does not execute scripts.\n\n${loaded.text}`;
 }
 if (process.argv.includes("--bridge")) {
   try {
