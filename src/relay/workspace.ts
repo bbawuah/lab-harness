@@ -199,14 +199,29 @@ function busRecord(db: Database, busId: string): void {
   if (existing && existing.value !== busId) conflict("Relay control database belongs to a different bus");
   if (!existing) db.query("INSERT INTO meta VALUES ('bus',?)").run(busId);
 }
+/** Filesystem/JSON errors can include the capability path or file contents.
+ * Discard the original error entirely, including its cause and extra fields.
+ */
+function privateReference<T>(fn: () => T): T {
+  try { return fn(); }
+  catch { throw new MessageError("invalid", "Invalid private Relay run reference"); }
+}
+function assertReference(path: string, expected: string): void {
+  privateReference(() => {
+    privateTree(dirname(path));
+    if (readPrivate(path) !== expected) fail("Invalid private Relay run reference");
+  });
+}
 function readReference(path: string): RunReference {
-  if (!isAbsolute(path) || resolve(path) !== path) fail("Invalid private Relay run reference");
-  privateTree(dirname(path));
-  const ref = JSON.parse(readPrivate(path)) as RunReference;
-  record(ref, ["stateRoot", "installRoot", "projectBinding", "runRoot", "groupId", "version", "capability", "busId", "namespace", "busRoot", "groupDigest"]);
-  if (ref.version !== 1 || typeof ref.capability !== "string" || !/^[a-f0-9]{64}$/.test(ref.capability) || dirname(path) !== ref.runRoot) fail("Invalid private Relay run reference");
-  checkScope(ref);
-  return ref;
+  return privateReference(() => {
+    if (!isAbsolute(path) || resolve(path) !== path) fail("Invalid private Relay run reference");
+    privateTree(dirname(path));
+    const ref = JSON.parse(readPrivate(path)) as RunReference;
+    record(ref, ["stateRoot", "installRoot", "projectBinding", "runRoot", "groupId", "version", "capability", "busId", "namespace", "busRoot", "groupDigest"]);
+    if (ref.version !== 1 || typeof ref.capability !== "string" || !/^[a-f0-9]{64}$/.test(ref.capability) || dirname(path) !== ref.runRoot) fail("Invalid private Relay run reference");
+    checkScope(ref);
+    return ref;
+  });
 }
 
 /** Durable provisioning intent precedes publishing the private reference. */
@@ -221,7 +236,7 @@ export function provisionWorkspaceRelayRun(options: WorkspaceRelayRunOptions, ti
       projectRecord(db, options.projectBinding);
       const existing = db.query("SELECT * FROM runs WHERE run_root=?").get(options.runRoot) as RunRow | null;
       if (existing) {
-        const ref = JSON.parse(existing.reference) as RunReference;
+        const ref = privateReference(() => JSON.parse(existing.reference)) as RunReference;
         if (ref.stateRoot !== options.stateRoot || ref.installRoot !== options.installRoot || ref.runRoot !== options.runRoot || ref.groupId !== options.groupId
           || ref.projectBinding.root !== options.projectBinding.root || ref.projectBinding.device !== options.projectBinding.device || ref.projectBinding.inode !== options.projectBinding.inode
           || !same(selectScope(ref), scope)) conflict("Relay run provisioning conflict");
@@ -235,9 +250,11 @@ export function provisionWorkspaceRelayRun(options: WorkspaceRelayRunOptions, ti
     }).immediate();
     // The stored exact reference recovers a crash before/after this publication.
     db.transaction(() => {
-      const st = privateFile(run.ref_path, true);
-      if (st) { if (readPrivate(run.ref_path) !== run.reference) conflict("Relay reference changed"); }
-      else syncFile(run.ref_path, run.reference);
+      privateReference(() => {
+        const st = privateFile(run.ref_path, true);
+        if (st) assertReference(run.ref_path, run.reference);
+        else syncFile(run.ref_path, run.reference);
+      });
       db.query("UPDATE runs SET phase='ready' WHERE id=?").run(run.id);
     }).immediate();
     return run.ref_path;
@@ -254,6 +271,7 @@ class Handles {
   readonly messagePath: string;
   private readonly files: { path: string; dev: number; ino: number }[];
   private closed = false;
+  private operationTime: number | undefined;
   constructor(readonly refPath: string, readonly ref: RunReference, readonly now: () => number, createRelay = false) {
     this.owner = hash(ref.capability);
     this.controlPath = join(ref.busRoot, "control.sqlite"); this.messagePath = join(ref.busRoot, "messages.sqlite");
@@ -262,9 +280,13 @@ class Handles {
     try {
       // Opening a helper cannot create/register a missing vendor database.
       databaseFiles(this.messagePath, createRelay);
-      this.store = createMessageStore({ path: this.messagePath, now });
-      this.directory = createDirectory({ store: this.store, now });
-      this.service = createMessageService({ store: this.store, now, maxPending: 1000, maxBodyBytes: 16000 });
+      // Vendor expiry checks and timestamps must share the adapter's sample.
+      // Independent clock reads can expire a retry between journal check and
+      // vendor receipt lookup, silently enqueueing a second message.
+      const operationNow = () => this.operationTime ?? fail("Relay operation requires a control transaction");
+      this.store = createMessageStore({ path: this.messagePath, now: operationNow });
+      this.directory = createDirectory({ store: this.store, now: operationNow });
+      this.service = createMessageService({ store: this.store, now: operationNow, maxPending: 1000, maxBodyBytes: 16000 });
       this.files = [this.controlPath, this.messagePath].map(path => { const st = privateFile(path)!; return { path, dev: st.dev, ino: st.ino }; });
     } catch (error) { this.db.close(true); throw error; }
   }
@@ -272,7 +294,7 @@ class Handles {
     if (this.closed) fail("Relay helper is closed");
     return this.db.transaction(() => {
       checkScope(this.ref);
-      if (readPrivate(this.refPath) !== JSON.stringify(this.ref)) conflict("Relay reference changed");
+      assertReference(this.refPath, JSON.stringify(this.ref));
       for (const file of this.files) {
         databaseFiles(file.path); const st = privateFile(file.path)!;
         if (st.dev !== file.dev || st.ino !== file.ino) conflict("Relay database changed");
@@ -281,7 +303,10 @@ class Handles {
       if (!run || run.phase !== "ready" || run.ref_path !== this.refPath || run.reference !== JSON.stringify(this.ref)) conflict("Relay capability is not active");
       busRecord(this.db, this.ref.busId);
       projectRecord(this.db, this.ref.projectBinding);
-      return fn(clock(this.now), run);
+      const time = clock(this.now);
+      this.operationTime = time;
+      try { return fn(time, run); }
+      finally { this.operationTime = undefined; }
     }).immediate();
   }
   session(sessionId: string): SessionRow | null {

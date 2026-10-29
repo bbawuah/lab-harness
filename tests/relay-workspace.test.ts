@@ -178,6 +178,41 @@ test("receipt expiry remains a refusal tombstone beyond vendor prune and new cap
   expect(receipt.expiresAt).toBe(f.timing.now());
 });
 
+test("receipt retry shares one exact transaction timestamp with vendor lookup across expiry", () => {
+  const { f, a, sender, receiver, bob } = pair();
+  const original = send(sender, bob.peerId, "boundary-key"); sender.close();
+  // Reproduce vendor commit without the control receipt, then reclaim the expired
+  // session with a new capability just one millisecond before receipt expiry.
+  sql(paths(a.ref).control, db => db.query("UPDATE outbound SET receipt=NULL WHERE request_key='boundary-key'").run());
+  f.advance(original.expiresAt - f.timing.now() - 1);
+  const next = f.run(); f.bind(next.ref, "alice-native");
+  let reads = 0, expired = false;
+  const now = () => expired || ++reads > 3 ? original.expiresAt : original.expiresAt - 1;
+  const current = openBoundWorkspaceRelay(next.ref, "alice-native", { now }); helpers.push(current);
+  // Clock reads: opening, journal transaction, enqueue transaction. A further
+  // vendor clock read would cross expiry and incorrectly enqueue another ID.
+  const retry = send(current, bob.peerId, "boundary-key");
+  expect(retry.id === original.id).toBe(true); expect(retry.duplicate).toBe(true);
+  expect(reads).toBe(3);
+  const count = sql(paths(a.ref).messages, db => db.query("SELECT COUNT(*) AS n FROM messages").get()) as { n: number };
+  expect(count.n).toBe(1);
+  expired = true;
+  expect(() => send(current, bob.peerId, "boundary-key")).toThrow("horizon expired");
+  // The unrelated recipient's lease also expired; inspect only this fixture DB.
+  receiver.close();
+});
+
+test("receipt retry refuses exact expiry when it arrives between its two control transactions", () => {
+  const { f, a, sender, bob } = pair(), original = send(sender, bob.peerId, "between-locks"); sender.close();
+  sql(paths(a.ref).control, db => db.query("UPDATE outbound SET receipt=NULL WHERE request_key='between-locks'").run());
+  f.advance(original.expiresAt - f.timing.now() - 1);
+  const next = f.run(); f.bind(next.ref, "alice-native");
+  let reads = 0;
+  const current = openBoundWorkspaceRelay(next.ref, "alice-native", { now: () => ++reads <= 2 ? original.expiresAt - 1 : original.expiresAt }); helpers.push(current);
+  expect(() => send(current, bob.peerId, "between-locks")).toThrow("horizon expired");
+  expect(sql(paths(a.ref).messages, db => db.query("SELECT COUNT(*) AS n FROM messages").get())).toEqual({ n: 1 });
+});
+
 test("reply validation preserves peer pair and conversation; normal reply inherits conversation", async () => {
   const { f, alice, bob, sender, receiver } = pair();
   const initial = send(sender, bob.peerId);
@@ -281,7 +316,7 @@ test("default project isolation; only explicit private version1 group manifest p
   writeFileSync(manifest, content + "\n");
   for (const op of [() => gah.peers(), () => gah.heartbeat(), () => gah.release(), () => send(gah, gbi.peerId), () => gah.ack({ ids: [] })]) expect(op).toThrow("binding changed");
   await expect(gah.inbox()).rejects.toThrow("binding changed");
-  expect(() => f.open(ga.ref, "group-alice")).toThrow("binding changed");
+  expect(() => f.open(ga.ref, "group-alice")).toThrow("Invalid private Relay run reference");
 });
 
 test("group refuses unsafe IDs, unlisted/replaced projects and nonprivate or extended manifests", () => {
@@ -303,7 +338,7 @@ test("project path replacement refuses both stale binding and fresh adoption of 
   const { f, a, sender } = pair();
   renameSync(f.project, f.project + "-old"); mkdirSync(f.project, { mode: 0o700 });
   expect(() => sender.peers()).toThrow("PROJECT_DIRECTORY_CHANGED");
-  expect(() => f.open(a.ref, "alice-native")).toThrow("PROJECT_DIRECTORY_CHANGED");
+  expect(() => f.open(a.ref, "alice-native")).toThrow("Invalid private Relay run reference");
   expect(() => f.run()).toThrow("directory was replaced");
 });
 
@@ -320,9 +355,9 @@ test("unsafe HOME, state, run, reference and database paths fail before mailbox 
   expect(() => invoke({ runRoot: linked })).toThrow("owned directories");
   chmodSync(valid.options.runRoot, 0o755); expect(() => invoke({})).toThrow("0700"); chmodSync(valid.options.runRoot, 0o700);
   f.bind(valid.ref, "private-native"); const helper = f.open(valid.ref, "private-native"), p = paths(valid.ref);
-  chmodSync(valid.ref, 0o644); expect(() => helper.heartbeat()).toThrow("private regular file"); chmodSync(valid.ref, 0o600);
+  chmodSync(valid.ref, 0o644); expect(() => helper.heartbeat()).toThrow("Invalid private Relay run reference"); chmodSync(valid.ref, 0o600);
   const hardlink = valid.ref + ".hard"; linkSync(valid.ref, hardlink);
-  expect(() => f.open(valid.ref, "private-native")).toThrow("private regular file"); rmSync(hardlink);
+  expect(() => f.open(valid.ref, "private-native")).toThrow("Invalid private Relay run reference"); rmSync(hardlink);
   helper.close();
   writeFileSync(p.messages + "-journal", "unsafe", { mode: 0o644 });
   expect(() => f.open(valid.ref, "private-native")).toThrow("private owned regular files"); rmSync(p.messages + "-journal");
@@ -343,8 +378,40 @@ test("opening never registers, rebinds or releases; endpoint and capability tamp
   expect(() => helper.release()).toThrow("generation changed");
   expect(() => f.open(a.ref, "native")).toThrow("generation changed");
   const raw = readFileSync(a.ref, "utf8"), ref = JSON.parse(raw); ref.capability = "0".repeat(64); writeFileSync(a.ref, JSON.stringify(ref));
-  expect(() => helper.peers()).toThrow("reference changed");
+  expect(() => helper.peers()).toThrow("Invalid private Relay run reference");
   expect(() => f.open(a.ref, "native")).toThrow("capability is not active");
+});
+
+test("private reference failures are fixed safe errors on initial open and every bound operation", async () => {
+  const { f, a, sender, bob } = pair(), original = readFileSync(a.ref, "utf8"), capability = JSON.parse(original).capability;
+  const safe = (error: unknown) => {
+    expect(error instanceof Error).toBe(true);
+    const e = error as Error & { code: string };
+    expect(e.code === "invalid").toBe(true);
+    expect(e.message === "Invalid private Relay run reference").toBe(true);
+    // Bun may attach source-location metadata to newly constructed Errors.
+    const allowed = ["code", "message", "name", "stack", "sourceURL", "line", "column", "originalLine", "originalColumn"];
+    expect(Object.getOwnPropertyNames(e).every(key => allowed.includes(key))).toBe(true);
+    const details = [String(e), JSON.stringify(e), ...Object.getOwnPropertyNames(e).map(key => String((e as any)[key]))].join("\n");
+    for (const secret of [a.ref, a.ref.split("/").at(-1)!, capability, createHash("sha256").update(capability).digest("hex")]) expect(details.includes(secret)).toBe(false);
+  };
+  const refuses = (operation: () => unknown) => {
+    let refused = false;
+    try { operation(); } catch (error) { refused = true; safe(error); }
+    expect(refused).toBe(true);
+  };
+  for (const replacement of [undefined, `{ "capability": "${capability}", invalid`, JSON.stringify({ ...JSON.parse(original), version: 2 })]) {
+    if (replacement === undefined) rmSync(a.ref); else writeFileSync(a.ref, replacement, { mode: 0o600 });
+    refuses(() => f.open(a.ref, "alice-native"));
+    refuses(() => f.bind(a.ref, "alice-native"));
+    for (const operation of [() => sender.peers(), () => send(sender, bob.peerId), () => sender.ack({ ids: [] }), () => sender.heartbeat(), () => sender.release()]) refuses(operation);
+    let refused = false;
+    try { await sender.inbox(); } catch (error) { refused = true; safe(error); }
+    expect(refused).toBe(true);
+    writeFileSync(a.ref, original, { mode: 0o600 });
+    // Each failure refuses the operation without releasing/rebinding the owner.
+    expect(f.open(a.ref, "alice-native").identity).toEqual(sender.identity);
+  }
 });
 
 test("provisioning intent recovers before reference publication and before ready commit", () => {
