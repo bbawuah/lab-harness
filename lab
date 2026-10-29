@@ -5,13 +5,13 @@ umask 077
 lab_caller_cwd=$(pwd -P 2>/dev/null) || lab_caller_cwd=
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 lab_offline=0
-lab_expect_project=0
+lab_expect_value=
 lab_has_project=0
 for lab_arg in "$@"; do
-  if [ "$lab_expect_project" = 1 ]; then lab_expect_project=0; lab_has_project=1; continue; fi
-  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; --project) lab_expect_project=1;; *) printf 'Usage: lab [--project DIR] [--configure] [--offline] [--help]\n' >&2; exit 1;; esac
+  if [ -n "$lab_expect_value" ]; then [ "$lab_expect_value" != project ] || lab_has_project=1; lab_expect_value=; continue; fi
+  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; --project) lab_expect_value=project;; --relay-group) lab_expect_value=group;; *) printf 'Usage: lab [--project DIR] [--configure] [--offline] [--relay-group ID] [--help]\n' >&2; exit 1;; esac
 done
-[ "$lab_expect_project" = 0 ] || { printf 'LAB: --project requires an existing directory.\n' >&2; exit 1; }
+[ -z "$lab_expect_value" ] || { printf 'LAB: --project/--relay-group requires its directory or ID.\n' >&2; exit 1; }
 [ -n "$lab_caller_cwd" ] || [ "$lab_has_project" = 1 ] || { printf 'LAB: caller directory is unavailable. Run from your project or use --project DIR.\n' >&2; exit 1; }
 . "$project_root/scripts/runtime-bun.sh"
 cd -- "$project_root"

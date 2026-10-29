@@ -1,7 +1,7 @@
 # Native Pi interactive workspace
 
 `src/pi/workspace.ts` exports
-`runInteractiveWorkspace(options?: { configure?: boolean; project?: string }): Promise<number>`.
+`runInteractiveWorkspace(options?: { configure?: boolean; project?: string; relayGroup?: string }): Promise<number>`.
 The coordinator's `./lab` launcher calls it; `./lab --configure` repeats route
 setup. The selected project is `options.project ?? process.cwd()`, canonically
 bound through `src/project.ts`. `./lab --project '/path/to/project B'` selects
@@ -28,10 +28,10 @@ The integration requires coordinator SearchService support for the explicit
 `projectBinding` option with the exact selected directory identity.
 Default SearchService callers retain their existing owned-subdirectory rules.
 
-First run requires an actual terminal. Choose `local` with an explicit loopback
-OpenAI-compatible base URL and exact model ID, or `litellm` with an existing
-HTTP(S) endpoint, alias and key. Local currently means `localhost`, `127.0.0.1`
-or `[::1]`; it does not describe a LAN server. Setup does not select a service,
+First run requires an actual terminal. Choose `local` with an explicit
+self-hosted OpenAI-compatible HTTP(S) base URL and exact model ID, or `litellm`
+with an existing HTTP(S) endpoint, alias and key. Self-hosted destinations may
+use loopback, LAN, tailnet or another valid host. Setup does not select a service,
 start LiteLLM, download weights or fall back to a cloud provider. Endpoint URLs
 cannot contain credentials, query strings or fragments. Include `/v1` when the
 server requires it. Remote LiteLLM is an explicitly selected existing route;
@@ -205,3 +205,28 @@ The fixture substitutes only dependency verification and terminal attachment; it
 makes no model request. Coordinator E2E owns real Pi/Herdr/local inference for
 this revision; historical native-session evidence above is not a new inference
 qualification.
+
+## Built-in Relay lifecycle and verification
+
+The workspace now provisions its private project bus before Pi starts. The
+supported session_start hook binds ctx.sessionManager.getSessionId(); matching
+session_shutdown releases the current owner on quit, reload and replacement.
+The pinned types explicitly support these async lifecycle hooks and native
+session IDs. Host-only 15-second heartbeats renew 60-second leases. Model tool
+callbacks use their native context, never caller-supplied sender/inbox scope.
+
+The extension registers relay_peers, relay_send, relay_inbox and relay_ack plus
+operator slash equivalents. Its Bun stdin bridge uses a private run reference
+from the launcher, bounded128KiB requests/1MiB replies/20-second deadline.
+Neither receipt nor ack is ledger ingest, task completion or acceptance. Normal
+read leaves mail unread, and inbox polling never starts a model turn.
+
+Actual acceptance exercises two owned native Pi/Herdr TUIs through the shipped
+launcher and same project bus: discovery, explicit send/reply, duplicate-key
+receipt, repeated read, foreign-ack refusal, explicit recipient ack, native
+reload reconnect and host heartbeat with zero inference requests. A separate
+owned Chat-protocol fixture drives actual Pi relay_send execution and full
+native process resume; the original receipt is reused. Its large-context and
+disabled-helper settings are fixture configuration, not the default route's
+capacity or model-quality qualification. No paid provider or real model call is
+needed for this gate. Captures distinguish actual pane text from rendered views.

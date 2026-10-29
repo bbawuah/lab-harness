@@ -15,12 +15,13 @@ function snapshot(root:string):unknown {
 test("native launch uses caller or explicit project B while all startup writes stay in private app state",()=>{
   const root=realpathSync(mkdtempSync(join(tmpdir(),"lab-workspace-launch-"))); roots.push(root);
   const install=join(root,"installed release A"), project=join(root,"project B with spaces"), home=join(root,"user home");
-  for(const path of [join(install,"src/pi"),join(install,"src/runtime"),join(install,"src/herdr"),join(install,"contracts"),join(install,".tmp/rg"),project,home]) mkdirSync(path,{recursive:true,mode:0o700});
+  for(const path of [join(install,"src/pi"),join(install,"src/runtime"),join(install,"src/herdr"),join(install,"src/relay"),join(install,"contracts"),join(install,".tmp/rg"),project,home]) mkdirSync(path,{recursive:true,mode:0o700});
   // Exercise the actual entry/config/project code in an isolated installation.
   // Only pinned dependency verification and terminal attachment are fixture adapters.
   for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
   writeFileSync(join(install,"src/runtime/pi.ts"),'export function verifyPiRuntime(){return {command:["/verified/pi"],version:"fixture"};}\n');
   writeFileSync(join(install,"src/herdr/interactive.ts"),'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.CAPTURE_PATH,JSON.stringify(options));return 0;}\n');
+  writeFileSync(join(install,"src/relay/workspace.ts"),'import {writeFileSync} from "node:fs";import {join} from "node:path";export function provisionWorkspaceRelayRun(options){const path=join(options.runRoot,"relay-run.json");writeFileSync(path,"fixture",{mode:0o600});return path;}\n');
   const rg="fixture pinned binary";
   writeFileSync(join(install,".tmp/rg/rg"),rg,{mode:0o700});
   writeFileSync(join(install,"contracts/ripgrep-source.json"),JSON.stringify({artifacts:[{platform:process.platform,arch:process.arch,binarySHA256:createHash("sha256").update(rg).digest("hex")}]}));
@@ -40,6 +41,7 @@ test("native launch uses caller or explicit project B while all startup writes s
     expect(JSON.parse(launch.environment.LAB_WORKSPACE_BINDING)).toMatchObject({root:project,device:statSync(project).dev,inode:statSync(project).ino});
     expect(launch.environment.LAB_INSTALL_ROOT).toBe(install);
     expect(launch.environment.LAB_WORKSPACE_USER_HOME).toBe(home);
+    expect(launch.environment.LAB_RELAY_RUN_REF.startsWith(join(state,"runs/h-"))).toBe(true);
     expect(launch.environment.PI_CODING_AGENT_DIR).toBe(join(state,"agent"));
     expect(launch.executable).toBe(join(install,".tmp/herdr/herdr"));
     expect(launch.command).toContain(join(install,"src/pi/workspace-extension.ts"));

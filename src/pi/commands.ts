@@ -1,8 +1,10 @@
 /** Current user-facing commands. No network or private configuration is read. */
+import { relayTools } from "./relay-extension.ts";
 export const shellOptions = [
   ["--project DIR", "Open another existing project (paths with spaces work)."],
   ["--configure", "Change the saved endpoint, model and private key."],
   ["--offline", "Require cached runtime dependencies; model requests may still use the network."],
+  ["--relay-group ID", "Use an explicitly configured cross-project Relay allowlist; default is project-only."],
   ["--help", "Show this help without starting Pi or a model request."],
 ] as const;
 export const workspaceCommands = [
@@ -15,20 +17,21 @@ export const workspaceCommands = [
 export function workspaceHelp(): string {
   return ["LAB-HARNESS commands",
     ...workspaceCommands.map(command => "/" + command.name + (command.usage ? " " + command.usage : "") + " — " + command.description),
+    ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
-    "The model receives lab_search and lab_files automatically. Skills load only through your explicit command.",
+    "Tool-capable models receive lab_search, lab_files and relay_peers/send/inbox/ack automatically. Skills load only through your explicit command.",
     "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }
 export function shellHelp(): string {
   return ["LAB-HARNESS — interactive AI coding in your project",
-    "Usage: lab [--project DIR] [--configure] [--offline] [--help]",
+    "Usage: lab [--project DIR] [--configure] [--offline] [--relay-group ID] [--help]",
     "Run lab from a project; from home, choose an existing project folder.",
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),
     "Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.",
     "You provide the model server or service. Setup sends no model prompt and installs no weights.",
-    "In Pi: /lab-help for LAB search/skills commands; /exit to leave.",
+    "In Pi: /lab-help for LAB search/skills/Relay commands; /exit to leave.",
     "Guide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md",
     "Controlled LAB task execution remains unavailable.",
   ].join("\n");

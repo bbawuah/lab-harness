@@ -7,7 +7,8 @@
 
 LAB-HARNESS is an AI coding workspace for your terminal and the project you are
 in. Pi provides the conversation and coding tools, Herdr runs the interactive
-terminal, and LAB adds source search and explicit skill loading. Connect a local
+terminal, and LAB adds source search, explicit skill loading and built-in Relay
+mail between workspace sessions. Connect a local
 model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
 **[User guide: five-minute start and command reference](docs/user-guide.md)**.
@@ -111,6 +112,7 @@ Then try the LAB commands:
 /lab-search TODO
 /lab-files README
 /lab-skills
+/relay-peers
 ```
 
 Search returns matching project files, lines and byte hashes. The model also
@@ -125,6 +127,13 @@ replace `ID` with its displayed `terminal-evidence` ID:
 Other skills can use `/lab-skill ID` when their source is unambiguous. Loading
 rechecks instruction/resource identities and does not run scripts. Native Pi
 provides the usual file and shell coding tools.
+
+Relay is ready automatically in each native session. Open another lab terminal
+on the same project, use /relay-peers, then
+/relay-send PEER REQUEST_KEY MESSAGE and /relay-inbox. Reading never acknowledges;
+/relay-ack MESSAGE_ID is explicit. Tool-capable models receive the same
+relay_peers/send/inbox/ack tools; operator commands provide a fallback. Messages
+do not wake models or accept tasks. [Two-session workflow](docs/user-guide.md#message-another-workspace-session).
 
 This is a **native Pi coding workspace**. Controlled LAB ledger-task execution
 remains unavailable; terminal output never accepts a LAB task. Native shell and

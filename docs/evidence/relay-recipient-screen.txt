@@ -1,0 +1,59 @@
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready: project-with-spaces/01a189be-6ca5-7287-9b9d--92f4147a0619
+ (pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890). Use /relay-peers.
+
+
+ [relay-inbox]
+
+ {
+   "messages": [
+     {
+       "version": 2,
+       "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+       "namespace": "lab-project-v1-4145df1242adf0de10bb1ec3e0a2ad816f6dd99176c81563dd766a4c5afcd726",
+       "from": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+       "to": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
+       "body": "Explicit mail from A",
+       "conversationId": "7d651449-77a3-497e-b60b-c3b10cd1f17e",
+       "createdAt": 1793312322031
+     }
+   ],
+   "unread": 1,
+   "timedOut": false
+ }
+
+
+
+ [relay-inbox]
+
+ {
+   "messages": [
+     {
+       "version": 2,
+       "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+       "namespace": "lab-project-v1-4145df1242adf0de10bb1ec3e0a2ad816f6dd99176c81563dd766a4c5afcd726",
+       "from": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+       "to": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
+       "body": "Explicit mail from A",
+       "conversationId": "7d651449-77a3-497e-b60b-c3b10cd1f17e",
+       "createdAt": 1793312322031
+     }
+   ],
+   "unread": 1,
+   "timedOut": false
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+3.3%/8.2k (auto)                                                                                                         fixture-relay

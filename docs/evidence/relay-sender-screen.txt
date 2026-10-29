@@ -1,0 +1,59 @@
+ (pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548). Use /relay-peers.
+
+
+ [relay-peers]
+
+ {
+   "peers": [
+     {
+       "id": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+       "name": "project-with-spaces/01a189be-6749-72b6-a133--6af4e2843dfc",
+       "presence": "online",
+       "lastSeenAt": 1793312319465,
+       "self": true
+     },
+     {
+       "id": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
+       "name": "project-with-spaces/01a189be-6ca5-7287-9b9d--92f4147a0619",
+       "presence": "online",
+       "lastSeenAt": 1793312320825,
+       "self": false
+     }
+   ],
+   "total": 2
+ }
+
+
+
+ [relay-send]
+
+ {
+   "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+   "state": "stored",
+   "duplicate": false,
+   "createdAt": 1793312322031,
+   "expiresAt": 1795904322031,
+   "requestKey": "intro-1"
+ }
+
+
+
+ [relay-send]
+
+ {
+   "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+   "state": "stored",
+   "duplicate": true,
+   "createdAt": 1793312322031,
+   "expiresAt": 1795904322031,
+   "requestKey": "intro-1"
+ }
+
+
+ Error: RELAY_CONFLICT
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+2.7%/8.2k (auto)                                                                                                         fixture-relay

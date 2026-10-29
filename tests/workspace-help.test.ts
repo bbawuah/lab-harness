@@ -22,7 +22,7 @@ test("LAB help is an operator command, preserves native help and reports only av
   const guide = readFileSync(resolve(import.meta.dir, "../docs/user-guide.md"), "utf8");
   for (const command of workspaceCommands) { expect(commands.has(command.name)).toBe(true); expect(guide).toContain("/" + command.name); }
   for (const [option] of shellOptions) expect(guide).toContain(option.split(" ")[0]!);
-  expect(workspaceHelp()).not.toContain("relay_send");
+  expect(workspaceHelp()).toContain("/relay-send");
   expect(workspaceHelp()).toContain("/hotkeys");
   expect(workspaceHelp()).not.toContain("Pi /help");
   expect(guide).toContain("no built-in /help");
