@@ -97,6 +97,7 @@
     "docs/skills.md",
     "docs/source-manifest.json",
     "examples/skills/terminal-evidence/SKILL.md",
+    "install.sh",
     "package.json",
     "scripts/acquire-rg.ts",
     "scripts/benchmark-search.ts",
@@ -140,6 +141,7 @@
     "tests/herdr-actual.test.ts",
     "tests/herdr-protocol.test.ts",
     "tests/herdr.test.ts",
+    "tests/install.test.ts",
     "tests/ledger.test.ts",
     "tests/pi-advisory.test.ts",
     "tests/pi-header.test.ts",
@@ -171,7 +173,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "b068d8c5038c109a872648ad2f04e5e3f6bce01486d36ce75f6786ed84585a9b",
+      "sha256": "c1de492412f869730ef718ca83319bb02c4f5886636f42ea83ee48618735d560",
       "status": "added"
     },
     ".gitignore": {
@@ -183,7 +185,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "b6ef857a2f96126527db722990cb59c18a3be54a0722431f6591cc04004c7b8e",
+      "sha256": "5c8c9687a45917d0b028bbb5c8c5fe4fa5c58aa5e22c930cbe934b4299e55d2c",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -248,7 +250,7 @@
       "status": "added"
     },
     "docs/ci.md": {
-      "sha256": "51a216256cd9d12df5e507b63507780bf43d77eee5c8480b320d2728e80d3421",
+      "sha256": "9eb07b76cb116910d662bc394534090a8dc1f52b2d6b32a758f93321696f912a",
       "status": "added"
     },
     "docs/demos/README.md": {
@@ -397,6 +399,10 @@
     },
     "examples/skills/terminal-evidence/SKILL.md": {
       "sha256": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+      "status": "added"
+    },
+    "install.sh": {
+      "sha256": "58536e38ded5d1cfe4e351fc529001718e4a8bda698fc83d49a4a1ebab367207",
       "status": "added"
     },
     "package.json": {
@@ -584,6 +590,10 @@
     },
     "tests/herdr.test.ts": {
       "sha256": "35f93c6624a9593500c5f532f8f0a6265608e5175aec91d22b748921260120c4",
+      "status": "added"
+    },
+    "tests/install.test.ts": {
+      "sha256": "851148da09c75115d775877ada7ef47386b7ec95d2f7641740b93c09db5abc22",
       "status": "added"
     },
     "tests/ledger.test.ts": {

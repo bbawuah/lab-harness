@@ -62,27 +62,68 @@ and [the asset manifest](docs/media/PROVENANCE.json).
 
 ## Run it
 
-Prerequisites: Git and **Bun 1.4.2**. The first install needs the public npm
-registry; explicit Herdr acquisition needs GitHub. No account, credential,
-inference service or model download is required. No global installation occurs.
+Prerequisites: working **Git**, **Bun 1.4.2**, and the system `tar` utility.
+The installer checks them and the platform before downloading. Install Git and
+the pinned Bun yourself; the installer does not install package managers or
+change shell profiles. Supported pinned tools: macOS arm64/x86_64 and Linux
+x86_64. Linux arm64 has no pinned rg artifact; WSL remains unverified.
 
 ```sh
 git clone https://github.com/bbawuah/lab-harness.git
 cd lab-harness
-bun --version
-bun --no-env-file install --frozen-lockfile --ignore-scripts
-bun --no-env-file run check
-bun --no-env-file run setup:herdr
+./install.sh
 bun --no-env-file run demo:terminal
-bun --no-env-file run check:actual
 ```
 
-Herdr acquisition verifies an official release asset's SHA-256 and caches it in
-`.tmp/herdr`. Subsequent terminal runs use that local cache and do not download.
+Or, with the prerequisites already installed, clone and set up in one shell line:
+
+```sh
+git clone https://github.com/bbawuah/lab-harness.git && (cd lab-harness && ./install.sh)
+```
+
+`install.sh` resolves its own directory, so it also works when invoked by path
+from another working directory (quote paths containing spaces). It checks real
+Relay publication capability, installs the frozen dependencies with
+`--ignore-scripts`, acquires the checksum-pinned Herdr and rg tools, runs `check`
+(tests, typecheck, publication integrity), and runs a bounded actual Herdr worker
+smoke with owned cleanup. It prints the next demo and full actual-check commands.
+No prompt, API key, account, model download or inference service is needed;
+native Pi activation stays blocked. Failures stop setup and keep their diagnostic.
+In particular, Relay refuses loader redirection such as `LD_LIBRARY_PATH`; setup
+preserves that refusal. Use a clean tool environment rather than bypassing it.
+
+The **first setup needs network access** to npm and GitHub. Bun's install and
+transpiler caches live in `.tmp/bun-cache` and `.tmp/bun-transpiler-cache`;
+dependencies live in `node_modules`. Herdr and rg live in `.tmp/herdr` and
+`.tmp/rg`. Rerunning is safe: frozen dependencies and checksum-valid tools are
+reused. Bun prefers cached packages, but this command is **not a guaranteed
+offline installer**: missing packages or invalid/missing tool binaries need
+network access and fail if unavailable. After setup, the search and demo runtime
+need no download. No tools are installed globally and no vendor settings,
+credentials or shell profiles are changed. The pinned rg directory is added to
+PATH only during setup; for later optional rg use, prepend this clone's
+`.tmp/rg` in your current shell.
+
+Herdr acquisition verifies an official release asset's SHA-256.
 The runtime is v0.9.5, release commit `2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01`,
 **different from** the inspected source pin
 `bc8c28988f75c538d4ca058b702f5adbea30566e`. Both identities are recorded in
 [the Herdr manifest](contracts/herdr-source.json). No binary is committed.
+
+### Advanced manual setup
+
+The individual steps remain available for diagnosis or selective tool acquisition.
+Unlike `install.sh`, plain Bun installation uses Bun's default cache unless you
+specify a project-local one:
+
+```sh
+bun --no-env-file install --frozen-lockfile --ignore-scripts --cache-dir .tmp/bun-cache
+bun --no-env-file run setup:herdr
+bun --no-env-file run setup:rg
+bun --no-env-file run check
+bun --no-env-file run smoke:herdr
+bun --no-env-file run check:actual
+```
 
 `demo:terminal` searches an owned source file, builds and revalidates immutable
 context, launches a harmless worker in an isolated Herdr session, observes its
