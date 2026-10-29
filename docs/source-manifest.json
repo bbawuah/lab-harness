@@ -447,27 +447,27 @@
       "status": "added"
     },
     "docs/evidence/relay-model-tool-events.jsonl": {
-      "sha256": "d8bb98e643c22269065d39c6456c367e058af6a6df5f0b9b43d0033db0003772",
+      "sha256": "dbdd168b02179d5d303ef02ca4c8fe675a80d4852dbd0d23aa67dc7eb94985d4",
       "status": "added"
     },
     "docs/evidence/relay-recipient-screen.txt": {
-      "sha256": "0b137151b562d45fcbc936bd8c2aa68750ba75940f4e0ab04f42a0e7855cdcea",
+      "sha256": "f89cc7808ec25121f7803bab1349efe1e361f111db2599750b964c83f7ef2e75",
       "status": "added"
     },
     "docs/evidence/relay-sender-screen.txt": {
-      "sha256": "8a70bf9adec43d7b68fad28cdc6aedfaceb4b85d9ad86dbb317212c30c6d7a91",
+      "sha256": "a1bc6090051b0b578c7e3ceeacd798f31eb3634a00b371e3cbeb7e72652103e3",
       "status": "added"
     },
     "docs/evidence/relay-workspace.html": {
-      "sha256": "17516be510152ba06ecf83d8b5bb89a6afa1b9581f65aeb044e2e300cb8f35f8",
+      "sha256": "5beadbb75473c5dfa1cb92bf27c3569595a7a11ef2eab4986ceb57aa238b4299",
       "status": "added"
     },
     "docs/evidence/relay-workspace.json": {
-      "sha256": "f1423e4cde31c2b5d7a585f8d6eb0c91aaa20a10eb6f2032236dc49b9a59e9e9",
+      "sha256": "cf1f978152a905916c42d7c17d39663302875a47bfbd1fcb8896494d0941fcb7",
       "status": "added"
     },
     "docs/evidence/relay-workspace.png": {
-      "sha256": "5327c7ce269c4460c50054f27d1c67f6b17dcd75d8f098d0c01cf92ba49d8ead",
+      "sha256": "e73c82a14b33ba11627f9a35de15cfb412547745df25033aca6afea68579b7e8",
       "status": "added"
     },
     "docs/evidence/subsequent-project-terminal.ansi": {
@@ -1040,7 +1040,7 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "44738c00e01d69783926f3f87d6d234988ce2a8ad0a45a8711392b45ab2d3fab",
+      "sha256": "dc217c05dc187e70a13fb7e92099bb4add057c5dc01e4196dc8194d81501c950",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {

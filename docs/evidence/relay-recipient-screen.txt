@@ -7,8 +7,8 @@
   workspace-extension.ts
 
 
- Relay ready: project-with-spaces/01a189ae-9494-7503-a0e5--991baf29d329
- (pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a). Use /relay-peers.
+ Relay ready: project-with-spaces/01a189be-6ca5-7287-9b9d--92f4147a0619
+ (pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890). Use /relay-peers.
 
 
  [relay-inbox]
@@ -17,13 +17,13 @@
    "messages": [
      {
        "version": 2,
-       "id": "ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef",
-       "namespace": "lab-project-v1-a97568ad887bb26ac061328b528732a92426017d006ae6d0efc8bfd7dca304c5",
-       "from": "pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa",
-       "to": "pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a",
+       "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+       "namespace": "lab-project-v1-4145df1242adf0de10bb1ec3e0a2ad816f6dd99176c81563dd766a4c5afcd726",
+       "from": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+       "to": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
        "body": "Explicit mail from A",
-       "conversationId": "618f80f4-8d6b-4c0b-b7a4-b76c5b99c3d7",
-       "createdAt": 1793311283794
+       "conversationId": "7d651449-77a3-497e-b60b-c3b10cd1f17e",
+       "createdAt": 1793312322031
      }
    ],
    "unread": 1,
@@ -38,13 +38,13 @@
    "messages": [
      {
        "version": 2,
-       "id": "ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef",
-       "namespace": "lab-project-v1-a97568ad887bb26ac061328b528732a92426017d006ae6d0efc8bfd7dca304c5",
-       "from": "pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa",
-       "to": "pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a",
+       "id": "6bc77a0e-210c-45b4-b648-198c0625be01",
+       "namespace": "lab-project-v1-4145df1242adf0de10bb1ec3e0a2ad816f6dd99176c81563dd766a4c5afcd726",
+       "from": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+       "to": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
        "body": "Explicit mail from A",
-       "conversationId": "618f80f4-8d6b-4c0b-b7a4-b76c5b99c3d7",
-       "createdAt": 1793311283794
+       "conversationId": "7d651449-77a3-497e-b60b-c3b10cd1f17e",
+       "createdAt": 1793312322031
      }
    ],
    "unread": 1,

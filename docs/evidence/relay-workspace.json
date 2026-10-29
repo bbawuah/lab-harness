@@ -1,25 +1,31 @@
 {
-  "source": "e71cc8b312d8a94af8bf347484c3072ef53a0558",
+  "source": "7e7ccba823200c2e8b8f1629da5ba0f72063ccea",
   "dirty": false,
   "environment": "darwin-arm64",
   "label": "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality",
   "nativePeers": [
     {
-      "peer_id": "pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa",
-      "name": "project-with-spaces/01a189ae-8ee7-771d-8e51--770155280d4e",
+      "peer_id": "pi-a160ddf87879f3115959ca17c1277812a1aa9b4d43f407eb41359fb55c49c548",
+      "name": "project-with-spaces/01a189be-6749-72b6-a133--6af4e2843dfc",
       "generation": 0,
       "phase": "released"
     },
     {
-      "peer_id": "pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a",
-      "name": "project-with-spaces/01a189ae-9494-7503-a0e5--991baf29d329",
+      "peer_id": "pi-f876e43412597846df03b8174417b02307e2dbac1f6a301aa933f3542bb73890",
+      "name": "project-with-spaces/01a189be-6ca5-7287-9b9d--92f4147a0619",
       "generation": 1,
       "phase": "released"
     },
     {
-      "peer_id": "pi-cd0a8c27ae793f5f38a7055673ff6ac0f94cadde1a7b6abc68a7b84801d13174",
-      "name": "project-with-spaces/01a189ae-d30a-7244-a4cf--28bd9474fac7",
+      "peer_id": "pi-243dcb72d953104ab6369ebcebd614b7f2c5d36112094dffc2e2b6a356f03ec5",
+      "name": "project-with-spaces/01a189be-ab03-7771-b8b8--ccf2026b0695",
       "generation": 1,
+      "phase": "released"
+    },
+    {
+      "peer_id": "pi-76f518427e93cca9f815585b118e230fbc2b7ac130f194c31bf4bbeff5653c4f",
+      "name": "project-with-spaces/01a189be-adb2-71d2-ba4b--d6ee1e19507a",
+      "generation": 0,
       "phase": "released"
     }
   ],
@@ -28,7 +34,8 @@
   "foreignAckRefused": true,
   "nativeReloadReconnected": true,
   "noWakeupModelCalls": true,
-  "toolProtocolRequests": 4,
+  "toolProtocolRequests": 5,
+  "streamingSlashNonTriggering": true,
   "processResumeSameReceipt": true,
   "cleanup": [
     {
@@ -48,11 +55,26 @@
     "LAB_HERDR_ACTUAL=1 bun --no-env-file --no-install test tests/relay-pi-actual.test.ts"
   ],
   "captureNote": "Browser-rendered excerpts of actual native Herdr pane.read text. Not a live-pixel terminal screenshot. Owned protocol fixture; no real model quality or paid service claim. Private fixture paths replaced with $PROJECT/$HOME/$FIXTURE.",
+  "negativeStreamingControl": {
+    "runtimeSource": "6648680faed008bb0ff7f34b80a3940593ef7a81",
+    "kind": "Actual pinned Pi with a test-only forwarding proxy that drops sendMessage options; product files unchanged",
+    "expectedRequests": 5,
+    "observedRequests": 6,
+    "exitCode": 1,
+    "result": "Regression catches unintended continuation request",
+    "reproduction": "Copy actual test to ignored .tmp/relay-unsafe-stream-control.test.ts; inside generated streaming-probe Proxy.get, add: if (key === \"sendMessage\") return (message) => target.sendMessage(message); run with explicit ./.tmp path and LAB_HERDR_ACTUAL=1."
+  },
+  "linuxSocketDiagnosis": {
+    "kind": "Owned Unix socket in disposable Linux arm64 Bun1.4.2 container, no full Ubuntu acceptance",
+    "observedNameField": "n/tmp/lab-h-owned/s.sock type=STREAM",
+    "fix": "Parse expected owned path before lsof metadata, then protocol-ping the owned candidate",
+    "timeoutsUnchanged": true
+  },
   "capture": {
     "kind": "browser-rendered actual native pane text",
     "width": 1160,
-    "height": 1430,
-    "htmlSHA256": "17516be510152ba06ecf83d8b5bb89a6afa1b9581f65aeb044e2e300cb8f35f8",
-    "imageSHA256": "5327c7ce269c4460c50054f27d1c67f6b17dcd75d8f098d0c01cf92ba49d8ead"
+    "height": 1446,
+    "htmlSHA256": "5beadbb75473c5dfa1cb92bf27c3569595a7a11ef2eab4986ceb57aa238b4299",
+    "imageSHA256": "e73c82a14b33ba11627f9a35de15cfb412547745df25033aca6afea68579b7e8"
   }
 }
