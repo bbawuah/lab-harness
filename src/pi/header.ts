@@ -1,7 +1,7 @@
 /** Opt-in startup branding only. No tools, request hooks, admission or acceptance changes. */
 import mark from "./terminal-mark.json";
 
-export type HeaderOptions = { columns: number; appearance?: "light" | "dark"; color?: boolean };
+export type HeaderOptions = { columns: number; appearance?: "light" | "dark"; color?: boolean; workspace?: boolean };
 export const NATIVE_LAB_LABEL = "Native LAB activation: BLOCKED";
 export const NATIVE_LAB_DETAIL = "Request admission unqualified";
 const attribution = "Powered by Pi";
@@ -49,8 +49,10 @@ function wrap(text: string, columns: number): string[] {
 export function renderHeader(options: HeaderOptions): string[] {
   const columns = Number.isFinite(options.columns) ? Math.max(0, Math.floor(options.columns)) : 0;
   if (!columns) return [];
-  const text = ["LAB-HARNESS", attribution, NATIVE_LAB_LABEL, NATIVE_LAB_DETAIL];
-  if (!options.color || columns < mark.columns + 3 + NATIVE_LAB_LABEL.length) {
+  const text = options.workspace
+    ? ["LAB-HARNESS", attribution, "Interactive coding workspace", "Controlled LAB tasks: unavailable"]
+    : ["LAB-HARNESS", attribution, NATIVE_LAB_LABEL, NATIVE_LAB_DETAIL];
+  if (!options.color || columns < mark.columns + 3 + Math.max(...text.map(line => line.length))) {
     return ["[B] (text fallback)", ...text].flatMap(line => wrap(line, columns));
   }
   const logo = renderTerminalMark(options.appearance ?? "dark");
