@@ -10,6 +10,9 @@ in. Pi provides the conversation and coding tools, Herdr runs the interactive
 terminal, and LAB adds source search and explicit skill loading. Connect a local
 model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
+**[User guide: five-minute start and command reference](docs/user-guide.md)**.
+Inside the workspace, use /lab-help.
+
 ## Install and start
 
 Run this from your project folder **or your home folder**. You do not need a LAB-HARNESS checkout,
@@ -50,7 +53,17 @@ launcher. Explicit install-only mode is `| sh -s -- --install-only`.
 
 ## Start again in your project
 
-From the project you want to work on, run this exact command:
+Installation creates a guarded ~/.local/bin/lab command. If the installer
+verifies it on PATH (or after you run its printed PATH step), start from your
+project with:
+
+~~~sh
+lab
+lab --help
+~~~
+
+The installer preserves foreign lab commands and edits no shell profiles.
+If PATH is not ready or a command collision exists, use this exact fallback:
 
 ```sh
 "${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab"
@@ -80,7 +93,8 @@ Bare `lab` requires an explicit PATH addition; setup prints the optional command
 For the current shell only:
 
 ```sh
-export PATH="${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+command -v lab
 ```
 
 ## Try it

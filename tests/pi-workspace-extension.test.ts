@@ -23,7 +23,7 @@ function projectFixture(): string {
 test("extension registers actual search tools and only operator commands for skills", () => {
   const tools: string[] = [], commands: string[] = [], events: string[] = [];
   extension({on(name) {events.push(name);},registerTool(tool) {tools.push(tool.name);},registerCommand(name) {commands.push(name);},sendMessage() {}});
-  expect(tools).toEqual(["lab_search","lab_files"]); expect(commands).toEqual(["exit","lab-search","lab-files","lab-skills","lab-skill"]); expect(events).toEqual(["session_start"]);
+  expect(tools).toEqual(["lab_search","lab_files"]); expect(commands).toEqual(["exit","lab-help","lab-search","lab-files","lab-skills","lab-skill"]); expect(events).toEqual(["session_start"]);
 });
 test("real skill API explicitly loads bytes and rejects changed identities", async () => {
   const root=projectFixture();
