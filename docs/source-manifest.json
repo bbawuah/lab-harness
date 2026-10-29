@@ -347,19 +347,19 @@
       "status": "added"
     },
     "docs/evidence/command-help-screen.txt": {
-      "sha256": "a63dbbb1226d880545be89211f80fbf532069e02200edb24aa6fdf595a3cbd2f",
+      "sha256": "640a148edbcc286bf48fe8c51406abbe2f7aa5501137276e60915c4663c0a407",
       "status": "added"
     },
     "docs/evidence/command-help.html": {
-      "sha256": "e572cb51a3413db0417f106fa084253b4d9d411b67a4869a36a06aa9aaf23e51",
+      "sha256": "33e17069619bf2537a74cff076d417821d7a549175a5fdcfcba08762c90ecb2d",
       "status": "added"
     },
     "docs/evidence/command-help.json": {
-      "sha256": "9d3738c459d6a8978f318ca7298fc18e629523441167888c0dcc442688e91e5a",
+      "sha256": "341fbb57bb26e825efa0b9c64a88802dbfcf86644bc3df666286e41b5bf8fd11",
       "status": "added"
     },
     "docs/evidence/command-help.png": {
-      "sha256": "f01e49a9fe072537f7cc6ed881ead7d43a202d41bbd51a148669e8b48e1b6e89",
+      "sha256": "e05fe5de29c0b75030c486a87b6327d8c560234c87c7371e9461a5b3596042cb",
       "status": "added"
     },
     "docs/evidence/herdr-readiness.html": {

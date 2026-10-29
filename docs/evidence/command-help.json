@@ -1,5 +1,5 @@
 {
-  "source": "d30e0fe2dcdad615ba6d696e3ee9c4b187c38dbf",
+  "source": "d8e8c5f5f996af876f22a07d7965290d96440c50",
   "environment": "macOS arm64, actual Pi1.4.0/Herdr0.9.5/Bun1.4.2",
   "mode": "actual /lab-help through native Pi, owned pane.read visible capture",
   "code": 0,
@@ -50,7 +50,7 @@
     "width": 1100,
     "height": 1151,
     "appearance": "light",
-    "htmlSHA256": "e572cb51a3413db0417f106fa084253b4d9d411b67a4869a36a06aa9aaf23e51",
-    "imageSHA256": "f01e49a9fe072537f7cc6ed881ead7d43a202d41bbd51a148669e8b48e1b6e89"
+    "htmlSHA256": "33e17069619bf2537a74cff076d417821d7a549175a5fdcfcba08762c90ecb2d",
+    "imageSHA256": "e05fe5de29c0b75030c486a87b6327d8c560234c87c7371e9461a5b3596042cb"
   }
 }

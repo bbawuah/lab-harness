@@ -27,7 +27,7 @@
  /lab-help — Show these LAB commands.
  /exit — Leave the workspace; native Pi /quit also works.
  The model receives lab_search and lab_files automatically. Skills load only through your explicit command.
- Use native Pi /help for its own commands. Controlled LAB tasks remain unavailable.
+ Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.
 
 
 
@@ -56,4 +56,4 @@
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 $PROJECT
-1.8%/8.2k (auto)                                                                                                  fixture-no-inference
+1.9%/8.2k (auto)                                                                                                  fixture-no-inference
