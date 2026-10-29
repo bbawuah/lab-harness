@@ -12,7 +12,6 @@ export function validateRoute(value: unknown): WorkspaceRoute {
   let url: URL;
   try { url = new URL(route.endpoint); } catch { throw new Error("Endpoint must be an explicit HTTP(S) URL"); }
   if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error("Endpoint cannot contain credentials, query, or fragment");
-  if (route.kind === "local" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) throw new Error("Local route requires localhost or loopback; use LiteLLM for an existing remote destination");
   if (typeof route.model !== "string" || !route.model.trim() || route.model.length > 200 || /[\x00-\x20\x7f]/.test(route.model)) throw new Error("Enter the exact model ID or LiteLLM alias without spaces");
   return { version: 1, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model };
 }
@@ -86,7 +85,7 @@ export async function readPrivateKey(): Promise<string> {
 }
 export async function configureWorkspace(root: string): Promise<WorkspaceRoute> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error("First run requires a terminal; run ./lab --configure interactively");
-  process.stdout.write("LAB interactive coding workspace. Controlled LAB tasks remain unavailable.\nChoose an existing endpoint; setup makes no model request.\n");
+  process.stdout.write("LAB interactive coding workspace. Controlled LAB tasks remain unavailable.\nChoose an existing endpoint; setup makes no model request.\nlocal = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpoint.\n");
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   let route: WorkspaceRoute;
   try {

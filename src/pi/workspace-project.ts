@@ -32,7 +32,7 @@ export async function selectWorkspaceProject(requested: string, installRoot: str
     for await (const line of rl) {
       const answer = line.trim();
       if (!answer) throw new LabError("PROJECT_SELECTION_CANCELLED");
-      const path = answer === "~" ? homedir() : answer.startsWith("~/") ? resolve(homedir(), answer.slice(2)) : resolve(requested, answer);
+      const path = answer === "~" ? homedir() : answer.startsWith("~/") ? resolve(homedir(), answer.slice(2)) : resolve(process.env.LAB_CALLER_CWD ?? process.cwd(), answer);
       try { return checkProject(path, installRoot); }
       catch (error) {
         if (error instanceof Error && error.message.startsWith("LAB_WORKSPACE_STATE_ROOT")) throw error;

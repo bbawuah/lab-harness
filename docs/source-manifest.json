@@ -224,7 +224,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "eb340f39253b485d89c06f583319830d0fc221c529a869dc2e8b4eabfe7643ff",
+      "sha256": "ae0c6661fbb843dc964d022f0f2525691dc7dcce41e5545c1ae88edb4ede53b0",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -369,7 +369,7 @@
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
-      "sha256": "54023890ec6f98229e5f99f970f9641427e32cc55a57b6af62810652dfd5334b",
+      "sha256": "05faf0ca35cebeaea9e1855efd091883147efdfa32bb30eb461d96fa82753e49",
       "status": "added"
     },
     "docs/interactive-validation.md": {
@@ -647,7 +647,7 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "f91b8d002232425104c3646c4bed6be1a2d22af73e865d6c375f6276d0f6274a",
+      "sha256": "647e4df40e91ecb018ad3bd97a0118c08cb03b4879a00abd64a11fa55189e05d",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
@@ -655,7 +655,7 @@
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
-      "sha256": "690d7895dfe24112b316333b04a600ca494f152a369e0329390f7cefb60f92e3",
+      "sha256": "ef75167b7ac4d1d81bd88ee5dcc27411eccd32ecbca92c16d381d57c66f0e812",
       "status": "added"
     },
     "src/pi/workspace.ts": {
@@ -785,7 +785,7 @@
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {
-      "sha256": "0e0ec0b00b3bc22d7e3d216247b44531558c8ff406b0e1c0c8e4a51d3bc18146",
+      "sha256": "742e251f3438585d8a3c56e23770c890f3c6ee9ca240d7488d17b164704b17a2",
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
@@ -802,7 +802,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "774f5b60eb08fb6e45aec1ffcd6019d6cb25fa437c2e00d508e2ef30e41017c7",
+      "sha256": "5f3f26181909e00f752c6036baa71cae2a65a1179e11a37d9a0fafb5d74e6baa",
       "status": "added"
     },
     "tests/project.test.ts": {

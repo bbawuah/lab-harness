@@ -67,6 +67,13 @@ test("curl from fresh HOME selects a valid project before route setup, retries u
     const again = await terminalRun(f, [f.launcher, "--offline"], f.project, []);
     expect(again.code, again.output.slice(-2000)).toBe(0); expect(again.output).not.toContain("Project directory: ");
     expect(JSON.parse(readFileSync(f.capture, "utf8")).cwd).toBe(f.project);
+    // Relative selections use the original caller, even when --project named
+    // another unsafe application ancestor with a different valid relative path.
+    const caller = join(f.home, "caller"), requested = join(f.home, ".local/share/lab-harness");
+    for (const path of [join(caller, "project"), join(requested, "project")]) mkdirSync(path, { recursive: true });
+    const selected = await terminalRun(f, [f.launcher, "--project", requested], caller, [["Project directory: ", "project\n"]]);
+    expect(selected.code, selected.output.slice(-2000)).toBe(0); expect(selected.remaining).toBe(0);
+    expect(JSON.parse(readFileSync(f.capture, "utf8")).cwd).toBe(join(caller, "project"));
   } finally { f.clean(); }
 }, 20000);
 

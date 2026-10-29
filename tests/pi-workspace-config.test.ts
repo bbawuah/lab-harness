@@ -6,10 +6,11 @@ import { loadWorkspaceRoute, modelsForRoute, readPrivate, validateRoute, writePr
 const roots: string[] = [];
 const temporary = () => { const root = mkdtempSync(join(tmpdir(), "lab-route-")); roots.push(root); return root; };
 afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
-test("explicit route validation refuses implicit cloud routes and credentials in URLs", () => {
+test("self-hosted routes accept remote HTTP(S) endpoints and refuse embedded credentials or invalid URLs", () => {
   const route = validateRoute({version:1,kind:"local",endpoint:"http://127.0.0.1:8080/v1/",model:"local-model"});
   expect(route.endpoint).toBe("http://127.0.0.1:8080/v1");
-  for (const endpoint of ["https://remote.invalid/v1", "http://key@localhost/v1", "http://localhost/v1?key=x", "file:///tmp/model"]) expect(() => validateRoute({...route,endpoint})).toThrow();
+  for (const endpoint of ["https://mini.tailnet.invalid:8459/v1", "http://lan.invalid:1234/v1", "https://remote.invalid/v1"]) expect(validateRoute({...route,endpoint}).kind).toBe("local");
+  for (const endpoint of ["http://key@localhost/v1", "http://localhost/v1?key=x", "http://localhost/v1#fragment", "file:///tmp/model"]) expect(() => validateRoute({...route,endpoint})).toThrow();
   expect(validateRoute({...route,kind:"litellm",endpoint:"https://gateway.invalid/v1"}).kind).toBe("litellm");
 });
 test("keys stay in private state and models reference an environment variable", () => {

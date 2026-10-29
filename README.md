@@ -8,7 +8,7 @@
 LAB-HARNESS is an AI coding workspace for your terminal and the project you are
 in. Pi provides the conversation and coding tools, Herdr runs the interactive
 terminal, and LAB adds source search and explicit skill loading. Connect a local
-model server or your existing LiteLLM endpoint.
+model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
 ## Install and start
 
@@ -26,7 +26,9 @@ such as `~/Projects/my-app`. Enter the path without shell quotes; spaces work.
 Blank input, Ctrl-C or Ctrl-D cancels. LAB never selects home for source search.
 Model setup then asks for:
 
-1. `local` or `litellm`.
+1. `local` for a local/self-hosted OpenAI-compatible server, or `litellm` for
+   your existing LiteLLM endpoint. Self-hosted URLs may be on any HTTP(S) host,
+   including LAN and tailnet addresses.
 2. The existing OpenAI-compatible base URL, including `/v1` when required.
 3. The exact local model ID or existing LiteLLM alias, then its API key.
    Key input is hidden; leave it blank for an unauthenticated local server.
