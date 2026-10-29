@@ -14,7 +14,7 @@ for (let index = 0; index < args.length; index++) {
   } else if (!["--help", "--configure", "--offline"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
 }
 if (args.includes("--help")) {
-  console.log("LAB-HARNESS interactive Pi workspace\nUsage: lab [--project DIR] [--configure] [--offline]\nOpens your current project; --project selects another existing directory.\nFirst launch asks for an explicit model endpoint and model.\nControlled LAB task execution remains unavailable (request admission unqualified).");
+  console.log("LAB-HARNESS interactive Pi workspace\nUsage: lab [--project DIR] [--configure] [--offline]\nOpens your current project; from home, asks for a project directory.\n--project selects another existing directory outside LAB's release/state folders.\nFirst launch asks for an explicit model endpoint and model.\nControlled LAB task execution remains unavailable (request admission unqualified).");
   process.exit(0);
 }
 
@@ -36,7 +36,7 @@ try {
 } catch (error) {
   // These are local startup errors. Never dump arbitrary provider or input payloads.
   const code = error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : "WORKSPACE_START_FAILED";
-  const message = code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
+  const message = code === "PROJECT_SELECTION_CANCELLED" ? "Project selection cancelled; no workspace started." : code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
     ? error.message : `${code}. Check installation and local route; use ./lab --configure to change it.`;
   console.error(`LAB: ${message}`);
   process.exitCode = 1;

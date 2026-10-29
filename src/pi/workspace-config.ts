@@ -29,9 +29,13 @@ export function privateDirectory(path: string): void {
   mkdirSync(path, { recursive: true, mode: 0o700 }); chmodSync(path, 0o700);
 }
 /** App state is separate from both installed code and the caller's project. */
-export function workspaceStateRoot(installRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT, projectRoot?: string): string {
+export function workspaceStatePath(override = process.env.LAB_WORKSPACE_STATE_ROOT): string {
   const home = resolve(homedir()), selected = override ?? join(home, ".local/share/lab-harness/workspace"), root = resolve(selected);
   if (!isAbsolute(selected) || !root.startsWith(home + sep) || root === home) throw new Error("LAB_WORKSPACE_STATE_ROOT must be an absolute application directory beneath this user's home");
+  return root;
+}
+export function workspaceStateRoot(installRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT, projectRoot?: string): string {
+  const home = resolve(homedir()), root = workspaceStatePath(override);
   for (const excluded of [installRoot, projectRoot]) {
     if (excluded && (root === resolve(excluded) || root.startsWith(resolve(excluded) + sep))) throw new Error("Workspace state must be outside the installed release and selected project; choose LAB_WORKSPACE_STATE_ROOT beneath your home");
   }

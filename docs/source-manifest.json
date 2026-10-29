@@ -149,6 +149,7 @@
     "src/pi/terminal-mark.json",
     "src/pi/workspace-config.ts",
     "src/pi/workspace-extension.ts",
+    "src/pi/workspace-project.ts",
     "src/pi/workspace.ts",
     "src/project.ts",
     "src/protocol.ts",
@@ -182,6 +183,7 @@
     "tests/pi-workspace-extension.test.ts",
     "tests/pi-workspace.test.ts",
     "tests/process-crash.test.ts",
+    "tests/project-selection.test.ts",
     "tests/project.test.ts",
     "tests/publication.test.ts",
     "tests/relay-loader-env-child.ts",
@@ -222,7 +224,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "29512a79d96baaef336cb7e629b2556d052a5cfb1a6664841c28cde3dc31244e",
+      "sha256": "eb340f39253b485d89c06f583319830d0fc221c529a869dc2e8b4eabfe7643ff",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -367,7 +369,7 @@
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
-      "sha256": "14ee019c8f437f50fa10be6957595ec993069e5cfcfe8799c8c98526a607e3ed",
+      "sha256": "54023890ec6f98229e5f99f970f9641427e32cc55a57b6af62810652dfd5334b",
       "status": "added"
     },
     "docs/interactive-validation.md": {
@@ -575,7 +577,7 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "42bc0e451974e27ff1cf64dc783c5cdf55ea2cb1bfa469405fb9f75044360b34",
+      "sha256": "aa9739205ff12201a2e92172c824bf1fa219d9677b39a1aadbfd8e13c30fb54e",
       "status": "added"
     },
     "src/admission.ts": {
@@ -645,15 +647,19 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "eba95623d99521541d49ca76b99b1c2e440a5935de9eb39bd4766c817fcd55d4",
+      "sha256": "f91b8d002232425104c3646c4bed6be1a2d22af73e865d6c375f6276d0f6274a",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
       "sha256": "acc2725ce4956dfe55ce49793d221c451cac2941bd265111534ea440e1cf196a",
       "status": "added"
     },
+    "src/pi/workspace-project.ts": {
+      "sha256": "690d7895dfe24112b316333b04a600ca494f152a369e0329390f7cefb60f92e3",
+      "status": "added"
+    },
     "src/pi/workspace.ts": {
-      "sha256": "a92ad2c5fed4abc41451c076368fd3f798e680ff9282db0ca08970d88a3c792a",
+      "sha256": "51d5ba4eeeb6e3969ff4f5748311c210c068cfba1fdd8aab0e1c7bc029845825",
       "status": "added"
     },
     "src/project.ts": {
@@ -787,13 +793,17 @@
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "51957e4a5e1e83fe3a88b4846c3ac441239e8004de1e9540704c5f547ceb135e",
+      "sha256": "14616b86055d0908bc483df3072e7a54a91a630e5063f7270624d82c4070c14f",
       "status": "added"
     },
     "tests/process-crash.test.ts": {
       "sha256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52",
       "status": "unchanged",
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
+    },
+    "tests/project-selection.test.ts": {
+      "sha256": "774f5b60eb08fb6e45aec1ffcd6019d6cb25fa437c2e00d508e2ef30e41017c7",
+      "status": "added"
     },
     "tests/project.test.ts": {
       "sha256": "0d1a8a8de4ccfe06b2e55ed272f520d32051f50ebed663fc2c5784f86d809ddc",
