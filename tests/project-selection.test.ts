@@ -8,14 +8,15 @@ function fixture() {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "lab-home-selection-")));
   const home = join(root, "new home"), source = join(root, "source"), bin = join(root, "bin");
   const project = join(home, "Projects", "project B with spaces"), capture = join(root, "launch.json");
-  for (const path of [home, project, bin, join(source, "scripts"), join(source, "src/pi"), join(source, "src/runtime"), join(source, "src/herdr"), join(source, "contracts"), join(source, ".tmp/rg")]) mkdirSync(path, { recursive: true, mode: 0o700 });
+  for (const path of [home, project, bin, join(source, "scripts"), join(source, "src/pi"), join(source, "src/runtime"), join(source, "src/herdr"), join(source, "src/relay"), join(source, "contracts"), join(source, ".tmp/rg")]) mkdirSync(path, { recursive: true, mode: 0o700 });
   // Real public bootstrap, launcher, CLI, selection, route setup and workspace.
   // Dependency acquisition/verification and final attachment are fixture adapters;
   // no provider or model is started by this regression.
-  for (const path of ["lab", "scripts/start.ts", "src/project.ts", "src/util.ts", "src/pi/commands.ts", "src/pi/workspace.ts", "src/pi/workspace-config.ts", "src/pi/workspace-project.ts"]) copyFileSync(resolve(import.meta.dir, "..", path), join(source, path));
+  for (const path of ["lab", "scripts/start.ts", "src/project.ts", "src/util.ts", "src/pi/commands.ts", "src/pi/relay-extension.ts", "src/pi/workspace.ts", "src/pi/workspace-config.ts", "src/pi/workspace-project.ts"]) copyFileSync(resolve(import.meta.dir, "..", path), join(source, path));
   writeFileSync(join(source, "scripts/runtime-bun.sh"), 'lab_bun="$TEST_REAL_BUN"\n');
   writeFileSync(join(source, "install.sh"), "#!/bin/sh\nexit 0\n", { mode: 0o700 });
   writeFileSync(join(source, "src/runtime/verify.ts"), "export function verifyInstalledRuntime(){}\n");
+  writeFileSync(join(source, "src/relay/workspace.ts"),'import {writeFileSync} from "node:fs";import {join} from "node:path";export function provisionWorkspaceRelayRun(options){const path=join(options.runRoot,"relay-run.json");writeFileSync(path,"fixture",{mode:0o600});return path;}\n');
   writeFileSync(join(source, "src/runtime/pi.ts"), 'export function verifyPiRuntime(){return {command:["/fixture/no-provider"],version:"fixture"};}\n');
   writeFileSync(join(source, "src/herdr/interactive.ts"), 'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.TEST_CAPTURE,JSON.stringify(options));console.log("FIXTURE_PROJECT_LAUNCHED");return 0;}\n');
   writeFileSync(join(source, ".tmp/rg/rg"), "fixture rg", { mode: 0o700 });
