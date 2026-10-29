@@ -56,7 +56,7 @@ try {
   const verify = origins ? (selection: SkillSelection) => verifySkill(selection, origins!) : undefined;
   const command = args.shift() ?? "help";
   if (command === "demo") demo();
-  else if (command === "header") { const columns = args[0] ? Number(args[0]) : process.stdout.columns ?? 80, appearance = args[1] ?? "dark"; requireThat(Number.isSafeInteger(columns) && columns > 0 && columns <= 1000 && ["light", "dark"].includes(appearance), "INVALID_HEADER_OPTIONS"); process.stdout.write(renderHeader({ columns, appearance: appearance as "light" | "dark", color: terminalHasColor(process.env) && !args.includes("--no-color") }).join("\n") + "\n"); }
+  else if (command === "header") { const positional = args.filter(arg => arg !== "--no-color"), columns = positional[0] ? Number(positional[0]) : process.stdout.columns ?? 80, appearance = positional[1] ?? "dark"; requireThat(positional.length <= 2 && Number.isSafeInteger(columns) && columns > 0 && columns <= 1000 && ["light", "dark"].includes(appearance), "INVALID_HEADER_OPTIONS"); process.stdout.write(renderHeader({ columns, appearance: appearance as "light" | "dark", color: terminalHasColor(process.env) && !args.includes("--no-color") }).join("\n") + "\n"); }
   else if (command === "pi-ui-smoke") { requireThat(args[0] && args[1], "PI_NODE_PATHS_REQUIRED"); print(await (await import("../scripts/pi/smoke-header.ts")).smokeHeader({ herdr: join(CONCEPT_ROOT, ".tmp/herdr/herdr"), pi: resolve(args[0]), node: resolve(args[1]) })); }
   else if (command === "terminal-demo") print(await (await import("./terminal-demo.ts")).terminalDemo());
   else if (command === "herdr-smoke") print(await (await import("./herdr/index.ts")).runHerdrSmoke({ stateRoot: join(CONCEPT_ROOT, ".tmp") }));

@@ -243,7 +243,7 @@
       "status": "added"
     },
     "scripts/herdr/smoke.ts": {
-      "sha256": "d0892b139641d1d0cc25fff88133d3a9cc585f2a2abe49b4c7d74412214b2b2a",
+      "sha256": "64a5e0cf700dbf62a158fbd61bd1040b41db6656d468a43a2c2e598006cfc3a3",
       "status": "added"
     },
     "scripts/inventory-skills.ts": {
@@ -285,7 +285,7 @@
       "status": "added"
     },
     "src/cli.ts": {
-      "sha256": "d96d93c6af9d8ab27f008c52d34a83b1f12bd0ec025b787b88c61ef88a0ac33e",
+      "sha256": "5b03a48ea02cf2125dcb7aadace7fb30b0298b81d6a56a1017dbe90ef6d90578",
       "status": "modified",
       "originalSHA256": "07ac03b02cc45c9ed94a31265795011b46b91292cbb230f5847a8c6bf7dad92f"
     },
