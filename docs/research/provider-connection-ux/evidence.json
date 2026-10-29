@@ -1,0 +1,35 @@
+{
+  "status": "DESIGN \u2014 synthetic, not runtime qualification",
+  "capturedAt": "2026-10-29T22:07:46Z",
+  "baselineCommit": "43a6ac2267d0261998453d56bd7f834956531812",
+  "threadId": "mcp:679ab07e-d75e-4cd9-9535-55d523e51a53",
+  "renderer": "T3 html_preview",
+  "source": {
+    "path": "design.html",
+    "sha256": "c2c36a7eaf1fbecc018608af359c772fd864152ca51936dffe6e0de2c633ccd3"
+  },
+  "capture": {
+    "path": "design.png",
+    "sha256": "0185496d0b9fd155d4888a4a2d0b9a5a0fbd3b361e3a0b20bd291cdc76afda69",
+    "width": 1000,
+    "height": 1143,
+    "appearance": "light",
+    "consoleMessages": []
+  },
+  "additionalPreview": {
+    "width": 360,
+    "height": 1970,
+    "appearance": "light",
+    "consoleMessages": [],
+    "result": "Visually inspected; single column, wrapped text, no clipped fields"
+  },
+  "reproduce": "Read design.html verbatim, call T3 html_preview with width 1000 and appearance light. Browser/font updates may change PNG bytes; exact original capture hash is above. No external assets or accounts.",
+  "claimsExcluded": [
+    "Live TUI",
+    "Provider interoperability",
+    "Entitlement",
+    "Paid inference",
+    "Terminal accessibility qualification",
+    "Controlled native admission"
+  ]
+}
