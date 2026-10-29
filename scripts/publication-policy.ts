@@ -41,6 +41,11 @@ export function publicationFiles(): string[] {
   return files.sort();
 }
 export function checkRelay(allowed: Set<string>): void {
+  // Exact original manifest bytes anchor all nine digests. A paired source +
+  // self-declared digest edit must never become a new "pinned" dependency.
+  const sourcePath = "vendor/relay/SOURCE.json";
+  const originalSourceHash = "75cb2b3cbe67f2fba4495e5d03b16fc3e478230284f0e5832495641d9890f6a8";
+  if (!allowed.has(sourcePath) || sha256(sourcePath) !== originalSourceHash) throw new Error("Relay manifest mismatch: original closure is immutable");
   const relay = JSON.parse(readFileSync(join(root, "vendor/relay/SOURCE.json"), "utf8")) as { sourceSHA: string; files: { path: string; sha256: string }[] };
   if (relay.sourceSHA !== "dfe1b039bab45f4055ab39467e994a2981940c02" || relay.files.length !== 9 || new Set(relay.files.map(f => f.path)).size !== 9) throw new Error("Unexpected Relay source pin or closure");
   for (const file of relay.files) {

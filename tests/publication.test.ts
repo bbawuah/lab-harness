@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { CONCEPT_ROOT } from "../src/ledger.ts";
+import { createHash } from "node:crypto";
 
 /** Real checker subprocess in an owned copy, never mutates this checkout's source. */
 test("publication checker keeps provenance, exact allowlist, current hashes, secrets and Relay fences", () => {
@@ -29,5 +30,21 @@ test("publication checker keeps provenance, exact allowlist, current hashes, sec
     expect(run().stderr.toString()).toContain("Sensitive publication content"); copyFileSync(join(CONCEPT_ROOT, "README.md"), join(root, "README.md"));
     writeFileSync(join(root, "vendor/relay/src/storage/store.ts"), "changed Relay");
     expect(run("refresh-publication.ts", ["--reviewed-files"]).stderr.toString()).toContain("Relay mismatch");
+    // A source edit plus its self-declared digest must not manufacture a new pin.
+    const relayPath = "vendor/relay/SOURCE.json", changedPath = "vendor/relay/src/storage/store.ts";
+    const checksum = (path: string) => createHash("sha256").update(readFileSync(join(root, path))).digest("hex");
+    const relay = JSON.parse(readFileSync(join(root, relayPath), "utf8"));
+    relay.files.find((file: { path: string }) => file.path === "src/storage/store.ts").sha256 = checksum(changedPath);
+    writeFileSync(join(root, relayPath), JSON.stringify(relay, null, 2) + "\n");
+    expect(run("refresh-publication.ts", ["--reviewed-files"]).stderr.toString()).toContain("Relay manifest mismatch");
+    // Also bypass current-file mismatch deliberately: the independent Relay pin
+    // must still refuse, with original concept provenance otherwise untouched.
+    const forged = structuredClone(original);
+    for (const path of [relayPath, changedPath]) {
+      forged.currentFiles[path].sha256 = checksum(path);
+      forged.currentFiles[path].status = "modified";
+    }
+    putManifest(forged);
+    expect(run().stderr.toString()).toContain("Relay manifest mismatch");
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
