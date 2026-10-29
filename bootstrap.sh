@@ -12,7 +12,7 @@ main() {
   [ "$#" -eq 0 ] || bootstrap_fail 'Usage: bootstrap.sh [--install-only]'
   [ "$bootstrap_commit" != TO_BE_PINNED ] || bootstrap_fail 'Development bootstrap has no runnable distribution pin yet.'
   case "$(uname -s)/$(uname -m)" in Darwin/arm64|Darwin/x86_64|Linux/x86_64) ;; *) bootstrap_fail 'Supported platforms: macOS arm64/x86_64, Linux x86_64. WSL remains unverified.';; esac
-  for bootstrap_tool in curl tar mktemp; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
+  for bootstrap_tool in curl tar mktemp diff find sed; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
   if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1; then bootstrap_fail 'SHA-256 verification needs sha256sum or shasum.'; fi
   [ -n "${HOME:-}" ] || bootstrap_fail 'HOME must identify your user directory.'
   bootstrap_data=${XDG_DATA_HOME:-$HOME/.local/share}
@@ -36,13 +36,15 @@ main() {
     "https://codeload.github.com/bbawuah/lab-harness/tar.gz/$bootstrap_commit" -o "$bootstrap_archive" || bootstrap_fail 'Harness download failed; rerun to retry.'
   bootstrap_actual=$(bootstrap_hash "$bootstrap_archive")
   [ "$bootstrap_actual" = "$bootstrap_sha256" ] || bootstrap_fail 'Harness checksum mismatch; nothing executed.'
+  mkdir "$bootstrap_stage/source"
+  tar -xzf "$bootstrap_archive" --strip-components=1 -C "$bootstrap_stage/source" || bootstrap_fail 'Harness extraction failed.'
   if [ ! -d "$bootstrap_destination" ]; then
-    mkdir "$bootstrap_stage/source"
-    tar -xzf "$bootstrap_archive" --strip-components=1 -C "$bootstrap_stage/source" || bootstrap_fail 'Harness extraction failed.'
     mv "$bootstrap_stage/source" "$bootstrap_destination"
   else
-    # Do not overwrite an existing release. Its checked publication manifest detects edits.
-    [ -f "$bootstrap_destination/install.sh" ] && [ -f "$bootstrap_destination/lab" ] || bootstrap_fail 'Partial release directory; move it aside and rerun.'
+    # Validate installed source against the verified archive before executing it.
+    bootstrap_links=$(find "$bootstrap_destination" \( -name .tmp -o -name node_modules \) -prune -o -type l -print)
+    [ -z "$bootstrap_links" ] || bootstrap_fail 'Unexpected symlink in installed source; move the release aside and rerun.'
+    diff -qr -x .tmp -x node_modules "$bootstrap_stage/source" "$bootstrap_destination" >/dev/null || bootstrap_fail 'Installed release source changed or is partial; move it aside and rerun.'
   fi
   "$bootstrap_destination/install.sh" || bootstrap_fail 'Installation failed; rerun to reuse verified runtime caches.'
   bootstrap_launcher=$bootstrap_root/lab
@@ -51,7 +53,9 @@ main() {
       head -n 2 "$bootstrap_launcher" | tail -n 1 | grep -qx '# LAB-HARNESS owned launcher' || bootstrap_fail 'Existing launcher is not LAB-owned; leaving it untouched.'
   fi
   # A stable launcher points at this immutable release; profile changes are explicit.
-  printf '#!/bin/sh\n# LAB-HARNESS owned launcher\nexec ' > "$bootstrap_stage/lab"
+  printf '#!/bin/sh\n# LAB-HARNESS owned launcher\nexport LAB_WORKSPACE_STATE_ROOT=' > "$bootstrap_stage/lab"
+  bootstrap_quote "$bootstrap_root/workspace" >> "$bootstrap_stage/lab"
+  printf '\nexec ' >> "$bootstrap_stage/lab"
   bootstrap_quote "$bootstrap_destination/lab" >> "$bootstrap_stage/lab"
   printf ' "$@"\n' >> "$bootstrap_stage/lab"
   chmod 700 "$bootstrap_stage/lab"

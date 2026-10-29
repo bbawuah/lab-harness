@@ -20,8 +20,10 @@ try {
   const { runInteractiveWorkspace } = await import("../src/pi/workspace.ts");
   process.exitCode = await runInteractiveWorkspace({ configure: args.includes("--configure") });
 } catch (error) {
-  // Configuration and provider errors must never dump entered credentials.
+  // These are local startup errors. Never dump arbitrary provider or input payloads.
   const code = error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : "WORKSPACE_START_FAILED";
-  console.error(`LAB: ${code}. Check installation and local route; use ./lab --configure to change it.`);
+  const message = error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
+    ? error.message : `${code}. Check installation and local route; use ./lab --configure to change it.`;
+  console.error(`LAB: ${message}`);
   process.exitCode = 1;
 }

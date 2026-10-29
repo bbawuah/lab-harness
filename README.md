@@ -5,110 +5,83 @@
 
 # LAB-HARNESS
 
-An offline terminal harness with real owned Herdr processes, durable SQLite task
-state, pinned Relay mailboxes, source-bound context and explicit operator
-acceptance. Search and skill discovery work without a model or connected service.
+An interactive Pi coding workspace with LAB branding, bounded source search,
+explicit skill loading and a persistent terminal owned by Herdr. The separate
+LAB ledger keeps durable task evidence and explicit operator acceptance.
 
-The first integration slice runs a harmless terminal worker and retains its
-actual process evidence. Its coordinator task envelope remains explicitly
-fixture-only. **Native Pi task admission is blocked; WSL is unverified.**
-Pi UI branding and advisory events do not qualify native task execution.
+## Install and open LAB
 
-## Screens and recorded walkthroughs
-
-![Actual Pi startup text from an owned Herdr pane, showing LAB-HARNESS, Pi attribution and blocked native activation](docs/media/pi-startup-text.png)
-
-Actual captured Pi 1.4.0 startup text, rendered for readability. Herdr's pane API
-omits colors, so this is a text reconstruction rather than a raw pixel screenshot.
-No prompt was submitted and native LAB stays blocked.
-[Full transcript](docs/media/pi-startup.txt) · [Full-size image](docs/media/pi-startup-text.png).
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/media/header-dark.png">
-  <img src="docs/media/header-light.png" alt="Fixture rendering of the neutral terminal header palette, with LAB-HARNESS and Pi attribution" width="728">
-</picture>
-
-The light/dark image above is a **palette fixture** from the actual header-render
-command, separate from the Pi startup observation.
-
-The GIFs below replay selected **actual command outputs** on disposable fixtures.
-Each is an output-slide replay, not continuous terminal video: three six-second
-scenes, with no simulated typing. Display pacing is edited and says nothing about
-execution speed. No skill or model executes. Full text remains available on mobile.
-
-**Terminal lifecycle:** a real Herdr worker settles; the ledger waits at
-`result_available` until a separate test-operator command accepts the evidence.
-The task envelope is explicitly fixture-only.
-
-![Recorded terminal lifecycle: real worker cleanup, result available with null acceptance, then a separate test-operator acceptance](docs/media/terminal-lifecycle.gif)
-
-[Terminal transcript](docs/media/terminal-lifecycle.txt) · [Full-size GIF](docs/media/terminal-lifecycle.gif).
-
-**Source search:** literal query, source path/line/byte hash, then refusal after
-an edit to the disposable source.
-
-![Recorded offline search showing source provenance and stale-context refusal after a fixture edit](docs/media/offline-search.gif)
-
-[Search transcript](docs/media/offline-search.txt) · [Full-size GIF](docs/media/offline-search.gif).
-
-**Skills:** metadata discovery, sealed selection and compatibility/dependency
-inspection from the committed sanitized inventory. No user skill body is shown.
-
-![Recorded skill discovery, sealed bundle identity and static dependency classifications without executing a skill](docs/media/skills-discovery.gif)
-
-[Skills transcript](docs/media/skills-discovery.txt) · [Full-size GIF](docs/media/skills-discovery.gif). Capture commands, sanitization,
-renderer details and evidence boundaries are in [the media guide](docs/demos/README.md)
-and [the asset manifest](docs/media/PROVENANCE.json).
-
-## Run it
-
-Prerequisites: working **Git**, **Bun 1.4.2**, and the system `tar` utility.
-The installer checks them and the platform before downloading. Install Git and
-the pinned Bun yourself; the installer does not install package managers or
-change shell profiles. Supported pinned tools: macOS arm64/x86_64 and Linux
-x86_64. Linux arm64 has no pinned rg artifact; WSL remains unverified.
+From your terminal, outside any checkout:
 
 ```sh
-git clone https://github.com/bbawuah/lab-harness.git
-cd lab-harness
+curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.sh | sh
+```
+
+**This public command becomes available when this change is merged.** The
+bootstrap downloads a SHA-256-pinned immutable harness archive and installs
+Bun 1.4.2 when needed, Pi 1.4.0 standalone, Herdr 0.9.5, ripgrep and frozen
+JavaScript dependencies. No Git, global Pi, Node, sudo or shell profile edit is
+required. Supported platforms are macOS arm64/x86_64 and Linux x86_64 with
+standard `curl`, `tar`, `unzip` and SHA-256 tools. WSL remains unverified.
+
+Installation then opens the interactive setup and TUI through `/dev/tty`;
+piped script bytes are never read as answers. Without a controlling terminal,
+installation finishes and prints the exact launcher path. For installation
+only, append `| sh -s -- --install-only` instead of `| sh`.
+
+First start asks for an existing local OpenAI-compatible endpoint and exact
+model ID, or an existing LiteLLM endpoint, alias and private API key. Key input
+is hidden and stored in private user-local state. Installation sends no model
+prompt, chooses no paid model and downloads no weights. Start your local model
+server separately, then enter its `/v1` URL and model ID. LiteLLM remains a
+client destination; LAB installs no gateway. Once configured, type a prompt.
+
+The stable launcher is `${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab`.
+Setup prints an explicit PATH command if you want to run `lab` by name; profiles
+are untouched. Releases live under the adjacent `releases/<commit>` directory;
+route, key and native Pi sessions persist in the private `workspace` directory.
+Rerun the public command to install the pinned release, verify existing source,
+repair missing runtimes, and update the owned launcher. Unrecognized existing
+launchers or modified source are refused with instructions. Old releases remain
+available; no user state is silently deleted.
+
+From an existing checkout, including a fresh pull on your MacBook:
+
+```sh
 ./install.sh
-bun --no-env-file run demo:terminal
+./lab
 ```
 
-Or, with the prerequisites already installed, clone and set up in one shell line:
+`./lab` also acquires missing verified runtime dependencies on demand. Use
+`./lab --configure` to change routes and `./lab --offline` to require complete
+local caches with no acquisition network access. `./install.sh --offline` also
+requires cached frozen JavaScript dependencies. Normal reruns reuse valid
+caches and repair partial/corrupt runtime downloads atomically. A first install
+needs GitHub/npm access; a missing offline dependency produces an error.
+Bun caches, Pi, Herdr and ripgrep remain beneath the checkout's `.tmp`.
 
-```sh
-git clone https://github.com/bbawuah/lab-harness.git && (cd lab-harness && ./install.sh)
-```
+## In the workspace
 
-`install.sh` resolves its own directory, so it also works when invoked by path
-from another working directory (quote paths containing spaces). It checks real
-Relay publication capability, installs the frozen dependencies with
-`--ignore-scripts`, acquires the checksum-pinned Herdr and rg tools, runs `check`
-(tests, typecheck, publication integrity), and runs a bounded actual Herdr worker
-smoke with owned cleanup. It prints the next demo and full actual-check commands.
-No prompt, API key, account, model download or inference service is needed;
-native Pi activation stays blocked. Failures stop setup and keep their diagnostic.
-In particular, Relay refuses loader redirection such as `LD_LIBRARY_PATH`; setup
-preserves that refusal. Use a clean tool environment rather than bypassing it.
+Type a prompt to use the model you selected. `/lab-search TEXT` and
+`/lab-files NAME` perform bounded literal search with source hashes; the model
+also has `lab_search` and `lab_files` tools. `/lab-skills` lists available local
+repository, Codex and Claude skill metadata. `/lab-skill ID` explicitly loads
+verified instructions; ambiguous origins require the exact displayed origin
+and path. Discovery does not execute skill scripts. Native Pi provides its
+coding tools and session behavior. `/exit` exits the workspace.
 
-The **first setup needs network access** to npm and GitHub. Bun's install and
-transpiler caches live in `.tmp/bun-cache` and `.tmp/bun-transpiler-cache`;
-dependencies live in `node_modules`. Herdr and rg live in `.tmp/herdr` and
-`.tmp/rg`. Rerunning is safe: frozen dependencies and checksum-valid tools are
-reused. Bun prefers cached packages, but this command is **not a guaranteed
-offline installer**: missing packages or invalid/missing tool binaries need
-network access and fail if unavailable. After setup, the search and demo runtime
-need no download. No tools are installed globally and no vendor settings,
-credentials or shell profiles are changed. The pinned rg directory is added to
-PATH only during setup; for later optional rg use, prepend this clone's
-`.tmp/rg` in your current shell.
+**The interactive workspace has no LAB ledger task authority.** Controlled
+`activate-pi` execution remains unavailable: request admission is unqualified
+across retries, compaction, auth/routing and native session behavior. The TUI
+runs useful native Pi coding while the separate operator ledger retains explicit
+acceptance. [Mode boundary and source evidence](docs/pi-seam.md).
 
-Herdr acquisition verifies an official release asset's SHA-256.
-The runtime is v0.9.5, release commit `2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01`,
-**different from** the inspected source pin
-`bc8c28988f75c538d4ca058b702f5adbea30566e`. Both identities are recorded in
-[the Herdr manifest](contracts/herdr-source.json). No binary is committed.
+## Secondary demonstrations
+
+The demos below demonstrate ledger/search/terminal contracts and do not open the
+AI workspace. `bun --no-env-file run demo:terminal` runs a harmless real Herdr
+worker; `bun --no-env-file run demo` uses fixture workers. Historical no-model
+branding and output-slide captures are described in [the media guide](docs/demos/README.md).
 
 ### Advanced manual setup
 
@@ -120,6 +93,7 @@ specify a project-local one:
 bun --no-env-file install --frozen-lockfile --ignore-scripts --cache-dir .tmp/bun-cache
 bun --no-env-file run setup:herdr
 bun --no-env-file run setup:rg
+bun --no-env-file run setup:pi
 bun --no-env-file run check
 bun --no-env-file run smoke:herdr
 bun --no-env-file run check:actual

@@ -3,7 +3,9 @@
 Base: `83c18d8754cb633ad2805723e12df899b2cbd9a6` on
 `feat/complete-tui-install`. This continues the owner-authorized build.
 
-`./install.sh` installs checksum-pinned project-local Bun when needed, frozen
+The public entrypoint is `curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.sh | sh`. It verifies an immutable harness archive, installs in the user data directory without Git/sudo/profile changes, then attaches first-run setup and TUI through `/dev/tty`. Without a controlling terminal it installs only and prints the launcher. Stable private route/session state survives release upgrades. The distribution pin is assigned only after the integrated harness is runnable.
+
+Within a checkout, `./install.sh` installs checksum-pinned project-local Bun when needed, frozen
 JS dependencies, Pi, Herdr and ripgrep. `./lab` starts a persistent LAB-branded
 Pi interactive workspace. First run configures an explicit local OpenAI-compatible
 endpoint/model or an existing LiteLLM endpoint/alias, with private key input.
