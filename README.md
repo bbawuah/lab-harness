@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/branding/terminal-b-dark.svg">
-  <img src="assets/branding/terminal-b-light.svg" alt="LAB-HARNESS terminal B" width="72" height="96">
+  <img src="assets/branding/terminal-b-light.svg" alt="LAB-HARNESS terminal B" width="84" height="112">
 </picture>
 
 # LAB-HARNESS
@@ -13,6 +13,52 @@ The first integration slice runs a harmless terminal worker and retains its
 actual process evidence. Its coordinator task envelope remains explicitly
 fixture-only. **Native Pi task admission is blocked; WSL is unverified.**
 Pi UI branding and advisory events do not qualify native task execution.
+
+## Screens and recorded walkthroughs
+
+![Actual Pi startup text from an owned Herdr pane, showing LAB-HARNESS, Pi attribution and blocked native activation](docs/media/pi-startup-text.png)
+
+Actual captured Pi 1.4.0 startup text, rendered for readability. Herdr's pane API
+omits colors, so this is a text reconstruction rather than a raw pixel screenshot.
+No prompt was submitted and native LAB stays blocked.
+[Full transcript](docs/media/pi-startup.txt) · [Full-size image](docs/media/pi-startup-text.png).
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/header-dark.png">
+  <img src="docs/media/header-light.png" alt="Fixture rendering of the neutral terminal header palette, with LAB-HARNESS and Pi attribution" width="728">
+</picture>
+
+The light/dark image above is a **palette fixture** from the actual header-render
+command, separate from the Pi startup observation.
+
+The GIFs below replay selected **actual command outputs** on disposable fixtures.
+Each is an output-slide replay, not continuous terminal video: three six-second
+scenes, with no simulated typing. Display pacing is edited and says nothing about
+execution speed. No skill or model executes. Full text remains available on mobile.
+
+**Terminal lifecycle:** a real Herdr worker settles; the ledger waits at
+`result_available` until a separate test-operator command accepts the evidence.
+The task envelope is explicitly fixture-only.
+
+![Recorded terminal lifecycle: real worker cleanup, result available with null acceptance, then a separate test-operator acceptance](docs/media/terminal-lifecycle.gif)
+
+[Terminal transcript](docs/media/terminal-lifecycle.txt) · [Full-size GIF](docs/media/terminal-lifecycle.gif).
+
+**Source search:** literal query, source path/line/byte hash, then refusal after
+an edit to the disposable source.
+
+![Recorded offline search showing source provenance and stale-context refusal after a fixture edit](docs/media/offline-search.gif)
+
+[Search transcript](docs/media/offline-search.txt) · [Full-size GIF](docs/media/offline-search.gif).
+
+**Skills:** metadata discovery, sealed selection and compatibility/dependency
+inspection from the committed sanitized inventory. No user skill body is shown.
+
+![Recorded skill discovery, sealed bundle identity and static dependency classifications without executing a skill](docs/media/skills-discovery.gif)
+
+[Skills transcript](docs/media/skills-discovery.txt) · [Full-size GIF](docs/media/skills-discovery.gif). Capture commands, sanitization,
+renderer details and evidence boundaries are in [the media guide](docs/demos/README.md)
+and [the asset manifest](docs/media/PROVENANCE.json).
 
 ## Run it
 

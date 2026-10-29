@@ -2,8 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/initial-concept, feat/terminal-harness]
+    branches: [main]
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -17,6 +21,8 @@ jobs:
         os: [ubuntu-24.04, macos-14]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    env:
+      LAB_HERDR_ACTUAL: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -24,10 +30,17 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version-file: .bun-version
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14.7"
       - name: Install exact development dependencies without lifecycle scripts
         run: bun --no-env-file install --frozen-lockfile --ignore-scripts
       - name: Acquire checksum-pinned Herdr runtime into project-local cache
         run: bun --no-env-file run setup:herdr
+      - name: Require actual terminal coverage and executable runtime
+        run: |
+          test "$LAB_HERDR_ACTUAL" = "1"
+          test -x .tmp/herdr/herdr
       - name: Verify tests, types and publication integrity
         run: bun --no-env-file run check:actual
       - name: Run offline fixture demo
@@ -36,3 +49,9 @@ jobs:
         run: bun --no-env-file run demo:terminal
       - name: Measure deterministic exact search and FTS5 fixture
         run: bun --no-env-file run benchmark:search -- 1
+      - name: Install exact media audit dependency in project-local environment
+        run: |
+          python -m venv .tmp/media-audit
+          .tmp/media-audit/bin/python -m pip --cache-dir .tmp/pip-cache install --disable-pip-version-check --only-binary=:all: --require-hashes -r docs/demos/requirements-audit.txt
+      - name: Decode media, verify provenance, privacy and recorded behavior
+        run: .tmp/media-audit/bin/python docs/demos/audit.py --check

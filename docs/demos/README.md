@@ -92,27 +92,16 @@ palettes and the actual startup text image. Review helpers stay ignored under
 SIGKILL, network-egress, inference, WSL and native admission behavior are not
 qualified by these images.
 
-## Coordinator integration
+CI uses pinned CPython 3.14.7 and the hash-checked binary wheels in
+`requirements-audit.txt` to run `audit.py --check`. This mode never rewrites
+provenance and requires no local font or Pi. It decodes the GIF frames, compares
+their scene durations and complete display transcripts, verifies bounds and
+captured behavior, probes privacy refusal, and samples both halves of the neutral
+palette PNG cells. The authoring form with `--font` remains an explicit local
+regeneration step. See [the CI contract](../ci.md).
 
-Root README and publication manifests are coordinator-owned. Suggested root
-README embeds (keep the evidence captions and mobile transcript links):
 
-```markdown
-![Real Herdr/SQLite/Relay with fixture task envelope: result available, then separate test-operator acceptance](docs/media/terminal-lifecycle.gif)
-[Full-size and transcript](docs/demos/README.md)
-
-![Actual offline search on a disposable fixture: path, line, hash and stale-source refusal](docs/media/offline-search.gif)
-[Transcript](docs/media/offline-search.txt)
-
-![Bundled skill discovery and sealed selection; committed inventory dependency metadata](docs/media/skills-discovery.gif)
-[Transcript](docs/media/skills-discovery.txt)
-
-![Actual Pi 1.4.0 startup text, faithfully rendered; pane API omits colors, not a raw pixel capture](docs/media/pi-startup-text.png)
-[Observation and limits](docs/demos/README.md)
-```
-
-Add the fixture palette pair only with a **fixture** caption. This additive
-worker PR intentionally leaves the publication allowlist unchanged. The
-publication check will report unlisted media/docs until the coordinator reviews
-and refreshes the allowlist and current identities during ordinary integration.
-No runtime source changed in this media slice.
+The root README embeds these reviewed assets with their evidence captions and
+transcript links. Their exact current hashes are also covered by the publication
+allowlist; regeneration requires an explicit audited manifest refresh. Runtime
+source is unchanged by this media addition.

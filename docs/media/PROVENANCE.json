@@ -109,5 +109,12 @@
     "noPublishedUUIDs": true,
     "frameBounds": true,
     "visualInspection": "First/middle/last of all three GIFs inspected with view_image; palette pair and startup image inspected separately."
+  },
+  "rendering": {
+    "cellWidth": 9.03125,
+    "bodyX": 24,
+    "bodyY": 105,
+    "lineHeight": 21,
+    "wrapColumns": 75
   }
 }
