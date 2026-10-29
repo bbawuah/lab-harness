@@ -93,3 +93,11 @@ test("default extension registers only session_start and replaces only the TUI h
   component.invalidate();
   expect(component.render(14).every(line => plain(line).length <= 14)).toBe(true);
 });
+
+test("workspace header describes native coding without changing legacy defaults", () => {
+  const workspace=renderHeader({columns:80,color:false,workspace:true}).join("\n");
+  expect(workspace).toContain("Interactive coding workspace");
+  expect(workspace).toContain("Controlled LAB tasks: unavailable");
+  expect(workspace).not.toContain("BLOCKED");
+  expect(renderHeader({columns:80,color:false}).join("\n")).toContain("Native LAB activation: BLOCKED");
+});

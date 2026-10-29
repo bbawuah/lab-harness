@@ -159,3 +159,12 @@ audit. The operator CLI exposes `header` for local rendering and `pi-ui-smoke
 PI_PATH NODE_PATH` for this bounded owned startup. Default checks and CI exercise
 the deterministic mesh and header fixtures without requiring Pi. Actual startup
 remains an explicit local opt-in, with its runtime identity recorded above.
+
+## Native interactive workspace label
+
+The separate `workspace-extension.ts` uses `renderHeader({ workspace: true, ... })`
+with `Interactive coding workspace` and `Controlled LAB tasks: unavailable`.
+This describes executing native Pi accurately while preserving the separate
+controlled-task limitation. Default rendering and the standalone header extension
+retain their legacy blocked activation labels. See `pi-workspace.md` for the
+actual standalone 1.4.0 release API and attachment evidence.

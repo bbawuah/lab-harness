@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "bun:test";
-import { chmodSync, mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { loadWorkspaceRoute, modelsForRoute, readPrivate, validateRoute, writePrivate } from "../src/pi/workspace-config.ts";
@@ -25,4 +25,16 @@ test("private input files refuse symlinks and replace atomically", () => {
   const root = temporary(), path = join(root,"key"); writePrivate(path,"old");
   writePrivate(path,"new"); expect(readPrivate(path)).toBe("new");
   symlinkSync(path,join(root,"link")); expect(() => readPrivate(join(root,"link"))).toThrow();
+});
+
+import { resolve } from "node:path";
+import { workspaceStateRoot } from "../src/pi/workspace-config.ts";
+test("stable state override requires explicit user-owned ancestors and rejects symlinks", () => {
+  mkdirSync(resolve(".tmp"), { recursive: true });
+  const root=mkdtempSync(resolve(".tmp/stable-config-")); roots.push(root);
+  expect(workspaceStateRoot(resolve("."),join(root,"app"))).toBe(join(root,"app"));
+  expect(()=>workspaceStateRoot(resolve("."),"relative/path")).toThrow("absolute");
+  expect(()=>workspaceStateRoot(resolve("."),"/etc/lab-state")).toThrow("beneath");
+  symlinkSync(join(root,"app"),join(root,"link")); expect(()=>workspaceStateRoot(resolve("."),join(root,"link/state"))).toThrow("symlinks");
+  chmodSync(join(root,"app"),0o770); expect(()=>workspaceStateRoot(resolve("."),join(root,"app/state"))).toThrow("shared write");
 });
