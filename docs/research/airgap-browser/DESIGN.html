@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DESIGN — Edge connection choices</title>
+<style>
+body{margin:0;font:15px/1.5 system-ui,sans-serif;color:var(--foreground,#222)}*{box-sizing:border-box}p{margin:0 0 12px}.label{font-weight:750;color:var(--muted-foreground,#555);font-size:12px;letter-spacing:.08em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}.card{padding:18px;border:1px solid var(--border,#ccc);border-radius:12px;background:var(--card,#f7f7f7)}h2{font-size:17px;margin:0 0 8px}.flow{font-family:ui-monospace,monospace;white-space:pre-wrap;font-size:13px;margin:12px 0;padding:18px;border-radius:12px;background:var(--code-background,#eee)}small{display:block;color:var(--muted-foreground,#555)}@media(max-width:520px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<p class="label">DESIGN ONLY · RESEARCH 2026-10-29 · NOT IMPLEMENTED OR TESTED</p>
+<p>Connect Windows Edge from LAB in WSL. Choose browser ownership before choosing the attachment method.</p>
+<div class="grid"><section class="card"><h2>Dedicated browser</h2><p>Preferred first qualification: an approved Windows bridge starts Playwright and Edge with a separate LAB profile.</p><small>WSL → framed stdio → Windows bridge → local browser pipe. Requires approved interop, runtime and debugging policy.</small></section><section class="card"><h2>Existing user tab</h2><p>Separate policy gate: approved debugger extension with browser-side tab selection, or an explicitly pre-enabled CDP endpoint.</p><small>No arbitrary attachment to an ordinary running Edge. No profile copying or cookie extraction.</small></section></div>
+<div class="flow">Connect browser
+  ↓ Dedicated / Existing
+Review prerequisites and ownership
+  ↓ Select approved tab and action scope
+Connected scope — future state only
+  Session · target · origin · inspect/write grant
+  Human takeover · revoke
+  ↓ Disconnect
+Existing: detach and preserve user browser
+Dedicated: close only owned resources</div>
+<p><strong>Network choice:</strong> interop avoids WSL NAT port exposure. Approved mirrored IPv4 loopback is an alternative to qualify. Remote machines require an authenticated broker; never an anonymous LAN debugging port.</p>
+<small>MCP supplies tool transport, not attachment or permission. Browser control, model routing and internal app availability each need separate offline evidence. No actual connection or success is represented here.</small>
+</body></html>

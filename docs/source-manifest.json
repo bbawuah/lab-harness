@@ -126,6 +126,15 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-workspace-contract.md",
+    "docs/research/airgap-browser/ARCHITECTURE.md",
+    "docs/research/airgap-browser/DESIGN.html",
+    "docs/research/airgap-browser/DESIGN.json",
+    "docs/research/airgap-browser/DESIGN.png",
+    "docs/research/airgap-browser/OPTIONS.md",
+    "docs/research/airgap-browser/POC-PLAN.md",
+    "docs/research/airgap-browser/PREREQUISITES.md",
+    "docs/research/airgap-browser/SOURCES.md",
+    "docs/research/airgap-browser/SUMMARY.md",
     "docs/research/model-providers.md",
     "docs/research/provider-connection-ux/SUMMARY.md",
     "docs/research/provider-connection-ux/contracts.md",
@@ -595,6 +604,42 @@
     },
     "docs/relay-workspace-contract.md": {
       "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/ARCHITECTURE.md": {
+      "sha256": "47d6c70a5c11939206e2b17a53364247caa0cc964ec3a35484c99df99ed5672a",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.html": {
+      "sha256": "82083285567f8d8a8e6ace598a65ef90c7a1ac94acf445d30f3f4577cdcec2b0",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.json": {
+      "sha256": "df211dad8de893d87aea6c060d7ed17fdc2e5a37fc95d99adc68953341abb8d2",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.png": {
+      "sha256": "41c8517ff178167a708a9ca1570f8283f8744ff23c2a1a0bdf0bb571d9f9857c",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/OPTIONS.md": {
+      "sha256": "9e1c176b98cdbaf806dfaf040fe9794835777359817e6da551f65ab7488e0075",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/POC-PLAN.md": {
+      "sha256": "a60a91f2b5457f701bdfdb286355f700349396b3fd98287e68febd04b9e28bd7",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/PREREQUISITES.md": {
+      "sha256": "6e809a1d5276db5062b417eacb5b953ec391359d5001ae4dd33b70fcad04ccf9",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/SOURCES.md": {
+      "sha256": "fcd689ca7de6a34fb039f3b6bad24d20e931984264d7e8d877bdff72b18e5887",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/SUMMARY.md": {
+      "sha256": "f93aea61968ca35ed33f9aa48bdf87b73cc7dadf69cd62e93ac4d465d6da0133",
       "status": "added"
     },
     "docs/research/model-providers.md": {
