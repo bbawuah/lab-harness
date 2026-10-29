@@ -1,4 +1,4 @@
-/** Project-local route setup. Native Pi remains an interactive coding workspace. */
+/** Private user state and explicit route setup for native Pi coding. */
 import { constants, lstatSync, mkdirSync, openSync, readFileSync, closeSync, fstatSync, writeFileSync, renameSync, chmodSync } from "node:fs";
 import { dirname, isAbsolute, join, resolve, sep } from "node:path";
 import { homedir } from "node:os";
@@ -28,11 +28,13 @@ export function privateDirectory(path: string): void {
   if (stat && (stat.uid !== process.getuid?.() || !stat.isDirectory() || stat.isSymbolicLink())) throw new Error("Workspace state directory must be owned by this user");
   mkdirSync(path, { recursive: true, mode: 0o700 }); chmodSync(path, 0o700);
 }
-/** Only the explicit launcher override can select stable user-owned app state. */
-export function workspaceStateRoot(projectRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT): string {
-  if (override === undefined) return join(projectRoot, ".tmp/workspace");
-  const home = resolve(homedir()), root = resolve(override);
-  if (!isAbsolute(override) || !root.startsWith(home + sep) || root === home) throw new Error("LAB_WORKSPACE_STATE_ROOT must be an absolute application directory beneath this user's home");
+/** App state is separate from both installed code and the caller's project. */
+export function workspaceStateRoot(installRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT, projectRoot?: string): string {
+  const home = resolve(homedir()), selected = override ?? join(home, ".local/share/lab-harness/workspace"), root = resolve(selected);
+  if (!isAbsolute(selected) || !root.startsWith(home + sep) || root === home) throw new Error("LAB_WORKSPACE_STATE_ROOT must be an absolute application directory beneath this user's home");
+  for (const excluded of [installRoot, projectRoot]) {
+    if (excluded && (root === resolve(excluded) || root.startsWith(resolve(excluded) + sep))) throw new Error("Workspace state must be outside the installed release and selected project; choose LAB_WORKSPACE_STATE_ROOT beneath your home");
+  }
   let cursor = root;
   while (cursor !== home) {
     const stat = lstatSync(cursor, { throwIfNoEntry: false });

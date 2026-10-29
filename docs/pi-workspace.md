@@ -1,9 +1,12 @@
 # Native Pi interactive workspace
 
 `src/pi/workspace.ts` exports
-`runInteractiveWorkspace(options?: { configure?: boolean }): Promise<number>`.
+`runInteractiveWorkspace(options?: { configure?: boolean; project?: string }): Promise<number>`.
 The coordinator's `./lab` launcher calls it; `./lab --configure` repeats route
-setup. Errors explain a missing terminal, invalid route, unsafe state or
+setup. The selected project is `options.project ?? process.cwd()`, canonically
+bound through `src/project.ts`. `./lab --project '/path/to/project B'` selects
+another existing directory. Pi and its Herdr pane/client use that project as cwd.
+Errors explain a missing terminal, invalid route, unsafe state or
 unverified dependency. Setup makes no provider request and downloads no model.
 
 This is native Pi interactive coding with LAB source search and explicitly
@@ -18,11 +21,11 @@ The separate header extension's legacy blocked label remains its default.
 ## Dependencies and route setup
 
 The launcher calls `verifyPiRuntime()` and uses its returned argv, never a
-global Pi. Project-local Herdr and ripgrep must match their platform-specific
+global Pi. Installation-local Herdr and ripgrep must match their platform-specific
 pinned artifact hashes. Installation/acquisition belongs to the coordinator
 and acquisition specialist; this entry point never repairs or downloads them.
 The integration requires coordinator SearchService support for the explicit
-`allowRepositoryRoot: true` option, restricted to the exact harness root.
+`projectBinding` option with the exact selected directory identity.
 Default SearchService callers retain their existing owned-subdirectory rules.
 
 First run requires an actual terminal. Choose `local` with an explicit loopback
@@ -42,24 +45,29 @@ check. LiteLLM requires an explicit nonempty key. No inherited provider keys,
 proxy credentials or global Pi settings are forwarded. Native coding tools
 run under the same user and are not a secret isolation boundary.
 
-Default route, key and Pi agent/session state live beneath `.tmp/workspace`.
-A bootstrap-owned launcher can set `LAB_WORKSPACE_STATE_ROOT` to keep that
-state across immutable release upgrades. Its value must be an absolute app
-directory beneath the current user's home. Existing ancestors must belong to
+Default route, key, Pi agent/session state, Herdr runs and the shell wrapper live
+beneath `$HOME/.local/share/lab-harness/workspace`, outside installed code and
+the selected project. `LAB_WORKSPACE_STATE_ROOT` can select another private app
+directory for state that persists across immutable release upgrades. Its value
+must be an absolute app directory beneath the current user's home. Existing ancestors must belong to
 the user, have no symlinks and have no group/world write access; the final
-directory is mode 0700. Private files must be user-owned regular files with
-one link and mode 0600. No shell profile or global Pi config is changed.
+directory is mode 0700. State inside the installed release or selected project
+is refused before directory creation; choose an outside override if the default
+falls within your selected project. Private files must be user-owned regular
+files with one link and mode 0600. No shell profile or global Pi config is changed.
 Persistent sessions remain available through Pi's native session controls;
-startup creates a new native session rather than automatically resuming one.
-Herdr run/config files remain in the checkout's `.tmp/workspace/runs` even
-when route and session state use the stable override.
+Pi partitions sessions by selected project cwd. Startup creates a new native
+session rather than automatically resuming one. Herdr run/config files are
+beneath the same private app directory in `runs/h-*`. A healthy launch creates
+no files in the installed release or selected project. Native editing and shell
+commands retain their ordinary ability to write project files.
 
 ## Attachment and lifecycle
 
 The verified Herdr 0.9.5 executable runs a retained foreground `server` child.
 A unique owned session uses a fresh short `/tmp/lab-h-*` directory for its two
 Unix sockets, avoiding macOS's 104-byte socket path limit. Persistent state is
-still project-local or in the explicit stable app directory. No user session
+in the private user app directory. No user session
 is discovered, attached, listed for cleanup or signalled.
 
 The adapter pings the owned socket, checks the runtime version, creates an
@@ -92,13 +100,19 @@ parent SIGKILL or host failure cannot be guaranteed to clean up.
 `lab_search` and `lab_files` are actual Pi model-callable tools. Operator
 commands `/lab-search <literal>` and `/lab-files <literal>` call the same
 existing bounded LAB SearchService. Results retain paths, SHA-256 byte hashes,
-line spans, truncation and omission information. Root is the harness checkout;
-this first scope does not attach arbitrary external projects. Verified local rg
-is on the child PATH; the existing service reports fallback honestly.
+line spans, truncation and omission information. Root is the selected caller
+project, including paths with spaces. Every bridge request revalidates the
+canonical root, device and inode; replacement, redirection, missing bindings or
+a mismatched root refuse. Existing source exclusions and symlink guards remain.
+Verified installation-local rg is on the child PATH; the existing service
+reports fallback honestly.
 
-`/lab-skills` uses the existing discovery API on repository, portable examples,
-user Codex and user Claude origins. It lists metadata and source identities;
-it does not load instruction bodies or execute skill scripts. The coordinator
+`/lab-skills` uses the existing discovery API on selected project instructions
+and skills, installed portable examples, and the actual user
+`~/.codex/skills` and `~/.claude/skills` origins. The `repository` origin means
+the selected project; `examples` always means the installed bundled examples.
+It lists metadata and source identities; it does not load instruction bodies or
+execute skill scripts. The coordinator
 excludes generated `.tmp`/`.lab` paths in repository discovery.
 
 `/lab-skill <exact-id>` explicitly revalidates and loads one unambiguous origin.
@@ -123,6 +137,10 @@ Pi, LAB API calls execute under the launcher's Bun through this private bridge:
 BUN --no-env-file --no-install src/pi/workspace-extension.ts --bridge
 ```
 
+`LAB_WORKSPACE_ROOT` and serialized `LAB_WORKSPACE_BINDING` identify the
+project; `LAB_INSTALL_ROOT` separately identifies the installation. The bridge
+checks the installation against its own module location and revalidates the
+project before search/discovery/loading, and around skill byte loading.
 One bounded JSON request arrives on stdin; stdout returns JSON. No secret is
 passed in argv or bridge environment. The bridge has a 20-second deadline,
 output bound and abort support. Source errors are sanitized in the Pi UI.
@@ -174,3 +192,16 @@ This specialist performed no successful model inference or paid call.
 The coordinator owns bounded actual local-model validation. macOS mini evidence
 does not qualify the user's MacBook, WSL or Ubuntu CI; controlled LAB admission
 remains unqualified on every platform.
+
+## Caller-project revision verification
+
+Focused tests exercise search in an unrelated project with spaces, exact byte
+hashes, source exclusions and symlink omission, project instructions, installed
+portable examples, user Codex/Claude skills, explicit loading, stale skills,
+missing/mismatched/replaced project bindings, and state isolation. A subprocess
+launch fixture verifies default caller cwd and explicit project selection,
+separate installation paths, state outside both trees, and no automatic resume.
+The fixture substitutes only dependency verification and terminal attachment; it
+makes no model request. Coordinator E2E owns real Pi/Herdr/local inference for
+this revision; historical native-session evidence above is not a new inference
+qualification.
