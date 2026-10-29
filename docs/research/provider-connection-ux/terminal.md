@@ -114,8 +114,15 @@ waiting. Copy the link or cancel.` Retry open does not create a second attempt.
 ## Check actions and status vocabulary
 
 Manager offers `Review checks`, never a vague `Test connection` that silently
-runs inference. All check actions bind the selected saved revision. Each shows
-operation, destination, credential source, data sent and a cancel action first.
+runs inference. Manager checks bind the selected saved revision. Onboarding
+discovery instead binds an immutable draft attempt ID/generation and a snapshot
+of destination, protocol and explicit authentication. It needs no selected model;
+its inventory and connection-level observations remain in memory until Save.
+Changing endpoint, protocol or auth, Back past the endpoint, or Cancel invalidates
+the attempt and aborts owned discovery; late results are ignored. Save may attach
+the observations only to the matching activated revision, otherwise discard them.
+Each action shows operation, destination, credential source, data sent and a
+cancel action first.
 
 | Action | Consent copy / execution limit | Result vocabulary |
 | --- | --- | --- |

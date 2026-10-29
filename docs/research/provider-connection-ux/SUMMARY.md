@@ -57,13 +57,15 @@ Sole writer: top-level T3 thread `mcp:679ab07e-d75e-4cd9-9535-55d523e51a53`,
 branch `design/provider-connection-ux`, baseline HEAD
 `43a6ac2267d0261998453d56bd7f834956531812`. App-bound worktree basename and shell cwd
 both `design-provider-connection-ux`; branch/HEAD verified before writing. No
-applicable AGENTS.md found in this checkout or its ancestor chain. No subagent
-was used. OpenAI Docs skill used for focused official-source checks.
+applicable AGENTS.md found in this checkout or its ancestor chain. One isolated
+read-only Codex reviewer was subsequently requested by root;
+review provenance and disposition are recorded in [validation](validation.md).
+OpenAI Docs skill used for focused official-source checks.
 
-Only `docs/research/provider-connection-ux/**` is owned. Root/integrator owns
-`docs/source-manifest.json`: add every file in this directory to
-`publicationFileAllowlist` and `currentFiles` with its exact SHA-256 and
-`status: "added"` (no `originalSHA256`). The final handoff supplies these entries.
-Do not change original export provenance. Publication is intentionally pending
-that integration; this PR does not claim a green publication/full gate. No
-watcher, merge, runtime pin or shared extension change belongs to this task.
+Root extended this task’s ownership to the normal `docs/source-manifest.json`
+additions for these ten files. The repository refresh workflow computes actual
+SHA-256 values and records `status: "added"` without `originalSHA256`. Original
+export provenance, existing current-file entries and immutable Relay anchors
+remain unchanged. Local publication validation is recorded in validation.md;
+this is not a full runtime/CI gate claim. Root owns CI monitoring and merge.
+No runtime pin or shared extension change belongs to this task.

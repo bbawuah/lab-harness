@@ -9,8 +9,13 @@ research does not clear that gate or qualify native controlled admission.
 
 ## Evidence model and acceptance
 
-Each observation binds connection ID/revision, exact model ID, protocol, operation,
-timestamp and result. Any endpoint/protocol/credential revision change resets
+Saved observations bind connection ID/revision, protocol, operation, timestamp
+and result. Model-specific observations also require the exact model ID;
+connection/inventory discovery may have no selected model. Before Save, discovery
+binds an immutable draft attempt/generation plus destination/protocol/auth
+snapshot, and persists nothing. Only a matching Save may associate its results
+with the new revision; edited/cancelled attempts and their late results are
+discarded. Any endpoint/protocol/credential revision change resets
 current validity; retain prior evidence labelled historical. Environment key
 changes cannot be detected from a stored name alone: re-resolving for a fresh run
 makes old auth observations historical, never current identity proof. Do not
@@ -46,7 +51,7 @@ one. Snapshot evidence is DESIGN until recorded from the shipped runtime.
 | C2 P1 wizard reducer/copy | New `src/providers/setup.ts`, `src/providers/setup-copy.ts`, `tests/provider-setup.test.ts` | Depends C1 interface. Pure transition/effect intents; no HTTP, global env or shared UI edits. Seven screens, exact copy and lifecycle semantics from terminal.md. Exit: table-driven transition tests for every back/cancel/error and no-network save/list; accessibility review |
 | C3 P1 native provider boundary | New `src/providers/pi-provider.ts`, `tests/provider-protocol.test.ts`, `tests/fixtures/provider-server.ts` | Depends C1 and baseline pinned Pi public seam audit. Delegate protocols to Pi; frozen per-run destination/key; redirect manual/refusal, explicit-none wire stripping, pre-persistence sanitized streams/results. Actual pinned Pi loopback fixtures for Chat/Responses/Messages, fragmented SSE, tools, abort, poisoned historical auth and two-origin redirects. Exit: independent protocol/privacy review; fixture success explicitly not cloud qualification |
 | C4 P1 coordinator integration | Coordinator only: `src/pi/workspace.ts`, `src/pi/workspace-config.ts`, `src/pi/workspace-extension.ts`, `scripts/start.ts`, `tests/pi-workspace.test.ts` (new test path only if absent) | Depends C1–C3. Wire wizard, per-run isolated auth, exact generated membership, fresh launch, resume/import cancellation, no warming/retry/auto-compaction. Freeze latest shared-file interfaces first. Exit: actual pinned-runtime A→B no-history-leak tests, 8K overflow/manual compaction fixtures, clean install and exact-head required platform checks; runtime repin owned by integrator |
-| C5 P2 metadata discovery | New `src/providers/discovery.ts`, `tests/provider-discovery.test.ts` | Depends C3 policy boundary, C2 consent. 10s/1MiB/1000-item/5-page proposed bounds reviewed before implementation; cache freshness, manual alias retained. Test public/denied/empty/oversize/redirect/malformed lists; zero inference/load/pull calls. Exit: no credentials to changed origin, no readiness inflation, independent review |
+| C5 P2 metadata discovery | New `src/providers/discovery.ts`, `tests/provider-discovery.test.ts` | Depends C3 policy boundary, C2 consent. 10s/1MiB/1000-item/5-page proposed bounds reviewed before implementation; cache freshness, manual alias retained. Test public/denied/empty/oversize/redirect/malformed lists; draft discovery without a model, no persistence before Save, cancellation/edit invalidation and ignored late results; zero inference/load/pull calls. Exit: no credentials to changed origin, no readiness inflation, independent review |
 | C6 P2 explicit diagnostic checks | New `src/providers/checks.ts`, `tests/provider-checks.test.ts` | Depends C3, C5 observation interface; separate paid inference/tool consent. Fixed synthetic content, one/two-request bounds, no project/history, safe echo tool only, no automatic retry. Exit: fixture proof cancellation/late completion cannot mark success; user authorization separately required for real paid tests |
 | C7 P3 routed switching/resume | Proposed new `src/providers/session-policy.ts`, `tests/provider-session-policy.test.ts`; coordinator hooks `src/pi/workspace-extension.ts` | Separate approved P3 design required. Idle/abort, history destination consent, conversion loss, remote-state isolation, missing-profile pause. Exit: native protocol/history fixtures and independent review; no P1 shortcut |
 | C8 P4 eligibility/auth audit | First new design under `docs/research/provider-connection-ux/`; only after approval propose `src/providers/auth-flow.ts`, `tests/provider-auth-flow.test.ts` | Revalidate official rights and upstream support, actual app/client identity, identity/scopes/account/refresh/revoke, device support per flow. Mock only before live authorization; no borrowed caches or custom OAuth engine. Exit: eligibility decision plus audited upstream protocol evidence and fresh independent review; not cleared by this package |
@@ -82,7 +87,9 @@ may be marked passed from static source inspection alone.
 Validate local Markdown targets, HTML self-containment and narrow rendering,
 PNG/HTML hashes and DESIGN labelling, diff ownership and whitespace. Recheck
 public source URLs; record unavailable pages as unknown instead of pretending
-all links passed. Publication checker is read-only and expected to report missing
-allowlist entries until root integrates them. No full runtime gate or installation
-is needed to evaluate this research. Root receives exact new-file hashes and
-must review/refresh the publication manifest; this writer does not own it.
+all links passed. Publication checking is read-only. Root subsequently authorized
+this writer to
+refresh the manifest for these ten files through the repository workflow, verify
+actual hashes and preserve all original/Relay anchors. No full runtime gate or
+installation is needed to evaluate this research. Root receives the final head,
+review disposition and publication result and owns CI monitoring and merge.
