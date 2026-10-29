@@ -206,6 +206,7 @@
     "tests/relay-extension.test.ts",
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
+    "tests/relay-pi-actual.test.ts",
     "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
@@ -541,7 +542,7 @@
       "status": "added"
     },
     "docs/pi-workspace.md": {
-      "sha256": "3790b1c04ea966585aeec481b375343c1f7c076a724986e4077bb9927780119f",
+      "sha256": "39106b0c8026f77dfc5787a46a5824eaa7f1dbf4a68c69b0b1e59eb15bd0f0f9",
       "status": "added"
     },
     "docs/publication-plan.md": {
@@ -911,6 +912,10 @@
     },
     "tests/relay-loader-env.test.ts": {
       "sha256": "99c3dce6869c2d0bb99e020c9b82beeb38683fa472258354352c810e8d245e2a",
+      "status": "added"
+    },
+    "tests/relay-pi-actual.test.ts": {
+      "sha256": "f1c7af497a8f91a8b9215aba81c7c82e38b4be7d61796fa7ce6ec2e213197b17",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {

@@ -205,3 +205,28 @@ The fixture substitutes only dependency verification and terminal attachment; it
 makes no model request. Coordinator E2E owns real Pi/Herdr/local inference for
 this revision; historical native-session evidence above is not a new inference
 qualification.
+
+## Built-in Relay lifecycle and verification
+
+The workspace now provisions its private project bus before Pi starts. The
+supported session_start hook binds ctx.sessionManager.getSessionId(); matching
+session_shutdown releases the current owner on quit, reload and replacement.
+The pinned types explicitly support these async lifecycle hooks and native
+session IDs. Host-only 15-second heartbeats renew 60-second leases. Model tool
+callbacks use their native context, never caller-supplied sender/inbox scope.
+
+The extension registers relay_peers, relay_send, relay_inbox and relay_ack plus
+operator slash equivalents. Its Bun stdin bridge uses a private run reference
+from the launcher, bounded128KiB requests/1MiB replies/20-second deadline.
+Neither receipt nor ack is ledger ingest, task completion or acceptance. Normal
+read leaves mail unread, and inbox polling never starts a model turn.
+
+Actual acceptance exercises two owned native Pi/Herdr TUIs through the shipped
+launcher and same project bus: discovery, explicit send/reply, duplicate-key
+receipt, repeated read, foreign-ack refusal, explicit recipient ack, native
+reload reconnect and host heartbeat with zero inference requests. A separate
+owned Chat-protocol fixture drives actual Pi relay_send execution and full
+native process resume; the original receipt is reused. Its large-context and
+disabled-helper settings are fixture configuration, not the default route's
+capacity or model-quality qualification. No paid provider or real model call is
+needed for this gate. Captures distinguish actual pane text from rendered views.
