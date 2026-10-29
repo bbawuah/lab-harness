@@ -76,6 +76,9 @@
     "docs/evidence/pi-local-tool-events.jsonl",
     "docs/evidence/project-events.json",
     "docs/evidence/project-terminal.ansi",
+    "docs/evidence/provider-design.html",
+    "docs/evidence/provider-design.json",
+    "docs/evidence/provider-design.png",
     "docs/evidence/subsequent-project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
@@ -361,6 +364,18 @@
       "sha256": "c9270ceb4fd443e7d641468b249a3c659aec73522d917748137d9f8d729b678a",
       "status": "added"
     },
+    "docs/evidence/provider-design.html": {
+      "sha256": "a296f21b9e500d00d238610cce9cbe1b4f0568f38ee927799a9e44191597f344",
+      "status": "added"
+    },
+    "docs/evidence/provider-design.json": {
+      "sha256": "b85646805118aaff58a2ac26bd4632e29a72d7f26ab20b68264f77719f1cbec1",
+      "status": "added"
+    },
+    "docs/evidence/provider-design.png": {
+      "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
+      "status": "added"
+    },
     "docs/evidence/subsequent-project-terminal.ansi": {
       "sha256": "e4f29afc2fa95f1a3b6d045517b9556111d2148c08d67720968b4f9dd5dac476",
       "status": "added"
@@ -494,7 +509,7 @@
       "status": "added"
     },
     "docs/research/model-providers.md": {
-      "sha256": "44a8f281cf6e87523ce8119715472bf17bd7bbb8cc01595896c76cf56d195c98",
+      "sha256": "8934fa8fb04221face22c85cdc5b3261fa3ad4beb851a91020c193156744ada8",
       "status": "added"
     },
     "docs/search.md": {

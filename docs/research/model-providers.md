@@ -6,6 +6,13 @@ URL fixes are PR #8, separately reviewed at
 ffef0a2315b55efceb973aa150d687855f9fb0fd and distributed by bootstrap e709361.
 This document does not qualify controlled LAB request admission.
 
+![DESIGN mockup, not implemented: connection and review flow](../evidence/provider-design.png)
+
+The image is a browser-rendered design mockup of source 7df49f4, captured with
+T3 html_preview at 1000px/light on 2026-10-29. It is not a live TUI screenshot,
+provider test or inference evidence. [Self-contained HTML](../evidence/provider-design.html)
+and [capture identity/reproduction](../evidence/provider-design.json).
+
 ## Decision
 
 Use Pi's provider engine, protocol adapters, model metadata, credential APIs and
@@ -420,6 +427,14 @@ Provider fixture success is protocol evidence; it does not qualify paid provider
 accounts, model quality, arbitrary compatible servers, WSL or controlled admission.
 
 ## Open questions and deferred work
+
+Critical design review round 1 requested changes before implementation:
+persisted native credential precedence, sanitizing native vendor errors before
+render/persistence, inference redirect enforcement, explicit-none wire behavior
+and 8K compaction budgets. A bounded pinned-source seam investigation is in
+progress; D0 is not cleared. These are known design blockers, not runtime fixes
+or validated privacy guarantees. The next revision must record mechanisms and
+acceptance evidence before broad provider build.
 
 - Exact model-catalog extraction from the standalone bundle for cloud presets:
   use supported public data/API, or operator entry with declared limits; do not
