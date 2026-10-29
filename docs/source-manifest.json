@@ -79,6 +79,9 @@
     "docs/evidence/pi-local-tool-events.jsonl",
     "docs/evidence/project-events.json",
     "docs/evidence/project-terminal.ansi",
+    "docs/evidence/provider-design.html",
+    "docs/evidence/provider-design.json",
+    "docs/evidence/provider-design.png",
     "docs/evidence/subsequent-project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
@@ -112,6 +115,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/research/model-providers.md",
     "docs/search.md",
     "docs/skills-inventory.json",
     "docs/skills.md",
@@ -296,7 +300,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "d6533e657d57bd2e9ee874b88cbaa1dcebe909677be3364c93fdce6db7e2bb41",
+      "sha256": "88d6a11e00e96876811272e3c1394d78df79516dc22f3e787c0732e4c321f6fb",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -304,7 +308,7 @@
       "status": "added"
     },
     "docs/build-plan.md": {
-      "sha256": "60371cb83ab19c0e82982470f5c957d299969ec8b8bda01d01bf91f7e9b1bd84",
+      "sha256": "09ba699b127836ab0b9427b6ddce08b1ded1fbb470db8b462a3de619e6e3588a",
       "status": "added"
     },
     "docs/ci.md": {
@@ -373,6 +377,18 @@
     },
     "docs/evidence/project-terminal.ansi": {
       "sha256": "c9270ceb4fd443e7d641468b249a3c659aec73522d917748137d9f8d729b678a",
+      "status": "added"
+    },
+    "docs/evidence/provider-design.html": {
+      "sha256": "a296f21b9e500d00d238610cce9cbe1b4f0568f38ee927799a9e44191597f344",
+      "status": "added"
+    },
+    "docs/evidence/provider-design.json": {
+      "sha256": "b85646805118aaff58a2ac26bd4632e29a72d7f26ab20b68264f77719f1cbec1",
+      "status": "added"
+    },
+    "docs/evidence/provider-design.png": {
+      "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
       "status": "added"
     },
     "docs/evidence/subsequent-project-terminal.ansi": {
@@ -505,6 +521,10 @@
     },
     "docs/publication-status.md": {
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
+      "status": "added"
+    },
+    "docs/research/model-providers.md": {
+      "sha256": "b3ee260fadac00650b33a2aa69f6f33b79b6a207aca515e70e92243ac8431959",
       "status": "added"
     },
     "docs/search.md": {

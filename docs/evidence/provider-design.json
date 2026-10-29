@@ -1,0 +1,21 @@
+{
+  "kind": "rendered-design-mockup",
+  "implemented": false,
+  "designSource": "7df49f40209e345a46f98dd2a609f9fd39494412",
+  "capturedOn": "2026-10-29",
+  "environment": "T3 html_preview headless browser, light appearance",
+  "viewport": {
+    "width": 1000,
+    "height": 970
+  },
+  "html": {
+    "path": "docs/evidence/provider-design.html",
+    "sha256": "a296f21b9e500d00d238610cce9cbe1b4f0568f38ee927799a9e44191597f344"
+  },
+  "image": {
+    "path": "docs/evidence/provider-design.png",
+    "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7"
+  },
+  "privacy": "Synthetic endpoint and model alias; no keys, user paths or user data",
+  "reproduction": "Open self-contained provider-design.html with T3 html_preview at width1000/light; compare labelled design source. Not liveTUI or inference evidence."
+}

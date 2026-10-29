@@ -39,3 +39,38 @@ Worker handoffs include commit SHA, exact file ownership, commands/results,
 actual versus fixture evidence, remaining risks and no PR monitoring. Every
 implementation change belongs in the integration PR. No paid cloud calls,
 Claude agents, global installation, account changes or production deployment.
+
+## Continued workspace phases
+
+The owner requested detailed market research before broader provider build.
+The [provider design](research/model-providers.md) and architecture ADR require
+a fresh critical independent review before provider source work. Research uses
+official pinned Pi/OpenCode/Aider/Continue source and provider documentation;
+source-proven, documented, inferred and untested statements remain distinct.
+
+Sequence and ownership:
+
+1. Immediate HOME selection and remote self-hosted URL fixes are frozen in
+   separately reviewed PR #8, with corrected verified runtime archive pin.
+2. Coordinator alone writes provider research, ADR and phased contracts on
+   docs/model-provider-design; no provider engine/dropdown implementation yet.
+3. A focused command/help/guide phase provides a guarded user-local lab shim,
+   explicit PATH instructions, docs/user-guide.md, shell help and /lab-help.
+   No shell-profile edit or command hijack; current-command claims only.
+4. Relay gets a separate lifecycle/shared-project-bus contract first, then an
+   isolated module/tests specialist and coordinator-owned Pi integration.
+   Automatic unique session peer, bounded peers/send/inbox/ack tools and slash
+   commands, durable idempotent receipts and explicit recipient acknowledgement
+   use the immutable message-only closure. No ledger acceptance, legacy policy
+   tree, inbound hold, implicit history sharing or continuous model polling.
+5. Provider P1 follows reviewed design: private API-key/none profiles, migration,
+   exact fresh launch and Pi-backed Chat/Responses/Anthropic fixtures. Later
+   phases add explicit discovery and separately proved switching/resume.
+
+At most two active isolated Codex high/default tasks, no grandchildren.
+Coordinator owns shared README/CLI/installer/workspace extension/publication;
+specialists receive frozen nonoverlapping file/interface contracts. Each runtime
+feature has focused/actual acceptance, independent review, an immutable verified
+bootstrap runtime repin and exact-head required Ubuntu/macOS checks. Root owns
+readiness/watch/merge. No paid/cloud or Claude model calls; local owned fixtures
+and explicitly bounded local models remain the runtime verification path.
