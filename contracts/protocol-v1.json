@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lab-harness:concept:protocol:1",
+  "title": "LAB-HARNESS concept frozen interface manifest",
+  "version": 1,
+  "normativeTypes": "../src/protocol.ts",
+  "operations": ["task.create", "claim.grant", "worker.callback", "mail.ingest", "mail.ack", "result.submit", "operator.accept", "operator.cancel", "operator.recover"],
+  "invariants": ["full claim equality and current CAS", "immutable context content and binding", "every obligation represented", "candidate and dirty hash equality", "durable ingest before acknowledgement", "retire before dedupe prune", "no worker acceptance capability", "native Pi activation fails closed while unqualified"],
+  "modelFacingOperations": ["result.submit through trusted BoundWorker only; raw callback authority is not model input"],
+  "nativePiActivation": "blocked-unqualified"
+}

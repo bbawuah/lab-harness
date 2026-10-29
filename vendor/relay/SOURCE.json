@@ -1,0 +1,42 @@
+{
+  "sourceSHA": "dfe1b039bab45f4055ab39467e994a2981940c02",
+  "scope": "unchanged narrow Relay message/storage dependency closure; no scheduler changes",
+  "files": [
+    {
+      "path": "src/messages/contracts.ts",
+      "sha256": "e95840cc48eb2ab78baad789e237f49d71f9d9b2d82306e36d907642c43f707f"
+    },
+    {
+      "path": "src/messages/service.ts",
+      "sha256": "833cc8d730d0625ded0eee1c492c31fe0e4b256cd15f7498741c239a718f11fb"
+    },
+    {
+      "path": "src/directory/index.ts",
+      "sha256": "7972537609d66bff258fbdff23f060317d4db06509ab2c39a1153ff04a6be3d2"
+    },
+    {
+      "path": "src/directory/validation.ts",
+      "sha256": "8c9eb549dfba44ab446bb2ff010715804973f051da182c0474c3fc1f31c96437"
+    },
+    {
+      "path": "src/storage/store.ts",
+      "sha256": "ca4e337ced10dce4b48651dd1b1e2ba274ce28a5755ad75807f7f450c661e43b"
+    },
+    {
+      "path": "src/storage/paths.ts",
+      "sha256": "6465b4252488a46989319f72351d4665a2c819e0c21786e503af9c54bf346ca9"
+    },
+    {
+      "path": "src/storage/initialize.ts",
+      "sha256": "8e3150adb61d96ff8a54adb3d380ac55e56ddc26dab01f782e32078294c8be34"
+    },
+    {
+      "path": "src/storage/publish.ts",
+      "sha256": "1ecc1816282f0cebb848454ce1e98475ef182f3e33e6674f4b6417c2b3a2c99c"
+    },
+    {
+      "path": "src/storage/diagnostics.ts",
+      "sha256": "bed7a64b14ebcb8803da139fe1e62351a77bca93d62e65b053158e1b09e242ad"
+    }
+  ]
+}

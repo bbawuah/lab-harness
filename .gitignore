@@ -1,0 +1,10 @@
+node_modules/
+.tmp/
+local-test/
+.env*
+config.json
+config.properties
+*.log
+*.sqlite*
+*.gguf
+.DS_Store
