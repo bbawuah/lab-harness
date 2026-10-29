@@ -1,0 +1,24 @@
+
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Native LAB activation: BLOCKED
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Request admission unqualified
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  header.ts
+
+
+ Warning: fd not found. Offline mode enabled, skipping download.
+ Warning: ripgrep not found. Offline mode enabled, skipping download.
+
+ Warning: No models available. Use /login to log into a provider via OAuth or API key. See:
+   [PI_PACKAGE]/docs/providers.md
+   [PI_PACKAGE]/docs/models.md

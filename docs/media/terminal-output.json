@@ -1,0 +1,44 @@
+{
+  "label": "REAL HERDR/SQLITE/RELAY; FIXTURE TASK ENVELOPE; NO PI OR MODEL",
+  "candidate": {
+    "candidateSHA": "93a831c4dbfe774f3c4a025f7c70334ae0f3e6b4",
+    "dirtyHash": "35e74c65d1b21c6ffba69c7b6418ca283e6d7ae10949a6a89fab895a6d80daa6"
+  },
+  "state": "result_available",
+  "acceptance": null,
+  "contextHash": "82448d2e8e9724558479498803a7e0826abdd3bb2b23810b81a823300891e2bc",
+  "sourceReferences": [
+    {
+      "path": "requirement.txt",
+      "contentHash": "4da4f53ed12584613d6b74654e99beb2800b9151960bf44f9a7e2df616b80675",
+      "lineStart": 1,
+      "lineEnd": 1,
+      "text": "Observe the owned terminal worker and preserve separate operator acceptance."
+    }
+  ],
+  "evidence": {
+    "label": "actual-herdr-owned-process",
+    "sourcePin": "bc8c28988f75c538d4ca058b702f5adbea30566e",
+    "runtime": {
+      "version": "0.9.5",
+      "releaseCommit": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+      "sourcePinMatch": false,
+      "binarySha256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2",
+      "artifact": "herdr-macos-aarch64"
+    },
+    "outputHash": "4787f8f110fa58be63fccf9f9d15fadfff0ca42920ee140b460457bd710b5f6e",
+    "stopped": true,
+    "cleanup": {
+      "serverExited": true,
+      "socketsRemoved": true,
+      "workerStopped": true,
+      "errors": [],
+      "paneCloseAcknowledged": true,
+      "stopAcknowledged": true,
+      "exitCode": 0,
+      "signal": null
+    },
+    "taskAcceptance": "unchanged"
+  },
+  "actualModelCalls": 0
+}
