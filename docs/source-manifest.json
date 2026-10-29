@@ -86,6 +86,12 @@
     "docs/evidence/provider-design.html",
     "docs/evidence/provider-design.json",
     "docs/evidence/provider-design.png",
+    "docs/evidence/relay-model-tool-events.jsonl",
+    "docs/evidence/relay-recipient-screen.txt",
+    "docs/evidence/relay-sender-screen.txt",
+    "docs/evidence/relay-workspace.html",
+    "docs/evidence/relay-workspace.json",
+    "docs/evidence/relay-workspace.png",
     "docs/evidence/subsequent-project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
@@ -419,6 +425,30 @@
     },
     "docs/evidence/provider-design.png": {
       "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
+      "status": "added"
+    },
+    "docs/evidence/relay-model-tool-events.jsonl": {
+      "sha256": "d8bb98e643c22269065d39c6456c367e058af6a6df5f0b9b43d0033db0003772",
+      "status": "added"
+    },
+    "docs/evidence/relay-recipient-screen.txt": {
+      "sha256": "0b137151b562d45fcbc936bd8c2aa68750ba75940f4e0ab04f42a0e7855cdcea",
+      "status": "added"
+    },
+    "docs/evidence/relay-sender-screen.txt": {
+      "sha256": "8a70bf9adec43d7b68fad28cdc6aedfaceb4b85d9ad86dbb317212c30c6d7a91",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.html": {
+      "sha256": "17516be510152ba06ecf83d8b5bb89a6afa1b9581f65aeb044e2e300cb8f35f8",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.json": {
+      "sha256": "f1423e4cde31c2b5d7a585f8d6eb0c91aaa20a10eb6f2032236dc49b9a59e9e9",
+      "status": "added"
+    },
+    "docs/evidence/relay-workspace.png": {
+      "sha256": "5327c7ce269c4460c50054f27d1c67f6b17dcd75d8f098d0c01cf92ba49d8ead",
       "status": "added"
     },
     "docs/evidence/subsequent-project-terminal.ansi": {

@@ -1,0 +1,88 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>LAB built-in Relay evidence</title><style>*{box-sizing:border-box}body{margin:0;background:#f4f3ef;color:#171717;font:16px system-ui}main{max-width:1200px;margin:auto;padding:34px}header{border-bottom:2px solid #202020;padding-bottom:20px}.brand{font-weight:850;letter-spacing:.1em}h1{font-size:32px;margin:12px 0}p{line-height:1.55;margin:8px 0}.meta{font-size:13px;color:#424242}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0}.pane{background:#17191d;color:#f4f4f4;border:1px solid #41444c;border-radius:8px;overflow:hidden}.label{padding:13px 17px;background:#262a31;font-size:14px;font-weight:650}pre{font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:17px}.note{border-left:4px solid #343434;padding:10px 18px;background:white;font-size:14px}footer{margin-top:18px;font-size:13px;color:#3f3f3f}</style><main><header><div class="brand">B. &nbsp; LAB-HARNESS</div><h1>Two sessions. Durable messages.</h1><p>Actual native Pi 1.4.0 / Herdr 0.9.5 screen text, captured from two owned sessions.</p><p class="meta">Source: e71cc8b312d8a94af8bf347484c3072ef53a0558 · clean checkout · macOS arm64</p></header><div class="grid"><section class="pane"><div class="label">Sender — discover, send, retry, foreign ack refused</div><pre>[relay-peers]
+
+ {
+   &quot;peers&quot;: [
+     {
+       &quot;id&quot;: &quot;pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa&quot;,
+       &quot;name&quot;: &quot;project-with-spaces/01a189ae-8ee7-771d-8e51--770155280d4e&quot;,
+       &quot;presence&quot;: &quot;online&quot;,
+       &quot;lastSeenAt&quot;: 1793311281023,
+       &quot;self&quot;: true
+     },
+     {
+       &quot;id&quot;: &quot;pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a&quot;,
+       &quot;name&quot;: &quot;project-with-spaces/01a189ae-9494-7503-a0e5--991baf29d329&quot;,
+       &quot;presence&quot;: &quot;online&quot;,
+       &quot;lastSeenAt&quot;: 1793311282472,
+       &quot;self&quot;: false
+     }
+   ],
+   &quot;total&quot;: 2
+ }
+
+
+
+ [relay-send]
+
+ {
+   &quot;id&quot;: &quot;ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef&quot;,
+   &quot;state&quot;: &quot;stored&quot;,
+   &quot;duplicate&quot;: false,
+   &quot;createdAt&quot;: 1793311283794,
+   &quot;expiresAt&quot;: 1795903283794,
+   &quot;requestKey&quot;: &quot;intro-1&quot;
+ }
+
+
+
+ [relay-send]
+
+ {
+   &quot;id&quot;: &quot;ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef&quot;,
+   &quot;state&quot;: &quot;stored&quot;,
+   &quot;duplicate&quot;: true,
+   &quot;createdAt&quot;: 1793311283794,
+   &quot;expiresAt&quot;: 1795903283794,
+   &quot;requestKey&quot;: &quot;intro-1&quot;
+ }
+
+
+ Error: RELAY_CONFLICT</pre></section><section class="pane"><div class="label">Recipient — read twice; message remains unread</div><pre>[relay-inbox]
+
+ {
+   &quot;messages&quot;: [
+     {
+       &quot;version&quot;: 2,
+       &quot;id&quot;: &quot;ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef&quot;,
+       &quot;namespace&quot;: &quot;lab-project-v1-a97568ad887bb26ac061328b528732a92426017d006ae6d0efc8bfd7dca304c5&quot;,
+       &quot;from&quot;: &quot;pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa&quot;,
+       &quot;to&quot;: &quot;pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a&quot;,
+       &quot;body&quot;: &quot;Explicit mail from A&quot;,
+       &quot;conversationId&quot;: &quot;618f80f4-8d6b-4c0b-b7a4-b76c5b99c3d7&quot;,
+       &quot;createdAt&quot;: 1793311283794
+     }
+   ],
+   &quot;unread&quot;: 1,
+   &quot;timedOut&quot;: false
+ }
+
+
+
+ [relay-inbox]
+
+ {
+   &quot;messages&quot;: [
+     {
+       &quot;version&quot;: 2,
+       &quot;id&quot;: &quot;ca70684c-2796-4ac8-b1e2-2a95e4c6a7ef&quot;,
+       &quot;namespace&quot;: &quot;lab-project-v1-a97568ad887bb26ac061328b528732a92426017d006ae6d0efc8bfd7dca304c5&quot;,
+       &quot;from&quot;: &quot;pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa&quot;,
+       &quot;to&quot;: &quot;pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a&quot;,
+       &quot;body&quot;: &quot;Explicit mail from A&quot;,
+       &quot;conversationId&quot;: &quot;618f80f4-8d6b-4c0b-b7a4-b76c5b99c3d7&quot;,
+       &quot;createdAt&quot;: 1793311283794
+     }
+   ],
+   &quot;unread&quot;: 1,
+   &quot;timedOut&quot;: false
+ }</pre></section></div><div class="note"><strong>Capture type:</strong> browser-rendered excerpts of actual <code>pane.read</code> text, not live terminal pixels. This is implementation evidence, not a mockup. The separate native tool test uses an owned Chat protocol fixture, not a real model.</div><footer>Durable assertions also passed: reply references, explicit recipient acknowledgement, native reload, same receipt after process restart, zero model calls for operator messaging, all peers released and both owned Herdr sessions cleaned up. Full text, tool events and reproduction are alongside this image.</footer></main></html>

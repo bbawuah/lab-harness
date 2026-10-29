@@ -1,0 +1,58 @@
+{
+  "source": "e71cc8b312d8a94af8bf347484c3072ef53a0558",
+  "dirty": false,
+  "environment": "darwin-arm64",
+  "label": "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality",
+  "nativePeers": [
+    {
+      "peer_id": "pi-89c80820f15183b1a2e9e713ba4093830bf430d9a7cd149f91ec60e4eedd46aa",
+      "name": "project-with-spaces/01a189ae-8ee7-771d-8e51--770155280d4e",
+      "generation": 0,
+      "phase": "released"
+    },
+    {
+      "peer_id": "pi-555919bfa2f02a2ee74f46f7025747c7ff465784a3f9d433c1900586d9c1819a",
+      "name": "project-with-spaces/01a189ae-9494-7503-a0e5--991baf29d329",
+      "generation": 1,
+      "phase": "released"
+    },
+    {
+      "peer_id": "pi-cd0a8c27ae793f5f38a7055673ff6ac0f94cadde1a7b6abc68a7b84801d13174",
+      "name": "project-with-spaces/01a189ae-d30a-7244-a4cf--28bd9474fac7",
+      "generation": 1,
+      "phase": "released"
+    }
+  ],
+  "operatorMessaging": true,
+  "repeatedReadNotAck": true,
+  "foreignAckRefused": true,
+  "nativeReloadReconnected": true,
+  "noWakeupModelCalls": true,
+  "toolProtocolRequests": 4,
+  "processResumeSameReceipt": true,
+  "cleanup": [
+    {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    },
+    {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  ],
+  "reproduction": [
+    "LAB_HERDR_ACTUAL=1 bun --no-env-file --no-install test tests/relay-pi-actual.test.ts"
+  ],
+  "captureNote": "Browser-rendered excerpts of actual native Herdr pane.read text. Not a live-pixel terminal screenshot. Owned protocol fixture; no real model quality or paid service claim. Private fixture paths replaced with $PROJECT/$HOME/$FIXTURE.",
+  "capture": {
+    "kind": "browser-rendered actual native pane text",
+    "width": 1160,
+    "height": 1430,
+    "htmlSHA256": "17516be510152ba06ecf83d8b5bb89a6afa1b9581f65aeb044e2e300cb8f35f8",
+    "imageSHA256": "5327c7ce269c4460c50054f27d1c67f6b17dcd75d8f098d0c01cf92ba49d8ead"
+  }
+}
