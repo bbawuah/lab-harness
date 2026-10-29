@@ -29,7 +29,7 @@ main() {
   bootstrap_destination=$bootstrap_root/releases/$bootstrap_commit
   [ ! -L "$bootstrap_root/releases" ] && [ ! -L "$bootstrap_destination" ] || bootstrap_fail 'Unsafe release directory.'
   bootstrap_stage=$(mktemp -d "$bootstrap_root/releases/.download.XXXXXX")
-  trap 'rm -rf "$bootstrap_stage"' EXIT HUP INT TERM
+  trap 'rm -rf "$bootstrap_stage"; [ -z "${bootstrap_command_stage:-}" ] || rm -f "$bootstrap_command_stage"' EXIT HUP INT TERM
   bootstrap_archive=$bootstrap_stage/harness.tar.gz
   printf 'LAB: downloading pinned harness %s\n' "$bootstrap_commit"
   curl -fL --retry 2 --connect-timeout 15 --max-time 180 --max-filesize 16777216 \
@@ -109,16 +109,24 @@ bootstrap_command_setup() {
     fi
   fi
   mkdir -p "$bootstrap_command_dir"
-  printf '#!/bin/sh\n# LAB-HARNESS owned command shim\nexec ' > "$bootstrap_stage/command"
-  bootstrap_quote "$bootstrap_launcher" >> "$bootstrap_stage/command"
-  printf ' "$@"\n' >> "$bootstrap_stage/command"
-  chmod 700 "$bootstrap_stage/command"
+  # Stage beside the command so atomic publication also works when releases
+  # live on an external XDG_DATA_HOME filesystem.
+  bootstrap_command_stage=$(mktemp "$bootstrap_command_dir/.lab.XXXXXX") || {
+    printf 'LAB: could not stage the optional command; use the full launcher printed below.\n'
+    return
+  }
+  printf '#!/bin/sh\n# LAB-HARNESS owned command shim\nexec ' > "$bootstrap_command_stage"
+  bootstrap_quote "$bootstrap_launcher" >> "$bootstrap_command_stage"
+  printf ' "$@"\n' >> "$bootstrap_command_stage"
+  chmod 700 "$bootstrap_command_stage"
   if [ "$bootstrap_command_owned" = 1 ]; then
-    mv -f "$bootstrap_stage/command" "$bootstrap_command"
-  elif ! ln "$bootstrap_stage/command" "$bootstrap_command"; then
+    mv -f "$bootstrap_command_stage" "$bootstrap_command"
+  elif ! ln "$bootstrap_command_stage" "$bootstrap_command"; then
     printf 'LAB: command path changed during installation; no existing command was overwritten.\n'
+    rm -f "$bootstrap_command_stage"; bootstrap_command_stage=
     return
   fi
+  rm -f "$bootstrap_command_stage"; bootstrap_command_stage=
   bootstrap_resolved=$(command -v lab 2>/dev/null) || bootstrap_resolved=
   if [ "$bootstrap_resolved" = "$bootstrap_command" ]; then
     printf 'LAB command verified on this PATH: lab\nUse: lab [--project DIR] [--configure] [--offline] [--help]\n'

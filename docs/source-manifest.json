@@ -266,7 +266,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "7559d68059c31a723c6ab44e197692bc952f75af1583f1e7f523e7b6b58bd412",
+      "sha256": "69922d67d382457d85f0de1c586ea521a8ca99bf8ef362040c35ccea9d090da7",
       "status": "added"
     },
     "bun.lock": {
@@ -543,7 +543,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "4fdf78d025e7a3f4d427ae07e50e4d6ebdea0ecd27f1dcecd4c1d3582fb9300b",
+      "sha256": "8571e15817d2c2d9bf99ae11b3f68c64674e7e83a8ff63f08e7f298d90add586",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -681,7 +681,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "adaa4dff6e88cedea475ecded8bacd0bd29e1735edaf4ec180c5eb6ea6a8d6dc",
+      "sha256": "d796947239aa823b039ad25516db193f40525269db05159035dd77ab84fb7a0d",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -753,7 +753,7 @@
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
     },
     "tests/bootstrap.test.ts": {
-      "sha256": "de77d08d532c9162d3a544d9da2624fdb46163974344616b26935b98a83fbadb",
+      "sha256": "031f1aaaf7db11575c72131e5c9f72872d87bc52b767cdd8b63a5f73c214db05",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
@@ -890,7 +890,7 @@
       "status": "added"
     },
     "tests/workspace-help.test.ts": {
-      "sha256": "07c0d28710dd4b942d5f45907cd6f3e09fb0425ea166f288f587ad6e84b8313d",
+      "sha256": "2b4fd504f82678bd8469c1757c7243e68924988a2e64e9e5a6cc9daacec410c8",
       "status": "added"
     },
     "tests/workspace.test.ts": {

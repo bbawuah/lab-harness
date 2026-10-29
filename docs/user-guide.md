@@ -102,7 +102,7 @@ Model tools are functions the model may call, rather than commands you type.
 | Shell | lab --configure | Change explicit endpoint/model/private key |
 | Shell | lab --offline | Require cached runtime dependencies; inference network still possible |
 | Shell | lab --help | Show current launcher help without opening Pi |
-| TUI | /lab-help | List LAB commands; native Pi /help remains separate |
+| TUI | /lab-help | List LAB commands; native /hotkeys shows shortcuts and typing / opens the command menu |
 | TUI | /lab-search TEXT | Literal bounded project text search with lines/hashes |
 | TUI | /lab-files NAME | Find project filenames |
 | TUI | /lab-skills | Inventory skills and exact IDs; load nothing |
@@ -164,9 +164,11 @@ Changing endpoint/model currently uses lab --configure and a fresh launch.
 Use /exit or native /quit for normal exit. Owned Herdr client/server/pane state
 is cleaned up; route/key and native sessions persist. Cancelling project
 selection creates no workspace route/state. In private key entry, Ctrl-C or
-Ctrl-D cancels setup. For native Pi generation shortcuts use /help and the
+Ctrl-D cancels setup. For native Pi generation shortcuts use /hotkeys and the
 [pinned upstream keybinding guide](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/keybindings.md).
 A local cancellation or timeout does not prove a remote server stopped work.
+This pinned Pi has no built-in /help command; unrecognized slash text can become
+a model prompt. Use /lab-help for LAB and /hotkeys for native shortcuts.
 
 Private route, key, agent/sessions and owned run reports live beneath
 $HOME/.local/share/lab-harness/workspace. Releases live beneath

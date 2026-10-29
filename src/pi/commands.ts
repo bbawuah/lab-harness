@@ -18,7 +18,7 @@ export function workspaceHelp(): string {
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "The model receives lab_search and lab_files automatically. Skills load only through your explicit command.",
-    "Use native Pi /help for its own commands. Controlled LAB tasks remain unavailable.",
+    "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }
 export function shellHelp(): string {

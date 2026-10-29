@@ -96,6 +96,20 @@ test("command setup preserves foreign lab commands and target files or symlinks"
   }
 });
 
+test("external XDG releases stage the shim on its own filesystem before no-clobber publication", () => {
+  const f = fixture();
+  try {
+    // Simulate EXDEV if ln is asked to cross the staging/destination boundary.
+    f.executable(join(f.bin, "ln"), 'test "$(dirname "$1")" = "$(dirname "$2")" || { printf "EXDEV\\n" >&2; exit 18; }; exec "$TEST_REAL_LN" "$@"');
+    const result = f.run(["--install-only"], { XDG_DATA_HOME: join(f.root, "external-volume"), TEST_REAL_LN: Bun.which("ln")! });
+    expect(result.exitCode, result.stderr.toString()).toBe(0);
+    expect(result.stderr.toString()).not.toContain("EXDEV");
+    const shim = readFileSync(join(f.home, ".local/bin/lab"), "utf8");
+    expect(shim).toContain("# LAB-HARNESS owned command shim");
+    expect(shim).toContain("external-volume");
+  } finally { f.clean(); }
+});
+
 test("bootstrap checksum, existing-source and installation failures never report success or overwrite launcher", () => {
   const f = fixture();
   try {
