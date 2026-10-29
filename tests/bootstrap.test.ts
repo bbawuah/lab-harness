@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
@@ -30,7 +30,7 @@ function fixture() {
   const env = { PATH: `${bin}:/usr/bin:/bin`, HOME: home, TEST_ARCHIVE: archive, TEST_LOG: log, TEST_BOOTSTRAP_SCRIPT: script, TEST_REAL_BUN: process.execPath, TEST_TTY_DRIVER: ttyDriver, SHELL: "/bin/sh", TERM: "xterm-256color" };
   const run = (args: string[] = [], extra: Record<string, string> = {}) => Bun.spawnSync(["/bin/sh", script, ...args], { env: { ...env, ...extra }, stdout: "pipe", stderr: "pipe", timeout: 10000 });
   const calls = () => { try { return readFileSync(log, "utf8"); } catch { return ""; } };
-  return { root, home, script, archive, env, run, calls, destination: join(home, ".local/share/lab-harness/releases", "a".repeat(40)), clean: () => rmSync(root, { recursive: true, force: true }) };
+  return { root, home, bin, executable, script, archive, env, run, calls, destination: join(home, ".local/share/lab-harness/releases", "a".repeat(40)), clean: () => rmSync(root, { recursive: true, force: true }) };
 }
 
 test("public bootstrap installs outside a checkout without Git/Bun/Pi, reuses verified source and quotes owned launcher", () => {
@@ -43,7 +43,57 @@ test("public bootstrap installs outside a checkout without Git/Bun/Pi, reuses ve
     expect(launcher).toContain("LAB_WORKSPACE_STATE_ROOT");
     expect(Bun.spawnSync(["/bin/sh", "-n", join(f.home, ".local/share/lab-harness/lab")]).exitCode).toBe(0);
     expect(readFileSync(join(f.destination, "lab"), "utf8")).toContain("TEST_REAL_BUN");
+    const shim = join(f.home, ".local/bin/lab");
+    expect(readFileSync(shim, "utf8")).toContain("# LAB-HARNESS owned command shim");
+    expect(Bun.spawnSync(["/bin/sh", "-n", shim]).exitCode).toBe(0);
+    expect(first.stdout.toString()).toContain("Then verify: command -v lab");
+    expect(first.stdout.toString()).not.toContain("command verified on this PATH");
   } finally { f.clean(); }
+});
+
+test("owned lab command is idempotent, verifies an existing PATH and never edits zsh/bash profiles", async () => {
+  const f = fixture();
+  try {
+    for (const profile of [".zshrc", ".bashrc", ".profile"]) writeFileSync(join(f.home, profile), "USER_PROFILE_UNCHANGED\n");
+    const extra = { PATH: join(f.home, ".local/bin") + ":" + f.env.PATH };
+    const first = f.run(["--install-only"], extra);
+    expect(first.exitCode, first.stderr.toString()).toBe(0);
+    expect(first.stdout.toString()).toContain("LAB command verified on this PATH: lab");
+    const shim = readFileSync(join(f.home, ".local/bin/lab"), "utf8");
+    expect(f.run(["--install-only"], extra).exitCode).toBe(0);
+    expect(readFileSync(join(f.home, ".local/bin/lab"), "utf8")).toBe(shim);
+    for (const profile of [".zshrc", ".bashrc", ".profile"]) expect(readFileSync(join(f.home, profile), "utf8")).toBe("USER_PROFILE_UNCHANGED\n");
+    let output = "", sent = false;
+    const child = Bun.spawn(["/bin/sh", "-c", "lab"], { env: { ...f.env, ...extra }, terminal: { cols: 80, rows: 24, data(terminal, bytes) {
+      output += new TextDecoder().decode(bytes);
+      if (!sent && output.includes("TTY_READY")) { sent = true; terminal.write("BARE_LAB_INPUT\n"); }
+    } } });
+    const timer = setTimeout(() => child.kill("SIGKILL"), 8000);
+    try { expect(await child.exited, output.slice(-1000)).toBe(0); }
+    finally { clearTimeout(timer); child.terminal!.close(); }
+    expect(output).toContain("TTY_ANSWER:BARE_LAB_INPUT");
+  } finally { f.clean(); }
+});
+
+test("command setup preserves foreign lab commands and target files or symlinks", () => {
+  for (const collision of ["path-command", "file", "symlink"] as const) {
+    const f = fixture();
+    try {
+      const shim = join(f.home, ".local/bin/lab");
+      mkdirSync(join(f.home, ".local/bin"), { recursive: true });
+      const foreign = join(collision === "symlink" ? f.root : f.bin, "lab");
+      f.executable(foreign, 'printf "FOREIGN_LAB\\n"');
+      if (collision === "file") { writeFileSync(shim, "FOREIGN_FILE"); rmSync(foreign); }
+      if (collision === "symlink") symlinkSync(foreign, shim);
+      const result = f.run(["--install-only"]);
+      expect(result.exitCode, result.stderr.toString()).toBe(0);
+      expect(result.stdout.toString()).toContain("left untouched");
+      expect(result.stdout.toString()).not.toContain("LAB command verified");
+      if (collision === "file") expect(readFileSync(shim, "utf8")).toBe("FOREIGN_FILE");
+      else expect(readFileSync(foreign, "utf8")).toContain("FOREIGN_LAB");
+      if (collision === "path-command") expect(existsSync(shim)).toBe(false);
+    } finally { f.clean(); }
+  }
 });
 
 test("bootstrap checksum, existing-source and installation failures never report success or overwrite launcher", () => {

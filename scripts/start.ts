@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { isAbsolute, join, resolve } from "node:path";
 import { verifyInstalledRuntime } from "../src/runtime/verify.ts";
+import { shellHelp } from "../src/pi/commands.ts";
 
 const root = resolve(import.meta.dir, "..");
 const args = process.argv.slice(2);
@@ -14,7 +15,7 @@ for (let index = 0; index < args.length; index++) {
   } else if (!["--help", "--configure", "--offline"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
 }
 if (args.includes("--help")) {
-  console.log("LAB-HARNESS interactive Pi workspace\nUsage: lab [--project DIR] [--configure] [--offline]\nOpens your current project; from home, asks for a project directory.\n--project selects another existing directory outside LAB's release/state folders.\nFirst launch asks for an explicit model endpoint and model.\nControlled LAB task execution remains unavailable (request admission unqualified).");
+  console.log(shellHelp());
   process.exit(0);
 }
 

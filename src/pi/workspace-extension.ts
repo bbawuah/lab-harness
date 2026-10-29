@@ -1,4 +1,5 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
+import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
@@ -49,6 +50,9 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
 }
 export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   pi.registerCommand("exit", { description: "Exit this native Pi workspace (alias for /quit)", async handler(_args, ctx) { ctx.shutdown(); } });
+  pi.registerCommand("lab-help", { description: "Show LAB workspace commands", async handler() {
+    pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true });
+  } });
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
     ctx.ui.setHeader((_tui, theme) => ({ render: columns => renderHeader({ columns, appearance: theme.appearance, color: terminalHasColor(process.env), workspace: true }), invalidate() {} }));
@@ -59,7 +63,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
       async execute(_id, params, signal) { const result = await callWorkspaceBridge({ action, query: params.query }, signal); return { content: [{ type: "text", text: JSON.stringify(result) }], details: result }; },
     });
   }
-  for (const [name, action, description] of [["lab-search", "search", "Search literal source text"], ["lab-files", "files", "Search filenames"], ["lab-skills", "skills", "List local skills; does not load instructions"], ["lab-skill", "load", "Explicitly load one skill by exact ID, with source revalidation"]] as const) {
+  for (const { name, action, description } of workspaceCommands) {
     pi.registerCommand(name, { description, async handler(args, ctx) {
       try {
         const result = await callWorkspaceBridge({ action, query: args.trim() });

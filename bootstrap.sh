@@ -12,7 +12,7 @@ main() {
   [ "$#" -eq 0 ] || bootstrap_fail 'Usage: bootstrap.sh [--install-only]'
   [ "$bootstrap_commit" != TO_BE_PINNED ] || bootstrap_fail 'Development bootstrap has no runnable distribution pin yet.'
   case "$(uname -s)/$(uname -m)" in Darwin/arm64|Darwin/x86_64|Linux/x86_64) ;; *) bootstrap_fail 'Supported platforms: macOS arm64/x86_64, Linux x86_64. WSL remains unverified.';; esac
-  for bootstrap_tool in curl tar mktemp diff find sed tty; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
+  for bootstrap_tool in curl tar mktemp diff find sed tty ln; do command -v "$bootstrap_tool" >/dev/null 2>&1 || bootstrap_fail "Required system utility missing: $bootstrap_tool"; done
   if ! command -v sha256sum >/dev/null 2>&1 && ! command -v shasum >/dev/null 2>&1; then bootstrap_fail 'SHA-256 verification needs sha256sum or shasum.'; fi
   [ -n "${HOME:-}" ] || bootstrap_fail 'HOME must identify your user directory.'
   bootstrap_data=${XDG_DATA_HOME:-$HOME/.local/share}
@@ -60,12 +60,10 @@ main() {
   printf ' "$@"\n' >> "$bootstrap_stage/lab"
   chmod 700 "$bootstrap_stage/lab"
   mv -f "$bootstrap_stage/lab" "$bootstrap_launcher"
+  bootstrap_command_setup
   rm -rf "$bootstrap_stage"
   trap - EXIT HUP INT TERM
   printf '\nLAB is installed. Launcher: %s\n' "$bootstrap_launcher"
-  printf 'To make lab available in this shell, explicitly run:\n  export PATH='
-  bootstrap_quote "$bootstrap_root"
-  printf ':"$PATH"\n'
   bootstrap_tty=
   # Preserve the named terminal before command substitution replaces stdout.
   # Bun 1.4.2 spins reading the /dev/tty alias on macOS; its underlying named
@@ -87,5 +85,48 @@ bootstrap_hash() {
   printf '%s\n' "${bootstrap_result%% *}"
 }
 bootstrap_quote() { printf "'"; printf '%s' "$1" | sed "s/'/'\\\\''/g"; printf "'"; }
+bootstrap_command_setup() {
+  bootstrap_command_dir=$HOME/.local/bin
+  bootstrap_command=$bootstrap_command_dir/lab
+  bootstrap_existing=$(command -v lab 2>/dev/null) || bootstrap_existing=
+  if [ -n "$bootstrap_existing" ] && [ "$bootstrap_existing" != "$bootstrap_command" ]; then
+    printf 'LAB: existing lab command at %s was left untouched. Use the full launcher printed below.\n' "$bootstrap_existing"
+    return
+  fi
+  for bootstrap_parent in "$HOME" "$HOME/.local" "$bootstrap_command_dir"; do
+    if [ -L "$bootstrap_parent" ] || { [ -e "$bootstrap_parent" ] && [ ! -d "$bootstrap_parent" ]; }; then
+      printf 'LAB: unsafe command directory; use the full launcher printed below.\n'
+      return
+    fi
+  done
+  bootstrap_command_owned=0
+  if [ -e "$bootstrap_command" ] || [ -L "$bootstrap_command" ]; then
+    if [ -f "$bootstrap_command" ] && [ ! -L "$bootstrap_command" ] && head -n 2 "$bootstrap_command" | tail -n 1 | grep -qx '# LAB-HARNESS owned command shim'; then
+      bootstrap_command_owned=1
+    else
+      printf 'LAB: existing %s is not LAB-owned; left untouched. Use the full launcher printed below.\n' "$bootstrap_command"
+      return
+    fi
+  fi
+  mkdir -p "$bootstrap_command_dir"
+  printf '#!/bin/sh\n# LAB-HARNESS owned command shim\nexec ' > "$bootstrap_stage/command"
+  bootstrap_quote "$bootstrap_launcher" >> "$bootstrap_stage/command"
+  printf ' "$@"\n' >> "$bootstrap_stage/command"
+  chmod 700 "$bootstrap_stage/command"
+  if [ "$bootstrap_command_owned" = 1 ]; then
+    mv -f "$bootstrap_stage/command" "$bootstrap_command"
+  elif ! ln "$bootstrap_stage/command" "$bootstrap_command"; then
+    printf 'LAB: command path changed during installation; no existing command was overwritten.\n'
+    return
+  fi
+  bootstrap_resolved=$(command -v lab 2>/dev/null) || bootstrap_resolved=
+  if [ "$bootstrap_resolved" = "$bootstrap_command" ]; then
+    printf 'LAB command verified on this PATH: lab\nUse: lab [--project DIR] [--configure] [--offline] [--help]\n'
+  else
+    printf 'LAB command installed at %s. To enable it in this shell, run:\n  export PATH=' "$bootstrap_command"
+    bootstrap_quote "$bootstrap_command_dir"
+    printf ':"$PATH"\nThen verify: command -v lab\nFor future terminals, add that PATH line to your own zsh/bash startup file. No profiles were edited.\n'
+  fi
+}
 # Keep the invocation last: never read configuration answers from the script pipe.
 main "$@"
