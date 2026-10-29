@@ -21,6 +21,13 @@ the executable to exist and sets `LAB_HERDR_ACTUAL=1` independently of the packa
 script: actual terminal tests fail rather than silently skip when acquisition is
 missing. No credentials, model calls or inference service are needed.
 
+Both jobs run the documented `./install.sh` entrypoint from the fresh checkout
+and rerun it against the warm project-local cache. This exercises prerequisite
+checks, the real Relay capability probe, frozen script-free dependency install,
+pinned tool acquisition, repository checks and bounded actual Herdr smoke on
+both platforms. Installer subprocess regressions cover refusal and failure
+propagation separately, without downloading tools or executing model calls.
+
 Python setup runs after every Bun/Relay phase: on Linux its action exports
 `LD_LIBRARY_PATH`, whose presence the immutable Relay publisher correctly refuses.
 CI calls the real cold publisher preflight before tests; fresh-process regressions
