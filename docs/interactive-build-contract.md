@@ -59,6 +59,51 @@ return commits and validation to the coordinator; do not merge or watch PRs.
 
 ## Evidence and timing
 
+### Authorized project-workspace revision
+
+Ordinary launch must work in the caller's existing project, never default to the
+installed release as the user's work target. `./lab --project DIR` optionally
+selects another directory. Bootstrap retains caller cwd through install/launch.
+Runtime installation, model route/key, native sessions and disposable Herdr
+state remain separate from project contents. A healthy start must not write to
+the installed release. Missing dependency repair remains an explicit startup
+installation action. Native Pi file/shell behavior remains native; LAB search
+and skill discovery stay bound to the explicitly selected project, retaining
+their existing exclusions, byte identities, symlink and resource guards.
+
+Follow-up ownership is frozen before starting one isolated Codex high/default
+specialist (no grandchildren). Specialist owns `src/pi/workspace.ts`,
+`src/pi/workspace-config.ts`, `src/pi/workspace-extension.ts`, their focused
+`tests/pi-workspace*` and `docs/pi-workspace.md` only. Coordinator owns shell
+launcher/bootstrap/start, new `src/project.ts`, search binding support,
+read-only runtime verification, all integration/docs/publication and E2E.
+
+The project interface is `ProjectBinding = { root: string; device: number;
+inode: number }`, `bindProjectRoot(path: string): ProjectBinding` and
+`verifyProjectBinding(value: unknown): ProjectBinding` from `src/project.ts`.
+Bindings describe a canonical existing non-root directory; revalidation refuses
+replacement, symlink redirection and identity change. Search accepts an explicit
+`projectBinding` option and otherwise keeps its prior owned-root rules.
+
+Workspace entry becomes `runInteractiveWorkspace(options?: { configure?:
+boolean; project?: string }): Promise<number>`. The selected directory comes
+from `options.project ?? process.cwd()`. Pi/Herdr cwd is the verified project.
+The child receives `LAB_WORKSPACE_ROOT`, serialized `LAB_WORKSPACE_BINDING`
+and `LAB_INSTALL_ROOT` separately. The bridge revalidates binding before search
+or skills; portable bundled examples resolve under the installation, project
+instructions under the selected project. App state defaults beneath
+`$HOME/.local/share/lab-harness/workspace`, not inside the release or project;
+native Pi session storage remains partitioned by project cwd. Existing startup
+model setup and controlled-task refusal remain unchanged.
+
+Acceptance adds: install in A; launch from unrelated project B with spaces;
+Pi cwd, search and project skill loading identify B; source/runtime tree A is
+unchanged on healthy launch; repeated absolute launcher works from B; invalid,
+replaced and escaping roots refuse. Final README leads with plain language,
+one public command, first-run route/key needs, exact subsequent launcher,
+verified project/exit and simple prompt/search/skill examples. Fresh review
+checks these commands and their readability.
+
 Send first ownership/gap checkpoint within 15 minutes. Deliver runnable local
 TUI within 60 minutes; target reviewed substantial draft PR within 120 minutes.
 Specialist interim at 20 minutes, handoff within 45 minutes; report concrete
