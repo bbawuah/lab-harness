@@ -50,7 +50,9 @@
     "assets/branding/social-preview.svg",
     "assets/branding/terminal-b-dark.svg",
     "assets/branding/terminal-b-light.svg",
+    "bootstrap.sh",
     "bun.lock",
+    "contracts/bun-runtime.txt",
     "contracts/herdr-source.json",
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
@@ -65,6 +67,7 @@
     "docs/demos/render.py",
     "docs/demos/requirements-audit.txt",
     "docs/herdr.md",
+    "docs/interactive-build-contract.md",
     "docs/media/PROVENANCE.json",
     "docs/media/capture-runtime.json",
     "docs/media/commands.json",
@@ -98,6 +101,7 @@
     "docs/source-manifest.json",
     "examples/skills/terminal-evidence/SKILL.md",
     "install.sh",
+    "lab",
     "package.json",
     "scripts/acquire-rg.ts",
     "scripts/benchmark-search.ts",
@@ -110,6 +114,8 @@
     "scripts/pi/smoke-header.ts",
     "scripts/publication-policy.ts",
     "scripts/refresh-publication.ts",
+    "scripts/runtime-bun.sh",
+    "scripts/start.ts",
     "src/admission.ts",
     "src/bound-worker.ts",
     "src/candidate.ts",
@@ -216,8 +222,16 @@
       "sha256": "8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71",
       "status": "added"
     },
+    "bootstrap.sh": {
+      "sha256": "e376bdf22a2a171270639b7e728bd3017fe8f8bf760fac604f4d7161cf774403",
+      "status": "added"
+    },
     "bun.lock": {
       "sha256": "9200d7ebbe1425a70e5583cd9fdc719d7ef96e84f05a66a42145d443aae7e588",
+      "status": "added"
+    },
+    "contracts/bun-runtime.txt": {
+      "sha256": "c77f9cb7bb7569e86f6a83d35f4231230cb9eaeb9fd2319731ba2cec8a8a2a15",
       "status": "added"
     },
     "contracts/herdr-source.json": {
@@ -275,6 +289,10 @@
     },
     "docs/herdr.md": {
       "sha256": "368b00305830b893bc83563ea4aedacf21490652083d9375cafe8dee860fc8ba",
+      "status": "added"
+    },
+    "docs/interactive-build-contract.md": {
+      "sha256": "ccaee9a5971552bded5583303f310b7b72dfbe39733e189d2918cb8beded3306",
       "status": "added"
     },
     "docs/media/PROVENANCE.json": {
@@ -402,15 +420,19 @@
       "status": "added"
     },
     "install.sh": {
-      "sha256": "58536e38ded5d1cfe4e351fc529001718e4a8bda698fc83d49a4a1ebab367207",
+      "sha256": "d8ec68876a64e44f90d8602e837547c0253936e4c91284975b45bfee7b60c005",
+      "status": "added"
+    },
+    "lab": {
+      "sha256": "a19a741a6ab61122227186b4654e1f51a837fdf6731c6dee9dd89364428bf9ee",
       "status": "added"
     },
     "package.json": {
-      "sha256": "a0b164f8fc30a9b56b0a86f4305ca56802f62a126d8745ce5560e6d28bb31181",
+      "sha256": "624b4d51df1b9b6b44a7ada0da5536027a942f329a895bb12c5e5744a1008662",
       "status": "added"
     },
     "scripts/acquire-rg.ts": {
-      "sha256": "fed71115e481b20d032a0350bfa95a5b0c7b4258e1ff00663e4377d63936b9fe",
+      "sha256": "930c101816e6b736bb9005ba97e6c707e96526988d7c327b682c33c565e31933",
       "status": "added"
     },
     "scripts/benchmark-search.ts": {
@@ -422,7 +444,7 @@
       "status": "added"
     },
     "scripts/herdr/acquire.ts": {
-      "sha256": "6b0df97b72fabe3963c5dc90c0fca02a044aa7cde2f37f7bcd7a40d302b279ab",
+      "sha256": "36ce4188b6e672a8e0287ac4f9297475da762d8d3d653ffd967f264f0b3c3abb",
       "status": "added"
     },
     "scripts/herdr/smoke.ts": {
@@ -451,6 +473,14 @@
     },
     "scripts/refresh-publication.ts": {
       "sha256": "f9bad851b8c85842caf3b699101f8ed2b519d408464d65e6468cf07ec2edce19",
+      "status": "added"
+    },
+    "scripts/runtime-bun.sh": {
+      "sha256": "625681754adf883b05a878b83f32ea6ae9877723ba532aeae712ef885f1c561c",
+      "status": "added"
+    },
+    "scripts/start.ts": {
+      "sha256": "5e10c2f7c78cd395033166c45e3c0f40539e418e45d10aa3f1b003ed63d06df4",
       "status": "added"
     },
     "src/admission.ts": {
@@ -526,7 +556,7 @@
       "originalSHA256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58"
     },
     "src/search/index.ts": {
-      "sha256": "6f39fa26f247f9135487f2d39c091c9e23fb1ae37c70d93d9594cbdcedb6173e",
+      "sha256": "73d6dc2ebc5a0dcecd617c32e91c607cd409644f3e29151614b6bd17fa2ec2af",
       "status": "added"
     },
     "src/skills/index.ts": {
@@ -593,7 +623,7 @@
       "status": "added"
     },
     "tests/install.test.ts": {
-      "sha256": "851148da09c75115d775877ada7ef47386b7ec95d2f7641740b93c09db5abc22",
+      "sha256": "62fd531e98db832fd764e569667ce12777734fe55de485bce2d52fa662aca785",
       "status": "added"
     },
     "tests/ledger.test.ts": {

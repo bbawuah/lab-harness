@@ -1,0 +1,16 @@
+#!/bin/sh
+# Project-local launcher. No shell profile or global Pi is required.
+set -eu
+umask 077
+project_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+lab_offline=0
+for lab_arg in "$@"; do
+  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; *) printf 'Usage: ./lab [--configure] [--offline] [--help]\n' >&2; exit 1;; esac
+done
+. "$project_root/scripts/runtime-bun.sh"
+cd -- "$project_root"
+export BUN_INSTALL_CACHE_DIR="$project_root/.tmp/bun-cache"
+export BUN_RUNTIME_TRANSPILER_CACHE_PATH="$project_root/.tmp/bun-transpiler-cache"
+export PATH="$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
+if [ "$lab_offline" = 1 ]; then export LAB_INSTALL_OFFLINE=1; fi
+exec "$lab_bun" --no-env-file --no-install "$project_root/scripts/start.ts" "$@"

@@ -14,10 +14,13 @@ function fixture() {
   mkdirSync(project); mkdirSync(bin);
   copyFileSync(join(source, "install.sh"), join(project, "install.sh"));
   copyFileSync(join(source, ".bun-version"), join(project, ".bun-version"));
+  mkdirSync(join(project, "scripts")); mkdirSync(join(project, "contracts"));
+  copyFileSync(join(source, "scripts/runtime-bun.sh"), join(project, "scripts/runtime-bun.sh"));
+  copyFileSync(join(source, "contracts/bun-runtime.txt"), join(project, "contracts/bun-runtime.txt"));
   const executable = (name: string, body: string) => {
     writeFileSync(join(bin, name), `#!/bin/sh\n${body}\n`); chmodSync(join(bin, name), 0o700);
   };
-  for (const utility of ["cat", "dirname"]) symlinkSync(Bun.which(utility)!, join(bin, utility));
+  for (const utility of ["cat", "dirname", "mkdir"]) symlinkSync(Bun.which(utility)!, join(bin, utility));
   executable("git", 'exit "${TEST_GIT_STATUS:-0}"');
   executable("uname", 'if [ "$1" = -s ]; then printf "%s\\n" "${TEST_OS:-Darwin}"; else printf "%s\\n" "${TEST_ARCH:-arm64}"; fi');
   executable("tar", "exit 0");
@@ -51,7 +54,7 @@ test("installer resolves spaces/wrong cwd, installs frozen without scripts, scop
     const calls = f.calls();
     expect(calls.map(call => call.args.at(-1))).toEqual([
       'import { assertPublishCapability } from "./vendor/relay/src/storage/publish.ts"; assertPublishCapability();',
-      join(f.project, ".tmp/bun-cache"), "setup:herdr", "setup:rg", "check", "smoke:herdr",
+      join(f.project, ".tmp/bun-cache"), "setup:herdr", "setup:rg", "setup:pi", "check", "smoke:herdr",
     ]);
     for (const call of calls) {
       expect(call.cwd).toBe(f.project);
@@ -61,18 +64,16 @@ test("installer resolves spaces/wrong cwd, installs frozen without scripts, scop
     }
     expect(calls[1]!.args).toEqual(["--no-env-file", "install", "--frozen-lockfile", "--ignore-scripts", "--prefer-offline", "--cache-dir", join(f.project, ".tmp/bun-cache")]);
     expect(calls[1]!.nodeEnv).toBe("development");
-    expect(calls[4]!.path).toBe(`${f.project}/.tmp/rg:${f.bin}`);
-    expect(result.stdout.toString()).toContain("bun --no-env-file run demo:terminal");
-    expect(result.stdout.toString()).toContain("bun --no-env-file run check:actual");
-    expect(result.stdout.toString()).toContain("Native Pi activation remains blocked");
+    expect(calls[4]!.path).toBe(`${f.project}/.tmp/rg:${f.bin}:${f.bin}`);
+    expect(result.stdout.toString()).toContain(`${f.project}/lab`);
+    expect(result.stdout.toString()).toContain("interactive LAB workspace");
+    expect(result.stdout.toString()).toContain("Controlled LAB task execution remains unavailable");
   } finally { f.clean(); }
 });
 
 for (const [name, env, missing, message] of [
-  ["missing Git", {}, "git", "Git is required"],
-  ["broken Git", { TEST_GIT_STATUS: "1" }, "", "Git is not working"],
-  ["missing Bun", {}, "bun", "Bun 1.4.2 is required"],
-  ["wrong Bun", { TEST_BUN_VERSION: "1.4.1" }, "", "found 1.4.1"],
+  ["missing Bun", {}, "bun", "curl is required to bootstrap Bun"],
+  ["wrong Bun", { TEST_BUN_VERSION: "1.4.1" }, "", "curl is required to bootstrap Bun"],
   ["unsupported OS", { TEST_OS: "FreeBSD" }, "", "Unsupported platform FreeBSD/arm64"],
   ["unavailable pinned rg", { TEST_OS: "Linux", TEST_ARCH: "aarch64" }, "", "Unsupported platform Linux/aarch64"],
   ["missing tar", {}, "tar", "tar is required"],
@@ -89,7 +90,7 @@ for (const [name, env, missing, message] of [
   });
 }
 
-for (const stage of ["capability", "install", "setup:herdr", "setup:rg", "check", "smoke:herdr"]) {
+for (const stage of ["capability", "install", "setup:herdr", "setup:rg", "setup:pi", "check", "smoke:herdr"]) {
   test(`installer propagates ${stage} failure and never reports success`, () => {
     const f = fixture();
     try {
@@ -118,7 +119,19 @@ test("installer preserves loader variables and real Relay refusal before depende
 test("installer rejects unknown arguments before invoking tools", () => {
   const f = fixture();
   try {
-    expect(f.run({}, ["--offline"]).stderr.toString()).toContain("Usage: ./install.sh");
+    expect(f.run({}, ["--unknown"]).stderr.toString()).toContain("Usage: ./install.sh");
     expect(f.calls()).toEqual([]);
+  } finally { f.clean(); }
+});
+
+
+test("installer supports explicit offline frozen dependency setup and does not need Git", () => {
+  const f = fixture();
+  try {
+    rmSync(join(f.bin, "git"));
+    const result = f.run({}, ["--offline"]);
+    expect(result.exitCode).toBe(0);
+    expect(f.calls()[1]!.args).toContain("--offline");
+    expect(f.calls()[1]!.args).not.toContain("--prefer-offline");
   } finally { f.clean(); }
 });
