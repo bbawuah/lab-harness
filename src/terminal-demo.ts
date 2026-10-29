@@ -9,6 +9,7 @@ import { callback, CONCEPT_ROOT, Ledger } from "./ledger.ts";
 import type { Result, TaskContract, WorkerPayload } from "./protocol.ts";
 import { RelayBus } from "./relay.ts";
 import { SearchService } from "./search/index.ts";
+import { discoverSkills, loadSkill, selectSkill, verifySkill } from "./skills/index.ts";
 import { canonical, requireThat, textHash } from "./util.ts";
 
 /** Real process evidence in an explicitly fixture-mode task envelope. Never calls acceptance. */
@@ -20,11 +21,16 @@ export async function terminalDemo(): Promise<Record<string, unknown>> {
   const source = new SearchService(workspace).text("owned terminal").hits;
   requireThat(source.length === 1, "DEMO_SOURCE_MISSING");
   const candidate = captureCandidate();
+  const origins = [{ id: "bundled-example", root: join(CONCEPT_ROOT, "examples/skills") }];
+  const inventory = discoverSkills(origins), skill = inventory.skills.find(s => s.name === "terminal-evidence");
+  requireThat(skill, "DEMO_SKILL_MISSING");
+  const loadedSkill = loadSkill(selectSkill(skill), origins, inventory);
+  const verifySelectedSkill = (selection: Parameters<typeof verifySkill>[0]) => verifySkill(selection, origins, inventory);
   const requirements = [
     { id: "R1", text: "Observe an executed owned Herdr worker marker and verified normal cleanup." },
     { id: "R2", text: "Retain source provenance and leave the result awaiting explicit operator acceptance." },
   ];
-  const selected = buildContext(workspace, { ...candidate, requirements, corrections: ["Terminal state never decides acceptance. This is not a Pi/model qualification."], sources: source });
+  const selected = buildContext(workspace, { ...candidate, requirements, corrections: ["Terminal state never decides acceptance. This is not a Pi/model qualification."], sources: source, skills: [loadedSkill.selection] }, verifySelectedSkill);
   const ledger = new Ledger(join(state, "lab")), bus = new RelayBus(join(state, "relay"));
   const taskId = `terminal-${randomUUID()}`;
   const contract: TaskContract = {
@@ -33,7 +39,7 @@ export async function terminalDemo(): Promise<Record<string, unknown>> {
   };
   let granted = false;
   try {
-    verifyContext(workspace, selected.pack); ledger.context(selected.pack); ledger.create(contract);
+    verifyContext(workspace, selected.pack, verifySelectedSkill); ledger.context(selected.pack); ledger.create(contract);
     const binding = ledger.grant(taskId, `fixture-terminal-binding-${randomUUID()}`, "fixture-no-pi-transcript"); granted = true;
     const namespace = "owned-terminal-demo", sender = bus.register(namespace, "terminal-adapter"), recipient = bus.register(namespace, "operator");
     const mailbox = bus.mailbox(namespace, recipient);
@@ -46,7 +52,7 @@ export async function terminalDemo(): Promise<Record<string, unknown>> {
     };
     send({ kind: "started" });
     const terminal = await runHerdrSmoke({ stateRoot: tmp });
-    verifyContext(workspace, selected.pack);
+    verifyContext(workspace, selected.pack, verifySelectedSkill);
     requireThat(canonical(captureCandidate()) === canonical(candidate), "STALE_CANDIDATE");
     requireThat(terminal.stopped && /^LAB_HERDR_OK_[0-9a-f]{16}\r?\n/.test(terminal.observedOutput), "DEMO_TERMINAL_EVIDENCE_FAILED");
     const evidence = { label: terminal.label, sourcePin: terminal.sourcePin, runtime: terminal.runtime, outputHash: textHash(terminal.observedOutput), stopped: terminal.stopped, cleanup: terminal.cleanup, taskAcceptance: terminal.taskAcceptance };
@@ -61,7 +67,8 @@ export async function terminalDemo(): Promise<Record<string, unknown>> {
     const reviewPath = join(state, "review.json");
     writeFileSync(reviewPath, JSON.stringify({ ...candidate, taskId, resultId: result.resultId, reason: "Operator inspected the terminal evidence and explicitly accepts this bounded example." }, null, 2) + "\n", { mode: 0o600 });
     writeFileSync(join(state, "context.json"), JSON.stringify(selected, null, 2) + "\n", { mode: 0o600 });
-    return { label: "REAL HERDR/SQLITE/RELAY; FIXTURE TASK ENVELOPE; NO PI OR MODEL", candidate, stateDirectory: state, taskId, state: final.state, outcome: final.outcome, acceptance: final.acceptance, contextHash: selected.contextHash, sourceReferences: selected.pack.sourceProvenance, evidence, operatorReview: { file: reviewPath, next: `--state ${join(state, "lab")} show ${taskId}`, acceptAfterInspection: `--state ${join(state, "lab")} accept ${reviewPath}` }, nativeIntegration: admission(), actualModelCalls: 0 };
+    const originPath = join(state, "skill-origins.json"); writeFileSync(originPath, JSON.stringify({ origins }, null, 2) + "\n", { mode: 0o600 });
+    return { label: "REAL HERDR/SQLITE/RELAY; FIXTURE TASK ENVELOPE; NO PI OR MODEL", candidate, stateDirectory: state, taskId, state: final.state, outcome: final.outcome, acceptance: final.acceptance, contextHash: selected.contextHash, sourceReferences: selected.pack.sourceProvenance, selectedSkill: { ...loadedSkill.selection, instructionBytes: Buffer.byteLength(loadedSkill.text), executed: false }, evidence, operatorReview: { file: reviewPath, next: `--state ${join(state, "lab")} show ${taskId}`, acceptAfterInspection: `--skill-sources ${originPath} --state ${join(state, "lab")} accept ${reviewPath}` }, nativeIntegration: admission(), actualModelCalls: 0 };
   } catch (error) {
     // Do not leave a valid claim available for delayed success after uncertain execution.
     if (granted) ledger.cancel(taskId);

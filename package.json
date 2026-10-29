@@ -21,7 +21,10 @@
     "benchmark:search": "bun --no-env-file --no-install scripts/benchmark-search.ts",
     "inventory:skills": "bun --no-env-file --no-install scripts/inventory-skills.ts",
     "refresh:publication": "bun --no-env-file --no-install scripts/refresh-publication.ts --reviewed-files",
-    "check:actual": "LAB_HERDR_ACTUAL=1 bun --no-env-file run check"
+    "check:actual": "LAB_HERDR_ACTUAL=1 bun --no-env-file run check",
+    "header": "bun --no-env-file --no-install src/cli.ts header",
+    "smoke:pi-ui": "bun --no-env-file --no-install src/cli.ts pi-ui-smoke",
+    "check:brand": "bun --no-env-file --no-install scripts/pi/derive-terminal-mark.ts --check"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",

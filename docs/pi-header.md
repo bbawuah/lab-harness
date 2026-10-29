@@ -155,4 +155,7 @@ exit, Pi process exit and socket removal were all verified without errors.
 The startup check proves branding on this installed runtime only. It does not
 exercise inference, request admission, native LAB activation, provider retry,
 compaction, model switch, resume, Linux or WSL, and is not a network-egress
-audit. CLI/package/CI/publication/README integration belongs to the coordinator.
+audit. The operator CLI exposes `header` for local rendering and `pi-ui-smoke
+PI_PATH NODE_PATH` for this bounded owned startup. Default checks and CI exercise
+the deterministic mesh and header fixtures without requiring Pi. Actual startup
+remains an explicit local opt-in, with its runtime identity recorded above.

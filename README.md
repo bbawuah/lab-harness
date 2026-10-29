@@ -58,11 +58,16 @@ adapter, not an OS sandbox or same-user authentication boundary.
 ```text
 terminal-demo                   # real Herdr/SQLite/Relay, no model, acceptance pending
 herdr-smoke                     # process evidence only; no task authority
+header [COLUMNS] [light|dark] [--no-color]
+pi-ui-smoke PI_PATH NODE_PATH    # owned no-model Pi startup through Herdr, then stop
 search ROOT QUERY [LIMIT] [auto|fallback|rg]
 files ROOT NAME [LIMIT]          # literal basename substring
 context ROOT INPUT.json         # candidate, requirements, sources, optional selected skills
 verify-context ROOT CONTEXT.json
 skill ROOT RELATIVE/SKILL.md     # original progressive metadata helper
+skills ORIGINS.json             # sanitized inventory; roots are explicit local inputs
+skill-select ORIGINS.json NAME  # sealed identity; ambiguous names are refused
+skill-load ORIGINS.json REF.json # explicitly returns verified instruction text
 --state PATH create INPUT.json  # {contract, context, workspaceRoot?}
 --state PATH show TASK
 --state PATH claim TASK SESSION
@@ -96,6 +101,13 @@ bodies, home paths and proprietary bundles are not published. Source roots are
 operator-supplied local manifests; connected services remain connected-service
 dependencies. Skill text is not a security boundary.
 
+Prefix context or state commands with `--skill-sources ORIGINS.json` when their
+context contains selected skills. Creation, claim, event and acceptance recheck
+both source bytes and every selected skill bundle. Missing manifests and changed
+scripts/resources refuse the operation. Cancellation and inspection stay usable
+for recovery. The terminal demo writes its own local example manifest and prints
+the complete operator command; no user skill executes automatically.
+
 The opt-in Pi advisory bridge maps native TUI prompts to Herdr's blocked events
 and retains aborted/model-selection observations. It grants no acceptance or
 request-admission authority. The [Pi seam report](docs/pi-seam.md) identifies
@@ -108,6 +120,17 @@ monochrome. [Light](assets/branding/terminal-b-light.svg) and
 [dark](assets/branding/terminal-b-dark.svg) SVGs have no private runtime dependency.
 [Brand preview](docs/branding-preview.html) and
 [provenance](assets/branding/PROVENANCE.json) retain the source identity.
+
+The [supported Pi header extension](src/pi/header.ts) replaces Pi's built-in
+startup logo and hints through `ctx.ui.setHeader`, while retaining **Powered by
+Pi** and the blocked native-LAB status. Its terminal mesh derives from those
+exact SVGs; narrow/no-color terminals get an identified `[B]` text fallback.
+`pi-ui-smoke` launches the explicitly supplied installed Pi 1.4.0 with offline,
+no-tool/no-MCP/no-discovery flags in an owned Herdr pane, checks the visible
+header and stops it. It submits no prompt and never activates LAB. This worked
+on macOS with the actual installed Pi; [runtime identity and evidence limits](docs/pi-header.md)
+remain separate from fixture palette checks. No Pi installation is required by
+the default checks or CI, and nothing is installed globally.
 
 ## Validation and limits
 
