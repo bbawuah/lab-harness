@@ -46,7 +46,7 @@ export function readPrivate(path: string): string {
   const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
   try {
     const stat = fstatSync(fd);
-    if (!stat.isFile() || stat.nlink !== 1 || stat.size > 65536 || (stat.mode & 0o077) !== 0) throw new Error("Workspace state must be a private regular file (mode 0600)");
+    if (!stat.isFile() || stat.uid !== process.getuid?.() || stat.nlink !== 1 || stat.size > 65536 || (stat.mode & 0o077) !== 0) throw new Error("Workspace state must be a private regular file (mode 0600)");
     return readFileSync(fd, "utf8");
   } finally { closeSync(fd); }
 }

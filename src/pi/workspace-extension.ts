@@ -7,7 +7,7 @@ import { renderHeader, terminalHasColor, type HeaderFactory } from "./header.ts"
 
 type Request = { action: "search" | "files" | "skills" | "load"; query?: string };
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
-type Context = { mode?: string; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
+type Context = { mode?: string; shutdown(): void; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start", handler: (event: unknown, ctx: Context) => void): unknown;
   registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: { query: string }, signal?: AbortSignal): Promise<ToolResult> }): void;
@@ -37,6 +37,7 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
   });
 }
 export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
+  pi.registerCommand("exit", { description: "Exit this native Pi workspace (alias for /quit)", async handler(_args, ctx) { ctx.shutdown(); } });
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
     ctx.ui.setHeader((_tui, theme) => ({ render: columns => renderHeader({ columns, appearance: theme.appearance, color: terminalHasColor(process.env), workspace: true }), invalidate() {} }));
@@ -69,7 +70,7 @@ export async function executeWorkspaceRequest(request: Request): Promise<unknown
   if (!["skills", "load"].includes(request.action)) throw new Error("UNKNOWN_WORKSPACE_OPERATION");
   const { discoverSkills, loadSkill, selectSkill } = await import("../skills/index.ts");
   const userHome = process.env.LAB_WORKSPACE_USER_HOME ?? homedir();
-  const sources = [ { id: "repository", root, kind: "repository" as const }, { id: "codex", root: join(userHome, ".codex/skills"), kind: "skills" as const }, { id: "claude", root: join(userHome, ".claude/skills"), kind: "skills" as const } ];
+  const sources = [ { id: "repository", root, kind: "repository" as const }, { id: "examples", root: join(root, "examples/skills"), kind: "skills" as const }, { id: "codex", root: join(userHome, ".codex/skills"), kind: "skills" as const }, { id: "claude", root: join(userHome, ".claude/skills"), kind: "skills" as const } ];
   const inventory = discoverSkills(sources);
   if (request.action === "skills") return { complete: inventory.coverageComplete, skills: inventory.skills.map(skill => ({ id: skill.id, name: skill.name, compatibility: skill.compatibility, loadable: skill.loadable, contentHash: skill.contentHash, bundleHash: skill.bundleHash, origins: skill.origins.map(origin => ({ originId: origin.originId, path: origin.path })) })) };
   const [id, originId, ...pathParts] = (request.query ?? "").split(" ");

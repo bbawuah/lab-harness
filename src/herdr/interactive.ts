@@ -30,7 +30,7 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
   const socket = env.HERDR_SOCKET_PATH!;
   for (const name of ["home", "tmp", "cfg", "state", "cache", "data"]) privateDirectory(join(options.stateRoot, name));
   writeFileSync(env.HERDR_CONFIG_PATH!, 'onboarding = false\n[update]\nversion_check = false\nmanifest_check = false\n[terminal]\ndefault_shell = "/bin/sh"\nshell_mode = "non_login"\n[session]\nresume_agents_on_restore = false\n[experimental]\npane_history = false\n', { mode: 0o600 });
-  let server: ChildProcess | undefined, client: ChildProcess | undefined, pane: string | undefined;
+  let server: ChildProcess | undefined, client: ChildProcess | undefined, pane: string | undefined, shellPid: number | undefined;
   let serverError: Error | undefined, clientError: Error | undefined, interrupted = false, rawBefore = process.stdin.isRaw;
   const terminate = () => { interrupted = true; if (client && !ended(client)) client.kill("SIGTERM"); };
   process.on("SIGTERM", terminate); process.on("SIGHUP", terminate);
@@ -53,6 +53,8 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
     const launch = await request(socket, "layout.apply", { workspace_id: workspace.workspace.workspace_id, tab_label: "LAB workspace", focus: true, root: { type: "pane", label: "Pi interactive", cwd: options.cwd, command: options.command } });
     pane = launch.layout?.focused_pane_id;
     if (typeof pane !== "string") throw new Error("Herdr launch returned no pane ID; outcome unknown");
+    const info = await request(socket, "pane.process_info", { pane_id: pane });
+    if (Number.isSafeInteger(info.process_info?.shell_pid) && info.process_info.shell_pid > 1) shellPid = info.process_info.shell_pid;
     client = spawn(options.executable, ["client"], { cwd: options.cwd, env, stdio: "inherit" });
     client.on("error", error => { clientError = error; });
     let piExit: number | undefined;
@@ -76,7 +78,25 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
     if (server && !ended(server)) await request(socket, "server.stop").catch(() => {});
     if (server && !await waitExit(server, 2000)) { server.kill("SIGTERM"); if (!await waitExit(server, 1000)) { server.kill("SIGKILL"); await waitExit(server, 1000); } }
     if (server && !ended(server) || client && !ended(client)) failure ??= new Error("Owned Herdr processes did not exit during cleanup");
-    rmSync(sockets, { recursive: true, force: true });
+    let workerStopped = shellPid === undefined ? "unknown" : false;
+    if (shellPid !== undefined) {
+      const deadline = Date.now() + 1500;
+      do {
+        try { process.kill(shellPid, 0); }
+        catch (error: any) { if (error.code === "ESRCH") { workerStopped = true; break; } }
+        await delay(25);
+      } while (Date.now() < deadline);
+      if (workerStopped !== true) failure ??= new Error("Owned Herdr worker exit could not be verified");
+    }
+    const socketsRemoved = !lstatSync(socket, { throwIfNoEntry: false }) && !lstatSync(socket.replace(/\.sock$/, "-client.sock"), { throwIfNoEntry: false });
+    if (!socketsRemoved) failure ??= new Error("Owned Herdr sockets remained after server exit");
+    writeFileSync(join(options.stateRoot, "attachment.json"), JSON.stringify({
+      label: "actual-herdr-native-client", runtimeVersion: provenance.runtime.version,
+      paneId: pane, serverPid: server?.pid, clientPid: client?.pid, shellPid,
+      exitCode: result, failed: failure !== undefined,
+      cleanup: { serverExited: !server || ended(server), clientExited: !client || ended(client), workerStopped, socketsRemoved },
+    }, null, 2) + "\n", { mode: 0o600 });
+    if ((!server || ended(server)) && (!client || ended(client))) rmSync(sockets, { recursive: true, force: true });
   }
   if (failure) throw failure;
   return result;
