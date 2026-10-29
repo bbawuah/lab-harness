@@ -68,8 +68,12 @@
     "docs/demos/capture.py",
     "docs/demos/render.py",
     "docs/demos/requirements-audit.txt",
+    "docs/evidence/interactive-terminal.ansi",
+    "docs/evidence/local-runtime.json",
+    "docs/evidence/pi-local-tool-events.jsonl",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
+    "docs/interactive-validation.md",
     "docs/media/PROVENANCE.json",
     "docs/media/capture-runtime.json",
     "docs/media/commands.json",
@@ -240,7 +244,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "33cacf2ae3ba0e1bf751dd0b75cb3d67c335cde9764d9c216fb5dfc57c554102",
+      "sha256": "b4ef823f54e277287716f2e431583420d94655627ee9e3d03e6bff3796556e24",
       "status": "added"
     },
     "bun.lock": {
@@ -312,12 +316,28 @@
       "sha256": "63625b0b44d03d8ad195157c26e3b5e3bb8bf1d24b983b9dc96bf6e8293c5b5b",
       "status": "added"
     },
+    "docs/evidence/interactive-terminal.ansi": {
+      "sha256": "23536b34f802979184a489b30d0bea96652516ee1e8d146f68fda1510d479b20",
+      "status": "added"
+    },
+    "docs/evidence/local-runtime.json": {
+      "sha256": "ac6c48747674f814beaedb58257aca1045844b27ca013e3b25715e6aa5aebdbf",
+      "status": "added"
+    },
+    "docs/evidence/pi-local-tool-events.jsonl": {
+      "sha256": "c1923747ef6344e53e6106d754ca6a0b90ff96bc8d9094618123618920569aac",
+      "status": "added"
+    },
     "docs/herdr.md": {
       "sha256": "368b00305830b893bc83563ea4aedacf21490652083d9375cafe8dee860fc8ba",
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
       "sha256": "0da616bdbd3af0b6244ea83ce056fc00d0970a1cce691ebfc65575355f882a00",
+      "status": "added"
+    },
+    "docs/interactive-validation.md": {
+      "sha256": "6429a785524ee17fcba1b3c079d713dec11ee478f2e6ab46b65e330bea510090",
       "status": "added"
     },
     "docs/media/PROVENANCE.json": {
@@ -517,7 +537,7 @@
       "status": "added"
     },
     "scripts/runtime-bun.sh": {
-      "sha256": "6e05445f36fa00c33bdd334241bdaa2589b5dac201b2b0c901a0949a2bdeb499",
+      "sha256": "ffdab3a866055cdabb049abec5010cf4215ffb63a93652c51484c59708e3f562",
       "status": "added"
     },
     "scripts/start.ts": {

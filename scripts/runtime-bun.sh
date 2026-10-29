@@ -35,7 +35,7 @@ lab_directory "$project_root/.tmp/bun/$lab_required_bun"
 
 if [ -e "$lab_local_bun" ] || [ -L "$lab_local_bun" ]; then
   [ -f "$lab_local_bun" ] && [ ! -L "$lab_local_bun" ] && lab_single_link "$lab_local_bun" || lab_fail 'Unsafe local Bun entry.'
-  if [ "$(lab_digest "$lab_local_bun")" = "$lab_binary_hash" ]; then chmod 700 "$lab_local_bun"; lab_bun=$lab_local_bun;
+  if [ "$(lab_digest "$lab_local_bun")" = "$lab_binary_hash" ]; then [ -x "$lab_local_bun" ] || chmod 700 "$lab_local_bun"; lab_bun=$lab_local_bun;
   elif [ "$lab_offline" = 1 ]; then lab_fail 'Local Bun checksum mismatch; rerun online to repair.'; fi
 elif command -v bun >/dev/null 2>&1; then
   # An existing exact runtime is optional; a different version is left untouched.
