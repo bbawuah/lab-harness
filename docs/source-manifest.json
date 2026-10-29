@@ -818,7 +818,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "07b3b5f90f2b98b060115ae67309d80bb0b3658a4a1460d896d31b0313ba9e62",
+      "sha256": "a7c258d6a36524532c29a3202a56b350a1189eff9d19c78d9e14a4b08ebdd5fb",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -996,11 +996,11 @@
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
-      "sha256": "94821d0c33e8872a7d654fb667d96975e97c12dd8d38b64fc86bb8629969abd9",
+      "sha256": "dad2ae881dcce591de315f120c774ebf8c44d6fabd0d7e4f7f56dc459fb1486d",
       "status": "added"
     },
     "src/pi/workspace-appearance.ts": {
-      "sha256": "8a86ce81f0d0a87f61009113a4a20e24b9aca6ff8e50ff581f478d6f27e39576",
+      "sha256": "d68866478c714e65ba5fe0f1eb6355606743d0da8caaa2b4d7c29f3feebecc69",
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
@@ -1166,7 +1166,7 @@
       "status": "added"
     },
     "tests/pi-workspace-appearance.test.ts": {
-      "sha256": "f9fe7b99f7388c130523e50119ed59d40964237e7cbc90ca2a33fd9ea3e60e9d",
+      "sha256": "6d693cc4347750917266726c652a4c800d0ead9fa2fa54e4115b5fae7864d218",
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {

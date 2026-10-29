@@ -55,7 +55,7 @@ export function prepareWorkspaceAppearance(options: { stateRoot: string; agentRo
   verifyProjectBinding(options.project);
   return { ...result, themes: appearanceThemeNames.map(name => join(options.agentRoot, "themes", name + ".json")) };
 }
-export function saveWorkspaceAppearance(options: { stateRoot: string; agentRoot: string; installRoot: string; project: ProjectBinding; capability: Capability; draft: Draft }): Snapshot {
+export function saveWorkspaceAppearance(options: { stateRoot: string; agentRoot: string; installRoot: string; project: ProjectBinding; capability: Capability; draft: Draft }): { snapshot: Snapshot; warning?: string } {
   verifyProjectBinding(options.project);
   const scope = options.draft?.base?.scope;
   if (!scope || (scope.kind !== "user" && (scope.kind !== "project" || JSON.stringify(scope.binding) !== JSON.stringify(options.project)))) throw new Error("LAB_APPEARANCE_PROJECT_CHANGED");
@@ -63,11 +63,11 @@ export function saveWorkspaceAppearance(options: { stateRoot: string; agentRoot:
   // Reject bad staged variants before CAS; Reset must remain possible.
   if (options.draft.value !== null) compile(options.draft, options.capability);
   const saved = applyAppearance({ stateRoot: options.stateRoot, installRoot: options.installRoot, draft: options.draft });
-  const { settings } = prepareWorkspaceAppearance(options);
+  const { settings, warning } = prepareWorkspaceAppearance(options);
   const path = join(options.agentRoot, "settings.json");
   const current = lstatSync(path, { throwIfNoEntry: false }) ? JSON.parse(readPrivate(path)) : {};
   if (!current || typeof current !== "object" || Array.isArray(current)) throw new Error("LAB_APPEARANCE_INVALID_STORE");
   writePrivate(path, JSON.stringify({ ...current, ...settings }) + "\n");
   verifyProjectBinding(options.project);
-  return saved;
+  return { snapshot: saved, ...(warning ? { warning } : {}) };
 }

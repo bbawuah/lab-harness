@@ -6,14 +6,14 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 const initial: Snapshot = { revision: "absent", user: null, project: null, scope: { kind: "user" } };
 function fixture(keys: string[], selections: string[] = [], inputs: (string | undefined)[] = [], size = { rows: 32, width: 80 }) {
-  const rendered: string[][] = [], notices: string[] = [], calls: AppearanceRequest[] = [];
+  const rendered: string[][] = [], notices: string[] = [], titles: string[] = [], calls: AppearanceRequest[] = [];
   let reloads = 0;
   const ui: AppearanceUI = {
-    async select(_title, choices) { const selected = selections.shift(); if (selected !== undefined) expect(choices).toContain(selected); return selected; },
+    async select(_title, choices) { titles.push(_title); const selected = selections.shift(); if (selected !== undefined) expect(choices).toContain(selected); return selected; },
     async input() { return inputs.shift(); }, notify(text) { notices.push(text); },
     async custom<T>(factory: Parameters<AppearanceUI["custom"]>[0]) { let value: T | undefined; const component = factory({ terminal: { rows: size.rows }, requestRender() {} }, {}, {}, v => { value = v as T; }); rendered.push(component.render(size.width)); component.handleInput(keys.shift() ?? "\x1b"); component.invalidate(); expect(value).toBeDefined(); return value!; },
   };
-  return { ui, rendered, notices, calls, reloads: () => reloads, async reload() { reloads++; }, async bridge(request: AppearanceRequest) { calls.push(structuredClone(request)); return request.action === "appearance-load" ? { ...initial, scope: request.scope === "user" ? initial.scope : { kind: "project", binding: { root: "/synthetic/project", device: 1, inode: 2 } } } : initial; } };
+  return { ui, rendered, notices, titles, calls, reloads: () => reloads, async reload() { reloads++; }, async bridge(request: AppearanceRequest) { calls.push(structuredClone(request)); return request.action === "appearance-load" ? { ...initial, scope: request.scope === "user" ? initial.scope : { kind: "project", binding: { root: "/synthetic/project", device: 1, inode: 2 } } } : initial; } };
 }
 test("appearance mode preview and Cancel never save or reload", async () => {
   const f = fixture(["2", "8"], ["light"]);
@@ -47,6 +47,14 @@ test("appearance bridge failures expose only a canonical recovery code", async (
   const f = fixture([]);
   await configureAppearance(f.ui, async () => { throw new Error("vendor private path or sentinel"); }, appearanceCapability({}), () => true, f.reload);
   expect(f.notices[0]).toContain("LAB_APPEARANCE_REFUSED"); expect(f.notices[0]).not.toContain("sentinel");
+});
+test("Apply surfaces a concurrently changed project palette before reload", async () => {
+  for (const choice of ["Reload with temporary Standard", "Keep current view"]) {
+    const f = fixture(["7"], [choice]);
+    const bridge = async (request: AppearanceRequest) => request.action === "appearance-load" ? initial : {snapshot:initial,warning:"Project colors need temporary Standard in 256 colors; saved palette unchanged."};
+    await configureAppearance(f.ui, bridge, {color:"256",terminalAppearance:"unknown"}, () => true, f.reload);
+    expect(f.titles.join("\n")).toContain("saved palette unchanged");expect(f.reloads()).toBe(choice === "Reload with temporary Standard" ? 1 : 0);
+  }
 });
 test("indexed palette recovery keeps the dialog open for Reset without saving rejected colors", async () => {
   const palette = { kind: "custom" as const, light: resolveAppearance(stageAppearance(beginAppearance(initial), { mode: "light", palette: {kind:"preset",name:"standard"}, editorPaddingX:1, outputPad:1 }), {color:"truecolor",terminalAppearance:"unknown"}).palette, dark: resolveAppearance(beginAppearance(initial), {color:"truecolor",terminalAppearance:"unknown"}).palette };
@@ -97,6 +105,15 @@ const downgraded=prepareWorkspaceAppearance({...a,agentRoot:join(stateRoot,'runs
 if(!downgraded.warning || readFileSync(join(stateRoot,'appearance/preferences.json'),'utf8')!==customSaved)throw Error('fallback must preserve saved palette');
 const reset=beginAppearance(loadAppearance({stateRoot,installRoot,scope:{kind:'user'}}));reset.value=null;saveWorkspaceAppearance({...a,capability:{color:'256',terminalAppearance:'unknown'},draft:reset});
 if(loadAppearance({stateRoot,installRoot,scope:{kind:'user'}}).user!==null)throw Error('repair reset failed');
+// A different truecolor runner changes this project's override after the
+// indexed runner started. A valid user draft must still surface that fallback.
+const projectView=loadAppearance({stateRoot,installRoot,scope:{kind:'project',binding:project}});
+saveWorkspaceAppearance({...a,draft:stageAppearance(beginAppearance(projectView),bad.value)});
+const userView=loadAppearance({stateRoot,installRoot,scope:{kind:'user'}});
+const validUser=stageAppearance(beginAppearance(userView),{mode:'light',palette:{kind:'preset',name:'standard'},editorPaddingX:1,outputPad:1});
+const applied=saveWorkspaceAppearance({...a,capability:{color:'256',terminalAppearance:'unknown'},draft:validUser});
+if(!applied.warning || applied.snapshot.user.mode!=='light')throw Error('cross-scope warning was lost');
+if(loadAppearance({stateRoot,installRoot,scope:{kind:'project',binding:project}}).project.palette.kind!=='custom')throw Error('project override overwritten');
 console.log('SCOPED_STORE_OK');`;
     const result = Bun.spawnSync([process.execPath, "--no-env-file", "--no-install", "--eval", script], { env: { HOME: home, PATH: "/usr/bin:/bin" }, timeout: 10000 });
     expect(result.stderr.toString()).toBe(""); expect(result.stdout.toString()).toContain("SCOPED_STORE_OK"); expect(result.exitCode).toBe(0);

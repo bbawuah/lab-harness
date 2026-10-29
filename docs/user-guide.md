@@ -87,7 +87,9 @@ light, dark and terminal; terminal follows Pi's reported terminal appearance,
 with dark fallback when it cannot be determined. This does not detect OS mode.
 If a saved custom palette loses contrast on a 256-color terminal, LAB opens
 with a visible temporary Standard palette and preserves the saved values. Use
-/lab-appearance to choose Standard or Reset; Apply checks both modes before saving.
+/lab-appearance to choose Standard or Reset; Apply checks both modes before saving. If a changed project override needs
+fallback during a user-scope Apply, LAB shows the saved/fallback summary and lets
+you reload with temporary Standard or keep the current view.
 The compact view keeps the focused choice and sample visible in small panes.
 The Standard palette has readable light/dark colors; Custom edits semantic
 #RRGGBB colors and refuses poor contrast against the chosen background.

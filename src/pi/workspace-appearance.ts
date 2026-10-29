@@ -102,7 +102,12 @@ export async function configureAppearance(ui: AppearanceUI, bridge: (request: Ap
         if (!idle()) { ui.notify("The workspace became busy. Finish or cancel the active turn; the draft is still open.", "info"); continue; }
         // Bridge saves via CAS and materializes native themes/settings. No use of
         // this command context is allowed after supported runtime replacement.
-        await bridge({ action: "appearance-apply", draft });
+        const saved = await bridge({ action: "appearance-apply", draft });
+        const warning = saved && typeof saved === "object" && "warning" in saved && typeof saved.warning === "string" ? saved.warning : undefined;
+        if (warning) {
+          const choice = await ui.select("Appearance saved. " + warning, ["Reload with temporary Standard", "Keep current view"]);
+          if (choice !== "Reload with temporary Standard") { ui.notify("Saved preferences; current view retained. The fallback warning will be shown again on the next launch.", "info"); return; }
+        }
         ui.notify("Appearance saved. Reloading native Pi resources; the right shell keeps its own styling.", "info");
         await reload(); return;
       }
