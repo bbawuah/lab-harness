@@ -1,0 +1,45 @@
+{
+  "label": "actual-native-pi-external-project",
+  "sourceCommit": "5ed473cca54de6275acc51aac1a53308358697ec",
+  "project": "project B with spaces",
+  "installation": "separate source checkout A",
+  "state": "private HOME app directory outside A and B",
+  "nativeTrust": "fixture operator selected Trust for its own disposable B; native prompt preserved",
+  "model": "same pinned local Qwen3-0.6B alias lab-qwen3-0.6b",
+  "exitCode": 0,
+  "cleanup": {
+    "serverExited": true,
+    "clientExited": true,
+    "workerStopped": true,
+    "socketsRemoved": true
+  },
+  "events": [
+    {
+      "type": "native-session-cwd",
+      "cwd": "project B with spaces",
+      "matchedActualBinding": true
+    },
+    {
+      "type": "assistant-message",
+      "content": [
+        {
+          "type": "text",
+          "text": "READY"
+        }
+      ]
+    },
+    {
+      "type": "lab-search",
+      "content": "{\n  \"hits\": [\n    {\n      \"path\": \"B-only.md\",\n      \"contentHash\": \"3b35b18fdee823ef4f04861c849c7d7588614f9aab6b08d9ff9aa0df783ff34f\",\n      \"lineStart\": 1,\n      \"lineEnd\": 1,\n      \"text\": \"PROJECT_B_NEEDLE\"\n    }\n  ],\n  \"engine\": \"rg\",\n  \"truncated\": false,\n  \"omissions\": [\n    {\n      \"path\": \".env\",\n      \"reason\": \"excluded\"\n    }\n  ]\n}"
+    },
+    {
+      "type": "lab-load",
+      "content": "Explicit LAB skill load. Instruction SHA-256: 6250f8ca88e04c579e47d5270b9c354e1d0e6add122229725756ad9faf513188; bundle SHA-256: 346d91c6fe082694acada6972fc4bba2bc8ab315d0fd9976644e5b6f85e41bea\nOrigin: repository/.agents/skills/b-only/SKILL.md\nLocal instruction path: [PROJECT_B]/.agents/skills/b-only/SKILL.md\nResources remain at the original local bundle; loading does not execute scripts.\n\n---\nname: b-only\ndescription: Project B local test skill\n---\nPROJECT_B_SKILL_BODY\n"
+    }
+  ],
+  "rawTerminal": {
+    "path": "project-terminal.ansi",
+    "sha256": "c9270ceb4fd443e7d641468b249a3c659aec73522d917748137d9f8d729b678a"
+  },
+  "limits": "Installed-release immutability and subsequent hosted launcher are validated separately; this record is the actual source-checkout launch."
+}

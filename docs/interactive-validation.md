@@ -3,6 +3,34 @@
 The implementation continues main `83c18d8` in PR #7. This records actual
 observations separately from fixture tests and from controlled task execution.
 
+## Current caller-project flow
+
+At source `5ed473c`, the actual TUI launched from an unrelated disposable
+`project B with spaces`, with runtime code in A and private app state outside
+both directories. Native Pi's session cwd matched B. The local model answered
+`READY`; `/lab-search` returned B-only.md with its exact byte hash and excluded
+the fixture .env; `/lab-skills` found B's skill and `/lab-skill` loaded its
+verified body. Resize and `/exit` returned 0 with server/client/worker/socket
+cleanup all true. Native Pi's project trust prompt was preserved; the validation
+operator trusted only the disposable fixture. An initial automation attempt
+sent its prompt to that modal and was not counted as model evidence.
+[Sanitized events](evidence/project-events.json) and
+[actual terminal stream](evidence/project-terminal.ansi) retain this observation.
+
+The public bootstrap now pins runtime source
+`5ed473cca54de6275acc51aac1a53308358697ec` at the exact full-commit codeload URL,
+archive SHA-256 `fbb50acec187dd0835d58c1c253600cbf1527d85192272722e493ac862f39a49`.
+This source includes the caller-project implementation and named-terminal fix.
+The wrapper's distribution pin is separate from the commit containing the wrapper,
+so the archive hash has no circular dependency on itself.
+
+The integrated caller-project check passed **190 tests**, TypeScript and
+publication integrity, retaining all nine Relay pins. First-round isolated
+launch fixtures assert no writes to installation/project; the hosted install and
+subsequent-launch release snapshot check is recorded separately at final handoff.
+
+## Earlier bounded integration observations
+
 The development mini ran the official pinned Pi 1.4.0 standalone and Herdr
 0.9.5. A fresh TUI launch used `./lab` with PATH restricted to system utilities,
 without global Bun/Pi/Node. It bootstrapped Bun locally, prompted for an explicit

@@ -71,6 +71,8 @@
     "docs/evidence/interactive-terminal.ansi",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
+    "docs/evidence/project-events.json",
+    "docs/evidence/project-terminal.ansi",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
     "docs/interactive-validation.md",
@@ -248,7 +250,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "9990fc706d8f3e489c2d138eff26bba7920025ec546c49772d9b6917d691f280",
+      "sha256": "bd3c5b025c321984f15bc46b329bd78b5e0e6e3078dcd83e53262915b4ca90db",
       "status": "added"
     },
     "bun.lock": {
@@ -285,7 +287,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "be28df924b9fee18dd4331d618096120146d63cd8746bba539c9047c6ede642c",
+      "sha256": "d6533e657d57bd2e9ee874b88cbaa1dcebe909677be3364c93fdce6db7e2bb41",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -332,6 +334,14 @@
       "sha256": "c1923747ef6344e53e6106d754ca6a0b90ff96bc8d9094618123618920569aac",
       "status": "added"
     },
+    "docs/evidence/project-events.json": {
+      "sha256": "d04105c3a680ab3c46e9ee051c8f81463dbbe1ac86722c00b3684d5f74e3ae50",
+      "status": "added"
+    },
+    "docs/evidence/project-terminal.ansi": {
+      "sha256": "c9270ceb4fd443e7d641468b249a3c659aec73522d917748137d9f8d729b678a",
+      "status": "added"
+    },
     "docs/herdr.md": {
       "sha256": "368b00305830b893bc83563ea4aedacf21490652083d9375cafe8dee860fc8ba",
       "status": "added"
@@ -341,7 +351,7 @@
       "status": "added"
     },
     "docs/interactive-validation.md": {
-      "sha256": "6429a785524ee17fcba1b3c079d713dec11ee478f2e6ab46b65e330bea510090",
+      "sha256": "115ab6e7db66d5b2b9a0cb605deb7a1993f256567725cdc52770e318ede06f9e",
       "status": "added"
     },
     "docs/media/PROVENANCE.json": {
