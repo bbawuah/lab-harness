@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DESIGN: LAB engineer workflow comparison</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif;--fallback-fg:#20252b;--fallback-muted:#58616d;--fallback-border:#aeb8c2;--fallback-card:#eef2f5}
+@media(prefers-color-scheme:dark){:root{--fallback-fg:#e6edf3;--fallback-muted:#b4c0cc;--fallback-border:#586674;--fallback-card:#202b35}}
+body{margin:0;color:var(--foreground,var(--fallback-fg));line-height:1.55}h1{font-size:1.35rem;line-height:1.25}h2{font-size:1.05rem}p{margin:.65rem 0}a{color:inherit;text-underline-offset:3px}.label{font-weight:750;letter-spacing:.08em;font-size:.78rem}.muted{color:var(--muted-foreground,var(--fallback-muted))}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:var(--card,var(--fallback-card));padding:16px;border-radius:var(--radius,10px)}.card h2{margin:0}.effort{font-weight:650}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.9rem}th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--border,var(--fallback-border))}th{font-weight:700}caption{text-align:left;font-weight:700;margin:18px 0 8px}footer{font-size:.85rem;margin:18px 0} @media(max-width:600px){.grid{grid-template-columns:1fr}th,td{padding:8px 5px}table{font-size:.8rem}}
+</style></head>
+<body>
+<p class="label">DESIGN · RESEARCH ONLY · 29 OCT 2026</p>
+<h1>Where a small LAB addition could help</h1>
+<p class="muted">Comparison evidence, not an implemented interface. Baseline: LAB <code>43a6ac2</code>. No user interviews, product execution or comparative performance tests.</p>
+<div class="grid">
+<section class="card"><h2>1 · Prepare offline</h2><p>Know which target-specific bytes are missing before moving into WSL without internet.</p><p class="effort">3–6 engineer-days</p><p>LAB inventory over existing pinned caches. No new installer.</p></section>
+<section class="card"><h2>2 · Start with context</h2><p>Select a small project brief and see what was loaded, without ambient autoload.</p><p class="effort">3–6 engineer-days</p><p>LAB provenance; Pi keeps token estimates and compaction.</p></section>
+<section class="card"><h2>3 · Trust check history</h2><p>See command outcome and whether observed inputs changed after the check.</p><p class="effort">5–9 engineer-days</p><p>Local receipts; no claim of atomic snapshot validation.</p></section>
+</div>
+<div class="scroll" role="region" aria-label="Harness comparison" tabindex="0">
+<table><caption>Reuse the workflow, preserve the ownership boundary</caption>
+<thead><tr><th scope="col">Primary evidence</th><th scope="col">Pattern already available</th><th scope="col">Implication for LAB</th></tr></thead>
+<tbody>
+<tr><th scope="row"><a href="https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/docs/sessions.md">Pi 1.4.0</a></th><td>Saved sessions, branches, context usage, exports</td><td>Don't build another transcript engine. Safe routed resume depends on provider P3.</td></tr>
+<tr><th scope="row"><a href="https://learn.chatgpt.com/docs/codex/cli">Codex CLI</a></th><td>Resume and dedicated review workflow</td><td>Discoverability matters; native Git remains useful for checkpoints.</td></tr>
+<tr><th scope="row"><a href="https://code.claude.com/docs/en/checkpointing">Claude Code</a></th><td>Rewind with documented coverage limits</td><td>Conversation recovery is not universal file/process rollback.</td></tr>
+<tr><th scope="row"><a href="https://opencode.ai/docs/lsp/">OpenCode</a></th><td>Optional LSP feedback; direct CLI checks can be simpler</td><td>Use installed checks before adding language-server dependencies.</td></tr>
+<tr><th scope="row"><a href="https://aider.chat/docs/usage/lint-test.html">Aider</a></th><td>Configurable lint/test loop</td><td>Add honest source relationships to results; keep project tools.</td></tr>
+<tr><th scope="row"><a href="https://docs.continue.dev/cli/tui-mode">Continue CLI</a></th><td>Explicit references, init, usage info and resume</td><td>Small context selection is worth testing. Offline accountless CLI is not established here.</td></tr>
+</tbody></table></div>
+<p><strong>Already planned/in progress:</strong> Relay PR #12, provider UX/auth, airgap browser research, Pi/shell split, fullscreen composer/scrolling, appearance, Relay dependency updates. None is counted as a new gap.</p>
+<footer class="muted">Sources opened 2026-10-29; mutable docs are dated observations. Effort/value are hypotheses. WSL and accessibility need actual target tests. See the accompanying SOURCES, OPPORTUNITIES and TOP-3-CONTRACTS documents for pins, limits and falsifiers.</footer>
+</body></html>
