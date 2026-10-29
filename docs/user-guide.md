@@ -172,8 +172,11 @@ needed for normal same-project messaging.
 
 Presence is lease-based, not proof a model is listening. Normal exit marks its
 peer offline; a crashed process becomes stale after its 60-second lease.
-Reconnect/reload preserves the logical session's peer/mailbox and fences old
-helpers. New sessions get new peers. Messages/receipts remain for recovery.
+Reload while ownership is healthy preserves the logical session's peer/mailbox
+and fences old helpers. After an expired lease or changed binding, exit and
+launch lab again, then use native /resume to reopen the same session. A fresh
+launcher run supplies the new ownership capability; /reload alone cannot recover
+an expired run. New sessions get new peers. Messages/receipts remain for recovery.
 Body limit is 16,000 UTF-8 bytes; inbox defaults to five/max ten messages, peer
 pages default twenty/max fifty, and /relay-inbox WAIT_MS is bounded to 10,000ms.
 Use the next offset for more peers. Model-tool waits support cancellation;
@@ -257,7 +260,7 @@ same-user coordination, not an OS sandbox.
 | Another lab exists | Keep it intact and use LAB's absolute launcher; do not overwrite an unknown command |
 | Missing/corrupt runtime while offline | Rerun installation online to repair verified bytes; no cloud model fallback is selected |
 | Source/skill refused | Check the selected project, excluded/changed paths and exact skill origin/ID; refresh the inventory |
-| Relay operation refused | Check peer ID, unchanged request key/payload, current session ownership and project/group binding; reconnect by restarting/reloading if the lease expired |
+| Relay operation refused | Check peer ID, unchanged request key/payload and project/group binding. For an expired lease, exit, launch lab again and use native /resume for the same session; reload alone cannot renew the run |
 
 Without a controlling terminal, bootstrap installs only and prints the launcher.
 Open a terminal to select the project/configure a model. Supported runtime

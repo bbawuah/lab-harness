@@ -13,13 +13,25 @@ const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
 const source = resolve(import.meta.dir, "..");
 type Peer = { session_id: string; peer_id: string; name: string; generation: number; phase: string; lease_until: number };
+function ownedServerSockets(fields: string): string[] {
+  // Linux lsof appends "type=STREAM" to the n field; Darwin ends at the path.
+  return fields.split("\n").flatMap(line => {
+    const socket = /^n(\/(?:private\/)?tmp\/lab-h-[A-Za-z0-9_-]+\/s\.sock)(?:\s|$)/.exec(line)?.[1];
+    return socket ? [socket] : [];
+  });
+}
+test("owned socket discovery accepts actual Darwin/Linux lsof fields without selecting another endpoint", () => {
+  expect(ownedServerSockets("p169\nn/tmp/lab-h-owned/s.sock type=STREAM\nntype=STREAM\n")).toEqual(["/tmp/lab-h-owned/s.sock"]);
+  expect(ownedServerSockets("p169\nn/private/tmp/lab-h-owned/s.sock\n")).toEqual(["/private/tmp/lab-h-owned/s.sock"]);
+  expect(ownedServerSockets("n/tmp/lab-h-owned/s-client.sock type=STREAM\nn/tmp/other.sock\nn/tmp/lab-h-owned/s.socket\n")).toEqual([]);
+});
 
 actual("two owned Pi TUIs automatically message/reply, read without ack, refuse foreign ack and reconnect; native model tools survive process resume", async () => {
   const root = mkdtempSync(join(homedir(), ".lab-relay-pi-")), home = join(root, "home"), project = join(home, "project with spaces");
   const state = join(home, ".local/share/lab-harness/workspace"), agent = join(state, "agent");
   for (const path of [project, agent, join(state, "runs")]) mkdirSync(path, { recursive: true, mode: 0o700 });
   let modelRequests = 0, toolCall = 0;
-  let modelRecipient = "";
+  let modelRecipient = "", streamingProbeMarker = "";
   // Owned protocol fixture, never a model/account/cloud service. TUI operator
   // messaging must make zero calls. Later print-mode calls prove actual Pi tools.
   const server = Bun.serve({
@@ -30,9 +42,18 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       const body = await incoming.json() as any;
       const names = body.tools?.map((tool: any) => tool.function?.name) ?? [];
       if (!["relay_peers", "relay_send", "relay_inbox", "relay_ack"].every(name => names.includes(name))) return new Response("Relay tools missing", { status: 400 });
+      const chunk = (value: unknown) => "data: " + JSON.stringify(value) + "\n\n";
+      if (streamingProbeMarker) {
+        const payload = (delta: unknown, finish_reason: string | null) => chunk({ id: "stream-fixture", object: "chat.completion.chunk", created: 1, model: "fixture-relay", choices: [{ index: 0, delta, finish_reason }] });
+        return new Response(new ReadableStream({ async start(controller) {
+          controller.enqueue(new TextEncoder().encode(payload({ role: "assistant", content: "STREAMING_FIXTURE_DONE" }, null)));
+          const deadline = Date.now() + 5000;
+          while (!existsSync(streamingProbeMarker)) { if (Date.now() > deadline) { controller.error(new Error("Streaming slash fixture did not complete")); return; } await pause(10); }
+          controller.enqueue(new TextEncoder().encode(payload({}, "stop") + "data: [DONE]\n\n")); controller.close();
+        } }), { headers: { "content-type": "text/event-stream" } });
+      }
       const tool = body.messages.at(-1)?.role !== "tool";
       const delta = tool ? { role: "assistant", tool_calls: [{ index: 0, id: "fixture-call-" + (++toolCall), type: "function", function: { name: "relay_send", arguments: JSON.stringify({ to: modelRecipient, requestKey: "native-retry-key", body: "Explicit provider-fixture mail" }) } }] } : { role: "assistant", content: "FIXTURE_DONE" };
-      const chunk = (value: unknown) => "data: " + JSON.stringify(value) + "\n\n";
       return new Response(chunk({ id: "fixture", object: "chat.completion.chunk", created: 1, model: "fixture-relay", choices: [{ index: 0, delta, finish_reason: null }] }) +
         chunk({ id: "fixture", object: "chat.completion.chunk", created: 1, model: "fixture-relay", choices: [{ index: 0, delta: {}, finish_reason: tool ? "tool_calls" : "stop" }], usage: { prompt_tokens: 100, completion_tokens: 10, total_tokens: 110 } }) + "data: [DONE]\n\n", { headers: { "content-type": "text/event-stream" } });
     },
@@ -86,11 +107,18 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       for (const value of result.stdout.toString().trim().split(/\s+/)) if (/^\d+$/.test(value)) { const id = Number(value); pids.push(id); children(id); }
     }
     children(actor.child.pid);
+    const observations: { pid: number; exit: number; fields: string; }[] = [];
     for (const pid of pids) {
-      const output = Bun.spawnSync([Bun.which("lsof")!, "-a", "-p", String(pid), "-U", "-Fn"]).stdout.toString();
-      actor.socket ??= output.split("\n").find(line => /^n\/.*\/lab-h-[^/]+\/s\.sock$/.test(line))?.slice(1);
+      const result = Bun.spawnSync([Bun.which("lsof")!, "-a", "-p", String(pid), "-U", "-Fn"]);
+      const output = result.stdout.toString();
+      observations.push({ pid, exit: result.exitCode, fields: output.slice(-1000) });
+      for (const candidate of ownedServerSockets(output)) {
+        const reply = await request(candidate, "ping");
+        if (reply.type === "pong" && reply.version === "0.9.5") { actor.socket = candidate; break; }
+      }
+      if (actor.socket) break;
     }
-    if (!actor.socket) throw new Error("Owned native server socket missing");
+    if (!actor.socket) throw new Error("Owned native server socket missing: " + JSON.stringify(observations).slice(-2500));
     return actor;
   }
   async function paste(actor: typeof actors[number], text: string) {
@@ -160,13 +188,20 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     // and disabled helpers are fixture configuration, not default-model claims.
     modelRecipient = b.peer!.peer_id;
     const sessionDir = join(state, "fixture-sessions"); mkdirSync(sessionDir, { mode: 0o700 });
-    async function modelRun(sessionFile?: string) {
+    async function modelRun(sessionFile?: string, slashDuringStream = false) {
       const runRoot = mkdtempSync(join(state, "runs/h-")), runAgent = join(runRoot, "agent");
       mkdirSync(runAgent, { mode: 0o700 }); mkdirSync(join(runRoot, "home"), { mode: 0o700 });
       const runRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot: source, projectBinding: bindProjectRoot(project), runRoot });
       writeFileSync(join(runAgent, "models.json"), JSON.stringify({ providers: { "lab-fixture": { baseUrl: endpoint, api: "openai-completions", apiKey: "fixture-public-token", models: [{ id: "fixture-relay", reasoning: false, input: ["text"], contextWindow: 131072, maxTokens: 1024, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }] } } }), { mode: 0o600 });
       writeFileSync(join(runAgent, "settings.json"), JSON.stringify({ compaction: { enabled: false }, cacheWarming: "off", retry: { enabled: false } }), { mode: 0o600 });
-      const pi = Bun.spawn([...verifyPiRuntime().command, "--offline", "--no-extensions", "--no-mcp", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-context-files", "--mode", "json", "--provider", "lab-fixture", "--model", "fixture-relay", "--session-dir", sessionDir, ...(sessionFile ? ["--session", sessionFile] : []), "-e", join(source, "src/pi/workspace-extension.ts"), "-p", "Send the explicit fixture message once."], {
+      // Invoke the actual registered operator handler from a native streaming
+      // event. Pi must defer its custom result rather than queue a steering
+      // message and generate another provider request. The proxy forwards every
+      // registration/delivery to the real Pi API; it replaces no native method.
+      const streamingProbe = join(runRoot, "streaming-probe.ts");
+      streamingProbeMarker = slashDuringStream ? join(runRoot, "slash-complete") : "";
+      writeFileSync(streamingProbe, `import workspace from ${JSON.stringify(join(source, "src/pi/workspace-extension.ts"))};\nimport { writeFileSync } from "node:fs";\nexport default function(pi) {\n let peers, fired = false;\n const proxy = new Proxy(pi, { get(target, key) {\n  if (key === "registerCommand") return (name, command) => { if (name === "relay-peers") peers = command; return target.registerCommand(name, command); };\n  const value = target[key]; return typeof value === "function" ? value.bind(target) : value;\n } });\n workspace(proxy);\n pi.on("message_update", async (_event, ctx) => { if (!fired) { fired = true; await peers.handler("", ctx); writeFileSync(${JSON.stringify(streamingProbeMarker)}, "complete"); } });\n}\n`, { mode: 0o600 });
+      const pi = Bun.spawn([...verifyPiRuntime().command, "--offline", "--no-extensions", "--no-mcp", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-context-files", "--mode", "json", "--provider", "lab-fixture", "--model", "fixture-relay", "--session-dir", sessionDir, ...(sessionFile ? ["--session", sessionFile] : []), "-e", slashDuringStream ? streamingProbe : join(source, "src/pi/workspace-extension.ts"), "-p", "Send the explicit fixture message once."], {
         cwd: project, env: { ...env, HOME: join(runRoot, "home"), PI_CODING_AGENT_DIR: runAgent, PI_OFFLINE: "1", LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_USER_HOME: home, LAB_WORKSPACE_ROOT: project, LAB_WORKSPACE_BINDING: JSON.stringify(bindProjectRoot(project)), LAB_INSTALL_ROOT: source, LAB_RELAY_RUN_REF: runRef }, stdout: "pipe", stderr: "pipe",
       });
       const timer = setTimeout(() => pi.kill("SIGTERM"), 20000);
@@ -174,8 +209,11 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       clearTimeout(timer); expect(code, errors.slice(-1000)).toBe(0);
       const events = output.split("\n").filter(Boolean).map(line => JSON.parse(line));
       const result = events.find(event => event.type === "tool_execution_end" && event.toolName === "relay_send");
-      expect(result, output.slice(-2500)).toBeDefined(); expect(result.isError).toBe(false);
-      return { result: result.result.details, events };
+      if (slashDuringStream) {
+        expect(events.some(event => event.type === "message_end" && event.message?.customType === "relay-peers")).toBe(true);
+        expect(output).toContain("STREAMING_FIXTURE_DONE");
+      } else { expect(result, output.slice(-2500)).toBeDefined(); expect(result.isError).toBe(false); }
+      return { result: result?.result.details, events };
     }
     const first = await modelRun();
     expect(first.result.duplicate).toBe(false);
@@ -184,10 +222,13 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     expect(resumed.result.id).toBe(first.result.id); expect(resumed.result.duplicate).toBe(true);
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
     expect(rows().every(peer => peer.phase === "released")).toBe(true);
+    await modelRun(undefined, true);
+    expect(modelRequests).toBe(5); // Two tool requests per run + one plaintext stream; slash adds none.
+    expect(rows().every(peer => peer.phase === "released")).toBe(true);
     writeFileSync(join(evidence, "model-tool-events.jsonl"), [...first.events, ...resumed.events].filter(event => event.type === "tool_execution_end").map(event => sanitize(JSON.stringify(event))).join("\n") + "\n");
     const sourceSHA = Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: source }).stdout.toString().trim();
     const dirty = !!Bun.spawnSync(["git", "status", "--porcelain"], { cwd: source }).stdout.toString().trim();
-    writeFileSync(join(evidence, "result.json"), JSON.stringify({ source: sourceSHA, dirty, environment: process.platform + "-" + process.arch, label: "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality", nativePeers: rows().map(({ peer_id, name, generation, phase }) => ({ peer_id, name, generation, phase })), operatorMessaging: true, repeatedReadNotAck: true, foreignAckRefused: true, nativeReloadReconnected: true, noWakeupModelCalls: true, toolProtocolRequests: modelRequests, processResumeSameReceipt: true, cleanup }, null, 2));
+    writeFileSync(join(evidence, "result.json"), JSON.stringify({ source: sourceSHA, dirty, environment: process.platform + "-" + process.arch, label: "actual owned Pi/Herdr sessions + owned Chat protocol fixture, not model quality", nativePeers: rows().map(({ peer_id, name, generation, phase }) => ({ peer_id, name, generation, phase })), operatorMessaging: true, repeatedReadNotAck: true, foreignAckRefused: true, nativeReloadReconnected: true, noWakeupModelCalls: true, toolProtocolRequests: modelRequests, streamingSlashNonTriggering: true, processResumeSameReceipt: true, cleanup }, null, 2));
   } finally {
     for (const actor of actors) {
       if (actor.child.exitCode === null) { actor.child.kill("SIGTERM"); await actor.child.exited; }

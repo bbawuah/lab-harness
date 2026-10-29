@@ -139,6 +139,10 @@ test("live capability cannot steal ownership; expiry enables a new run and fence
   f.advance(1);
   expect(receiver.peers().peers.find(p => p.id === sender.identity.peerId)?.presence).toBe("offline");
   expect(() => f.bind(a.ref, "alice-native")).toThrow("new run capability");
+  // Native reload releases then binds with the same run. Neither step may
+  // renew expired ownership; only a new launcher capability can reclaim it.
+  expect(() => sender.release()).toThrow("stale");
+  expect(() => f.bind(a.ref, "alice-native")).toThrow("new run capability");
   const replacement = f.bind(contender.ref, "alice-native");
   expect(replacement.generation).toBe(1);
   const h = f.open(contender.ref, "alice-native");

@@ -16,7 +16,7 @@ export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
   registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
   registerCommand(name: string, options: { description: string; handler(args: string, ctx: WorkspaceContext): Promise<void> }): void;
-  sendMessage(message: { customType: string; content: string; display: boolean; details?: unknown }): void;
+  sendMessage(message: { customType: string; content: string; display: boolean; details?: unknown }, options?: { triggerTurn?: boolean; deliverAs?: "steer" | "followUp" | "nextTurn" }): void;
 };
 const extensionPath = fileURLToPath(import.meta.url);
 const installRoot = resolve(dirname(extensionPath), "../..");

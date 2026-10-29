@@ -78,7 +78,7 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
           current.ready = false;
           if (current.timer) clearInterval(current.timer);
           current.controller.abort();
-          ctx.ui.notify("Relay ownership expired or binding changed. Restart or reload this workspace to reconnect.", "error");
+          ctx.ui.notify("Relay ownership expired or binding changed. Exit and launch lab again; use native /resume to reopen this session. Reload cannot renew an expired run.", "error");
         });
       }, 15000);
     } catch {
@@ -110,7 +110,7 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
       async handler(args, ctx) {
         try {
           const result = await run(relaySlashRequest(definition.action, args), ctx);
-          pi.sendMessage({ customType: "relay-" + definition.action, content: JSON.stringify(result, null, 2), display: true });
+          pi.sendMessage({ customType: "relay-" + definition.action, content: JSON.stringify(result, null, 2), display: true }, { triggerTurn: false });
         } catch (error) {
           const message = error instanceof Error && /^(?:Use \/relay-|RELAY_[A-Z0-9_]+$)/.test(error.message) ? error.message : "RELAY_OPERATION_REFUSED";
           ctx.ui.notify(message, "error");

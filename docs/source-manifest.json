@@ -604,7 +604,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "fac4e8837e910709ea15d7483300b0b9261345f7fc63225e426a1c2a312f8ca6",
+      "sha256": "a02d888abdafb8a4e80c7fb17292e87e8ff9913f9142aef0786e44b211deda1c",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -750,7 +750,7 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "315e3ffc234b299ec2a375e0f2c45ef009246552ddf61d6df09651e715d666d7",
+      "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -762,7 +762,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "e86a7a2eb12e2e58be464bd940e7380d6cfe2590d6c3855ab6b4e7e68f5108df",
+      "sha256": "4c5619c33b52ccfdf12e456a65867d7b2e5dc2d40fc13e18297ccf987a68e6dd",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -933,7 +933,7 @@
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
-      "sha256": "7116c49f66996134f86b64599a15280fc79d95dd0a2c2030552e9cd2a607b5f4",
+      "sha256": "f7b5238901ed9c5ddcb343e114ce98a40ddfac8128e567347ccd236a726355ae",
       "status": "added"
     },
     "tests/relay-loader-env-child.ts": {
@@ -945,11 +945,11 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "f1c7af497a8f91a8b9215aba81c7c82e38b4be7d61796fa7ce6ec2e213197b17",
+      "sha256": "5f4d920baf7424f8de9afbd12c7a1dfe0d8a8f8ba904c7d06ffddf94f27eea14",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
-      "sha256": "f38cf5d0f1dfdfd01284e2a1f00a9f6cd5c0d1c201af73ebfff70eae66817b3c",
+      "sha256": "e9acb4d1e3398490e7f5b46408dd70c3945de91c8ed48ba29e59d0e17b1df949",
       "status": "added"
     },
     "tests/relay.test.ts": {

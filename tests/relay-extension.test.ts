@@ -4,9 +4,9 @@ import type { WorkspaceContext, WorkspaceExtensionAPI } from "../src/pi/workspac
 
 function host(bridge?: (request: RelayBridgeRequest, signal?: AbortSignal) => Promise<unknown>) {
   const events = new Map<string, ((event: unknown, ctx: WorkspaceContext) => void | Promise<void>)[]>();
-  const tools = new Map<string, any>(), commands = new Map<string, any>(), messages: unknown[] = [], notices: string[] = [], calls: RelayBridgeRequest[] = [];
+  const tools = new Map<string, any>(), commands = new Map<string, any>(), messages: unknown[] = [], messageOptions: unknown[] = [], notices: string[] = [], calls: RelayBridgeRequest[] = [];
   let shutdowns = 0;
-  const api: WorkspaceExtensionAPI = { on(name, handler) { events.set(name, [...events.get(name) ?? [], handler]); }, registerTool(tool) { tools.set(tool.name, tool); }, registerCommand(name, command) { commands.set(name, command); }, sendMessage(message) { messages.push(message); } };
+  const api: WorkspaceExtensionAPI = { on(name, handler) { events.set(name, [...events.get(name) ?? [], handler]); }, registerTool(tool) { tools.set(tool.name, tool); }, registerCommand(name, command) { commands.set(name, command); }, sendMessage(message, options) { messages.push(message); messageOptions.push(options); } };
   installRelayExtension(api, async (request, signal) => {
     calls.push(request);
     if (bridge) return bridge(request, signal);
@@ -14,8 +14,17 @@ function host(bridge?: (request: RelayBridgeRequest, signal?: AbortSignal) => Pr
   });
   const ctx = (id: string): WorkspaceContext => ({ mode: "tui", sessionManager: { getSessionId: () => id }, shutdown() { shutdowns++; }, ui: { setHeader() {}, notify(message) { notices.push(message); } } });
   const event = async (name: string, context: WorkspaceContext) => { for (const handler of events.get(name) ?? []) await handler({}, context); };
-  return { tools, commands, messages, notices, calls, ctx, event, shutdowns: () => shutdowns };
+  return { tools, commands, messages, messageOptions, notices, calls, ctx, event, shutdowns: () => shutdowns };
 }
+
+test("every Relay operator result is explicitly nontriggering, including delivery during a stream", async () => {
+  const h = host(), ctx = h.ctx("operator-during-stream");
+  await h.event("session_start", ctx);
+  for (const [action, args] of [["peers", ""], ["send", "peer-B key-1 explicit body"], ["inbox", "0"], ["ack", "message-1"]]) await h.commands.get("relay-" + action).handler(args, ctx);
+  expect(h.messages).toHaveLength(4);
+  expect(h.messageOptions).toEqual(Array.from({ length: 4 }, () => ({ triggerTurn: false })));
+  await h.event("session_shutdown", ctx);
+});
 
 test("Relay auto-binds once, exposes every native tool, and fences stale context through switch/shutdown", async () => {
   const h = host(), a = h.ctx("native-A"), b = h.ctx("native-B");
