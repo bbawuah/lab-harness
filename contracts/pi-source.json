@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/earendil-works/pi",
+  "sourceSHA": "b857fbd8a9225ab7b0c15d7a6965b2f109c9317a",
+  "packageVersion": "1.4.0",
+  "usage": "source-inspected-as-data; not a runtime qualification",
+  "files": [
+    {
+      "path": "packages/coding-agent/package.json",
+      "sha256": "f9c21f2fe252a5f988a19f6e4097bb058c411cb98e2eb60e39f85e88c54f05c9"
+    },
+    {
+      "path": "packages/coding-agent/src/core/sdk.ts",
+      "sha256": "f0f6f2b14a61c5c3ebb31d40c97b3f73296a2f0334d582072383302d693714c8"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-runtime.ts",
+      "sha256": "db54951b1b8c37b6dac61fe0b4842de9486e1462a68ec52d4b97da90c69268b6"
+    },
+    {
+      "path": "packages/coding-agent/src/core/cache-warmer.ts",
+      "sha256": "596080fbe60702a44bcd8a31aeca45a5048d24c53fb0f0b40dd8781f776a8842"
+    },
+    {
+      "path": "packages/coding-agent/src/core/agent-session.ts",
+      "sha256": "b7c24bf1c1366e931083100d921a80d390d66bacde4acf7472a7b57af1bb69aa"
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/runner.ts",
+      "sha256": "3cd6d1ad18e8e4c7adf722aed9291bc64f06e3a7d461755c21e3cba4819f4e5e"
+    },
+    {
+      "path": "packages/coding-agent/src/core/extensions/types.ts",
+      "sha256": "4c0c655d87d15e2baeac88df79c4f2d0a339e1abe660639a3241e268bce2e31e"
+    },
+    {
+      "path": "packages/coding-agent/src/core/compaction/compaction.ts",
+      "sha256": "32714966eb644da31cd84e8eb172965256160626b3d26ae9752c3894300f2b0b"
+    },
+    {
+      "path": "packages/agent/src/types.ts",
+      "sha256": "2e116ef60fdaca4e26be5a1ace8d8b47f545d648d365de60b8c9f9d1ba629ee4"
+    }
+  ]
+}

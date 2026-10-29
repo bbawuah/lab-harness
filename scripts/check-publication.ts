@@ -1,46 +1,25 @@
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { checkRelay, manifestPath, publicationFiles, root, sha256, type Manifest } from "./publication-policy.ts";
 
-const root = fileURLToPath(new URL("../", import.meta.url));
-const manifest = JSON.parse(readFileSync(join(root, "docs/source-manifest.json"), "utf8")) as {
-  schemaVersion: number;
-  files: Record<string, string>;
-  publicationFileAllowlist: string[];
-};
-if (manifest.schemaVersion !== 1) throw new Error("Unknown publication manifest");
-const allowed = new Set(manifest.publicationFileAllowlist);
+const manifest = JSON.parse(readFileSync(join(root, manifestPath), "utf8")) as Manifest;
+if (manifest.schemaVersion !== 2) throw new Error("Unknown publication manifest");
+// Original concept provenance has a separate identity from current development.
+const originalIdentity = createHash("sha256").update(JSON.stringify({ exportSourceCommit: manifest.exportSourceCommit, reviewedSourceCommit: manifest.reviewedSourceCommit, files: manifest.files })).digest("hex");
+if (originalIdentity !== "09a0dbbd498068e958101cfc4ff5531c9f530034ef6fa94830f5892b5c9557f1") throw new Error("Original concept provenance changed");
+const actual = publicationFiles(), allowed = new Set(manifest.publicationFileAllowlist);
 if (allowed.size !== manifest.publicationFileAllowlist.length) throw new Error("Duplicate allowlist entry");
-const seen = new Set<string>();
-const generated = new Set([".git", ".tmp", "node_modules"]);
-function walk(relative = ""): void {
-  for (const entry of readdirSync(join(root, relative), { withFileTypes: true })) {
-    if (!relative && generated.has(entry.name)) continue;
-    const path = relative ? `${relative}/${entry.name}` : entry.name;
-    if (entry.isSymbolicLink()) throw new Error(`Unexpected symlink: ${path}`);
-    if (entry.isDirectory()) { walk(path); continue; }
-    if (!entry.isFile() || !allowed.has(path)) throw new Error(`File outside publication allowlist: ${path}`);
-    seen.add(path);
-  }
+if (actual.length !== allowed.size || actual.some(path => !allowed.has(path))) throw new Error("Publication allowlist differs from working files; inspect changes before explicit refresh");
+for (const path of Object.keys(manifest.files)) if (!allowed.has(path)) throw new Error(`Original source removed: ${path}`);
+const currentPaths = actual.filter(path => path !== manifestPath);
+if (Object.keys(manifest.currentFiles).length !== currentPaths.length) throw new Error("Current source hash coverage mismatch");
+for (const path of currentPaths) {
+  const item = manifest.currentFiles[path], original = manifest.files[path];
+  if (!item || item.sha256 !== sha256(path)) throw new Error(`Current source mismatch: ${path}`);
+  if (original) {
+    if (item.originalSHA256 !== original || item.status !== (item.sha256 === original ? "unchanged" : "modified")) throw new Error(`Source change provenance mismatch: ${path}`);
+  } else if (item.status !== "added" || item.originalSHA256 !== undefined) throw new Error(`New source provenance mismatch: ${path}`);
 }
-walk();
-for (const path of allowed) if (!seen.has(path)) throw new Error(`Missing publication file: ${path}`);
-function sha256(path: string): string {
-  return createHash("sha256").update(readFileSync(join(root, path))).digest("hex");
-}
-for (const [path, expected] of Object.entries(manifest.files)) {
-  if (!allowed.has(path) || sha256(path) !== expected) throw new Error(`Reviewed source mismatch: ${path}`);
-}
-const relay = JSON.parse(readFileSync(join(root, "vendor/relay/SOURCE.json"), "utf8")) as {
-  sourceSHA: string;
-  files: { path: string; sha256: string }[];
-};
-if (relay.sourceSHA !== "dfe1b039bab45f4055ab39467e994a2981940c02" || relay.files.length !== 9) {
-  throw new Error("Unexpected Relay source pin or closure");
-}
-for (const file of relay.files) {
-  const path = `vendor/relay/${file.path}`;
-  if (!allowed.has(path) || sha256(path) !== file.sha256) throw new Error(`Relay mismatch: ${path}`);
-}
-console.log(`Publication integrity: ${allowed.size} allowed files; ${Object.keys(manifest.files).length} unchanged source files; 9 pinned Relay files.`);
+checkRelay(allowed);
+console.log(`Publication integrity: ${allowed.size} allowed files; original concept provenance retained; ${currentPaths.length} current hashes; 9 pinned Relay files.`);

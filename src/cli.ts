@@ -7,6 +7,7 @@ import { RelayBus, RELAY_PIN } from "./relay.ts";
 import { canonical, LabError, requireThat } from "./util.ts";
 import type { Candidate, ContextPack, Result, TaskContract } from "./protocol.ts";
 import { Workspace } from "./workspace.ts";
+import { buildContext, verifyContext, type ContextSelection, type ProvenanceContext } from "./context.ts";
 
 function print(value: unknown): void { process.stdout.write(JSON.stringify(value, null, 2) + "\n"); }
 function input(path: string | undefined): unknown { requireThat(path, "INPUT_FILE_REQUIRED"); return JSON.parse(readFileSync(path, "utf8")); }
@@ -41,11 +42,13 @@ try {
   else if (command === "activate-pi") throw new LabError("NATIVE_PI_UNQUALIFIED");
   else if (command === "search") { requireThat(args[0] && args[1], "SEARCH_ROOT_QUERY_REQUIRED"); print(new Workspace(resolve(args[0])).searchDetailed(args[1])); }
   else if (command === "skill") { requireThat(args[0] && args[1], "SKILL_ROOT_PATH_REQUIRED"); print(new Workspace(resolve(args[0])).skill(args[1])); }
+  else if (command === "context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); print(buildContext(resolve(args[0]), input(args[1]) as ContextSelection)); }
+  else if (command === "verify-context") { requireThat(args[0] && args[1], "CONTEXT_ROOT_INPUT_REQUIRED"); const data = input(args[1]) as { pack: ProvenanceContext }; verifyContext(resolve(args[0]), data.pack); print({ valid: true, nativePi: "blocked-unqualified" }); }
   else if (command === "help") print({ commands: ["demo", "admission", "activate-pi (blocked)", "--state PATH create FILE", "--state PATH show TASK", "--state PATH claim TASK SESSION", "--state PATH event FILE", "--state PATH accept FILE", "--state PATH cancel TASK", "--state PATH recover"], scope: "concept state only; acceptance is operator workflow, not same-user authentication" });
   else {
     requireThat(command === "--state", "EXPLICIT_STATE_REQUIRED"); const state = args.shift(); requireThat(state, "EXPLICIT_STATE_REQUIRED"); const operation = args.shift(); const db = new Ledger(resolve(state));
     try {
-      if (operation === "create") { const data = input(args[0]) as { contract: TaskContract; context: ContextPack }; const contextHash = db.context(data.context); requireThat(contextHash === data.contract.contextHash, "CONTEXT_HASH_MISMATCH"); print(db.create(data.contract)); }
+      if (operation === "create") { const data = input(args[0]) as { contract: TaskContract; context: ContextPack; workspaceRoot?: string }; if ("sourceProvenance" in data.context) { requireThat(data.workspaceRoot, "CONTEXT_WORKSPACE_REQUIRED"); verifyContext(resolve(data.workspaceRoot), data.context as ProvenanceContext); } const contextHash = db.context(data.context); requireThat(contextHash === data.contract.contextHash, "CONTEXT_HASH_MISMATCH"); print(db.create(data.contract)); }
       else if (operation === "show") print(db.get(args[0] ?? ""));
       else if (operation === "claim") print(db.grant(args[0] ?? "", args[1] ?? ""));
       else if (operation === "event") print({ disposition: db.apply(input(args[0])) });
