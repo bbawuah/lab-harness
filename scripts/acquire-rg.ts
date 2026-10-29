@@ -8,12 +8,16 @@ import source from "../contracts/ripgrep-source.json";
 
 const artifact = source.artifacts.find(a => a.platform === process.platform && a.arch === process.arch);
 if (!artifact) throw new Error(`No pinned optional rg artifact for ${process.platform}/${process.arch}`);
+const args = process.argv.slice(2);
+if (args.some(arg => arg !== "--offline")) throw new Error("Usage: acquire-rg.ts [--offline]");
+const offline = args.includes("--offline") || process.env.LAB_INSTALL_OFFLINE === "1";
 const root = ownedState(resolve(import.meta.dir, "../.tmp/rg")), destination = join(root, "rg");
 const digest = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const existing = lstatSync(destination, { throwIfNoEntry: false });
 if (existing && (!existing.isFile() || existing.isSymbolicLink() || existing.nlink !== 1)) throw new Error("Unsafe rg cache entry");
 let cached = existing !== undefined && digest(readFileSync(destination)) === artifact.binarySHA256;
 if (!cached) {
+  if (offline) throw new Error("Pinned rg is missing or corrupt; offline acquisition requires a complete verified cache");
   const response = await fetch(artifact.url, { signal: AbortSignal.timeout(60000) });
   if (!response.ok || !response.body) throw new Error(`rg download failed: ${response.status}`);
   const bytes = new Uint8Array(artifact.archiveBytes), reader = response.body.getReader();

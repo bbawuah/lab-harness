@@ -83,3 +83,16 @@ README, CLI/package/CI and all existing files. Use Pi's supported `setHeader`
 extension API, preserve attribution and provide no-color/narrow fallbacks.
 Actual owned no-model startup may use the installed Pi 1.4.0 in isolated state;
 never activate LAB or run inference to validate branding.
+
+## Interactive project workspace
+
+The complete installer adds a native Pi workspace alongside the operator ledger.
+It does not submit controlled LAB tasks or ingest/accept their results. The
+launcher binds the caller's project (or explicit --project directory) by canonical
+path/device/inode. Pi and Herdr use that cwd; the LAB bridge revalidates binding
+before bounded source search and explicit skill loading. Installed runtime assets,
+project sources and private HOME app state are separate. Healthy startup verifies
+runtime bytes without reacquiring tools; missing dependencies invoke installation.
+Native shell/file tools retain the user's capabilities, so the project binding
+is a source-adapter boundary rather than an OS sandbox. The unqualified controlled
+admission refusal and ledger acceptance semantics remain unchanged.

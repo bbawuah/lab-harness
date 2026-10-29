@@ -52,7 +52,7 @@ const hashPattern = /^[a-f0-9]{64}$/;
 // These paths are never opened, even for hashing. Metadata records the omission.
 const sensitive = /(?:^|\/)(?:\.env(?:\..*)?|\.ssh|auth\.json|credentials?(?:\..*)?|secrets?(?:\..*)?|config\.json|config\.properties|id_(?:rsa|ed25519))(?:\/|$)|\.(?:pem|key|p12)$/i;
 const excludedNames = new Set([".git", "node_modules", ".next", "dist", "build", "coverage", "__pycache__", ".venv", "venv"]);
-const repositoryExclusions = [".claude/worktrees", ".codex/worktrees", ".claude/sessions", ".codex/sessions"];
+const repositoryExclusions = [".tmp", ".lab", ".claude/worktrees", ".codex/worktrees", ".claude/sessions", ".codex/sessions"];
 
 function safePath(path: string, dot = false): boolean {
   return typeof path === "string" && ((dot && path === ".") || (path.length > 0 && !isAbsolute(path) && !/[\\\x00-\x1f\x7f]/.test(path) && path.split("/").every(p => p !== ".." && p !== "." && p !== "")));

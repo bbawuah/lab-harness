@@ -3,19 +3,26 @@ import { spawnSync } from "node:child_process";
 import { closeSync, constants, fstatSync, lstatSync, openSync, opendirSync, readSync, realpathSync, type Stats } from "node:fs";
 import { isAbsolute, join, relative, sep } from "node:path";
 import type { SearchOptions as ContractOptions, SearchResult, SourceReference } from "../integration-contracts.ts";
-import { ownedState } from "../ledger.ts";
+import { CONCEPT_ROOT, ownedState } from "../ledger.ts";
 import { LabError, requireThat } from "../util.ts";
+import { verifyProjectBinding, type ProjectBinding } from "../project.ts";
 
 export type { SearchResult, SourceReference } from "../integration-contracts.ts";
 export type SearchOptions = ContractOptions & {
+  /** Explicit read-only access to this harness checkout root in interactive mode. */
+  allowRepositoryRoot?: boolean;
+  /** Explicit interactive project; default callers retain owned-root rules. */
+  projectBinding?: ProjectBinding;
   maxTotalBytes?: number;
   maxDepth?: number;
   maxSnippetBytes?: number;
 };
-type Bounds = Required<SearchOptions>;
+type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot" | "projectBinding">>;
 const defaults: Bounds = { engine: "auto", limit: 5, maxEntries: 10000, maxFileBytes: 1024 * 1024, maxTotalBytes: 32 * 1024 * 1024, maxDepth: 20, maxSnippetBytes: 400 };
 const caps = { limit: 1000, maxEntries: 100000, maxFileBytes: 1024 * 1024, maxTotalBytes: 256 * 1024 * 1024, maxDepth: 40, maxSnippetBytes: 4096 };
-const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") || [".git", ".lab", ".tmp", "node_modules"].includes(name);
+const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") ||
+  [".git", ".lab", ".tmp", ".ssh", ".aws", ".gnupg", "node_modules"].includes(name) ||
+  /^(?:auth\.json|credentials?(?:\..*)?|secrets?(?:\..*)?|id_(?:rsa|ed25519))$|\.(?:pem|key|p12)$/i.test(name);
 const order = (a: string, b: string): number => a < b ? -1 : a > b ? 1 : 0;
 const same = (a: Stats, b: Stats): boolean => a.dev === b.dev && a.ino === b.ino && a.size === b.size && a.mtimeMs === b.mtimeMs && a.ctimeMs === b.ctimeMs && b.nlink === 1;
 const snippet = (line: string, bytes: number): string => {
@@ -25,7 +32,9 @@ const snippet = (line: string, bytes: number): string => {
   return result;
 };
 function bounds(options: SearchOptions): Bounds {
-  const value = { ...defaults, ...options };
+  const { allowRepositoryRoot, projectBinding, ...limits } = options;
+  requireThat(allowRepositoryRoot === undefined || typeof allowRepositoryRoot === "boolean", "INVALID_SEARCH_OPTIONS");
+  const value = { ...defaults, ...limits };
   requireThat(["auto", "fallback", "rg"].includes(value.engine), "INVALID_SEARCH_OPTIONS");
   for (const key of Object.keys(caps) as (keyof typeof caps)[]) requireThat(Number.isSafeInteger(value[key]) && value[key] > 0 && value[key] <= caps[key], "INVALID_SEARCH_OPTIONS");
   return value;
@@ -38,7 +47,10 @@ export class SearchService {
   private readonly identity: Stats;
   constructor(root: string, options: SearchOptions = {}) {
     this.options = bounds(options);
-    this.root = realpathSync(ownedState(root));
+    const repositoryRoot = options.allowRepositoryRoot === true && root === CONCEPT_ROOT;
+    const project = options.projectBinding && verifyProjectBinding(options.projectBinding);
+    if (project) requireThat(root === project.root, "PROJECT_ROOT_BINDING_MISMATCH");
+    this.root = realpathSync(project ? project.root : repositoryRoot ? CONCEPT_ROOT : ownedState(root));
     this.identity = lstatSync(this.root);
   }
   private assertRoot(): void {

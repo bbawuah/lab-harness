@@ -151,9 +151,13 @@ test("repository guidance, standalone agents and portable skills are inventoried
   f.put(join(f.origins[0]!.root, ".claude/agents/reviewer.md"), "Review instructions");
   f.skill("agents/skills/interview", "Interview the operator");
   f.skill(".claude/worktrees/unowned/hidden", "NEVER READ SESSION");
+  f.skill(".tmp/runtime/hidden", "NEVER READ RUNTIME");
+  f.skill(".lab/state/hidden", "NEVER READ STATE");
   const inventory = discoverSkills(f.origins);
   expect(inventory.skills).toHaveLength(4); expect(inventory.skills.filter(s => s.kind === "agent-instructions")).toHaveLength(3);
   expect(inventory.roots[0]!.exclusions).toContain(".claude/worktrees");
+  expect(inventory.roots[0]!.exclusions).toContain(".tmp");
+  expect(inventory.roots[0]!.exclusions).toContain(".lab");
   expect(JSON.stringify(inventory)).not.toContain("unowned");
 });
 test("service and proprietary classification describe dependencies, never grant availability", () => {

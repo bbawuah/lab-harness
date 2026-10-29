@@ -1,6 +1,6 @@
 # Recorded harness media
 
-These assets replay actual command output at source commit
+These historical assets replay actual command output at source commit
 `93a831c4dbfe774f3c4a025f7c70334ae0f3e6b4`. They are rendered output cards,
 not desktop recordings or raw terminal pixel captures. Displayed JSON is a
 selected projection; [exact command records](../media/commands.json), adjacent
@@ -105,3 +105,8 @@ The root README embeds these reviewed assets with their evidence captions and
 transcript links. Their exact current hashes are also covered by the publication
 allowlist; regeneration requires an explicit audited manifest refresh. Runtime
 source is unchanged by this media addition.
+
+The media audit checks the original capture source bytes using that exact Git
+commit, rather than claiming that today's implementation produced the historical
+images. CI retains full history for this read-only comparison. Current workspace
+inference and interactive evidence are recorded separately in `../interactive-validation.md`.

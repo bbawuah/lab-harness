@@ -19,6 +19,14 @@ function fixture(options: SearchOptions = {}) {
 afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
 const rgAvailable = spawnSync("rg", ["--version"], { timeout: 1000, maxBuffer: 1024 }).status === 0;
 
+test("interactive root access is explicit and retains source exclusions", () => {
+  expect(() => new SearchService(CONCEPT_ROOT)).toThrow("STATE_OUTSIDE_CONCEPT");
+  const search = new SearchService(CONCEPT_ROOT, { allowRepositoryRoot: true, limit: 2 });
+  expect(search.files(".bun-version").hits[0]!.path).toBe(".bun-version");
+  expect(search.files(".env").hits).toEqual([]);
+  expect(() => new SearchService("/", { allowRepositoryRoot: true })).toThrow("STATE_OUTSIDE_CONCEPT");
+});
+
 test("literal metacharacters, flags and Unicode are inert, case-sensitive strings", () => {
   const { search, put } = fixture();
   const line = "literal [a-z].* $(touch sentinel) --help café 中文 🙂";

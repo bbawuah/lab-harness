@@ -5,6 +5,7 @@ import json
 import platform
 import re
 import runpy
+import subprocess
 import textwrap
 from pathlib import Path
 
@@ -139,7 +140,13 @@ def main():
                     column += 1
     require(samples == 864, "Incomplete palette sampling")
     runtime = json.loads((MEDIA / "capture-runtime.json").read_text())
-    require(all(sha(ROOT / path) == value for path, value in runtime["sourceFiles"].items()), "Captured runtime source changed")
+    # These are historical captures, not observations of today's runtime. Keep
+    # their original identities and verify the exact source commit, even when
+    # current implementation files have changed. CI checks out full history.
+    require(runtime["sourceSHA"] == "93a831c4dbfe774f3c4a025f7c70334ae0f3e6b4", "Unexpected historical capture commit")
+    for path, value in runtime["sourceFiles"].items():
+        captured_bytes = subprocess.run(["git", "show", f'{runtime["sourceSHA"]}:{path}'], cwd=ROOT, check=True, capture_output=True).stdout
+        require(hashlib.sha256(captured_bytes).hexdigest() == value, f"Historical capture source mismatch: {path}")
     if args.check:
         require(assets == baseline["assets"] and runtime["sourceSHA"] == baseline["sourceSHA"], "Media provenance mismatch")
         require(sha(ROOT / baseline["renderer"]["path"]) == baseline["renderer"]["sha256"] and sha(ROOT / baseline["captures"]["path"]) == baseline["captures"]["sha256"], "Capture/render source identity changed")

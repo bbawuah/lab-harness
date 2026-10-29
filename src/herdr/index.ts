@@ -1,6 +1,6 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
-import { chmod, lstat, mkdir, mkdtemp, readFile, realpath, writeFile } from "node:fs/promises";
+import { chmod, lstat, mkdir, mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { HerdrSmokeOptions, TerminalObservation } from "../integration-contracts.ts";
@@ -66,8 +66,12 @@ export async function runHerdrSmoke(options: HerdrSmokeOptions): Promise<Termina
   let failure: unknown;
   let paneId: string | undefined;
   let workerPid: number | undefined;
+  // Installed release paths can exceed Unix socket limits. Keep only sockets
+  // in a fresh short owned directory; retain evidence in the project run dir.
+  const socketDirectory = await mkdtemp("/tmp/lab-s-");
   let log = "";
   const env = isolatedEnvironment(root, session);
+  env.HERDR_SOCKET_PATH = join(socketDirectory, "s.sock");
   const socket = env.HERDR_SOCKET_PATH!;
   const deadline = Date.now() + timeoutMs;
   const remaining = () => {
@@ -152,6 +156,7 @@ export async function runHerdrSmoke(options: HerdrSmokeOptions): Promise<Termina
       cleanup.exitCode = child.exitCode; cleanup.signal = child.signalCode;
     } else if (processError) { cleanup.serverExited = true; }
     cleanup.socketsRemoved = await socketGone(socket).catch(() => false);
+    if (cleanup.socketsRemoved) await rm(socketDirectory, { recursive: true, force: true });
     // PID is diagnostic only: never signal it, because PID reuse cannot prove ownership.
     if (!workerPid) {
       try { const pid = Number((await readFile(join(root, "worker.pid"), "utf8")).trim()); if (Number.isSafeInteger(pid) && pid > 1) workerPid = pid; } catch {}
