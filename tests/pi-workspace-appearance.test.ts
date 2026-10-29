@@ -1,17 +1,17 @@
 import { expect, test } from "bun:test";
 import { configureAppearance, appearanceCapability, appearanceSample, type AppearanceUI, type AppearanceRequest } from "../src/pi/workspace-appearance.ts";
-import { beginAppearance, stageAppearance, type Snapshot } from "../src/pi/appearance.ts";
+import { beginAppearance, stageAppearance, resolveAppearance, type Snapshot } from "../src/pi/appearance.ts";
 import { mkdtempSync, mkdirSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 const initial: Snapshot = { revision: "absent", user: null, project: null, scope: { kind: "user" } };
-function fixture(keys: string[], selections: string[] = [], inputs: (string | undefined)[] = []) {
+function fixture(keys: string[], selections: string[] = [], inputs: (string | undefined)[] = [], size = { rows: 32, width: 80 }) {
   const rendered: string[][] = [], notices: string[] = [], calls: AppearanceRequest[] = [];
   let reloads = 0;
   const ui: AppearanceUI = {
     async select(_title, choices) { const selected = selections.shift(); if (selected !== undefined) expect(choices).toContain(selected); return selected; },
     async input() { return inputs.shift(); }, notify(text) { notices.push(text); },
-    async custom<T>(factory: Parameters<AppearanceUI["custom"]>[0]) { let value: T | undefined; const component = factory({ terminal: { rows: 16 }, requestRender() {} }, {}, {}, v => { value = v as T; }); rendered.push(component.render(40)); component.handleInput(keys.shift() ?? "\x1b"); component.invalidate(); expect(value).toBeDefined(); return value!; },
+    async custom<T>(factory: Parameters<AppearanceUI["custom"]>[0]) { let value: T | undefined; const component = factory({ terminal: { rows: size.rows }, requestRender() {} }, {}, {}, v => { value = v as T; }); rendered.push(component.render(size.width)); component.handleInput(keys.shift() ?? "\x1b"); component.invalidate(); expect(value).toBeDefined(); return value!; },
   };
   return { ui, rendered, notices, calls, reloads: () => reloads, async reload() { reloads++; }, async bridge(request: AppearanceRequest) { calls.push(structuredClone(request)); return request.action === "appearance-load" ? { ...initial, scope: request.scope === "user" ? initial.scope : { kind: "project", binding: { root: "/synthetic/project", device: 1, inode: 2 } } } : initial; } };
 }
@@ -20,7 +20,7 @@ test("appearance mode preview and Cancel never save or reload", async () => {
   await configureAppearance(f.ui, f.bridge, appearanceCapability({ TERM: "dumb" }), () => true, f.reload);
   expect(f.calls).toEqual([{ action: "appearance-load", scope: "user" }]); expect(f.reloads()).toBe(0);
   expect(f.rendered.flat().join("\n")).toContain("light"); expect(f.rendered.flat().join("\n")).not.toContain("\x1b");
-  expect(f.rendered.flat().every(line => line.length <= 40)).toBe(true);
+  expect(f.rendered.flat().every(line => line.length <= 80)).toBe(true);
 });
 test("Apply stages native mode and spacing, saves once, then reloads", async () => {
   const f = fixture(["2", "4", "5", "7"], ["light", "3", "0"]);
@@ -48,6 +48,23 @@ test("appearance bridge failures expose only a canonical recovery code", async (
   await configureAppearance(f.ui, async () => { throw new Error("vendor private path or sentinel"); }, appearanceCapability({}), () => true, f.reload);
   expect(f.notices[0]).toContain("LAB_APPEARANCE_REFUSED"); expect(f.notices[0]).not.toContain("sentinel");
 });
+test("indexed palette recovery keeps the dialog open for Reset without saving rejected colors", async () => {
+  const palette = { kind: "custom" as const, light: resolveAppearance(stageAppearance(beginAppearance(initial), { mode: "light", palette: {kind:"preset",name:"standard"}, editorPaddingX:1, outputPad:1 }), {color:"truecolor",terminalAppearance:"unknown"}).palette, dark: resolveAppearance(beginAppearance(initial), {color:"truecolor",terminalAppearance:"unknown"}).palette };
+  palette.light.text = "#277CA7";
+  const bad: Snapshot = {...initial,user:{mode:"dark",palette,editorPaddingX:1,outputPad:1}};
+  const f = fixture(["7", "6", "7"]);
+  f.bridge = async request => { f.calls.push(structuredClone(request)); if(request.action === "appearance-load") return bad; if(request.draft.value !== null) throw new Error("LAB_APPEARANCE_BAD_CONTRAST"); return initial; };
+  await configureAppearance(f.ui, f.bridge, {color:"256",terminalAppearance:"unknown"}, () => true, f.reload);
+  expect(f.notices.join("\n")).toContain("Standard");expect(f.notices.join("\n")).toContain("nothing was saved");
+  expect(f.calls.at(-1)).toMatchObject({action:"appearance-apply",draft:{value:null}});expect(f.reloads()).toBe(1);
+});
+test("compact dialog retains sample and native cancel binding", async () => {
+  const f = fixture(["8"], [], [], { rows: 16, width: 20 });
+  await configureAppearance(f.ui, f.bridge, appearanceCapability({ NO_COLOR: "1" }), () => true, f.reload);
+  expect(f.rendered[0]?.join("\n")).toContain("> Focused control"); expect(f.rendered[0]?.length).toBeLessThanOrEqual(5);
+  let seen = false; f.ui.custom = async function<T>(factory: Parameters<AppearanceUI["custom"]>[0]) { let value: T | undefined; const c = factory({terminal:{rows:24},requestRender(){}},{},{matches(data, action){seen = action === "tui.select.cancel";return data === "native-escape" && seen;}}, v=>{value=v as T;});c.handleInput("native-escape");return value!; };
+  await configureAppearance(f.ui, f.bridge, appearanceCapability({}), () => true, f.reload);expect(seen).toBe(true);expect(f.reloads()).toBe(0);
+});
 test("real private store isolates generated themes per run and project, preserves native appearance migration", () => {
   const root = realpathSync(mkdtempSync(join(tmpdir(), "lab-appearance-integration-"))), home = join(root, "home"), state = join(home, "state");
   mkdirSync(join(state, "runs"), { recursive: true, mode: 0o700 });
@@ -55,7 +72,7 @@ test("real private store isolates generated themes per run and project, preserve
   try {
     const script = `import {mkdirSync,readFileSync,writeFileSync,existsSync} from 'node:fs'; import {join} from 'node:path';
 import {bindProjectRoot} from ${JSON.stringify(join(source, "src/project.ts"))};
-import {loadAppearance,beginAppearance,stageAppearance} from ${JSON.stringify(join(source, "src/pi/appearance.ts"))};
+import {loadAppearance,beginAppearance,stageAppearance,resolveAppearance} from ${JSON.stringify(join(source, "src/pi/appearance.ts"))};
 import {prepareWorkspaceAppearance,saveWorkspaceAppearance,nativeAppearanceSettings} from ${JSON.stringify(join(source, "src/pi/workspace-appearance-store.ts"))};
 const stateRoot=${JSON.stringify(state)}, installRoot=${JSON.stringify(source)}, capability={color:'truecolor',terminalAppearance:'unknown'};
 const paths=['project A','project B'].map(n=>join(process.env.HOME,n));for(const p of paths)mkdirSync(p,{mode:0o700});
@@ -70,6 +87,16 @@ if(JSON.parse(settingsA).theme!=='lab-appearance-light' || JSON.parse(readFileSy
 const c={...a,agentRoot:join(stateRoot,'runs/c/agent'),capability:{color:'none',terminalAppearance:'unknown'}};const prepared=prepareWorkspaceAppearance(c); if(Object.values(JSON.parse(readFileSync(prepared.themes[0],'utf8')).colors).some(v=>v!==''))throw Error('monochrome artifacts');
 let rejected=false;try{saveWorkspaceAppearance({...a,agentRoot:join(stateRoot,'outside-run'),draft:beginAppearance(loadAppearance({...a,scope:{kind:'user'}}))})}catch{rejected=true}if(!rejected)throw Error('invalid agent accepted');
 const legacy=join(stateRoot,'historical');mkdirSync(legacy,{mode:0o700});writeFileSync(join(legacy,'settings.json'),JSON.stringify({theme:'light',editorPaddingX:3,outputPad:0,unrelated:'ignored'}),{mode:0o600});if(JSON.stringify(nativeAppearanceSettings(legacy))!==JSON.stringify({theme:'light',editorPaddingX:3,outputPad:0}))throw Error('native appearance migration');
+const selected=loadAppearance({stateRoot,installRoot,scope:{kind:'user'}}), initialDraft=beginAppearance(selected);
+const palette={kind:'custom',light:resolveAppearance(stageAppearance(initialDraft,{...draft.value,mode:'light'}),capability).palette,dark:resolveAppearance(stageAppearance(initialDraft,{...draft.value,mode:'dark'}),capability).palette};palette.light.text='#277CA7';
+const bad=stageAppearance(initialDraft,{...draft.value,mode:'dark',palette}), before=readFileSync(join(stateRoot,'appearance/preferences.json'),'utf8');
+let refused=false;try{saveWorkspaceAppearance({...a,capability:{color:'256',terminalAppearance:'unknown'},draft:bad})}catch(e){refused=e.message==='BAD_CONTRAST'}
+if(!refused || readFileSync(join(stateRoot,'appearance/preferences.json'),'utf8')!==before)throw Error('indexed Apply committed before validation');
+saveWorkspaceAppearance({...a,draft:bad}); const customSaved=readFileSync(join(stateRoot,'appearance/preferences.json'),'utf8');
+const downgraded=prepareWorkspaceAppearance({...a,agentRoot:join(stateRoot,'runs/d/agent'),capability:{color:'256',terminalAppearance:'unknown'}});
+if(!downgraded.warning || readFileSync(join(stateRoot,'appearance/preferences.json'),'utf8')!==customSaved)throw Error('fallback must preserve saved palette');
+const reset=beginAppearance(loadAppearance({stateRoot,installRoot,scope:{kind:'user'}}));reset.value=null;saveWorkspaceAppearance({...a,capability:{color:'256',terminalAppearance:'unknown'},draft:reset});
+if(loadAppearance({stateRoot,installRoot,scope:{kind:'user'}}).user!==null)throw Error('repair reset failed');
 console.log('SCOPED_STORE_OK');`;
     const result = Bun.spawnSync([process.execPath, "--no-env-file", "--no-install", "--eval", script], { env: { HOME: home, PATH: "/usr/bin:/bin" }, timeout: 10000 });
     expect(result.stderr.toString()).toBe(""); expect(result.stdout.toString()).toContain("SCOPED_STORE_OK"); expect(result.exitCode).toBe(0);

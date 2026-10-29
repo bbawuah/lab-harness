@@ -55,6 +55,7 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
   // Extensions/skills/context are explicit: do not load global user integrations.
   // Persistent native Pi sessions and its own approvals remain native behavior.
   const appearance = prepareWorkspaceAppearance({ stateRoot: state, agentRoot: agent, installRoot, project, capability: appearanceCapability(process.env) });
+  if (appearance.warning) process.stdout.write("LAB appearance: " + appearance.warning + "\n");
   writePrivate(join(agent, "settings.json"), JSON.stringify({ ...appearance.settings, defaultProvider: "lab-workspace", defaultModel: route.model, packages: [], quietStartup: false }) + "\n");
   const relayRunRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot, projectBinding: project, runRoot: run, groupId: options.relayGroup });
   const exitFile = join(run, "pi-exit");

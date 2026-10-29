@@ -16,39 +16,52 @@ export function nativeAppearanceSettings(agent: string): Record<string, unknown>
   if ([0, 1].includes(v.outputPad as number)) result.outputPad = v.outputPad;
   return result;
 }
-function materialize(agent: string, snapshot: Snapshot, capability: Capability): Record<string, unknown> {
-  const themes = join(agent, "themes"); privateDirectory(agent); privateDirectory(themes);
-  const draft = beginAppearance(snapshot), effective = resolveAppearance(draft, capability);
-  for (const [index, mode] of (["light", "dark"] as const).entries()) {
-    const value = { ...effective.preferences, mode };
-    const artifacts = buildNativeArtifacts(resolveAppearance({ ...draft, value }, capability));
-    const name = appearanceThemeNames[index]!;
-    const path = join(themes, name + ".json");
-    writePrivate(path, JSON.stringify({ ...artifacts.theme, name, ...(capability.color === "none" ? { colors: Object.fromEntries(Object.keys(artifacts.theme.colors).map(key => [key, ""])) } : {}) }) + "\n");
+/** Validate both variants before publishing artifacts or committing preferences. */
+function compile(draft: Draft, capability: Capability) {
+  const preferences = resolveAppearance(draft, { ...capability, color: "truecolor" }).preferences;
+  return (["light", "dark"] as const).map(mode => buildNativeArtifacts(resolveAppearance({ ...draft, value: { ...preferences, mode } }, capability)));
+}
+function materialize(agent: string, snapshot: Snapshot, capability: Capability): { settings: Record<string, unknown>; warning?: string } {
+  const draft = beginAppearance(snapshot), effective = resolveAppearance(draft, { ...capability, color: "truecolor" });
+  let artifacts: ReturnType<typeof compile>, warning: string | undefined;
+  try { artifacts = compile(draft, capability); }
+  catch (error) {
+    if (!(error instanceof Error) || error.message !== "BAD_CONTRAST" || capability.color !== "256") throw error;
+    // Capability changes must not lock the operator out of the repair dialog.
+    // Only this runner falls back; saved preferences remain byte-for-byte intact.
+    artifacts = compile({ ...draft, value: { ...effective.preferences, palette: { kind: "preset", name: "standard" } } }, capability);
+    warning = "Custom colors cannot preserve contrast in 256 colors. Using Standard for this run; use /lab-appearance to edit or Reset. Saved preferences are unchanged.";
   }
-  const previous = nativeAppearanceSettings(agent);
-  const hasPreferences = snapshot.project !== null || snapshot.user !== null;
+  const themes = join(agent, "themes"); privateDirectory(agent); privateDirectory(themes);
+  for (const [index, artifact] of artifacts.entries()) {
+    const name = appearanceThemeNames[index]!;
+    const colors = capability.color === "none" ? Object.fromEntries(Object.keys(artifact.theme.colors).map(key => [key, ""])) : artifact.theme.colors;
+    writePrivate(join(themes, name + ".json"), JSON.stringify({ ...artifact.theme, name, colors }) + "\n");
+  }
+  const previous = nativeAppearanceSettings(agent), hasPreferences = snapshot.project !== null || snapshot.user !== null;
   const theme = hasPreferences ? effective.preferences.mode === "terminal" ? appearanceThemeNames.join("/") : `lab-appearance-${effective.mode}` : typeof previous.theme === "string" && !previous.theme.startsWith("lab-appearance-") ? previous.theme : "system";
-  return { theme, editorPaddingX: hasPreferences ? effective.preferences.editorPaddingX : String(previous.theme ?? "").startsWith("lab-appearance-") ? 1 : previous.editorPaddingX ?? 0, outputPad: hasPreferences ? effective.preferences.outputPad : String(previous.theme ?? "").startsWith("lab-appearance-") ? 1 : previous.outputPad ?? 1 };
+  return { settings: { theme, editorPaddingX: hasPreferences ? effective.preferences.editorPaddingX : String(previous.theme ?? "").startsWith("lab-appearance-") ? 1 : previous.editorPaddingX ?? 0, outputPad: hasPreferences ? effective.preferences.outputPad : String(previous.theme ?? "").startsWith("lab-appearance-") ? 1 : previous.outputPad ?? 1 }, ...(warning ? { warning } : {}) };
 }
 function validateAgent(stateRoot: string, agentRoot: string): void {
   const rel = relative(join(stateRoot, "runs"), agentRoot);
   if (!isAbsolute(agentRoot) || resolve(agentRoot) !== agentRoot || !rel || rel === ".." || rel.startsWith(".." + sep) || isAbsolute(rel)) throw new Error("LAB_APPEARANCE_PRIVATE_PATH");
   privateDirectory(agentRoot);
 }
-export function prepareWorkspaceAppearance(options: { stateRoot: string; agentRoot: string; installRoot: string; project: ProjectBinding; capability: Capability }): { settings: Record<string, unknown>; themes: string[] } {
+export function prepareWorkspaceAppearance(options: { stateRoot: string; agentRoot: string; installRoot: string; project: ProjectBinding; capability: Capability }): { settings: Record<string, unknown>; themes: string[]; warning?: string } {
   verifyProjectBinding(options.project);
   validateAgent(options.stateRoot, options.agentRoot);
   const snapshot = loadAppearance({ stateRoot: options.stateRoot, installRoot: options.installRoot, scope: { kind: "project", binding: options.project } });
-  const settings = materialize(options.agentRoot, snapshot, options.capability);
+  const result = materialize(options.agentRoot, snapshot, options.capability);
   verifyProjectBinding(options.project);
-  return { settings, themes: appearanceThemeNames.map(name => join(options.agentRoot, "themes", name + ".json")) };
+  return { ...result, themes: appearanceThemeNames.map(name => join(options.agentRoot, "themes", name + ".json")) };
 }
 export function saveWorkspaceAppearance(options: { stateRoot: string; agentRoot: string; installRoot: string; project: ProjectBinding; capability: Capability; draft: Draft }): Snapshot {
   verifyProjectBinding(options.project);
   const scope = options.draft?.base?.scope;
   if (!scope || (scope.kind !== "user" && (scope.kind !== "project" || JSON.stringify(scope.binding) !== JSON.stringify(options.project)))) throw new Error("LAB_APPEARANCE_PROJECT_CHANGED");
   validateAgent(options.stateRoot, options.agentRoot);
+  // Reject bad staged variants before CAS; Reset must remain possible.
+  if (options.draft.value !== null) compile(options.draft, options.capability);
   const saved = applyAppearance({ stateRoot: options.stateRoot, installRoot: options.installRoot, draft: options.draft });
   const { settings } = prepareWorkspaceAppearance(options);
   const path = join(options.agentRoot, "settings.json");

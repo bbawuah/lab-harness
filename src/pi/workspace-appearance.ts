@@ -6,7 +6,7 @@ export type AppearanceUI = {
   select(title: string, choices: string[]): Promise<string | undefined>;
   input(title: string, placeholder?: string): Promise<string | undefined>;
   notify(text: string, kind?: "error" | "info"): void;
-  custom<T>(factory: (tui: { terminal: { rows: number }; requestRender(): void }, theme: unknown, keys: unknown, done: (value: T) => void) => { render(width: number): string[]; invalidate(): void; handleInput(data: string): void }): Promise<T>;
+  custom<T>(factory: (tui: { terminal: { rows: number }; requestRender(): void }, theme: unknown, keys: { matches?(data: string, action: string): boolean }, done: (value: T) => void) => { render(width: number): string[]; invalidate(): void; handleInput(data: string): void }): Promise<T>;
 };
 export function appearanceCapability(env: NodeJS.ProcessEnv): Capability {
   return { color: env.NO_COLOR !== undefined || env.TERM === "dumb" ? "none" : /truecolor|24bit/i.test(env.COLORTERM ?? "") ? "truecolor" : /256color/.test(env.TERM ?? "") ? "256" : "16", terminalAppearance: "unknown" };
@@ -18,11 +18,17 @@ function safeFailure(error: unknown): string {
   const code = error instanceof Error && /^LAB_APPEARANCE_[A-Z_]+$/.test(error.message) ? error.message : "LAB_APPEARANCE_REFUSED";
   return code + ". Reload the dialog before retrying. An IO error may have committed; do not blindly repeat Apply.";
 }
-function preferences(draft: Draft, capability: Capability): Preferences { return resolveAppearance(draft, capability).preferences; }
+function preferences(draft: Draft, capability: Capability): Preferences { return resolveAppearance(draft, { ...capability, color: "truecolor" }).preferences; }
 function patch(draft: Draft, values: Partial<Preferences>, capability: Capability): Draft { return stageAppearance(draft, { ...preferences(draft, capability), ...values }); }
+function paletteNeedsFallback(draft: Draft, capability: Capability): boolean {
+  if (capability.color !== "256") return false;
+  try { for (const mode of ["light", "dark"] as const) resolveAppearance(patch(draft, { mode }, capability), capability); return false; }
+  catch (error) { if (error instanceof Error && error.message === "BAD_CONTRAST") return true; throw error; }
+}
 /** A local sample only: no native setTheme call and no persistence before Apply. */
 export function appearanceSample(draft: Draft, capability: Capability, width: number): string[] {
-  const effective = resolveAppearance(draft, capability), cut = (s: string) => s.slice(0, Math.max(1, width));
+  const effective = paletteNeedsFallback(draft, capability) ? resolveAppearance({ ...draft, value: { ...preferences(draft, capability), palette: { kind: "preset", name: "standard" } } }, capability) : resolveAppearance(draft, capability);
+  const cut = (s: string) => s.slice(0, Math.max(1, width));
   const sample = ["> Focused control", "Text / Success: saved / Warning: check", "Error: retry (labels do not rely on color)"];
   if (capability.color !== "truecolor" && capability.color !== "256") return sample.map(cut);
   const p = effective.palette;
@@ -35,23 +41,26 @@ export function appearanceSample(draft: Draft, capability: Capability, width: nu
   return [color("focus", sample[0]!), color("text", sample[1]!), color("error", sample[2]!)];
 }
 async function menu(ui: AppearanceUI, draft: Draft, capability: Capability): Promise<Action> {
-  return ui.custom<Action>((tui, _theme, _keys, done) => {
+  return ui.custom<Action>((tui, _theme, keys, done) => {
     let index = 0;
     const p = preferences(draft, capability);
     const suffix = [draft.base.scope.kind, p.mode === "terminal" ? "follow terminal (dark fallback)" : p.mode, p.palette.kind === "preset" ? "Standard" : "Custom", String(p.editorPaddingX), String(p.outputPad), draft.value === null ? "inherited/default" : "remove saved override", "save and reload Pi resources", "discard this draft"];
     return {
       invalidate() {},
       render(width) {
+        if (width < 50 || tui.terminal.rows < 22) {
+          return ["LAB Appearance - staged", `> ${index + 1}. ${labels[index]}: ${suffix[index]}`, ...appearanceSample(draft, capability, width).slice(0, 2), "1-8 / j-k Enter; Esc cancel"].map(line => line.startsWith("\x1b") ? line : line.slice(0, Math.max(1, width)));
+        }
         const lines = ["LAB Appearance - staged sample", ...labels.map((label, i) => `${i === index ? ">" : " "} ${i + 1}. ${label}: ${suffix[i]}`), "", ...appearanceSample(draft, capability, width), "Up/Down or j/k; Enter. Esc cancels.", "Fonts/size/line height: terminal settings."];
         const height = Math.max(3, tui.terminal.rows - 4), start = Math.max(0, Math.min(index + 1 - height + 2, lines.length - height));
         return lines.slice(start, start + height).map(line => line.startsWith("\x1b") ? line : line.slice(0, Math.max(1, width)));
       },
       handleInput(data) {
-        if (data === "\x1b" || data === "\x03") { done("Cancel"); return; }
-        if (data === "\x1b[A" || data === "k") index = (index + labels.length - 1) % labels.length;
-        else if (data === "\x1b[B" || data === "j" || data === "\t") index = (index + 1) % labels.length;
+        if (keys.matches?.(data, "tui.select.cancel") || data === "\x1b" || data === "\x03") { done("Cancel"); return; }
+        if (keys.matches?.(data, "tui.select.up") || data === "\x1b[A" || data === "k") index = (index + labels.length - 1) % labels.length;
+        else if (keys.matches?.(data, "tui.select.down") || data === "\x1b[B" || data === "j" || data === "\t") index = (index + 1) % labels.length;
         else if (/^[1-8]$/.test(data)) { index = Number(data) - 1; done(labels[index]!); return; }
-        else if (data === "\r" || data === "\n") { done(labels[index]!); return; }
+        else if (keys.matches?.(data, "tui.select.confirm") || data === "\r" || data === "\n") { done(labels[index]!); return; }
         tui.requestRender();
       },
     };
@@ -65,6 +74,7 @@ export async function configureAppearance(ui: AppearanceUI, bridge: (request: Ap
   catch (error) { ui.notify(safeFailure(error), "error"); return; }
   for (;;) {
     try {
+      if (paletteNeedsFallback(draft, capability)) ui.notify("Custom palette needs repair in 256 colors. Standard is used for this run/sample. Choose Standard or Reset before Apply.", "info");
       const action = await menu(ui, draft, capability);
       if (action === "Cancel") return;
       if (action === "Scope") {
@@ -97,7 +107,7 @@ export async function configureAppearance(ui: AppearanceUI, bridge: (request: Ap
         await reload(); return;
       }
     } catch (error) {
-      if (error instanceof Error && ["INVALID_COLOR", "BAD_CONTRAST", "INVALID_INPUT"].includes(error.message)) ui.notify("Choose a #RRGGBB color with readable contrast against the background. Draft unchanged.", "error");
+      if (error instanceof Error && ["INVALID_COLOR", "BAD_CONTRAST", "INVALID_INPUT", "LAB_APPEARANCE_BAD_CONTRAST"].includes(error.message)) ui.notify("Choose #RRGGBB colors with readable contrast in both modes, or Standard/Reset. This terminal may need different colors. Draft unchanged; nothing was saved.", "error");
       else { ui.notify(safeFailure(error), "error"); return; }
     }
   }

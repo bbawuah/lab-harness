@@ -249,6 +249,7 @@
     "tests/ledger.test.ts",
     "tests/pi-acquire.test.ts",
     "tests/pi-advisory.test.ts",
+    "tests/pi-appearance-actual.test.ts",
     "tests/pi-appearance-store.test.ts",
     "tests/pi-appearance.test.ts",
     "tests/pi-fullscreen-actual.test.ts",
@@ -817,7 +818,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "5e43d8e75244f8fa3a6e851a86e1c84ca07a342ac49e0a2c58d9b23c19dd4aaa",
+      "sha256": "07b3b5f90f2b98b060115ae67309d80bb0b3658a4a1460d896d31b0313ba9e62",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -995,11 +996,11 @@
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
-      "sha256": "328aedc924a0fa0ec55eba93c1d2c4de0657007a6bfbe45f3fda8eaec041127a",
+      "sha256": "94821d0c33e8872a7d654fb667d96975e97c12dd8d38b64fc86bb8629969abd9",
       "status": "added"
     },
     "src/pi/workspace-appearance.ts": {
-      "sha256": "2984ba77d3b6a134c9c69e80f47198d10fd8974f6988094697cafc4a461206d8",
+      "sha256": "8a86ce81f0d0a87f61009113a4a20e24b9aca6ff8e50ff581f478d6f27e39576",
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
@@ -1015,7 +1016,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "376385d6e593f2fefeac06897eee2a193f6c0dfbe0321b3b9f51b58a67917bc7",
+      "sha256": "597f044cf177e5e62de965961b1b961a2a5c8224ece34d6102e4a7c5d711e664",
       "status": "added"
     },
     "src/project.ts": {
@@ -1144,6 +1145,10 @@
       "sha256": "8683d643bbe949309879226cad81573ec612f20b20c4cb8ea6b8a26da0089f42",
       "status": "added"
     },
+    "tests/pi-appearance-actual.test.ts": {
+      "sha256": "f47ab40a8cedf76433375a79879bc1a7560cd513893459156ea3723408ee3fdd",
+      "status": "added"
+    },
     "tests/pi-appearance-store.test.ts": {
       "sha256": "7ab08291379b573f49c99761d171339a5e7ef1dbaeae877e759e6f3dd63ec97a",
       "status": "added"
@@ -1161,7 +1166,7 @@
       "status": "added"
     },
     "tests/pi-workspace-appearance.test.ts": {
-      "sha256": "baf55482339c1abc1d41d9104cbee9569ceee1cc6dd23068d97d3222c6d0d110",
+      "sha256": "f9fe7b99f7388c130523e50119ed59d40964237e7cbc90ca2a33fd9ea3e60e9d",
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {
