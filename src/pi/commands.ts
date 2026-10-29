@@ -3,6 +3,7 @@ import { relayTools } from "./relay-extension.ts";
 export const shellOptions = [
   ["--project DIR", "Open another existing project (paths with spaces work)."],
   ["--configure", "Change the saved endpoint, model and private key."],
+  ["--single-pane", "Open only Pi, useful in a narrow terminal; no right-hand shell is started."],
   ["--offline", "Require cached runtime dependencies; model requests may still use the network."],
   ["--relay-group ID", "Use an explicitly configured cross-project Relay allowlist; default is project-only."],
   ["--help", "Show this help without starting Pi or a model request."],
@@ -20,14 +21,16 @@ export function workspaceHelp(): string {
     ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
+    "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",
     "Tool-capable models receive lab_search, lab_files and relay_peers/send/inbox/ack automatically. Skills load only through your explicit command.",
     "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }
 export function shellHelp(): string {
   return ["LAB-HARNESS — interactive AI coding in your project",
-    "Usage: lab [--project DIR] [--configure] [--offline] [--relay-group ID] [--help]",
+    "Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]",
     "Run lab from a project; from home, choose an existing project folder.",
+    "Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.",
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),
     "Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.",
     "You provide the model server or service. Setup sends no model prompt and installs no weights.",

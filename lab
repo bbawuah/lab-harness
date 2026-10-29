@@ -3,13 +3,17 @@
 set -eu
 umask 077
 lab_caller_cwd=$(pwd -P 2>/dev/null) || lab_caller_cwd=
+# Preserve the user's shell values before the launcher applies Bun/LAB caches.
+if [ "${PATH+x}" = x ]; then export LAB_CALLER_PATH_PRESENT=1 LAB_CALLER_PATH="$PATH"; else export LAB_CALLER_PATH_PRESENT=0; unset LAB_CALLER_PATH; fi
+if [ "${BUN_INSTALL_CACHE_DIR+x}" = x ]; then export LAB_CALLER_BUN_CACHE_PRESENT=1 LAB_CALLER_BUN_CACHE="$BUN_INSTALL_CACHE_DIR"; else export LAB_CALLER_BUN_CACHE_PRESENT=0; unset LAB_CALLER_BUN_CACHE; fi
+if [ "${BUN_RUNTIME_TRANSPILER_CACHE_PATH+x}" = x ]; then export LAB_CALLER_BUN_TRANSPILE_PRESENT=1 LAB_CALLER_BUN_TRANSPILE="$BUN_RUNTIME_TRANSPILER_CACHE_PATH"; else export LAB_CALLER_BUN_TRANSPILE_PRESENT=0; unset LAB_CALLER_BUN_TRANSPILE; fi
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 lab_offline=0
 lab_expect_value=
 lab_has_project=0
 for lab_arg in "$@"; do
   if [ -n "$lab_expect_value" ]; then [ "$lab_expect_value" != project ] || lab_has_project=1; lab_expect_value=; continue; fi
-  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; --project) lab_expect_value=project;; --relay-group) lab_expect_value=group;; *) printf 'Usage: lab [--project DIR] [--configure] [--offline] [--relay-group ID] [--help]\n' >&2; exit 1;; esac
+  case "$lab_arg" in --configure|--help|--single-pane) ;; --offline) lab_offline=1;; --project) lab_expect_value=project;; --relay-group) lab_expect_value=group;; *) printf 'Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]\n' >&2; exit 1;; esac
 done
 [ -z "$lab_expect_value" ] || { printf 'LAB: --project/--relay-group requires its directory or ID.\n' >&2; exit 1; }
 [ -n "$lab_caller_cwd" ] || [ "$lab_has_project" = 1 ] || { printf 'LAB: caller directory is unavailable. Run from your project or use --project DIR.\n' >&2; exit 1; }

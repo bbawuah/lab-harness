@@ -46,6 +46,7 @@ After PATH is verified, launch from your project:
 lab
 lab --project "/path/to/my project"
 lab --configure
+lab --single-pane
 lab --help
 ~~~
 
@@ -55,6 +56,29 @@ opening. There is no background service or automatic extra agent launch.
 Each normal launch starts a new native session; previous sessions remain in
 private state. Your selected project drives Pi's cwd, LAB search and project
 skills, while installed runtime and private settings stay separate.
+
+The default workspace has fullscreen Pi on the left and your regular
+interactive shell on the right. Both start in the selected project; your shell
+startup files may intentionally change its directory. The Pi composer stays at
+the bottom while the conversation scrolls above it.
+
+Use Ctrl+B, then h or l to focus left or right; Ctrl+B, then Tab cycles panes.
+Ctrl+B, then z zooms the focused pane, and Ctrl+B, then ? lists Herdr controls.
+These are prefix sequences, rather than keys held together. Ctrl+C goes to the
+focused pane. Closing the right shell leaves Pi running; /exit in Pi leaves the
+whole workspace and cleans its owned terminal processes.
+
+For a narrow terminal, zoom a pane or start with lab --single-pane. That option
+starts Pi alone and creates no right-hand shell. There is no automatic split
+folding or shell restart on resize. Your regular shell retains its own startup,
+PATH and theme; LAB does not rewrite shell profiles or terminal fonts.
+
+Inside Pi, PageUp/PageDown scroll the transcript and Ctrl+Home/Ctrl+End go to
+its beginning/latest output. Home/End and multiline arrows retain editor
+behavior. Output arriving while scrolled away does not force a jump to latest.
+The [standalone qualification report](evidence/fullscreen/report.md) documents a
+remaining delayed fragmented mouse-input case; it does not establish physical
+mouse behavior in every terminal. Keyboard navigation remains available.
 
 If the command is not available, use the exact stable launcher:
 
@@ -100,6 +124,7 @@ Model tools are functions the model may call, rather than commands you type.
 | Shell | lab | Open current project; from home, choose a project |
 | Shell | lab --project DIR | Select an existing project, quote shell paths with spaces |
 | Shell | lab --configure | Change explicit endpoint/model/private key |
+| Shell | lab --single-pane | Open Pi alone, useful in a narrow terminal |
 | Shell | lab --offline | Require cached runtime dependencies; inference network still possible |
 | Shell | lab --relay-group ID | Select an explicitly prepared cross-project Relay allowlist; unnecessary for normal project sessions |
 | Shell | lab --help | Show current launcher help without opening Pi |

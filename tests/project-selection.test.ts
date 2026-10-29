@@ -12,7 +12,7 @@ function fixture() {
   // Real public bootstrap, launcher, CLI, selection, route setup and workspace.
   // Dependency acquisition/verification and final attachment are fixture adapters;
   // no provider or model is started by this regression.
-  for (const path of ["lab", "scripts/start.ts", "src/project.ts", "src/util.ts", "src/pi/commands.ts", "src/pi/relay-extension.ts", "src/pi/workspace.ts", "src/pi/workspace-config.ts", "src/pi/workspace-project.ts"]) copyFileSync(resolve(import.meta.dir, "..", path), join(source, path));
+  for (const path of ["lab", "scripts/start.ts", "src/project.ts", "src/util.ts", "src/herdr/shell.ts", "src/pi/commands.ts", "src/pi/relay-extension.ts", "src/pi/workspace.ts", "src/pi/workspace-config.ts", "src/pi/workspace-project.ts"]) copyFileSync(resolve(import.meta.dir, "..", path), join(source, path));
   writeFileSync(join(source, "scripts/runtime-bun.sh"), 'lab_bun="$TEST_REAL_BUN"\n');
   writeFileSync(join(source, "install.sh"), "#!/bin/sh\nexit 0\n", { mode: 0o700 });
   writeFileSync(join(source, "src/runtime/verify.ts"), "export function verifyInstalledRuntime(){}\n");

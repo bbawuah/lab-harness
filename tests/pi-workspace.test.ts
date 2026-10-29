@@ -18,7 +18,7 @@ test("native launch uses caller or explicit project B while all startup writes s
   for(const path of [join(install,"src/pi"),join(install,"src/runtime"),join(install,"src/herdr"),join(install,"src/relay"),join(install,"contracts"),join(install,".tmp/rg"),project,home]) mkdirSync(path,{recursive:true,mode:0o700});
   // Exercise the actual entry/config/project code in an isolated installation.
   // Only pinned dependency verification and terminal attachment are fixture adapters.
-  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
+  for(const path of ["pi/workspace.ts","pi/workspace-config.ts","pi/workspace-project.ts","herdr/shell.ts","project.ts","util.ts"]) copyFileSync(resolve(import.meta.dir,"../src",path),join(install,"src",path));
   writeFileSync(join(install,"src/runtime/pi.ts"),'export function verifyPiRuntime(){return {command:["/verified/pi"],version:"fixture"};}\n');
   writeFileSync(join(install,"src/herdr/interactive.ts"),'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.CAPTURE_PATH,JSON.stringify(options));return 0;}\n');
   writeFileSync(join(install,"src/relay/workspace.ts"),'import {writeFileSync} from "node:fs";import {join} from "node:path";export function provisionWorkspaceRelayRun(options){const path=join(options.runRoot,"relay-run.json");writeFileSync(path,"fixture",{mode:0o600});return path;}\n');
@@ -30,9 +30,11 @@ test("native launch uses caller or explicit project B while all startup writes s
   writeFileSync(join(state,"route.json"),JSON.stringify({version:1,kind:"local",endpoint:"http://127.0.0.1:9/v1",model:"fixture-no-inference"}),{mode:0o600});
   writeFileSync(join(state,"key"),"",{mode:0o600});
   const beforeInstall=snapshot(install),beforeProject=snapshot(project),capture=join(root,"launch.json");
-  const env:NodeJS.ProcessEnv={...process.env,HOME:home,CAPTURE_PATH:capture}; delete env.LAB_WORKSPACE_STATE_ROOT;
-  for(const explicit of [false,true]) {
-    const code=`import {runInteractiveWorkspace} from ${JSON.stringify(join(install,"src/pi/workspace.ts"))}; Object.defineProperty(process.stdin,"isTTY",{value:true}); Object.defineProperty(process.stdout,"isTTY",{value:true}); process.exitCode=await runInteractiveWorkspace(${explicit?JSON.stringify({project}):"{}"});`;
+  // A captured RegularShell includes its input environment. Keep this fixture
+  // entirely synthetic rather than serializing the developer's real environment.
+  const env:NodeJS.ProcessEnv={HOME:home,CAPTURE_PATH:capture,PATH:"/usr/bin:/bin",SHELL:"/bin/sh",LANG:"C",LAB_CALLER_PATH_PRESENT:"1",LAB_CALLER_PATH:"/synthetic/original-bin",BUN_INSTALL_CACHE_DIR:"/app-injected-cache",LAB_CALLER_BUN_CACHE_PRESENT:"0",BUN_RUNTIME_TRANSPILER_CACHE_PATH:"/app-injected-transpiler",LAB_CALLER_BUN_TRANSPILE_PRESENT:"1",LAB_CALLER_BUN_TRANSPILE:"/synthetic/original-transpiler"};
+  for(const [explicit,singlePane] of [[false,false],[true,false],[true,true]]) {
+    const code=`import {runInteractiveWorkspace} from ${JSON.stringify(join(install,"src/pi/workspace.ts"))}; Object.defineProperty(process.stdin,"isTTY",{value:true}); Object.defineProperty(process.stdout,"isTTY",{value:true}); process.exitCode=await runInteractiveWorkspace(${JSON.stringify({...(explicit?{project}:{}),singlePane})});`;
     const result=Bun.spawnSync([process.execPath,"--no-env-file","--no-install","--eval",code],{cwd:explicit?install:project,env});
     expect(result.stderr.toString()).toBe(""); expect(result.exitCode).toBe(0);
     const launch=JSON.parse(readFileSync(capture,"utf8"));
@@ -46,6 +48,17 @@ test("native launch uses caller or explicit project B while all startup writes s
     expect(launch.executable).toBe(join(install,".tmp/herdr/herdr"));
     expect(launch.command).toContain(join(install,"src/pi/workspace-extension.ts"));
     expect(launch.command).toContain("/verified/pi");
+    expect(launch.command).toContain("--tui-mode"); expect(launch.command).toContain("fullscreen");
+    if(singlePane) expect(launch.shell).toBeUndefined();
+    else {
+      expect(launch.shell.executable).toBe("/bin/sh");
+      expect(launch.shell.environment.PATH).toBe("/synthetic/original-bin");
+      expect(launch.shell.environment.BUN_INSTALL_CACHE_DIR).toBeUndefined();
+      expect(launch.shell.environment.BUN_RUNTIME_TRANSPILER_CACHE_PATH).toBe("/synthetic/original-transpiler");
+      expect(launch.shell.environment.LAB_CALLER_PATH_PRESENT).toBeUndefined();
+      expect(launch.shell.environment.LAB_WORKSPACE_API_KEY).toBeUndefined();
+      expect(launch.shell.environment.LAB_RELAY_RUN_REF).toBeUndefined();
+    }
     expect(launch.command).not.toContain("--resume");
     expect(launch.stateRoot.startsWith(join(state,"runs/h-"))).toBe(true);
     expect(launch.command[1]).toBe(join(launch.stateRoot,"pi.sh"));

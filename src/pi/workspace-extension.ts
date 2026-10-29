@@ -56,7 +56,7 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
 export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   pi.registerCommand("exit", { description: "Exit this native Pi workspace (alias for /quit)", async handler(_args, ctx) { ctx.shutdown(); } });
   pi.registerCommand("lab-help", { description: "Show LAB workspace commands", async handler() {
-    pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true });
+    pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true }, { triggerTurn: false });
   } });
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
@@ -72,7 +72,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
     pi.registerCommand(name, { description, async handler(args, ctx) {
       try {
         const result = await callWorkspaceBridge({ action, query: args.trim() });
-        pi.sendMessage({ customType: `lab-${action}`, content: typeof result === "string" ? result : JSON.stringify(result, null, 2), display: true });
+        pi.sendMessage({ customType: `lab-${action}`, content: typeof result === "string" ? result : JSON.stringify(result, null, 2), display: true }, { triggerTurn: false });
       } catch { ctx.ui.notify("LAB operation refused: missing, ambiguous, stale, or unavailable source. Use /lab-skills for exact IDs.", "error"); }
     } });
   }

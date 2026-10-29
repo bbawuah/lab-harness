@@ -17,7 +17,7 @@ for (let index = 0; index < args.length; index++) {
     const value = args[++index];
     if (relayGroup || !value || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(value)) { console.error("LAB: use --relay-group ID once; configure its private project allowlist first."); process.exit(2); }
     relayGroup = value;
-  } else if (!["--help", "--configure", "--offline"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
+  } else if (!["--help", "--configure", "--offline", "--single-pane"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
 }
 if (args.includes("--help")) {
   console.log(shellHelp());
@@ -37,12 +37,12 @@ try {
     if (code !== 0) process.exit(code);
   }
   const { runInteractiveWorkspace } = await import("../src/pi/workspace.ts");
-  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup };
+  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup, singlePane: args.includes("--single-pane") };
   process.exitCode = await runInteractiveWorkspace(workspaceOptions);
 } catch (error) {
   // These are local startup errors. Never dump arbitrary provider or input payloads.
   const code = error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : "WORKSPACE_START_FAILED";
-  const message = code === "PROJECT_SELECTION_CANCELLED" ? "Project selection cancelled; no workspace started." : code.startsWith("RELAY_") ? code + ". Check the selected project, private Relay state and explicit group configuration." : code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
+  const message = code === "PROJECT_SELECTION_CANCELLED" ? "Project selection cancelled; no workspace started." : error instanceof Error && /^(?:User shell|Invalid shell environment)/.test(error.message) ? `${error.message}. Use lab --single-pane to open Pi without the regular shell.` : code.startsWith("RELAY_") ? code + ". Check the selected project, private Relay state and explicit group configuration." : code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
     ? error.message : `${code}. Check installation and local route; use ./lab --configure to change it.`;
   console.error(`LAB: ${message}`);
   process.exitCode = 1;
