@@ -207,7 +207,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "f2377973b06f8b5c85e0f733c2545a5fab30a3f309250e0b338527cda6ec5dfb",
+      "sha256": "a646f6e660913ee2a8b8976dc7dedd384b2fc2d7bc84926d5d027b26f10fb584",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -316,7 +316,7 @@
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
-      "sha256": "59da4e0b1cd3a8866af1d4d89a1395459374274cec73740f795e8bc59c0d3a05",
+      "sha256": "0da616bdbd3af0b6244ea83ce056fc00d0970a1cce691ebfc65575355f882a00",
       "status": "added"
     },
     "docs/media/PROVENANCE.json": {
@@ -638,7 +638,7 @@
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
     },
     "tests/bootstrap.test.ts": {
-      "sha256": "9649d09afdf43490d800f8cec51b12752e89f6cf3f0ec0698d186d96e59a8878",
+      "sha256": "1232d3d900e83f4aaaa63442601ff0e1d61c54fa3b98df87ba900a904fd18cce",
       "status": "added"
     },
     "tests/cleanup-child.ts": {
@@ -679,7 +679,7 @@
       "status": "added"
     },
     "tests/herdr-interactive.test.ts": {
-      "sha256": "1dfb803253ae8dffb44c896023cd1efae448d27ecda1b17bc853fc600c0887b5",
+      "sha256": "fb05ecc38475425d4b535c1c7586ef33b79947e89a8d370ceceed20d625c094f",
       "status": "added"
     },
     "tests/herdr-protocol.test.ts": {

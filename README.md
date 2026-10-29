@@ -70,11 +70,12 @@ verified instructions; ambiguous origins require the exact displayed origin
 and path. Discovery does not execute skill scripts. Native Pi provides its
 coding tools and session behavior. `/exit` exits the workspace.
 
-**The interactive workspace has no LAB ledger task authority.** Controlled
+**LAB does not submit this workspace as a controlled ledger task.** Controlled
 `activate-pi` execution remains unavailable: request admission is unqualified
 across retries, compaction, auth/routing and native session behavior. The TUI
 runs useful native Pi coding while the separate operator ledger retains explicit
-acceptance. [Mode boundary and source evidence](docs/pi-seam.md).
+acceptance. Native shell/file tools run as your user; this workflow separation is
+not an OS sandbox. [Mode boundary and source evidence](docs/pi-seam.md).
 
 ## Secondary demonstrations
 

@@ -24,7 +24,8 @@ function fixture() {
   symlinkSync(Bun.which(hashName)!, join(bin, hashName));
   executable(join(bin, "curl"), 'while [ "$#" -gt 0 ]; do if [ "$1" = -o ]; then shift; cp "$TEST_ARCHIVE" "$1"; exit 0; fi; shift; done; exit 94');
   symlinkSync(Bun.which("cp")!, join(bin, "cp"));
-  const env = { PATH: bin, HOME: home, TEST_ARCHIVE: archive, TEST_LOG: log, TEST_BOOTSTRAP_SCRIPT: script, SHELL: "/bin/sh", TERM: "xterm-256color" };
+  for (const tool of ["git", "bun", "pi"]) executable(join(bin, tool), 'printf "unexpected prerequisite\\n" >> "$TEST_LOG"; exit 99');
+  const env = { PATH: `${bin}:/usr/bin:/bin`, HOME: home, TEST_ARCHIVE: archive, TEST_LOG: log, TEST_BOOTSTRAP_SCRIPT: script, SHELL: "/bin/sh", TERM: "xterm-256color" };
   const run = (args: string[] = [], extra: Record<string, string> = {}) => Bun.spawnSync(["/bin/sh", script, ...args], { env: { ...env, ...extra }, stdout: "pipe", stderr: "pipe", timeout: 10000 });
   const calls = () => { try { return readFileSync(log, "utf8"); } catch { return ""; } };
   return { root, home, script, archive, env, run, calls, destination: join(home, ".local/share/lab-harness/releases", "a".repeat(40)), clean: () => rmSync(root, { recursive: true, force: true }) };
@@ -33,9 +34,9 @@ function fixture() {
 test("public bootstrap installs outside a checkout without Git/Bun/Pi, reuses verified source and quotes owned launcher", () => {
   const f = fixture();
   try {
-    const first = f.run(); expect(first.exitCode).toBe(0); expect(f.calls()).toBe("install\n");
+    const first = f.run(); expect(first.exitCode, first.stderr.toString().slice(-2000) + first.stdout.toString().slice(-1000)).toBe(0); expect(f.calls()).toBe("install\n");
     expect(first.stdout.toString()).toContain("Installation only");
-    expect(f.run(["--install-only"]).exitCode).toBe(0); expect(f.calls()).toBe("install\ninstall\n");
+    const second = f.run(["--install-only"]); expect(second.exitCode, second.stderr.toString().slice(-2000)).toBe(0); expect(f.calls()).toBe("install\ninstall\n");
     const launcher = readFileSync(join(f.home, ".local/share/lab-harness/lab"), "utf8");
     expect(launcher).toContain("LAB_WORKSPACE_STATE_ROOT");
     expect(Bun.spawnSync(["/bin/sh", "-n"], { input: launcher }).exitCode).toBe(0);
@@ -47,7 +48,7 @@ test("bootstrap checksum, existing-source and installation failures never report
   const f = fixture();
   try {
     expect(f.run([], { TEST_INSTALL_STATUS: "37" }).exitCode).not.toBe(0); expect(f.calls()).toBe("install\n");
-    expect(f.run().exitCode).toBe(0);
+    const repaired = f.run(); expect(repaired.exitCode, repaired.stderr.toString().slice(-2000)).toBe(0);
     writeFileSync(join(f.destination, "install.sh"), "modified source");
     expect(f.run().stderr.toString()).toContain("Installed release source changed");
     writeFileSync(f.archive, "corrupt");

@@ -14,8 +14,9 @@ Installation never prompts a model, chooses a paid route or downloads weights.
 ## Mode boundary
 
 The new workspace is native Pi interactive coding with LAB search and explicitly
-loaded skills. It is not controlled LAB task execution: it cannot grant, ingest
-or accept ledger tasks. The controlled `activate-pi` refusal remains intact.
+loaded skills. It is not controlled LAB task execution: the integration does not grant, ingest
+or accept ledger tasks. Native shell tools still run as the user; this is a
+workflow separation, not a same-user security boundary. The controlled `activate-pi` refusal remains intact.
 The workspace header describes the active workspace and the separate controlled
 execution limitation; it must not falsely label an executing workspace blocked.
 Pi's native tool/auth/session behavior is not an enforceable LAB request gate.
