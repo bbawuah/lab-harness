@@ -39,7 +39,9 @@ client destination; LAB installs no gateway. Once configured, type a prompt.
 The stable launcher is `${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab`.
 Setup prints an explicit PATH command if you want to run `lab` by name; profiles
 are untouched. Releases live under the adjacent `releases/<commit>` directory;
-route, key and native Pi sessions persist in the private `workspace` directory.
+route, key and native Pi sessions persist beneath
+`$HOME/.local/share/lab-harness/workspace`, including when releases use an
+external `XDG_DATA_HOME`.
 Rerun the public command to install the pinned release, verify existing source,
 repair missing runtimes, and update the owned launcher. Unrecognized existing
 launchers or modified source are refused with instructions. Old releases remain

@@ -54,7 +54,7 @@ main() {
   fi
   # A stable launcher points at this immutable release; profile changes are explicit.
   printf '#!/bin/sh\n# LAB-HARNESS owned launcher\nexport LAB_WORKSPACE_STATE_ROOT=' > "$bootstrap_stage/lab"
-  bootstrap_quote "$bootstrap_root/workspace" >> "$bootstrap_stage/lab"
+  bootstrap_quote "$HOME/.local/share/lab-harness/workspace" >> "$bootstrap_stage/lab"
   printf '\nexec ' >> "$bootstrap_stage/lab"
   bootstrap_quote "$bootstrap_destination/lab" >> "$bootstrap_stage/lab"
   printf ' "$@"\n' >> "$bootstrap_stage/lab"

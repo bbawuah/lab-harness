@@ -8,7 +8,7 @@ import type { Candidate } from "./protocol.ts";
 
 /** Exact working bytes of the declared publishable source closure, including its manifest. */
 export function captureCandidate(): Candidate {
-  const git = spawnSync("git", ["rev-parse", "HEAD"], { cwd: CONCEPT_ROOT, encoding: "utf8", timeout: 1000, maxBuffer: 1024, shell: false });
+  const git = spawnSync("git", ["rev-parse", "HEAD"], { cwd: CONCEPT_ROOT, encoding: "utf8", timeout: 5000, maxBuffer: 1024, shell: false });
   requireThat(git.status === 0 && /^[a-f0-9]{40}\n?$/.test(git.stdout), "CANDIDATE_HEAD_UNAVAILABLE");
   const manifest = JSON.parse(readFileSync(join(CONCEPT_ROOT, "docs/source-manifest.json"), "utf8")) as { publicationFileAllowlist: string[] };
   requireThat(Array.isArray(manifest.publicationFileAllowlist) && manifest.publicationFileAllowlist.length < 10000, "INVALID_CANDIDATE_MANIFEST");

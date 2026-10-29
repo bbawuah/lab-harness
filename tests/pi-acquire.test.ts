@@ -40,9 +40,9 @@ try {
   console.log(JSON.stringify(result));
 } catch (error) { console.error(error instanceof Error ? error.message : String(error)); process.exitCode = 1; }
 `);
-  const run = async (action = "acquire", cli = false, cliArgs: string[] = []) => {
+  const run = async (action = "acquire", cli = false, cliArgs: string[] = [], extraEnv: Record<string, string> = {}) => {
     const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", cli ? join(local, "scripts/pi/acquire.ts") : join(local, "driver.ts"), ...(cli ? cliArgs : [action])], {
-      cwd: root, env: { PATH: "/usr/bin:/bin", HOME: root }, stdout: "pipe", stderr: "pipe",
+      cwd: root, env: { PATH: "/usr/bin:/bin", HOME: root, ...extraEnv }, stdout: "pipe", stderr: "pipe",
     });
     const [code, stdout, stderr] = await Promise.all([child.exited, new Response(child.stdout).text(), new Response(child.stderr).text()]);
     return { code, stdout, stderr };
@@ -232,6 +232,7 @@ test("acquisition CLI supports --offline, reports exact runtime JSON and rejects
   const f = fixture();
   try {
     expect((await f.run("", true, ["--offline"])).code).toBe(1);
+    expect((await f.run("", true, [], { LAB_INSTALL_OFFLINE: "1" })).code).toBe(1);
     expect((await f.run("", true, ["--unknown"])).code).toBe(2);
     expect((await f.run("", true, ["--offline", "--offline"])).code).toBe(2);
     expect(f.requests()).toBe(0);

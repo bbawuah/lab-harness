@@ -21,7 +21,7 @@ function fixture() {
   writeFileSync(script, text);
   for (const name of ["uname", "tar", "mktemp", "diff", "find", "sed", "mkdir", "mv", "rm", "chmod", "head", "tail", "grep", "cat", "sh"]) symlinkSync(Bun.which(name)!, join(bin, name));
   const hashName = Bun.which("sha256sum") ? "sha256sum" : "shasum";
-  symlinkSync(Bun.which(hashName)!, join(bin, hashName));
+  executable(join(bin, hashName), `exec '${Bun.which(hashName)!.replace(/'/g, "'\\''")}' "$@"`);
   executable(join(bin, "curl"), 'while [ "$#" -gt 0 ]; do if [ "$1" = -o ]; then shift; cp "$TEST_ARCHIVE" "$1"; exit 0; fi; shift; done; exit 94');
   symlinkSync(Bun.which("cp")!, join(bin, "cp"));
   for (const tool of ["git", "bun", "pi"]) executable(join(bin, tool), 'printf "unexpected prerequisite\\n" >> "$TEST_LOG"; exit 99');
@@ -39,7 +39,7 @@ test("public bootstrap installs outside a checkout without Git/Bun/Pi, reuses ve
     const second = f.run(["--install-only"]); expect(second.exitCode, second.stderr.toString().slice(-2000)).toBe(0); expect(f.calls()).toBe("install\ninstall\n");
     const launcher = readFileSync(join(f.home, ".local/share/lab-harness/lab"), "utf8");
     expect(launcher).toContain("LAB_WORKSPACE_STATE_ROOT");
-    expect(Bun.spawnSync(["/bin/sh", "-n"], { input: launcher }).exitCode).toBe(0);
+    expect(Bun.spawnSync(["/bin/sh", "-n", join(f.home, ".local/share/lab-harness/lab")]).exitCode).toBe(0);
     expect(readFileSync(join(f.destination, "lab"), "utf8")).toContain("TTY_READY");
   } finally { f.clean(); }
 });

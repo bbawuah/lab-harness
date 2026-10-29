@@ -7,6 +7,7 @@ lab_hash() {
   else lab_fail 'SHA-256 utility missing (sha256sum or shasum required).'; fi
 }
 lab_digest() { lab_hash_output=$(lab_hash "$1") || exit 1; printf '%s\n' "${lab_hash_output%% *}"; }
+lab_single_link() { lab_link_info=$(LC_ALL=C ls -ld "$1") || return 1; set -- $lab_link_info; [ "$2" = 1 ]; }
 lab_directory() {
   [ ! -L "$1" ] || lab_fail "Refusing symlink directory: $1"
   if [ -e "$1" ]; then [ -d "$1" ] || lab_fail "Expected directory: $1";
@@ -33,8 +34,8 @@ lab_directory "$project_root/.tmp/bun"
 lab_directory "$project_root/.tmp/bun/$lab_required_bun"
 
 if [ -e "$lab_local_bun" ] || [ -L "$lab_local_bun" ]; then
-  [ -f "$lab_local_bun" ] && [ ! -L "$lab_local_bun" ] || lab_fail 'Unsafe local Bun entry.'
-  if [ "$(lab_digest "$lab_local_bun")" = "$lab_binary_hash" ]; then lab_bun=$lab_local_bun;
+  [ -f "$lab_local_bun" ] && [ ! -L "$lab_local_bun" ] && lab_single_link "$lab_local_bun" || lab_fail 'Unsafe local Bun entry.'
+  if [ "$(lab_digest "$lab_local_bun")" = "$lab_binary_hash" ]; then chmod 700 "$lab_local_bun"; lab_bun=$lab_local_bun;
   elif [ "$lab_offline" = 1 ]; then lab_fail 'Local Bun checksum mismatch; rerun online to repair.'; fi
 elif command -v bun >/dev/null 2>&1; then
   # An existing exact runtime is optional; a different version is left untouched.

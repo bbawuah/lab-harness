@@ -149,6 +149,7 @@
     "src/util.ts",
     "src/workspace.ts",
     "tests/bootstrap.test.ts",
+    "tests/bun-bootstrap.test.ts",
     "tests/cleanup-child.ts",
     "tests/cleanup.test.ts",
     "tests/context-cli.test.ts",
@@ -207,7 +208,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "a646f6e660913ee2a8b8976dc7dedd384b2fc2d7bc84926d5d027b26f10fb584",
+      "sha256": "fab3f52851b36077e39e8f60f17322f4b13328156ca4cf98bfef4427d771741c",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -239,7 +240,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "67a712e8a0211728bff33362322343cb1a28567e90b6d1c06075cf8c19e0a57b",
+      "sha256": "33cacf2ae3ba0e1bf751dd0b75cb3d67c335cde9764d9c216fb5dfc57c554102",
       "status": "added"
     },
     "bun.lock": {
@@ -452,7 +453,7 @@
       "status": "added"
     },
     "install.sh": {
-      "sha256": "f724bc44f4ddea0b179e62ef5969eee8dc419f06eda9db5d078b8155d5887b62",
+      "sha256": "7fb95d970ed7ab73e07af751b5789a202de6ab3d4c1534cbe80c7787e2c5d032",
       "status": "added"
     },
     "lab": {
@@ -492,7 +493,7 @@
       "status": "added"
     },
     "scripts/pi/acquire.ts": {
-      "sha256": "d9acfd357bd9149a5c00ea59295bb86dd7ea3b8d9739a4d8be363a6337dafe5e",
+      "sha256": "a816121729f025a61c50c899b1a21dad46ab5007c234ab6c896d6067c93e185c",
       "status": "added"
     },
     "scripts/pi/derive-terminal-mark.ts": {
@@ -516,7 +517,7 @@
       "status": "added"
     },
     "scripts/runtime-bun.sh": {
-      "sha256": "625681754adf883b05a878b83f32ea6ae9877723ba532aeae712ef885f1c561c",
+      "sha256": "6e05445f36fa00c33bdd334241bdaa2589b5dac201b2b0c901a0949a2bdeb499",
       "status": "added"
     },
     "scripts/start.ts": {
@@ -534,7 +535,7 @@
       "originalSHA256": "b085014d6ef2e456cdd736ef846935cbd0f92be0bd10ce6a11907598c89798d3"
     },
     "src/candidate.ts": {
-      "sha256": "224a31c39b2925ade563eeb30ed5867862a2a8dbdc36c702b99584b9778ff514",
+      "sha256": "ca32c1f428ceae6f10f9d11a20cab6e5dc8c09315c5a826aff106bb51cb7eea2",
       "status": "added"
     },
     "src/cli.ts": {
@@ -638,7 +639,11 @@
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
     },
     "tests/bootstrap.test.ts": {
-      "sha256": "1232d3d900e83f4aaaa63442601ff0e1d61c54fa3b98df87ba900a904fd18cce",
+      "sha256": "69ea9719fcb9c8fada600b26bb2b99755b59663e3755e327ece9b36c97365516",
+      "status": "added"
+    },
+    "tests/bun-bootstrap.test.ts": {
+      "sha256": "0faa47dcad069850c3b442155c8f50d2a50ee7d28f894d0158fbbcfef65c057a",
       "status": "added"
     },
     "tests/cleanup-child.ts": {
@@ -679,7 +684,7 @@
       "status": "added"
     },
     "tests/herdr-interactive.test.ts": {
-      "sha256": "fb05ecc38475425d4b535c1c7586ef33b79947e89a8d370ceceed20d625c094f",
+      "sha256": "bb8a3a43e0d270a105bb35ceae20cc8071749945a822257190eb5fc6dbb5fb19",
       "status": "added"
     },
     "tests/herdr-protocol.test.ts": {
@@ -691,7 +696,7 @@
       "status": "added"
     },
     "tests/install.test.ts": {
-      "sha256": "c9ac44793048290b98fff0a7115ace9ecd5072c8df407224c98f6b8fc7f2f93f",
+      "sha256": "c00db2343191353dca7056924d8fce4c0478a8e38a279fb3f529809cc3a69d32",
       "status": "added"
     },
     "tests/ledger.test.ts": {
@@ -700,7 +705,7 @@
       "originalSHA256": "c71f22e648d011f782dac8c216fffbcb1ceaba87ce83a683d1a2a70e3493698c"
     },
     "tests/pi-acquire.test.ts": {
-      "sha256": "ad6e42b30c69e5608fe616a53e1aed4253c008cb90ba4c702bc8e51aaeb190e0",
+      "sha256": "61e2e71921d6f3c429606197c3992a6f3bb273ef01cd48d184f7f4f4cfa5f1b9",
       "status": "added"
     },
     "tests/pi-advisory.test.ts": {
