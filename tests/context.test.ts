@@ -42,3 +42,9 @@ test("context detects tampered snippet, line provenance and missing skill verifi
   const loaded = buildContext(workspace.root, { ...selection, skills }, () => true);
   expect(() => verifyContext(workspace.root, loaded.pack, () => false)).toThrow("STALE_OR_UNVERIFIED_SKILL");
 });
+test("context refuses a different workspace even when its selected bytes are identical", () => {
+  const { workspace, selection, f } = selected(), result = buildContext(workspace.root, selection);
+  const other = new Workspace(join(f.root, "other"));
+  writeFileSync(join(other.root, "module.ts"), workspace.read("module.ts").text);
+  expect(() => verifyContext(other.root, result.pack)).toThrow("CONTEXT_WORKSPACE_MISMATCH");
+});

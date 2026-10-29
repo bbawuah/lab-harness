@@ -47,6 +47,7 @@ export async function terminalDemo(): Promise<Record<string, unknown>> {
     send({ kind: "started" });
     const terminal = await runHerdrSmoke({ stateRoot: tmp });
     verifyContext(workspace, selected.pack);
+    requireThat(canonical(captureCandidate()) === canonical(candidate), "STALE_CANDIDATE");
     requireThat(terminal.stopped && /^LAB_HERDR_OK_[0-9a-f]{16}\r?\n/.test(terminal.observedOutput), "DEMO_TERMINAL_EVIDENCE_FAILED");
     const evidence = { label: terminal.label, sourcePin: terminal.sourcePin, runtime: terminal.runtime, outputHash: textHash(terminal.observedOutput), stopped: terminal.stopped, cleanup: terminal.cleanup, taskAcceptance: terminal.taskAcceptance };
     const artifactHash = ledger.artifact(canonical(evidence));

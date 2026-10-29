@@ -86,6 +86,7 @@
     "src/workspace.ts",
     "tests/cleanup-child.ts",
     "tests/cleanup.test.ts",
+    "tests/context-cli.test.ts",
     "tests/context.test.ts",
     "tests/crash-child.ts",
     "tests/first-owner-crash-child.ts",
@@ -120,7 +121,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "5d5d81f32ae6f8757d02f5dfc99d183e859fe563e9afb76fdaed45fb6d767b90",
+      "sha256": "1fd81977e383172e742073d1f9d76c29f8d4b7fb8be817e9aa6c199501abf91b",
       "status": "added"
     },
     ".gitignore": {
@@ -132,7 +133,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "04278ae9ef485e6440e0834562687339ae1fc00b801e9cc882cc3baa70532dab",
+      "sha256": "9f4eccaf6e0e3bd8b7df640f32058d805d87384acb291eb6be03999fc8a60e4b",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -189,7 +190,7 @@
       "status": "added"
     },
     "docs/publication-status.md": {
-      "sha256": "d1a5a2b1669f3a2cf19ca4e5ce2fc3209bb128ce530d148d48c53015a60321b8",
+      "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
       "status": "added"
     },
     "docs/search.md": {
@@ -197,7 +198,7 @@
       "status": "added"
     },
     "package.json": {
-      "sha256": "3f5efaf719422995d6323719fc01622028136168ab32415f836bb3a9a786433f",
+      "sha256": "091cea086dbb9c4209b0078a4f827d747453e784558a9a164577fad58ab68514",
       "status": "added"
     },
     "scripts/benchmark-search.ts": {
@@ -239,12 +240,12 @@
       "status": "added"
     },
     "src/cli.ts": {
-      "sha256": "4ac1d6975280e792043054545d6ac2c3f3aa6f36295533750f128b2af89502b7",
+      "sha256": "9009f170bee638c94abb6a9861ea64ae91a6bff43073d23306af0599522c3914",
       "status": "modified",
       "originalSHA256": "07ac03b02cc45c9ed94a31265795011b46b91292cbb230f5847a8c6bf7dad92f"
     },
     "src/context.ts": {
-      "sha256": "d5806aa9eaaac3e247ba4471e8b83fbc8531dccb994c15fadbb7d0b886c10a9e",
+      "sha256": "da9e5b01c2953bea6cbf46f6b6217ef9ec940b8a9be8fb3df45177513132bbce",
       "status": "added"
     },
     "src/fixtures.ts": {
@@ -293,7 +294,7 @@
       "status": "added"
     },
     "src/terminal-demo.ts": {
-      "sha256": "81fd3b9382f7ca61a2d3cc1506532e964b6f875d0f37ba8d39fdcd172dd9dd3a",
+      "sha256": "0d8c6528acac52724662166795bdd42eb903211f84d2adb515988271e9ba002d",
       "status": "added"
     },
     "src/util.ts": {
@@ -316,8 +317,12 @@
       "status": "unchanged",
       "originalSHA256": "27288b4652a7991c5f737043af84225880285fc36988436212db47d61549027b"
     },
+    "tests/context-cli.test.ts": {
+      "sha256": "cf79603a6cbe014aeab840bc976f63a5276a962e7d9bac439e1937da0cb2cb5e",
+      "status": "added"
+    },
     "tests/context.test.ts": {
-      "sha256": "70098021bebee36654b427fda7fee86699455cf3efd70bfa787d6a932cdb699d",
+      "sha256": "ef13d255a07f0431bf3e76000979de745b74efd84ceed168856d58de9e84c97e",
       "status": "added"
     },
     "tests/crash-child.ts": {
@@ -389,8 +394,8 @@
       "originalSHA256": "00a54ff67fe6fdc48739be97a0643ae8a5da07466993e9a04ad8009bd809fd65"
     },
     "tsconfig.json": {
-      "sha256": "5cb18a66f718139f4c2bcaf694b5fb1716e97b484332997fb8e72c2da2ba1414",
-      "status": "unchanged",
+      "sha256": "845b173f9516a2a94e679b31ad4177cebe2cbb0d9485571a0ab24835d1c3526c",
+      "status": "modified",
       "originalSHA256": "5cb18a66f718139f4c2bcaf694b5fb1716e97b484332997fb8e72c2da2ba1414"
     },
     "vendor/relay/SOURCE.json": {

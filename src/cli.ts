@@ -12,6 +12,14 @@ import { SearchService, type SearchOptions } from "./search/index.ts";
 
 function print(value: unknown): void { process.stdout.write(JSON.stringify(value, null, 2) + "\n"); }
 function input(path: string | undefined): unknown { requireThat(path, "INPUT_FILE_REQUIRED"); return JSON.parse(readFileSync(path, "utf8")); }
+function verifyTaskContext(db: Ledger, taskId: string): void {
+  const pack = db.readContext(db.get(taskId).contract.contextHash);
+  if ("sourceProvenance" in pack) {
+    const selected = pack as ProvenanceContext;
+    requireThat(typeof selected.workspacePath === "string", "CONTEXT_WORKSPACE_REQUIRED");
+    verifyContext(resolve(CONCEPT_ROOT, selected.workspacePath), selected);
+  }
+}
 function demo(): void {
   mkdirSync(join(CONCEPT_ROOT, ".tmp"), { recursive: true, mode: 0o700 });
   const state = mkdtempSync(join(CONCEPT_ROOT, ".tmp/demo-"));
@@ -53,9 +61,9 @@ try {
     try {
       if (operation === "create") { const data = input(args[0]) as { contract: TaskContract; context: ContextPack; workspaceRoot?: string }; if ("sourceProvenance" in data.context) { requireThat(data.workspaceRoot, "CONTEXT_WORKSPACE_REQUIRED"); verifyContext(resolve(data.workspaceRoot), data.context as ProvenanceContext); } const contextHash = db.context(data.context); requireThat(contextHash === data.contract.contextHash, "CONTEXT_HASH_MISMATCH"); print(db.create(data.contract)); }
       else if (operation === "show") print(db.get(args[0] ?? ""));
-      else if (operation === "claim") print(db.grant(args[0] ?? "", args[1] ?? ""));
-      else if (operation === "event") print({ disposition: db.apply(input(args[0])) });
-      else if (operation === "accept") { const data = input(args[0]) as Candidate & { taskId: string; resultId: string; reason: string; waived?: string[] }; print(db.accept(data.taskId, data.resultId, data, data.reason, data.waived)); }
+      else if (operation === "claim") { verifyTaskContext(db, args[0] ?? ""); print(db.grant(args[0] ?? "", args[1] ?? "")); }
+      else if (operation === "event") { const data = input(args[0]) as { claim?: { taskId: string } }; requireThat(data.claim, "INVALID_CLAIM"); verifyTaskContext(db, data.claim.taskId); print({ disposition: db.apply(data) }); }
+      else if (operation === "accept") { const data = input(args[0]) as Candidate & { taskId: string; resultId: string; reason: string; waived?: string[] }; verifyTaskContext(db, data.taskId); print(db.accept(data.taskId, data.resultId, data, data.reason, data.waived)); }
       else if (operation === "cancel") print(db.cancel(args[0] ?? ""));
       else if (operation === "recover") print({ retired: db.recover() });
       else throw new LabError("UNKNOWN_OPERATOR_COMMAND");

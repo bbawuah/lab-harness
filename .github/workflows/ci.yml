@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/initial-concept]
+    branches: [main, feat/initial-concept, feat/terminal-harness]
   pull_request:
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-14]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -26,7 +26,13 @@ jobs:
           bun-version-file: .bun-version
       - name: Install exact development dependencies without lifecycle scripts
         run: bun --no-env-file install --frozen-lockfile --ignore-scripts
+      - name: Acquire checksum-pinned Herdr runtime into project-local cache
+        run: bun --no-env-file run setup:herdr
       - name: Verify tests, types and publication integrity
-        run: bun --no-env-file run check
+        run: bun --no-env-file run check:actual
       - name: Run offline fixture demo
         run: bun --no-env-file run demo
+      - name: Run real owned terminal flow with separate operator acceptance
+        run: bun --no-env-file run demo:terminal
+      - name: Measure deterministic exact search and FTS5 fixture
+        run: bun --no-env-file run benchmark:search -- 1

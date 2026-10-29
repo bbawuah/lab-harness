@@ -1,7 +1,7 @@
 {
   "name": "lab-harness",
-  "version": "0.1.0",
-  "description": "Offline terminal concept with a durable task ledger and pinned Relay mailboxes",
+  "version": "0.2.0",
+  "description": "Offline terminal harness with owned Herdr processes, source-bound context, safe skill loading and explicit task acceptance",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -14,7 +14,14 @@
     "test": "bun --no-env-file --no-install test ./tests",
     "typecheck": "bun --no-env-file --no-install ./node_modules/typescript/bin/tsc --noEmit",
     "check:publication": "bun --no-env-file --no-install scripts/check-publication.ts",
-    "check": "bun --no-env-file run test && bun --no-env-file run typecheck && bun --no-env-file run check:publication"
+    "check": "bun --no-env-file run test && bun --no-env-file run typecheck && bun --no-env-file run check:publication",
+    "setup:herdr": "bun --no-env-file --no-install scripts/herdr/acquire.ts",
+    "smoke:herdr": "bun --no-env-file --no-install scripts/herdr/smoke.ts",
+    "demo:terminal": "bun --no-env-file --no-install src/cli.ts terminal-demo",
+    "benchmark:search": "bun --no-env-file --no-install scripts/benchmark-search.ts",
+    "inventory:skills": "bun --no-env-file --no-install scripts/inventory-skills.ts",
+    "refresh:publication": "bun --no-env-file --no-install scripts/refresh-publication.ts --reviewed-files",
+    "check:actual": "LAB_HERDR_ACTUAL=1 bun --no-env-file run check"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",
