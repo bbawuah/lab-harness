@@ -144,9 +144,11 @@
     "src/pi/workspace-config.ts",
     "src/pi/workspace-extension.ts",
     "src/pi/workspace.ts",
+    "src/project.ts",
     "src/protocol.ts",
     "src/relay.ts",
     "src/runtime/pi.ts",
+    "src/runtime/verify.ts",
     "src/search/index.ts",
     "src/skills/index.ts",
     "src/terminal-demo.ts",
@@ -173,6 +175,7 @@
     "tests/pi-workspace-config.test.ts",
     "tests/pi-workspace-extension.test.ts",
     "tests/process-crash.test.ts",
+    "tests/project.test.ts",
     "tests/publication.test.ts",
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
@@ -477,7 +480,7 @@
       "status": "added"
     },
     "lab": {
-      "sha256": "34e2f94c0f8c425e3b3dd08b613859ffc920a4fd54ada2db1654f212cb5f2a99",
+      "sha256": "49af7c792c2012fa2adc00711d88b3b3d5d085ddd62b6bb41ecf9c1bf159435a",
       "status": "added"
     },
     "package.json": {
@@ -541,7 +544,7 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "119e4cd4acdbc5c2f7d06f18c6d341e5a57a61a1b9e59191c7b1733b3e55a824",
+      "sha256": "ab81bcc6611f0158bbfe694013f2d948bb5319270099456b2fbbc8774dd9c2d0",
       "status": "added"
     },
     "src/admission.ts": {
@@ -622,6 +625,10 @@
       "sha256": "9bc70b6da127f8b87cb0a4bee3a4ff69613b50ab4758e1dd82c33954221354fb",
       "status": "added"
     },
+    "src/project.ts": {
+      "sha256": "9b6a330e467906982df00c3dec05ead8317568b0590b0a5cca404b4888b140ea",
+      "status": "added"
+    },
     "src/protocol.ts": {
       "sha256": "39b08b6737579852c9e4ab93820bf923e21781e8e2aa246cec157987462f7117",
       "status": "unchanged",
@@ -636,8 +643,12 @@
       "sha256": "f9a01a5c4657c9a0ea7c5132596bda53521eb5ea1b0953cd935575ff62730fb0",
       "status": "added"
     },
+    "src/runtime/verify.ts": {
+      "sha256": "ee0862b20895567245c19702392d0aab586ff725c9f8db94f3c64e0e5d0addb0",
+      "status": "added"
+    },
     "src/search/index.ts": {
-      "sha256": "73d6dc2ebc5a0dcecd617c32e91c607cd409644f3e29151614b6bd17fa2ec2af",
+      "sha256": "d80feaee482f2cdcd98ec921d33d375cd50853809b75ff08ff6c1a538ca9bd3f",
       "status": "added"
     },
     "src/skills/index.ts": {
@@ -748,6 +759,10 @@
       "sha256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52",
       "status": "unchanged",
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
+    },
+    "tests/project.test.ts": {
+      "sha256": "83c486356ade7348bd5f20ea06b6521cc6c47596d1106bc935b5be3f72535188",
+      "status": "added"
     },
     "tests/publication.test.ts": {
       "sha256": "db6a3500c2c8abfd5da2d12dde52e4abf54c2b3455d60215aedb58c963503790",

@@ -5,16 +5,19 @@ import { isAbsolute, join, relative, sep } from "node:path";
 import type { SearchOptions as ContractOptions, SearchResult, SourceReference } from "../integration-contracts.ts";
 import { CONCEPT_ROOT, ownedState } from "../ledger.ts";
 import { LabError, requireThat } from "../util.ts";
+import { verifyProjectBinding, type ProjectBinding } from "../project.ts";
 
 export type { SearchResult, SourceReference } from "../integration-contracts.ts";
 export type SearchOptions = ContractOptions & {
   /** Explicit read-only access to this harness checkout root in interactive mode. */
   allowRepositoryRoot?: boolean;
+  /** Explicit interactive project; default callers retain owned-root rules. */
+  projectBinding?: ProjectBinding;
   maxTotalBytes?: number;
   maxDepth?: number;
   maxSnippetBytes?: number;
 };
-type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot">>;
+type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot" | "projectBinding">>;
 const defaults: Bounds = { engine: "auto", limit: 5, maxEntries: 10000, maxFileBytes: 1024 * 1024, maxTotalBytes: 32 * 1024 * 1024, maxDepth: 20, maxSnippetBytes: 400 };
 const caps = { limit: 1000, maxEntries: 100000, maxFileBytes: 1024 * 1024, maxTotalBytes: 256 * 1024 * 1024, maxDepth: 40, maxSnippetBytes: 4096 };
 const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") || [".git", ".lab", ".tmp", "node_modules"].includes(name);
@@ -27,7 +30,7 @@ const snippet = (line: string, bytes: number): string => {
   return result;
 };
 function bounds(options: SearchOptions): Bounds {
-  const { allowRepositoryRoot, ...limits } = options;
+  const { allowRepositoryRoot, projectBinding, ...limits } = options;
   requireThat(allowRepositoryRoot === undefined || typeof allowRepositoryRoot === "boolean", "INVALID_SEARCH_OPTIONS");
   const value = { ...defaults, ...limits };
   requireThat(["auto", "fallback", "rg"].includes(value.engine), "INVALID_SEARCH_OPTIONS");
@@ -43,7 +46,9 @@ export class SearchService {
   constructor(root: string, options: SearchOptions = {}) {
     this.options = bounds(options);
     const repositoryRoot = options.allowRepositoryRoot === true && root === CONCEPT_ROOT;
-    this.root = realpathSync(repositoryRoot ? CONCEPT_ROOT : ownedState(root));
+    const project = options.projectBinding && verifyProjectBinding(options.projectBinding);
+    if (project) requireThat(root === project.root, "PROJECT_ROOT_BINDING_MISMATCH");
+    this.root = realpathSync(project ? project.root : repositoryRoot ? CONCEPT_ROOT : ownedState(root));
     this.identity = lstatSync(this.root);
   }
   private assertRoot(): void {
