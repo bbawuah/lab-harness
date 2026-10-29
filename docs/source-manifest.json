@@ -1109,7 +1109,7 @@
       "status": "added"
     },
     "tests/herdr-shell.test.ts": {
-      "sha256": "19ba5b21ef15a1c9ff93df54852294214d18dabc64b354399755ca2a8b7cfd80",
+      "sha256": "e0892ad87e1891e4b49a79927b997fbe477c0c48298536e09cce9b4b5760479d",
       "status": "added"
     },
     "tests/herdr.test.ts": {

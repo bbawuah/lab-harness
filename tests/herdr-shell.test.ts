@@ -2,6 +2,43 @@ import { expect, test } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { buildRegularShell, shellLeaf } from "../src/herdr/shell.ts";
+import { request } from "../src/herdr/protocol.ts";
+
+/** Failure-only, read-only diagnostics. Discovery stays within the driver's descendants. */
+async function startupDiagnostics(pid: number, deadline: number): Promise<unknown> {
+  const remaining = () => Math.max(1, Math.min(150, deadline - Date.now()));
+  const run = (argv: string[]) => Bun.spawnSync(argv, { timeout: remaining(), maxBuffer: 128 * 1024 });
+  try {
+    const ps = Bun.which("ps"), lsof = Bun.which("lsof");
+    if (!ps || !lsof) return { unavailable: "ps/lsof missing" };
+    const tree = run([ps, "-axo", "pid=,ppid="]).stdout.toString().split("\n").map(line => line.trim().split(/\s+/).map(Number));
+    const owned = new Set([pid]);
+    for (let changed = true; changed && owned.size < 64;) {
+      changed = false;
+      for (const [child, parent] of tree) if (Number.isInteger(child) && owned.has(parent) && !owned.has(child)) { owned.add(child); changed = true; }
+    }
+    const fields = run([lsof, "-a", "-p", [...owned].join(","), "-U", "-Fn"]).stdout.toString();
+    const paths = [...new Set(fields.split("\n").flatMap(line => /^n(\/(?:private\/)?tmp\/lab-h-[A-Za-z0-9_-]+\/s\.sock)(?:\s|$)/.exec(line)?.slice(1) ?? []))];
+    const observations: unknown[] = [];
+    for (const socket of paths.slice(0, 2)) {
+      if (Date.now() >= deadline) break;
+      try {
+        const pong = await request(socket, "ping", {}, remaining());
+        if (pong.type !== "pong" || pong.version !== "0.9.5") continue;
+        const workspaces = await request(socket, "workspace.list", {}, remaining());
+        for (const workspace of (workspaces.workspaces ?? []).slice(0, 2)) {
+          const panes = await request(socket, "pane.list", { workspace_id: workspace.workspace_id }, remaining());
+          for (const pane of (panes.panes ?? []).slice(0, 3)) {
+            if (Date.now() >= deadline) break;
+            const read = await request(socket, "pane.read", { pane_id: pane.pane_id, source: "visible", lines: 12, format: "text", strip_ansi: true }, remaining());
+            observations.push({ pane: pane.pane_id, focused: pane.focused, text: String(read.read?.text ?? "").slice(-1600) });
+          }
+        }
+      } catch (error) { observations.push({ error: String(error).slice(0, 300) }); }
+    }
+    return { ownedProcesses: owned.size, candidates: paths.length, observations };
+  } catch (error) { return { unavailable: String(error).slice(0, 300) }; }
+}
 
 test("capture preserves presence and strips Pi-only names", () => {
   const shell = buildRegularShell({ HOME: "/synthetic", SHELL: "/bin/sh", PATH: "/bin", LAB_WORKSPACE_API_KEY: "sentinel", LAB_RELAY_RUN_REF: "sentinel", PI_CODING_AGENT_DIR: "sentinel" });
@@ -32,7 +69,7 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
   const marker = `PI_READY_${root.slice(-6)}`;
   // All values and startup files here are synthetic; never consult the user's RC.
   const presence = name === "bash" ? `[ "$TMPDIR" = '${root}' ] && [ "$XDG_CONFIG_HOME" = '${home}/config' ]` : `[ "${"${TMPDIR+x}"}" = '' ] && [ "${"${XDG_CONFIG_HOME+x}"}" = '' ] && [ "$ZDOTDIR" = '${home}' ]`;
-  writeFileSync(join(home, rc), `[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '${shellExecutable}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n`);
+  writeFileSync(join(home, rc), `printf started > '${root}/rc-started'\n[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '${shellExecutable}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n`);
   const worker = join(root, "pi.sh"), driver = join(root, "driver.ts");
   writeFileSync(worker, `#!/bin/sh\ntrap 'stty size > "$1/resized"' WINCH\nprintf '${marker}\\n'\n[ "$LAB_WORKSPACE_API_KEY" = 'pi-only-key' ] && [ "$LAB_RELAY_RUN_REF" = 'pi-only-relay' ] && [ "$PI_CODING_AGENT_DIR" = 'pi-only-dir' ] && printf ok > "$1/pi-env"\nwhile :; do read -r line || continue; printf '%s' "$line" > "$1/pi-input"; [ "$line" = done ] && break; done\nprintf 0 > "$1/exit"\n`, { mode: 0o700 });
   const captured = { HOME: home, PATH: "/usr/bin:/bin", SHELL: shellExecutable, LANG: "C", ...(name === "zsh" ? { ZDOTDIR: home } : { TMPDIR: root, XDG_CONFIG_HOME: `${home}/config` }), LAB_WORKSPACE_API_KEY: "incoming-key", LAB_RELAY_RUN_REF: "incoming-ref", PI_CODING_AGENT_DIR: "incoming-dir" };
@@ -42,7 +79,15 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
   const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
   const wait = async (description: string, predicate: () => boolean) => {
     const end = Date.now() + 10000;
-    while (!predicate()) { if (Date.now() > end || child.exitCode !== null) throw new Error(`${name}: waiting for ${description}; evidence ${root}; ${JSON.stringify(raw.slice(-800))}`); await pause(25); }
+    while (!predicate()) {
+      if (Date.now() > end || child.exitCode !== null) {
+        const flags = Object.fromEntries(["shell-ready", "pi-env", "rc-started", "shell-pid", "env-ok"].map(file => [file, existsSync(join(root, file))]));
+        const diagnostic = { description, shellExecutable, markerRendered: raw.includes(marker), flags, driverExit: child.exitCode, native: await startupDiagnostics(child.pid, Date.now() + 750), tail: raw.slice(-800) };
+        writeFileSync(join(root, "startup-diagnostic.json"), JSON.stringify(diagnostic));
+        throw new Error(`${name}: waiting for ${description}; evidence ${root}; ${JSON.stringify(diagnostic)}`);
+      }
+      await pause(25);
+    }
   };
   const has = (file: string) => existsSync(join(root, file));
   const timeout = setTimeout(() => child.kill("SIGTERM"), 25000);
