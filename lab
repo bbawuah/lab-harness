@@ -2,15 +2,20 @@
 # Project-local launcher. No shell profile or global Pi is required.
 set -eu
 umask 077
+lab_caller_cwd=$(pwd -P 2>/dev/null) || lab_caller_cwd=
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 lab_offline=0
+lab_expect_project=0
 for lab_arg in "$@"; do
-  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; *) printf 'Usage: ./lab [--configure] [--offline] [--help]\n' >&2; exit 1;; esac
+  if [ "$lab_expect_project" = 1 ]; then lab_expect_project=0; continue; fi
+  case "$lab_arg" in --configure|--help) ;; --offline) lab_offline=1;; --project) lab_expect_project=1;; *) printf 'Usage: lab [--project DIR] [--configure] [--offline] [--help]\n' >&2; exit 1;; esac
 done
+[ "$lab_expect_project" = 0 ] || { printf 'LAB: --project requires an existing directory.\n' >&2; exit 1; }
 . "$project_root/scripts/runtime-bun.sh"
 cd -- "$project_root"
+if [ -n "$lab_caller_cwd" ]; then export LAB_CALLER_CWD="$lab_caller_cwd"; fi
 export BUN_INSTALL_CACHE_DIR="$project_root/.tmp/bun-cache"
-export BUN_RUNTIME_TRANSPILER_CACHE_PATH="$project_root/.tmp/bun-transpiler-cache"
+export BUN_RUNTIME_TRANSPILER_CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/lab-harness/transpiler"
 export PATH="$project_root/.tmp/fd:$project_root/.tmp/rg:$(dirname -- "$lab_bun"):$PATH"
 if [ "$lab_offline" = 1 ]; then export LAB_INSTALL_OFFLINE=1; fi
 exec "$lab_bun" --no-env-file --no-install "$project_root/scripts/start.ts" "$@"
