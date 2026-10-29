@@ -49,7 +49,7 @@ test("appearance bridge failures expose only a canonical recovery code", async (
   expect(f.notices[0]).toContain("LAB_APPEARANCE_REFUSED"); expect(f.notices[0]).not.toContain("sentinel");
 });
 test("Apply surfaces a concurrently changed project palette before reload", async () => {
-  for (const choice of ["Reload with temporary Standard", "Keep current view"]) {
+  for (const choice of ["Reload with temporary Standard", "Reload later"]) {
     const f = fixture(["7"], [choice]);
     const bridge = async (request: AppearanceRequest) => request.action === "appearance-load" ? initial : {snapshot:initial,warning:"Project colors need temporary Standard in 256 colors; saved palette unchanged."};
     await configureAppearance(f.ui, bridge, {color:"256",terminalAppearance:"unknown"}, () => true, f.reload);

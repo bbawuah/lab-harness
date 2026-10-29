@@ -105,8 +105,8 @@ export async function configureAppearance(ui: AppearanceUI, bridge: (request: Ap
         const saved = await bridge({ action: "appearance-apply", draft });
         const warning = saved && typeof saved === "object" && "warning" in saved && typeof saved.warning === "string" ? saved.warning : undefined;
         if (warning) {
-          const choice = await ui.select("Appearance saved. " + warning, ["Reload with temporary Standard", "Keep current view"]);
-          if (choice !== "Reload with temporary Standard") { ui.notify("Saved preferences; current view retained. The fallback warning will be shown again on the next launch.", "info"); return; }
+          const choice = await ui.select("Appearance saved. " + warning, ["Reload with temporary Standard", "Reload later"]);
+          if (choice !== "Reload with temporary Standard") { ui.notify("Preferences saved and temporary Standard prepared. Full resource reload deferred; repair the project palette or reload later.", "info"); return; }
         }
         ui.notify("Appearance saved. Reloading native Pi resources; the right shell keeps its own styling.", "info");
         await reload(); return;
