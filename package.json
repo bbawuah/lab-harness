@@ -1,0 +1,27 @@
+{
+  "name": "lab-harness",
+  "version": "0.1.0",
+  "description": "Offline terminal concept with a durable task ledger and pinned Relay mailboxes",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "packageManager": "bun@1.4.2",
+  "engines": {
+    "bun": "1.4.2"
+  },
+  "scripts": {
+    "demo": "bun --no-env-file --no-install src/cli.ts demo",
+    "test": "bun --no-env-file --no-install test ./tests",
+    "typecheck": "bun --no-env-file --no-install ./node_modules/typescript/bin/tsc --noEmit",
+    "check:publication": "bun --no-env-file --no-install scripts/check-publication.ts",
+    "check": "bun --no-env-file run test && bun --no-env-file run typecheck && bun --no-env-file run check:publication"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.4",
+    "@types/node": "26.6.6",
+    "bun-types": "1.4.4",
+    "typescript": "7.0.2",
+    "undici-types": "8.12.3"
+  },
+  "trustedDependencies": []
+}
