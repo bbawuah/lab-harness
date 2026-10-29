@@ -119,7 +119,26 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/research/airgap-browser/ARCHITECTURE.md",
+    "docs/research/airgap-browser/DESIGN.html",
+    "docs/research/airgap-browser/DESIGN.json",
+    "docs/research/airgap-browser/DESIGN.png",
+    "docs/research/airgap-browser/OPTIONS.md",
+    "docs/research/airgap-browser/POC-PLAN.md",
+    "docs/research/airgap-browser/PREREQUISITES.md",
+    "docs/research/airgap-browser/SOURCES.md",
+    "docs/research/airgap-browser/SUMMARY.md",
     "docs/research/model-providers.md",
+    "docs/research/provider-connection-ux/SUMMARY.md",
+    "docs/research/provider-connection-ux/contracts.md",
+    "docs/research/provider-connection-ux/design.html",
+    "docs/research/provider-connection-ux/design.png",
+    "docs/research/provider-connection-ux/evidence.json",
+    "docs/research/provider-connection-ux/providers.md",
+    "docs/research/provider-connection-ux/recovery.md",
+    "docs/research/provider-connection-ux/sources.md",
+    "docs/research/provider-connection-ux/terminal.md",
+    "docs/research/provider-connection-ux/validation.md",
     "docs/search.md",
     "docs/skills-inventory.json",
     "docs/skills.md",
@@ -546,8 +565,84 @@
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
       "status": "added"
     },
+    "docs/research/airgap-browser/ARCHITECTURE.md": {
+      "sha256": "47d6c70a5c11939206e2b17a53364247caa0cc964ec3a35484c99df99ed5672a",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.html": {
+      "sha256": "82083285567f8d8a8e6ace598a65ef90c7a1ac94acf445d30f3f4577cdcec2b0",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.json": {
+      "sha256": "df211dad8de893d87aea6c060d7ed17fdc2e5a37fc95d99adc68953341abb8d2",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/DESIGN.png": {
+      "sha256": "41c8517ff178167a708a9ca1570f8283f8744ff23c2a1a0bdf0bb571d9f9857c",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/OPTIONS.md": {
+      "sha256": "9e1c176b98cdbaf806dfaf040fe9794835777359817e6da551f65ab7488e0075",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/POC-PLAN.md": {
+      "sha256": "a60a91f2b5457f701bdfdb286355f700349396b3fd98287e68febd04b9e28bd7",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/PREREQUISITES.md": {
+      "sha256": "6e809a1d5276db5062b417eacb5b953ec391359d5001ae4dd33b70fcad04ccf9",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/SOURCES.md": {
+      "sha256": "fcd689ca7de6a34fb039f3b6bad24d20e931984264d7e8d877bdff72b18e5887",
+      "status": "added"
+    },
+    "docs/research/airgap-browser/SUMMARY.md": {
+      "sha256": "f93aea61968ca35ed33f9aa48bdf87b73cc7dadf69cd62e93ac4d465d6da0133",
+      "status": "added"
+    },
     "docs/research/model-providers.md": {
       "sha256": "b3ee260fadac00650b33a2aa69f6f33b79b6a207aca515e70e92243ac8431959",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/SUMMARY.md": {
+      "sha256": "69e3c5943d8282fab15e2ccaeb527b1075de0d83981fa541ff407ddccde2ae4e",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/contracts.md": {
+      "sha256": "3c33db6481931f269819988e95020262972bfdc1fdf547e8567b263910172fe0",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/design.html": {
+      "sha256": "c2c36a7eaf1fbecc018608af359c772fd864152ca51936dffe6e0de2c633ccd3",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/design.png": {
+      "sha256": "0185496d0b9fd155d4888a4a2d0b9a5a0fbd3b361e3a0b20bd291cdc76afda69",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/evidence.json": {
+      "sha256": "68e1c945b8667e77f7482789d8f982691286dad40f16814a32b7aa2894ae73c2",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/providers.md": {
+      "sha256": "f13e832c16d84a35e2f3f663fa6fdb903d04eb92b811d3df7051202c0aa46762",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/recovery.md": {
+      "sha256": "e5735d8edfbf8c908b4b78019d5808b17d9c80c6f74391da8996d7b8f30a8943",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/sources.md": {
+      "sha256": "ea3fff1d4a86aa3995baa6a5ab5a1d07f86d53af5ec5b0499da88288b8292bcf",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/terminal.md": {
+      "sha256": "7652e4c4feb90978744c3ab4af30a7c87c25212b59f82d1203b7c92a6b7cee0d",
+      "status": "added"
+    },
+    "docs/research/provider-connection-ux/validation.md": {
+      "sha256": "63655af7fb041f463d9adc89ebbf86da80d92760f5e5e7d38f4b5b7e63d2fc84",
       "status": "added"
     },
     "docs/search.md": {
