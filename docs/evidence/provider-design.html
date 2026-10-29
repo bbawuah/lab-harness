@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>LAB model connection design</title><style>
+body{margin:0;font:16px system-ui,sans-serif;color:var(--foreground,#1e2430)}.notice{color:#a14d00;font-weight:750;letter-spacing:.06em;font-size:13px}h1{font-size:28px;margin:.5rem 0}p{line-height:1.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.panel{padding:20px;border:1px solid var(--border,#ccd0d8);border-radius:12px}pre{white-space:pre-wrap;font:13px/1.7 ui-monospace,monospace;background:#161a22;color:#e8ebf3;padding:20px;border-radius:12px}small{color:var(--muted-foreground,#606b7b)}.tag{display:inline-block;background:#edf3fc;color:#25456e;padding:5px 9px;border-radius:6px;margin:3px}ul{padding-left:20px;line-height:1.65}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style><main><p class="notice">DESIGN · NOT IMPLEMENTED · NO MODEL REQUEST</p><h1>Choose a connection, then a model</h1><p>A proposed LAB flow using Pi's existing provider engine. API keys and self-hosted endpoints first; explicit destinations, private credentials and fresh sessions.</p><div class="grid"><section class="panel"><h2>1. Connect</h2><pre>LAB-HARNESS / Model connection
+
+1 OpenAI API       API key
+2 Anthropic API    API key
+3 Ollama           existing server
+4 LM Studio / compatible endpoint
+5 Existing LiteLLM
+6 Use saved profile
+
+URL: https://mini.example.invalid:8459/v1
+Auth: none / private key / explicit env
+Protocol: Chat / Responses / Messages
+Model: exact ID or gateway alias</pre></section><section class="panel"><h2>2. Review before opening</h2><pre>Mini / lab-chat
+
+Destination  mini.example.invalid:8459/v1
+Protocol     Chat Completions via Pi
+Credentials  none (explicit)
+Context      8192, operator entered
+Tools        unknown
+Cost         unknown
+Status       configured, not tested
+
+[Save + open fresh] [Edit] [Cancel]</pre></section></div><section class="panel"><h2>Keep the boundaries visible</h2><span class="tag">No automatic cloud fallback</span><span class="tag">No request on save</span><span class="tag">Discovery is explicit</span><span class="tag">Pi owns protocols</span><ul><li>LAN and tailnet URLs are valid self-hosted destinations.</li><li>API keys and consumer subscription sign-in are different authentication products.</li><li>Switch profile by explicit exit/relaunch first; history sharing needs a separate reviewed flow.</li><li>Unknown capabilities and costs stay unknown. Offline startup is not inference network isolation.</li></ul></section><p><small>Rendered design mockup, not a live TUI capture. Design source: 7df49f40209e345a46f98dd2a609f9fd39494412; docs/research/model-providers.md. Research: 2026-10-29. Browser-rendered HTML; synthetic endpoint, no credentials or user data.</small></p></main></html>

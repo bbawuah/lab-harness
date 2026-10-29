@@ -96,3 +96,38 @@ runtime bytes without reacquiring tools; missing dependencies invoke installatio
 Native shell/file tools retain the user's capabilities, so the project binding
 is a source-adapter boundary rather than an OS sandbox. The unqualified controlled
 admission refusal and ledger acceptance semantics remain unchanged.
+
+## ADR: explicit Pi-backed model connections
+
+Status: proposed for independent design review, 2026-10-29. The detailed
+[provider research and contracts](research/model-providers.md) compare pinned
+Pi, OpenCode, Aider and Continue source with official provider documentation.
+
+LAB will own explicit connection/profile identity, private configuration,
+migration and terminal selection. Pi continues to own inference protocols,
+streaming, tool conversion, credential adapters and session conversion. First
+implementation supports API keys and explicitly unauthenticated endpoints for
+OpenAI, Anthropic/Claude API, Ollama, LM Studio/OpenAI-compatible and existing
+LiteLLM. Hostname is independent of provider/protocol; LiteLLM remains client-only.
+
+The first switching contract is explicit exit/relaunch into a fresh session.
+Each run has fresh private native agent/auth state and explicitly separate
+persistent session storage; historical auth is retained but never imported.
+A narrow supported Pi provider wrapper freezes the selected credential,
+rejects redirects through per-request fetch, strips credential headers for
+explicit none and sanitizes error events/results before native persistence.
+It delegates every protocol to the existing native adapter, with no gateway.
+Automatic retries/compaction and cache warming start disabled; 8K budgets are
+explicit and validated. Exact locally
+validated provider/model configuration and failed-bootstrap refusal provide a
+bounded initial-launch policy, not general native request admission. Existing
+sessions and their legacy provider binding are preserved; native resume/import
+is explicitly cancelled in P1 until routed resume is qualified. Cross-destination
+history replay and subscription OAuth require later proofs; no silent profile,
+account, protocol or cloud replacement is authorized by a failure.
+
+Metadata and cost retain provenance/unknown states. Saving or migrating performs
+no network request; discovery is an explicit bounded metadata action. Native
+Pi offline startup flags are not inference egress isolation. Cache warming is
+disabled for the first profile phase. The ledger, acceptance semantics and
+immutable Relay closure remain unchanged.
