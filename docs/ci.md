@@ -21,6 +21,19 @@ the executable to exist and sets `LAB_HERDR_ACTUAL=1` independently of the packa
 script: actual terminal tests fail rather than silently skip when acquisition is
 missing. No credentials, model calls or inference service are needed.
 
+Python setup runs after every Bun/Relay phase: on Linux its action exports
+`LD_LIBRARY_PATH`, whose presence the immutable Relay publisher correctly refuses.
+CI calls the real cold publisher preflight before tests; fresh-process regressions
+verify loader-variable refusal before database creation and real publication in
+a separate clean process. No vendor guard or caller environment is weakened to
+make the suite pass. The media-only Python phase receives its own tool setup.
+
+Both runners also acquire archive- and binary-hash-pinned ripgrep 14.1.1 into
+`.tmp/rg` and prepend that directory through the job's scoped PATH file. Its real
+version is probed before the suite, so the two rg parity/exhaustion cases execute
+on Ubuntu as well as macOS. Search's offline fallback remains the default and
+does not require rg. No global package manager or tool installation is used.
+
 Checks cover ledger/Relay regressions, actual owned Herdr output/status/cleanup,
 the integrated source/skill/Relay/operator flow, strict types, exact publication
 allowlist/current identities and the independently immutable Relay manifest. Both

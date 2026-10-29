@@ -24,7 +24,8 @@
     "check:actual": "LAB_HERDR_ACTUAL=1 bun --no-env-file run check",
     "header": "bun --no-env-file --no-install src/cli.ts header",
     "smoke:pi-ui": "bun --no-env-file --no-install src/cli.ts pi-ui-smoke",
-    "check:brand": "bun --no-env-file --no-install scripts/pi/derive-terminal-mark.ts --check"
+    "check:brand": "bun --no-env-file --no-install scripts/pi/derive-terminal-mark.ts --check",
+    "setup:rg": "bun --no-env-file --no-install scripts/acquire-rg.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.4",

@@ -185,6 +185,9 @@ and integrated-flow tests are explicit skips without `LAB_HERDR_ACTUAL=1`;
 `check:actual` requires the acquired runtime and fails if it is unavailable.
 GitHub CI runs actual terminal checks, demos and the deterministic benchmark on
 Linux and macOS. Ubuntu evidence applies to that runner, **not WSL**.
+Both runners acquire pinned rg for the optional fast-path cases and execute the
+decoded media/provenance audit. [Protected-main and CI responsibilities](docs/ci.md)
+describe the stable required checks and isolated Bun/Python tool phases.
 
 Owned normal/deadline cleanup is exercised. Parent termination, SIGKILL, machine
 loss, arbitrary descendants, offline packet capture and WSL remain unqualified.

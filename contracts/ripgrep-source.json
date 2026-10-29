@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/BurntSushi/ripgrep",
+  "releaseTag": "14.1.1",
+  "version": "14.1.1",
+  "distribution": "References and project-local acquisition only; no upstream bundle redistributed or relicensed.",
+  "artifacts": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "archive": "ripgrep-14.1.1-aarch64-apple-darwin.tar.gz",
+      "url": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-aarch64-apple-darwin.tar.gz",
+      "checksumURL": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-aarch64-apple-darwin.tar.gz.sha256",
+      "archiveSHA256": "24ad76777745fbff131c8fbc466742b011f925bfa4fffa2ded6def23b5b937be",
+      "binarySHA256": "0e0cb83f5195f1f51bb8feef1fff5b0b171e82bd1db6bd35deee701a3e7102f8",
+      "member": "ripgrep-14.1.1-aarch64-apple-darwin/rg",
+      "archiveBytes": 1787248
+    },
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "archive": "ripgrep-14.1.1-x86_64-apple-darwin.tar.gz",
+      "url": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-apple-darwin.tar.gz",
+      "checksumURL": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-apple-darwin.tar.gz.sha256",
+      "archiveSHA256": "fc87e78f7cb3fea12d69072e7ef3b21509754717b746368fd40d88963630e2b3",
+      "binarySHA256": "923dcc25cab57d33f4e7dd0476d4b74a554401a38817e246a8d6101dcd51c50f",
+      "member": "ripgrep-14.1.1-x86_64-apple-darwin/rg",
+      "archiveBytes": 2082672
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "archive": "ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz",
+      "url": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz",
+      "checksumURL": "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-unknown-linux-musl.tar.gz.sha256",
+      "archiveSHA256": "4cf9f2741e6c465ffdb7c26f38056a59e2a2544b51f7cc128ef28337eeae4d8e",
+      "binarySHA256": "f401154e2393f9002ac77e419f9ee5521c18f4f8cd3e32293972f493ba06fce7",
+      "member": "ripgrep-14.1.1-x86_64-unknown-linux-musl/rg",
+      "archiveBytes": 2566310
+    }
+  ]
+}

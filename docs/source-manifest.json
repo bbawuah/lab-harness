@@ -54,6 +54,7 @@
     "contracts/herdr-source.json",
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
+    "contracts/ripgrep-source.json",
     "docs/architecture.md",
     "docs/branding-preview.html",
     "docs/build-plan.md",
@@ -97,6 +98,7 @@
     "docs/source-manifest.json",
     "examples/skills/terminal-evidence/SKILL.md",
     "package.json",
+    "scripts/acquire-rg.ts",
     "scripts/benchmark-search.ts",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
@@ -143,6 +145,8 @@
     "tests/pi-header.test.ts",
     "tests/process-crash.test.ts",
     "tests/publication.test.ts",
+    "tests/relay-loader-env-child.ts",
+    "tests/relay-loader-env.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
     "tests/search.test.ts",
@@ -167,7 +171,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "4c199ff3c98b2ea2538a06a9fb1bb2e6619d65100e3dbc321ef62cdb47d93c7e",
+      "sha256": "b068d8c5038c109a872648ad2f04e5e3f6bce01486d36ce75f6786ed84585a9b",
       "status": "added"
     },
     ".gitignore": {
@@ -175,11 +179,11 @@
       "status": "added"
     },
     "NOTICE.md": {
-      "sha256": "04d1927a4679dcb3cc66d5d0c8608313c320429539b3d778518ab9b908819b69",
+      "sha256": "ef99133ba262907f6fc4b7eb0c8071031e00e1b29b09a01796192f8a1a15bd31",
       "status": "added"
     },
     "README.md": {
-      "sha256": "120ae9384200b31a5e2b4fe3edc7c099522b4cbe2e5f17e2d7e090885a9f0c9b",
+      "sha256": "b6ef857a2f96126527db722990cb59c18a3be54a0722431f6591cc04004c7b8e",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -227,6 +231,10 @@
       "status": "unchanged",
       "originalSHA256": "1bce50a34f8a41051350c5cfb8392955baf8c4713909e946ff3734deff813492"
     },
+    "contracts/ripgrep-source.json": {
+      "sha256": "30b360f8066450ffbf12500e5bfe0af5bd1ddbd37b5aed46667c7a0ceae95f11",
+      "status": "added"
+    },
     "docs/architecture.md": {
       "sha256": "be28df924b9fee18dd4331d618096120146d63cd8746bba539c9047c6ede642c",
       "status": "added"
@@ -240,7 +248,7 @@
       "status": "added"
     },
     "docs/ci.md": {
-      "sha256": "93891fee9552998edffeca61a9e6038cb92fa0ac5855689f510c27c68d5c6f8c",
+      "sha256": "51a216256cd9d12df5e507b63507780bf43d77eee5c8480b320d2728e80d3421",
       "status": "added"
     },
     "docs/demos/README.md": {
@@ -392,7 +400,11 @@
       "status": "added"
     },
     "package.json": {
-      "sha256": "40805ca956d15c380f19e1c14037f83c65bc21ba74c6129626f18d34326be64c",
+      "sha256": "a0b164f8fc30a9b56b0a86f4305ca56802f62a126d8745ce5560e6d28bb31181",
+      "status": "added"
+    },
+    "scripts/acquire-rg.ts": {
+      "sha256": "fed71115e481b20d032a0350bfa95a5b0c7b4258e1ff00663e4377d63936b9fe",
       "status": "added"
     },
     "scripts/benchmark-search.ts": {
@@ -594,6 +606,14 @@
     },
     "tests/publication.test.ts": {
       "sha256": "db6a3500c2c8abfd5da2d12dde52e4abf54c2b3455d60215aedb58c963503790",
+      "status": "added"
+    },
+    "tests/relay-loader-env-child.ts": {
+      "sha256": "599c6255118e44ea2cf73f5728875f8fc025e1e865c67b81c17af2b0174148ae",
+      "status": "added"
+    },
+    "tests/relay-loader-env.test.ts": {
+      "sha256": "99c3dce6869c2d0bb99e020c9b82beeb38683fa472258354352c810e8d245e2a",
       "status": "added"
     },
     "tests/relay.test.ts": {

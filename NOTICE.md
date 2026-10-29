@@ -23,3 +23,8 @@ geometry retain their origin; neutral palettes are specific to LAB-HARNESS.
 See `assets/branding/PROVENANCE.json`. This authorization adds no general reuse
 license. Herdr and Pi are referenced by source/artifact manifests and are not
 vendored or relicensed here.
+
+The optional ripgrep test tool is acquired only into ignored project state from
+its official 14.1.1 release, with pinned archive and executable hashes in
+`contracts/ripgrep-source.json`. No ripgrep source, executable or upstream bundle
+is redistributed in this repository; upstream rights are not changed.
