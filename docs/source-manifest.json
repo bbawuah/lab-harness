@@ -289,7 +289,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "83288d15b541822e763e7319f045170b719bd9601120763f9157adeebb2183a3",
+      "sha256": "a08c7a0c9215528aaf70cb900edb5e0d6f4a12d73a264b80d8a61de65fd927f6",
       "status": "added"
     },
     ".gitignore": {
@@ -1109,7 +1109,7 @@
       "status": "added"
     },
     "tests/herdr-shell.test.ts": {
-      "sha256": "3e667126684733474bdf6157a60c866f0f2f9a5679886897aa2fd16d105ffdf6",
+      "sha256": "19ba5b21ef15a1c9ff93df54852294214d18dabc64b354399755ca2a8b7cfd80",
       "status": "added"
     },
     "tests/herdr.test.ts": {

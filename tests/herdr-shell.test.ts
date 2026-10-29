@@ -23,6 +23,8 @@ test("capture preserves presence and strips Pi-only names", () => {
 
 const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${name} startup, focus, Ctrl-C and shell exit`, async () => {
+  const shellExecutable = Bun.which(name, { PATH: "/usr/bin:/bin" });
+  if (!shellExecutable) throw new Error(`Missing actual-shell test prerequisite: ${name} in /usr/bin:/bin. Linux CI must provision zsh before actual terminal tests; no shell substitution or skip is allowed.`);
   mkdirSync(resolve(".tmp"), { recursive: true });
   const root = mkdtempSync(resolve(".tmp/split-test-")), home = join(root, "synthetic-user"), project = join(root, "project");
   mkdirSync(home); mkdirSync(project); mkdirSync(join(project, "after-rc"));
@@ -30,10 +32,10 @@ for (const name of ["bash", "zsh"]) actual(`actual split preserves synthetic ${n
   const marker = `PI_READY_${root.slice(-6)}`;
   // All values and startup files here are synthetic; never consult the user's RC.
   const presence = name === "bash" ? `[ "$TMPDIR" = '${root}' ] && [ "$XDG_CONFIG_HOME" = '${home}/config' ]` : `[ "${"${TMPDIR+x}"}" = '' ] && [ "${"${XDG_CONFIG_HOME+x}"}" = '' ] && [ "$ZDOTDIR" = '${home}' ]`;
-  writeFileSync(join(home, rc), `[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '/bin/${name}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n`);
+  writeFileSync(join(home, rc), `[ "$HOME" = '${home}' ] && [ "$PATH" = '/usr/bin:/bin' ] && [ "$SHELL" = '${shellExecutable}' ] && [ "$LANG" = 'C' ] && ${presence} && [ "${"${LAB_WORKSPACE_API_KEY+x}"}" = '' ] && [ "${"${LAB_RELAY_RUN_REF+x}"}" = '' ] && [ "${"${PI_CODING_AGENT_DIR+x}"}" = '' ] && printf ok > '${root}/env-ok'\npwd > '${root}/shell-cwd'\ncd '${project}/after-rc'\npwd > '${root}/shell-after-rc'\nprintf '%s' $$ > '${root}/shell-pid'\nprintf 'shell-ready\\n' > '${root}/shell-ready'\n`);
   const worker = join(root, "pi.sh"), driver = join(root, "driver.ts");
   writeFileSync(worker, `#!/bin/sh\ntrap 'stty size > "$1/resized"' WINCH\nprintf '${marker}\\n'\n[ "$LAB_WORKSPACE_API_KEY" = 'pi-only-key' ] && [ "$LAB_RELAY_RUN_REF" = 'pi-only-relay' ] && [ "$PI_CODING_AGENT_DIR" = 'pi-only-dir' ] && printf ok > "$1/pi-env"\nwhile :; do read -r line || continue; printf '%s' "$line" > "$1/pi-input"; [ "$line" = done ] && break; done\nprintf 0 > "$1/exit"\n`, { mode: 0o700 });
-  const captured = { HOME: home, PATH: "/usr/bin:/bin", SHELL: `/bin/${name}`, LANG: "C", ...(name === "zsh" ? { ZDOTDIR: home } : { TMPDIR: root, XDG_CONFIG_HOME: `${home}/config` }), LAB_WORKSPACE_API_KEY: "incoming-key", LAB_RELAY_RUN_REF: "incoming-ref", PI_CODING_AGENT_DIR: "incoming-dir" };
+  const captured = { HOME: home, PATH: "/usr/bin:/bin", SHELL: shellExecutable, LANG: "C", ...(name === "zsh" ? { ZDOTDIR: home } : { TMPDIR: root, XDG_CONFIG_HOME: `${home}/config` }), LAB_WORKSPACE_API_KEY: "incoming-key", LAB_RELAY_RUN_REF: "incoming-ref", PI_CODING_AGENT_DIR: "incoming-dir" };
   writeFileSync(driver, `import {runHerdrInteractive} from ${JSON.stringify(resolve("src/herdr/interactive.ts"))};\nimport {buildRegularShell} from ${JSON.stringify(resolve("src/herdr/shell.ts"))};\nconst code=await runHerdrInteractive({executable:${JSON.stringify(resolve(".tmp/herdr/herdr"))},command:['/bin/sh',${JSON.stringify(worker)},${JSON.stringify(root)}],cwd:${JSON.stringify(project)},stateRoot:${JSON.stringify(root)},exitFile:${JSON.stringify(join(root,"exit"))},environment:{LAB_WORKSPACE_API_KEY:'pi-only-key',LAB_RELAY_RUN_REF:'pi-only-relay',PI_CODING_AGENT_DIR:'pi-only-dir'},shell:buildRegularShell(${JSON.stringify(captured)})}); await Bun.write(${JSON.stringify(join(root,"result"))}, String(code));`);
   let raw = "";
   const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", driver], { terminal: { cols: 150, rows: 40, data(_term, data) { raw += new TextDecoder().decode(data); } } });
