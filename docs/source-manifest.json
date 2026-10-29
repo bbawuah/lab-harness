@@ -244,7 +244,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "b4ef823f54e277287716f2e431583420d94655627ee9e3d03e6bff3796556e24",
+      "sha256": "4a9a729b6ce8de3ad8b64a43822c512c21c207916f2b176984a3ac5e1d179b30",
       "status": "added"
     },
     "bun.lock": {
@@ -704,7 +704,7 @@
       "status": "added"
     },
     "tests/herdr-interactive.test.ts": {
-      "sha256": "bb8a3a43e0d270a105bb35ceae20cc8071749945a822257190eb5fc6dbb5fb19",
+      "sha256": "4172a31ec321bf1a8a776dca5c9d9085fe72cfe8e381397c5de59b449e6d9a49",
       "status": "added"
     },
     "tests/herdr-protocol.test.ts": {
