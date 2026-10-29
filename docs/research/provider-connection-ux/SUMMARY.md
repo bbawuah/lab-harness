@@ -39,6 +39,7 @@ admission is proposed here. Existing native task admission remains blocked.
 | [Dated official sources](sources.md) | Focused revalidation; baseline research reused |
 | [DESIGN HTML](design.html) / [PNG](design.png) | Synthetic visual evidence; no runtime or account evidence |
 | [Evidence provenance](evidence.json) | Capture identity and hashes |
+| [Validation](validation.md) | Observed checks and pending publication integration |
 
 ## Important new clarification
 
