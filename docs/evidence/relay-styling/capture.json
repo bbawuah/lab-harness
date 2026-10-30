@@ -1,5 +1,5 @@
 {
-  "sourceSHA": "e866f03246b847106a090c41138d027f9f8a3fa7",
+  "sourceSHA": "817b096d408f9b8f9c1726410c3df437832e8908",
   "baseSHA": "a178daec969eaac639983750b497aa997e972eb0",
   "branch": "feat/relay-message-styling",
   "platform": "darwin-arm64",
@@ -108,16 +108,16 @@
         "bg": "#005a9c"
       },
       "body": {
-        "sgr": "0;38;2;32;32;32;48;2;255;255;255",
+        "sgr": "0;38;2;255;255;255;48;2;32;32;32",
         "textSample": "Hi, I’",
-        "fg": "#202020",
-        "bg": "#ffffff"
+        "fg": "#ffffff",
+        "bg": "#202020"
       },
       "rail": {
-        "sgr": "0;38;2;154;162;167;48;2;255;255;255",
+        "sgr": "0;38;2;103;113;118;48;2;32;32;32",
         "textSample": "| ",
-        "fg": "#9aa2a7",
-        "bg": "#ffffff"
+        "fg": "#677176",
+        "bg": "#202020"
       },
       "metadata": {
         "sgr": "0;38;2;103;113;118;48;2;255;255;255",
@@ -169,7 +169,7 @@
       "rail": null,
       "metadata": {
         "sgr": "0;38;2;157;165;169;48;5;233",
-        "textSample": "readme-review c59f6c (self) - online",
+        "textSample": "readme-review c549a2 (self) - online",
         "fg": "#9da5a9",
         "bg": "#121212"
       }
@@ -185,62 +185,61 @@
   "originalRawHashes": [
     {
       "session": "A",
-      "originalSHA256": "fbfda85796bc36e5bc69a98949585a4f540fa1d5d282b1244ebf3474702af3c0",
-      "sanitizedSHA256": "b8e4f4703cb3f482cfb3adc5c3945ca059743ebc51d39924f0e479b68a09a09a",
-      "captureStageSanitizedSHA256": "4f352d635f0322785ad0c56a0d98756322d6f71252c9c78f21818024eba24eb1",
+      "originalSHA256": "96362cc36368ace881bd02df27606690191ed7862b42ce0fad1777fa6cf9b85b",
+      "sanitizedSHA256": "6e4a4ac175a76df6fadce5e6e5b9bd58fdf616bd3332e57384fcb0fdc1f8c7f5",
+      "captureStageSanitizedSHA256": "436163522186562d00ee427a9546ee09d8b39113be66e231e4b76c01280186ff",
       "sanitizedFile": "session-A.ansi"
     },
     {
       "session": "B",
-      "originalSHA256": "0a79764e1c37b9f10ae7bfd17b43cd18e69ab1828e761676a17a9955af7399ce",
-      "sanitizedSHA256": "85dc344dd8611e13199a3eb2a3e9aeea82f614a2d902619f956419c424eb9454",
-      "captureStageSanitizedSHA256": "2cdcd1a7ef48dc5483852d4a01ba5c0b12c7f5d7d84832faed36d0c57b55506f",
+      "originalSHA256": "6ec379756ae1533b203950e392bfd1db053f7a5662e0273dd5a8a2cea986a837",
+      "sanitizedSHA256": "dcdff49f6ba5e4a2f7104d9f6ebbb6ac515a57da333ddcad67e052ef1c37835b",
+      "captureStageSanitizedSHA256": "210cc689a84da1333f81b4cd478b8d3148062f2c31f599f0cd72020d6917a9f0",
       "sanitizedFile": "session-B.ansi"
     },
     {
       "session": "N",
-      "originalSHA256": "0433330342310d803648c02d5bc7c029c54206736e8df482fc882e04526b7c6d",
-      "sanitizedSHA256": "7976053645af767693d8139e58089fca756db91219a236900d5a50074756f25e",
-      "captureStageSanitizedSHA256": "14cc0927f36181b480090909df9df640011cf382d77c3a36b70a618b0d9ed238",
+      "originalSHA256": "e38e390f4487baa216faffee006088661f91cf928549987ba41055914c5f44c5",
+      "sanitizedSHA256": "865753964cf52c910e1c4e6312db04ca538bf05982b424644402b436436ea3ea",
+      "captureStageSanitizedSHA256": "7355ebd76429f97ee4de8a15ca3e0df4dfd09da020c6bcce3023178d9196fc75",
       "sanitizedFile": "session-N.ansi"
     },
     {
       "session": "I",
-      "originalSHA256": "7a362f84bdd5f6fa33e4a6233c56b7d1f92b1c05b4de14305b9313845807b1a1",
-      "sanitizedSHA256": "d088906f061e59ae950d97d54dd011781103b6d36425a34cc33e066a8f8d7d75",
-      "captureStageSanitizedSHA256": "02e596152b20d68f9133ef3db20eae7343ab6b3b30bfcd6747cd2ac9bf845edb",
+      "originalSHA256": "b94598107d001a1111e34b1e6029a531108a9600ec2af156a958acb8fe1a5892",
+      "sanitizedSHA256": "5493016e8d59f48019769b21db34af688afe2d880b77d814210bc5fb36e64363",
+      "captureStageSanitizedSHA256": "e2fd4f7923da4549c212e9ec1ad52f7b3973ab72dfb91ad8e071dbcb2a54660c",
       "sanitizedFile": "session-I.ansi"
     }
   ],
-  "driverSHA256": "afa2650c7a5b552aa1c93879025a4f5d1f0ba2d2c167cca687b19d8b5d12d9d4",
+  "driverSHA256": "d81b75192a9cfbbbd2b351bc308ded399a1ce85b524c1609aacf62ea6d666a64",
   "files": {
-    "README.md": "255a24ca1b3a056dcf46fa6e8c7d290d01aec0c8848788b46ef1830a4fb6e901",
-    "expanded-A.txt": "ed8ce54451d1b06a64f4f628c6058150a7eaea8ddc43b1995bdda9bb0e1cf89f",
-    "expanded-B.txt": "eba26d47cd8fa46469342a84c1e89040414ce0bd7ea1cb59c331146708997e27",
-    "fallbacks.html": "df78b87b4583aee05050f01bd0f3df13d947c0e1f08d1b19b15906f87cc0e3f2",
-    "fallbacks.png": "3cdffb42ac84428aa0179f1b19690773d93a009b1d4e6d8d7c1e1cc90a31d5d2",
-    "indexed-I.txt": "8222e979478894c1359b61c0921c90a0bd28f836c4ba29a05cbdfa42d2b8f5f2",
-    "light-dark-A.txt": "ed8ce54451d1b06a64f4f628c6058150a7eaea8ddc43b1995bdda9bb0e1cf89f",
-    "light-dark-B.txt": "640e376472ab7f2c46ff0fbd3c4d6ae0cc761ff9c8dbadee1b9f1f6e331e449b",
-    "light-dark.html": "ca77e606e2c49a0aa1acea9217bf08adbf221c5355838bdf941d82ec2bff0402",
-    "light-dark.png": "c2f34f6fc40908f3280dea478bf93c05d750f026c8d4a9e9b65daca578c17e92",
-    "narrow-A.txt": "938936d391f8d77ffb4d691f201685c1f529a9f0dd2313948b975f0fba5a6171",
-    "narrow-B.txt": "44d5c2635c89b819c328bc86a0d627a98a2f13858bc666e7150584a221d17e42",
-    "narrow.html": "443848bc8e097e6760717a8ee4610b3e1b92b2f790f4465a310c68475ccbe794",
-    "narrow.png": "c64ddc98b99d42349806c768e5dc7ee5057ebd04da793b69d8803e1c46939440",
-    "no-color-N.txt": "e297eb2d777086fa6fd98e0ef67cf08cf400b9374921338d6090529651323080",
-    "reply-A.txt": "938936d391f8d77ffb4d691f201685c1f529a9f0dd2313948b975f0fba5a6171",
-    "reply-B.txt": "c59ea4c968cd8a408aa924a119199e3d8c46416af934e174ca72004d98c1284d",
-    "session-A.ansi": "b8e4f4703cb3f482cfb3adc5c3945ca059743ebc51d39924f0e479b68a09a09a",
-    "session-B.ansi": "85dc344dd8611e13199a3eb2a3e9aeea82f614a2d902619f956419c424eb9454",
-    "session-I.ansi": "d088906f061e59ae950d97d54dd011781103b6d36425a34cc33e066a8f8d7d75",
-    "session-N.ansi": "7976053645af767693d8139e58089fca756db91219a236900d5a50074756f25e"
+    "README.md": "a6b4d9434e0f9a96a951b346215e748c1b41307e7965a1c474fde4d39d20ff33",
+    "expanded-A.txt": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+    "expanded-B.txt": "bb6fad9e20b89657bb5d4fa7acc0717beda6f9b5718e49320718a3316e561260",
+    "fallbacks.html": "b98e5781d557eb789005d0096072bf6e7837446a1c1bf223aea8457f7a9f0ab9",
+    "fallbacks.png": "b8e962013af8c2d3326a23bcfaa0fd75bc56690341d3eeb46c54e8f524a1c3d6",
+    "indexed-I.txt": "22a339f1a95e4105b1c97172091a88d619ef418927361e94aead8c99616756ee",
+    "light-dark-A.txt": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+    "light-dark-B.txt": "ee3bdbf9862f6e09a60ce67b450f942f714a2e856025d29fff806499294801e8",
+    "light-dark.html": "0d4545656c184a830485a0d0de5f5ee7b3140845f97e58245aa3b6d53cacbaf5",
+    "light-dark.png": "53ba192f186aee2b70b2bf60e0278ef03cd971326e5e9111175395e4afa215c2",
+    "narrow-A.txt": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+    "narrow-B.txt": "20244b4867ed5e746704e98578ee46bd61a6ea81625a7dd9649caef6d4998469",
+    "narrow.html": "1b5081d0914865623db4fdc7b404ce5898b3a58a3206bc10bc80a9b2b587e7b9",
+    "narrow.png": "bbd7d941629ed6f3288619766917a3a3bcf4415a75365716978d9f628ba02ee5",
+    "no-color-N.txt": "ed5642730c096b23ae77d93ed5e7782861189d9417ae810d3f0f84c865e9d9a0",
+    "reply-A.txt": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+    "reply-B.txt": "ece0a5d045da4e816725300c17cb142b8b0e0741c7dcb65e6465a6e8a7c81eba",
+    "session-A.ansi": "6e4a4ac175a76df6fadce5e6e5b9bd58fdf616bd3332e57384fcb0fdc1f8c7f5",
+    "session-B.ansi": "dcdff49f6ba5e4a2f7104d9f6ebbb6ac515a57da333ddcad67e052ef1c37835b",
+    "session-I.ansi": "5493016e8d59f48019769b21db34af688afe2d880b77d814210bc5fb36e64363",
+    "session-N.ansi": "865753964cf52c910e1c4e6312db04ca538bf05982b424644402b436436ea3ea"
   },
-  "review": "Fresh round2 scoped review: no actionable findings at e866f03246b847106a090c41138d027f9f8a3fa7. Does not waive parent PR17 hold.",
-  "checks": "24 focused tests / 5203 assertions and typecheck passed; independent style/presentation/extension run 21 tests / 5162 assertions. Required CI e866 passed both platforms per root. No full-gate duplicate or reload investigation in this slice.",
   "rawHashStages": {
-    "originalSHA256": "Unaliased raw PTY bytes hashed by the actual capture driver; not published.",
-    "captureStageSanitizedSHA256": "Intermediate stream after the driver aliases full project, home, checkout and fixture paths; retained privately in ignored capture output.",
-    "sanitizedSHA256": "The committed sanitizedFile, after additionally aliasing the machine title and truncated temporary-path footer. It matches files[sanitizedFile]."
-  }
+    "originalSHA256": "Unaliased bytes recorded by capture driver, not published.",
+    "captureStageSanitizedSHA256": "Private intermediate after full-path aliases.",
+    "sanitizedSHA256": "Committed sanitizedFile after machine-title and truncated-footer aliases."
+  },
+  "checks": "24 focused tests / 5207 assertions and typecheck passed at817b096. Four actual owned sessions passed, zero HTTP requests, all16cleanup flags. Prior e866 review does not establish review of this refinement; fresh final review pending."
 }

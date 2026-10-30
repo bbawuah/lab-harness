@@ -15,22 +15,22 @@
   workspace-extension.ts
 
 
- Relay ready · readme-review fa7812. Use /relay-peers.
+ Relay ready · readme-review 30544c. Use /relay-peers.
 
  Relay  Peers
-readme-review 4566a4 - online
-readme-review fa7812 (self) - online
+readme-review 4abc0b - online
+readme-review 30544c (self) - online
 2 shown; 2 total
 [Details: expand with Ctrl+O (or /hotkeys)]
 
- Relay  < Received from readme-review 4566a4
+ Relay  < Received from readme-review 4abc0b
 | Hi, I’m checking the README. Can you check the install instructions?
 Fetched; not acknowledged
 [Details: expand with Ctrl+O (or /hotkeys)]
 
  Tool output: collapsed
 
- Relay  > Sent to readme-review 4566a4 (stored)
+ Relay  > Sent to readme-review 4abc0b (stored)
 | Hi! I’ll check the install steps and the first launch command.
 [Details: expand with Ctrl+O (or /hotkeys)]
 

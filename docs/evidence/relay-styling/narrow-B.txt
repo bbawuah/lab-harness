@@ -4,13 +4,13 @@ Fetched; not acknowledged
 
  Tool output: collapsed
 
- Relay  > Sent to readme-review 4566a4 (stored
+ Relay  > Sent to readme-review 4abc0b (stored
   )
 | Hi! I’ll check the install steps and the fir
 | st launch command.
 [Details: expand with Ctrl+O (or /hotkeys)]
 
- Relay  < Received from readme-review 4566a4
+ Relay  < Received from readme-review 4abc0b
 | Hi, I’m checking the README. Can you check t
 | he install instructions?
 Fetched; not acknowledged
