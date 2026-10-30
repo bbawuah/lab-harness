@@ -162,6 +162,7 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-human-messages-contract.md",
+    "docs/relay-message-styling-contract.md",
     "docs/relay-workspace-contract.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
@@ -813,6 +814,10 @@
     },
     "docs/relay-human-messages-contract.md": {
       "sha256": "40f9f22701bf2a1f18425499095ebbbbf55d95965fe7f8813e1461f460d21262",
+      "status": "added"
+    },
+    "docs/relay-message-styling-contract.md": {
+      "sha256": "5a252425bd4fdbef1abf8814fd66909ebcddd53d2650978bffd5e6c0319a7984",
       "status": "added"
     },
     "docs/relay-workspace-contract.md": {
