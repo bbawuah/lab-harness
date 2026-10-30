@@ -44,6 +44,15 @@ jobs:
           test -x .tmp/rg/rg
           rg --version
           bun --no-env-file --no-install -e 'import { assertPublishCapability } from "./vendor/relay/src/storage/publish.ts"; assertPublishCapability();'
+      - name: Provision the Linux zsh fixture prerequisite
+        if: runner.os == 'Linux'
+        run: |
+          if ! command -v zsh >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends zsh
+          fi
+          command -v zsh
+          zsh --version
       - name: Verify tests, types and publication integrity
         run: bun --no-env-file run check:actual
       - name: Run offline fixture demo

@@ -1,0 +1,12 @@
+ 75e6-b560--d55b78888bdd
+ (pi-f317ac7a30009e8b47c2eda9e2b1da0f
+ 552ac719c77dbffc4c398297a9b9c516).
+ Use /relay-peers.
+
+LAB Appearance - staged
+> 1. Scope: user
+> Focused control
+Text / Success: saved / Warning: check
+1-8 / j-k Enter; Esc cancel
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+0.0%/8.2k (auto)  fixture-no-inference

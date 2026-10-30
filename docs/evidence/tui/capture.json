@@ -1,0 +1,117 @@
+{
+  "kind": "browser rendering of actual native pane text / outer terminal cells, not live pixels",
+  "platform": "Darwin arm64 mini",
+  "bun": "1.4.2",
+  "piRelease": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+  "herdrRelease": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+  "runs": {
+    "appearance-944": {
+      "sourceSHA": "9441b126c66f6ec124c4fd904f311bf2b7e0b4a7",
+      "cleanAtStart": true,
+      "cleanAtEnd": true,
+      "pass": true,
+      "noProviderCalls": 0,
+      "originalResultSHA256": "21f01f915871bfb30bd7c37c0306320060f272cf1293da420b918f5178716e62",
+      "originalDriverSHA256": "47021950186a467f3221d63bde7bc7ea5fadd1ea98058ecd2618d83a3bf5cd14",
+      "cleanup": [
+        {
+          "serverExited": true,
+          "clientExited": true,
+          "workerStopped": true,
+          "socketsRemoved": true
+        },
+        {
+          "serverExited": true,
+          "clientExited": true,
+          "workerStopped": true,
+          "socketsRemoved": true
+        },
+        {
+          "serverExited": true,
+          "clientExited": true,
+          "workerStopped": true,
+          "socketsRemoved": true
+        }
+      ],
+      "limits": "Original 944 indexed run used explicitly empty COLORTERM; 4aaf case used absent COLORTERM. Physical color not qualified."
+    },
+    "capability-4aaf": {
+      "sourceSHA": "4aaf3e59b62b522ec686f4a8b1525d1956188565",
+      "cleanAtStart": true,
+      "cleanAtEnd": true,
+      "pass": true,
+      "noProviderCalls": 0,
+      "originalResultSHA256": "ce84ca24d2d081c4dd355b11ae1e8ca2c87a18cc9b359d95785e8e41647e2a87",
+      "originalDriverSHA256": "53cea6e3679caf376ad2dc05a5dfb0d586c149dfe00ed220d98ccc93a0e32598",
+      "cleanup": [
+        {
+          "serverExited": true,
+          "clientExited": true,
+          "workerStopped": true,
+          "socketsRemoved": true
+        }
+      ],
+      "limits": "Original 944 indexed run used explicitly empty COLORTERM; 4aaf case used absent COLORTERM. Physical color not qualified."
+    }
+  },
+  "captures": [
+    {
+      "file": "split.txt",
+      "sourceSHA": "4aaf3e59b62b522ec686f4a8b1525d1956188565",
+      "originalCapture": "indexed-initial-pi-outer-cells.txt",
+      "originalSHA256": "2966576bd16f2fd81e376a1c0b5005f9ff8c69b292b13d5a9e172b8facee3e4b",
+      "sanitizedSHA256": "6474a53ed1f616b79f0d17d954d4f36a036deb99304ca58fdfb17214fc5dd5a9",
+      "sanitization": "equal-width private path substitution only"
+    },
+    {
+      "file": "light.txt",
+      "sourceSHA": "9441b126c66f6ec124c4fd904f311bf2b7e0b4a7",
+      "originalCapture": "color-staged-light.txt",
+      "originalSHA256": "a372eb36340fc999589d76da65729b3908b60bb652f3021b8dd82f60871d7fa4",
+      "sanitizedSHA256": "579630b277994fafac2a9bce0bd9a75a69444a4ee9434f78d4ec2f6d021b5441",
+      "sanitization": "equal-width private path substitution only"
+    },
+    {
+      "file": "dark.txt",
+      "sourceSHA": "9441b126c66f6ec124c4fd904f311bf2b7e0b4a7",
+      "originalCapture": "color-staged-dark.txt",
+      "originalSHA256": "3e2b90793092d7a3aad3770b61d0aee2a3e6d6f203d49398fd1f47288b1d712f",
+      "sanitizedSHA256": "a9ef545b87c5f3681fac6fa06ac0a8c1c74d76e8573c3d44341da1adad12972e",
+      "sanitization": "equal-width private path substitution only"
+    },
+    {
+      "file": "compact.txt",
+      "sourceSHA": "4aaf3e59b62b522ec686f4a8b1525d1956188565",
+      "originalCapture": "indexed-compact-40x16.txt",
+      "originalSHA256": "4e1349c70f7e53962056c9735f390515c79b2eed861093f62ae50c57b5a18370",
+      "sanitizedSHA256": "2734c18efa8fe0b7eb848b7a0c5a6ea4e676023fdb29f51b0f83a2b3b1d135ab",
+      "sanitization": "equal-width private path substitution only"
+    },
+    {
+      "file": "warning.txt",
+      "sourceSHA": "4aaf3e59b62b522ec686f4a8b1525d1956188565",
+      "originalCapture": "indexed-p2-warning-summary.txt",
+      "originalSHA256": "5551bb5f2aaa311e2e3b2f32172f6edef9a62ecb89a48ad6fa6972de8e541e52",
+      "sanitizedSHA256": "03cb24163f865a4ad648ad9c8dc55d177dd4c632bac103139cb02dccf1f14fd7",
+      "sanitization": "equal-width private path substitution only"
+    },
+    {
+      "file": "terminal.ansi",
+      "sourceSHA": "4aaf3e59b62b522ec686f4a8b1525d1956188565",
+      "originalCapture": "indexed-outer.ansi",
+      "originalSHA256": "b5e03de620e302a06f12549ee005b655efc16fc76622fc04a7d608bb52cff769",
+      "sanitizedSHA256": "e1d8cfb5435ad27ec92d43619eab884e84318d4720eb9e177e5bc9dba252a4c3",
+      "sanitization": "equal-width private path substitution only"
+    }
+  ],
+  "knownFullscreenDiagnostic": "FAIL 11/12; delayed 250 ms fragmented SGR case remains unfixed",
+  "limits": [
+    "No physical mouse, IME, clipboard, tmux, WSL or full-app color/contrast qualification",
+    "Frame colors and fonts below are browser styling, not captured terminal pixels",
+    "Basic zoom proof is separate clean39fa pane.layout false,true,false with unchanged PIDs/focus"
+  ],
+  "renderedAssets": {
+    "terminal-text.html": "2a0069baf5ea87e812c2e02e282b7df699cc6766f638022395fed5c2854dcf98",
+    "terminal-text.png": "e60c147d0a26fbe3309c72f668953167281275d09916dbd16959f9295320327f"
+  }
+}

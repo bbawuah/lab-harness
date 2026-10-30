@@ -12,7 +12,9 @@ mail between workspace sessions. Connect a local
 model server (on this machine, LAN or tailnet) or your existing LiteLLM endpoint.
 
 **[User guide: five-minute start and command reference](docs/user-guide.md)**.
-Inside the workspace, use /lab-help.
+Inside the workspace, use /lab-help. Pi opens on the left and your regular
+interactive shell on the right; use Ctrl+B then h/l to change focus.
+For a narrow terminal, use `lab --single-pane`.
 
 ## Install and start
 
@@ -75,6 +77,9 @@ Or select an existing project explicitly, including paths with spaces:
 ```sh
 "${XDG_DATA_HOME:-$HOME/.local/share}/lab-harness/lab" --project "/path/to/my project"
 ```
+
+Use `/lab-appearance` to preview light/dark/terminal themes, semantic colors
+and spacing, then Apply, Cancel or Reset. Fonts remain terminal settings.
 
 The TUI shows the selected project. Pi's working directory, LAB source search
 and project skills all use that folder. The installed harness and private model
@@ -143,6 +148,18 @@ and the unqualified request-admission boundary are explained below.
 [Actual current terminal/model evidence](docs/interactive-validation.md) records
 what was tested, including the small local model's tool-use limits. Historical
 screenshots below are separate observations.
+
+## Terminal workspace
+
+Pi starts beside your regular shell. Use `/lab-appearance` for staged appearance
+controls and `lab --single-pane` in a narrow terminal.
+
+![Actual terminal text: Pi and shell, staged appearance and compact UI](docs/evidence/tui/terminal-text.png)
+
+This is a browser rendering of actual native terminal text, not live pixels;
+frame colors/fonts are editorial. [Source-labelled captures and limits](docs/evidence/tui/README.md)
+distinguish clean 944 and 4aaf runs. The separate delayed mouse-fragment diagnostic
+remains unqualified.
 
 ## Settings, caches and updates
 

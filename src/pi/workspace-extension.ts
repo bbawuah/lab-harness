@@ -1,4 +1,5 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
+import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
 import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -9,9 +10,9 @@ import { renderHeader, terminalHasColor, type HeaderFactory } from "./header.ts"
 import { installRelayExtension, type RelayBridgeRequest } from "./relay-extension.ts";
 
 type SourceRequest = { action: "search" | "files" | "skills" | "load"; query?: string };
-type Request = SourceRequest | RelayBridgeRequest;
+type Request = SourceRequest | RelayBridgeRequest | AppearanceRequest;
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
-export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
+export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
   registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
@@ -38,7 +39,7 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
     const binding = workspaceBinding();
     const child = spawn(bun, ["--no-env-file", "--no-install", extensionPath, "--bridge"], {
       cwd: binding.root, stdio: ["pipe", "pipe", "pipe"], signal,
-      env: { PATH: process.env.PATH, HOME: process.env.LAB_WORKSPACE_USER_HOME ?? process.env.HOME, LAB_WORKSPACE_ROOT: binding.root, LAB_WORKSPACE_BINDING: JSON.stringify(binding), LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_USER_HOME: process.env.LAB_WORKSPACE_USER_HOME, LAB_RELAY_RUN_REF: process.env.LAB_RELAY_RUN_REF },
+      env: { PATH: process.env.PATH, HOME: process.env.LAB_WORKSPACE_USER_HOME ?? process.env.HOME, LAB_WORKSPACE_ROOT: binding.root, LAB_WORKSPACE_BINDING: JSON.stringify(binding), LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_USER_HOME: process.env.LAB_WORKSPACE_USER_HOME, LAB_RELAY_RUN_REF: process.env.LAB_RELAY_RUN_REF, LAB_WORKSPACE_STATE_DIR: process.env.LAB_WORKSPACE_STATE_DIR, LAB_WORKSPACE_AGENT_DIR: process.env.LAB_WORKSPACE_AGENT_DIR, LAB_WORKSPACE_APPEARANCE_CAPABILITY: process.env.LAB_WORKSPACE_APPEARANCE_CAPABILITY, TERM: process.env.TERM, COLORTERM: process.env.COLORTERM, ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}) },
     });
     let output = "", bytes = 0, failure: Error | undefined;
     const timer = setTimeout(() => { failure = new Error("LAB bridge exceeded 20 seconds"); child.kill("SIGKILL"); }, 20000);
@@ -56,7 +57,11 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
 export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   pi.registerCommand("exit", { description: "Exit this native Pi workspace (alias for /quit)", async handler(_args, ctx) { ctx.shutdown(); } });
   pi.registerCommand("lab-help", { description: "Show LAB workspace commands", async handler() {
-    pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true });
+    pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true }, { triggerTurn: false });
+  } });
+  pi.registerCommand("lab-appearance", { description: "Preview and save LAB appearance; fonts stay terminal-owned", async handler(_args, ctx) {
+    if (!ctx.isIdle || !ctx.reload || !("custom" in ctx.ui) || !("select" in ctx.ui) || !("input" in ctx.ui)) { ctx.ui.notify("Appearance requires the native interactive Pi UI.", "error"); return; }
+    await configureAppearance(ctx.ui as unknown as AppearanceUI, callWorkspaceBridge, boundAppearanceCapability(process.env), () => ctx.isIdle!(), () => ctx.reload!());
   } });
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
@@ -72,7 +77,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
     pi.registerCommand(name, { description, async handler(args, ctx) {
       try {
         const result = await callWorkspaceBridge({ action, query: args.trim() });
-        pi.sendMessage({ customType: `lab-${action}`, content: typeof result === "string" ? result : JSON.stringify(result, null, 2), display: true });
+        pi.sendMessage({ customType: `lab-${action}`, content: typeof result === "string" ? result : JSON.stringify(result, null, 2), display: true }, { triggerTurn: false });
       } catch { ctx.ui.notify("LAB operation refused: missing, ambiguous, stale, or unavailable source. Use /lab-skills for exact IDs.", "error"); }
     } });
   }
@@ -81,6 +86,27 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */
 export async function executeWorkspaceRequest(request: Request): Promise<unknown> {
   const binding = workspaceBinding(), root = binding.root;
+  if (request.action === "appearance-load" || request.action === "appearance-apply") {
+    const { workspaceStateRoot } = await import("./workspace-config.ts");
+    const stateRoot = workspaceStateRoot(installRoot, process.env.LAB_WORKSPACE_STATE_DIR, binding.root);
+    const agentRoot = process.env.LAB_WORKSPACE_AGENT_DIR;
+    if (!agentRoot) throw new Error("LAB_APPEARANCE_PRIVATE_PATH");
+    const options = { stateRoot, agentRoot, installRoot, project: binding, capability: boundAppearanceCapability(process.env) };
+    try {
+      if (request.action === "appearance-load") {
+        if (Object.keys(request).sort().join(",") !== "action,scope" || !["user", "project"].includes(request.scope)) throw new Error("LAB_APPEARANCE_INVALID_INPUT");
+        const { loadAppearance } = await import("./appearance.ts");
+        const snapshot = loadAppearance({ stateRoot, installRoot, scope: request.scope === "user" ? { kind: "user" } : { kind: "project", binding } });
+        verifyProjectBinding(binding); return snapshot;
+      }
+      if (Object.keys(request).sort().join(",") !== "action,draft") throw new Error("LAB_APPEARANCE_INVALID_INPUT");
+      const { saveWorkspaceAppearance } = await import("./workspace-appearance-store.ts");
+      return saveWorkspaceAppearance({ ...options, draft: request.draft });
+    } catch (error) {
+      const code = error instanceof Error && /^[A-Z_]+$/.test(error.message) ? error.message : "IO";
+      throw new Error(code.startsWith("LAB_APPEARANCE_") ? code : "LAB_APPEARANCE_" + code);
+    }
+  }
   if (request.action.startsWith("relay")) {
     const relayRequest = request as RelayBridgeRequest;
     if (Object.keys(request).some(key => !["action", "sessionId", "request"].includes(key)) || typeof relayRequest.sessionId !== "string") throw new Error("RELAY_INVALID_BINDING");

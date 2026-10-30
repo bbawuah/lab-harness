@@ -1,0 +1,45 @@
+
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Interactive coding workspace
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Controlled LAB tasks: unavailable
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready:
+ project-B-with-spaces/01a18a1a-f301-7521-9b8a--841a0bfc664a
+ (pi-45ef6ce89b1ed6f1d4e6ff05b1a69e8c1d468509e4b6045612b1e31aff3876d6).
+ Use /relay-peers.
+
+
+
+
+
+
+LAB Appearance - staged sample
+> 1. Scope: user
+  2. Mode: dark
+  3. Palette: Standard
+  4. Editor padding: 1
+  5. Transcript padding: 1
+  6. Reset this scope: remove saved override
+  7. Apply: save and reload Pi resources
+  8. Cancel: discard this draft
+
+> Focused control
+Text / Success: saved / Warning: check
+Error: retry (labels do not rely on color)
+Up/Down or j/k; Enter. Esc cancels.
+Fonts/size/line height: terminal settings.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+0.0%/8.2k (auto)                                    fixture-no-inference

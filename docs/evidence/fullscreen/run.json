@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-29T22:25:53.463Z",
+  "sourceSHA": "061f2ce189ffa65656d6af72dd1479a4c8ef18c8",
+  "dirtyAtStart": "",
+  "sourceHashes": {
+    "tests/pi-fullscreen-actual.test.ts": "f30da5bee63e3cfc328a4d715545616bb8ab4ae398c6d0e0fa8d25fd90192d6b",
+    "docs/evidence/fullscreen/fixtures/native-display.ts": "afb096ec9e2203193414bfea6f16a850d45dabc8643c6fcdf0b783b7b973f2f6",
+    "docs/evidence/fullscreen/fixtures/screen.ts": "e857295992730a7960513ad9d39414b828196fcdbb107f97b6367cd994444362",
+    "docs/tui/fullscreen-contract.md": "9ce751dbcf5d2dff28d38f2fef4474f70d00e2bbadc549be28e35ee26a22c8b1"
+  },
+  "baseSHA": "da5eb98041881658f9e30542b21cba2dfb63eafe",
+  "releaseSourceSHA": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+  "environment": {
+    "platform": "darwin",
+    "osRelease": "27.0.0",
+    "arch": "arm64",
+    "bun": "1.4.2",
+    "bunSHA256": "35d20dd0263e5c950194434b925454fdfa9ba6e4467da960410fa05b08a7a5b5",
+    "standalone": true,
+    "nestedHerdr": "UNKNOWN"
+  },
+  "networkDeny": {
+    "profile": "(version 1)(allow default)(deny network*)",
+    "status": "PASS",
+    "probe": "sandboxed Bun FFI libc connect syscall to loopback port 9, no listener; require -1/EPERM",
+    "exitCode": 0,
+    "stdout": "{\"ret\":-1,\"errno\":1}\n",
+    "stderr": ""
+  },
+  "scenarios": [
+    {
+      "name": "no-model input guard",
+      "status": "PASS",
+      "handled": 1,
+      "agentEvents": 0,
+      "providerEvents": 0
+    },
+    {
+      "name": "bottom dock stable across appends",
+      "status": "PASS",
+      "beforeRows": [
+        18,
+        20
+      ],
+      "afterRows": [
+        18,
+        20
+      ],
+      "caretRow": 19,
+      "footerRow": 23
+    },
+    {
+      "name": "PageUp and append preserve scrolled transcript",
+      "status": "PASS",
+      "visibleBefore": [
+        "TRANSCRIPT_042",
+        "TRANSCRIPT_043"
+      ],
+      "visibleAfter": [
+        "TRANSCRIPT_042",
+        "TRANSCRIPT_043"
+      ]
+    },
+    {
+      "name": "PageDown and Ctrl+Home/End transcript actions",
+      "status": "PASS",
+      "top": [
+        "TRANSCRIPT_001"
+      ],
+      "latest": [
+        "TRANSCRIPT_047",
+        "TRANSCRIPT_048",
+        "TRANSCRIPT_049"
+      ]
+    },
+    {
+      "name": "multiline bracketed paste CJK combining and caret",
+      "status": "PASS",
+      "logicalTextExact": true,
+      "beforeCursor": {
+        "x": 66,
+        "y": 19,
+        "visible": true
+      },
+      "leftCursor": {
+        "x": 65,
+        "y": 19,
+        "visible": true
+      },
+      "upCursor": {
+        "x": 65,
+        "y": 18,
+        "visible": true
+      }
+    },
+    {
+      "name": "resize wrapping 160x50 narrow 40x16 and 80x24",
+      "status": "PASS",
+      "sizes": [
+        "160x50",
+        "40x16",
+        "80x24"
+      ],
+      "draftPreserved": true
+    },
+    {
+      "name": "history arrows and editor line boundaries",
+      "status": "PASS",
+      "historyRestored": true,
+      "trailingWhitespaceTrimmedByHistory": true,
+      "home": {
+        "x": 0,
+        "y": 17,
+        "visible": true
+      },
+      "end": {
+        "x": 13,
+        "y": 17,
+        "visible": true
+      },
+      "newerDraft": ""
+    },
+    {
+      "name": "Ctrl+J newline without submission",
+      "status": "PASS",
+      "logicalDraft": "line-one\nline-two",
+      "noSubmission": true
+    },
+    {
+      "name": "CJK and combining grapheme caret and deletion widths",
+      "status": "PASS",
+      "initialColumns": 5,
+      "combiningLeft": 4,
+      "afterDeletion": 4,
+      "cjkLeft": 2,
+      "insertedDraft": "漢X字"
+    },
+    {
+      "name": "complete wheel click drag legacy and malformed sequences preserve draft",
+      "status": "PASS",
+      "exactDraft": true,
+      "wheelRowsBefore": [
+        [
+          "TRANSCRIPT_047",
+          0
+        ],
+        [
+          "TRANSCRIPT_048",
+          7
+        ],
+        [
+          "TRANSCRIPT_049",
+          14
+        ]
+      ],
+      "wheelRowsAfter": [
+        [
+          "TRANSCRIPT_047",
+          1
+        ],
+        [
+          "TRANSCRIPT_048",
+          8
+        ],
+        [
+          "TRANSCRIPT_049",
+          15
+        ]
+      ],
+      "selectionCopy": "disabled; highlight styles not captured"
+    },
+    {
+      "name": "SGR fragmentation within 5ms preserves draft",
+      "status": "PASS",
+      "gapMs": 5,
+      "exactDraft": true
+    },
+    {
+      "name": "SGR fragmentation delayed 250ms preserves draft",
+      "status": "FAIL",
+      "error": "Error: Delayed pointer tail entered draft: before=\"漢X字\" after=\"漢X10;5M字\""
+    }
+  ],
+  "inputs": [
+    {
+      "label": "synthetic handled submission",
+      "bytes": "\u001b[200~history-one\u001b[201~",
+      "outputByteOffset": 3773
+    },
+    {
+      "label": "submit",
+      "bytes": "\r",
+      "outputByteOffset": 3904
+    },
+    {
+      "label": "composer draft",
+      "bytes": "\u001b[200~DRAFT_ANCHOR\u001b[201~",
+      "outputByteOffset": 5959
+    },
+    {
+      "label": "PageUp",
+      "bytes": "\u001b[5~",
+      "outputByteOffset": 6511
+    },
+    {
+      "label": "PageDown",
+      "bytes": "\u001b[6~",
+      "outputByteOffset": 8501
+    },
+    {
+      "label": "Ctrl+Home",
+      "bytes": "\u001b[1;5H",
+      "outputByteOffset": 10496
+    },
+    {
+      "label": "Ctrl+End",
+      "bytes": "\u001b[1;5F",
+      "outputByteOffset": 12139
+    },
+    {
+      "label": "clear draft",
+      "bytes": "\u0015",
+      "outputByteOffset": 14370
+    },
+    {
+      "label": "Unicode bracketed paste",
+      "bytes": "\u001b[200~第一行 漢字 é\nsecond line wrap words wrap words wrap words wrap words wrap words wrap words wrap words wrap words wrap words wrap words wrap words wrap words \u001b[201~",
+      "outputByteOffset": 14500
+    },
+    {
+      "label": "caret left",
+      "bytes": "\u001b[D",
+      "outputByteOffset": 16328
+    },
+    {
+      "label": "caret up",
+      "bytes": "\u001b[A",
+      "outputByteOffset": 16358
+    },
+    {
+      "label": "resize",
+      "cols": 160,
+      "rows": 50,
+      "outputByteOffset": 16388
+    },
+    {
+      "label": "resize",
+      "cols": 40,
+      "rows": 16,
+      "outputByteOffset": 25561
+    },
+    {
+      "label": "resize",
+      "cols": 80,
+      "rows": 24,
+      "outputByteOffset": 26890
+    },
+    {
+      "label": "submit Unicode to handled guard",
+      "bytes": "\r",
+      "outputByteOffset": 29766
+    },
+    {
+      "label": "history previous",
+      "bytes": "\u001b[A",
+      "outputByteOffset": 31647
+    },
+    {
+      "label": "Home",
+      "bytes": "\u001b[H",
+      "outputByteOffset": 33474
+    },
+    {
+      "label": "End",
+      "bytes": "\u001b[F",
+      "outputByteOffset": 33503
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 33533
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 33563
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 33593
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 35474
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 35503
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 35532
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 35561
+    },
+    {
+      "label": "Down toward newer history",
+      "bytes": "\u001b[B",
+      "outputByteOffset": 35590
+    },
+    {
+      "label": "clear remaining draft by handled submit",
+      "bytes": "\r",
+      "outputByteOffset": 35619
+    },
+    {
+      "label": "first line",
+      "bytes": "\u001b[200~line-one\u001b[201~",
+      "outputByteOffset": 35648
+    },
+    {
+      "label": "Ctrl+J",
+      "bytes": "\n",
+      "outputByteOffset": 35778
+    },
+    {
+      "label": "second line",
+      "bytes": "\u001b[200~line-two\u001b[201~",
+      "outputByteOffset": 38091
+    },
+    {
+      "label": "submit previous draft to handled guard",
+      "bytes": "\r",
+      "outputByteOffset": 38221
+    },
+    {
+      "label": "short Unicode draft",
+      "bytes": "\u001b[200~漢字é\u001b[201~",
+      "outputByteOffset": 40564
+    },
+    {
+      "label": "left over combining grapheme",
+      "bytes": "\u001b[D",
+      "outputByteOffset": 40698
+    },
+    {
+      "label": "right over combining grapheme",
+      "bytes": "\u001b[C",
+      "outputByteOffset": 40727
+    },
+    {
+      "label": "backspace combining grapheme",
+      "bytes": "",
+      "outputByteOffset": 40756
+    },
+    {
+      "label": "left over CJK cell",
+      "bytes": "\u001b[D",
+      "outputByteOffset": 40888
+    },
+    {
+      "label": "insert between CJK characters",
+      "bytes": "X",
+      "outputByteOffset": 40917
+    },
+    {
+      "label": "return to latest before pointer cases",
+      "bytes": "\u001b[1;5F",
+      "outputByteOffset": 41049
+    },
+    {
+      "label": "SGR wheel up",
+      "bytes": "\u001b[<64;10;5M",
+      "outputByteOffset": 41078
+    },
+    {
+      "label": "SGR left press drag release",
+      "bytes": "\u001b[<0;5;4M\u001b[<32;12;4M\u001b[<0;12;4m",
+      "outputByteOffset": 43067
+    },
+    {
+      "label": "legacy wheel",
+      "bytes": "\u001b[M`*%",
+      "outputByteOffset": 43239
+    },
+    {
+      "label": "malformed SGR numeric code",
+      "bytes": "\u001b[<999;10;5M",
+      "outputByteOffset": 45277
+    },
+    {
+      "label": "SGR fragments",
+      "bytes": [
+        "\u001b[<64;",
+        "10;5M"
+      ],
+      "gapMs": 5,
+      "outputByteOffset": 45277
+    },
+    {
+      "label": "delayed SGR fragments",
+      "bytes": [
+        "\u001b[<64;",
+        "10;5M"
+      ],
+      "gapMs": 250,
+      "outputByteOffset": 47293
+    }
+  ],
+  "protocolReplies": [
+    {
+      "query": "\u001b]11;?",
+      "response": "\u001b]11;rgb:1111/1111/1111\u001b\\",
+      "outputByteOffset": 261
+    }
+  ],
+  "cleanup": {
+    "childReaped": true,
+    "ptyEOF": true,
+    "fixtureShutdownAcknowledged": true,
+    "ptyClosed": true,
+    "fixtureRemoved": true
+  },
+  "limitations": [
+    "No physical terminal, IME, tmux, WSL or Windows Terminal qualification",
+    "No clipboard operation; copy-on-select disabled",
+    "Synthetic display appends, not provider streaming",
+    "Screen replay captures text/cursor only, not styles or selection highlighting"
+  ],
+  "runtime": {
+    "version": "1.4.0",
+    "command": ".tmp/pi/1.4.0/darwin-arm64/pi/pi",
+    "artifact": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "name": "pi-darwin-arm64.tar.gz",
+      "url": "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-darwin-arm64.tar.gz",
+      "archiveBytes": 31098931,
+      "archiveSHA256": "79d9979d76a2a5adb7c28e27e9b44629928ccd0dc9fbb6ae7217860bd5e8be5d",
+      "binarySHA256": "b4d93b78e542ca8d1792242cf6c1a875ef4e6fb644141fb4cf67ec7c81ef9b14",
+      "treeSHA256": "34e8b644b7ec49b405e4c94658cb57623417d2d3e53f636393802788f8d2079a",
+      "fileCount": 211,
+      "entryCount": 237,
+      "unpackedBytes": 84513829
+    },
+    "bundleVerified": true
+  },
+  "launch": {
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-p",
+      "(version 1)(allow default)(deny network*)",
+      "[VERIFIED_PROJECT_PI]",
+      "--tui-mode",
+      "fullscreen",
+      "--offline",
+      "--no-session",
+      "--no-tools",
+      "--no-extensions",
+      "--no-mcp",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files",
+      "--approve",
+      "-e",
+      "[FIXTURE]/project/native-display.ts"
+    ],
+    "cwd": "[FIXTURE]/project",
+    "env": {
+      "HOME": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/home",
+      "PATH": "/usr/bin:/bin",
+      "TMPDIR": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/tmp",
+      "TERM": "xterm-256color",
+      "LANG": "en_US.UTF-8",
+      "LC_ALL": "en_US.UTF-8",
+      "PI_CODING_AGENT_DIR": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/agent",
+      "PI_OFFLINE": "1",
+      "PI_SKIP_VERSION_CHECK": "1",
+      "LAB_FULLSCREEN_RUN": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+      "XDG_CONFIG_HOME": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/config",
+      "XDG_CACHE_HOME": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/cache",
+      "XDG_DATA_HOME": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/data",
+      "XDG_STATE_HOME": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/state"
+    },
+    "settings": {
+      "enableInstallTelemetry": false,
+      "enableAnalytics": false,
+      "compaction": {
+        "enabled": false
+      },
+      "retry": {
+        "enabled": false
+      },
+      "cacheWarming": "off",
+      "quietStartup": true,
+      "fullscreenCopyOnSelect": false,
+      "fullscreenScrollbar": "hidden",
+      "showHardwareCursor": true,
+      "terminal": {
+        "showImages": false
+      },
+      "fullscreenExitOutput": "resume-hint"
+    }
+  },
+  "safety": {
+    "seq": 78,
+    "messages": 49,
+    "handled": 3,
+    "lastInput": "line-one\nline-two",
+    "agentEvents": 0,
+    "providerEvents": 0,
+    "noRoutableModel": true,
+    "selectedModel": {
+      "type": "object",
+      "nullValue": false,
+      "id": "unknown",
+      "provider": "unknown",
+      "api": "unknown",
+      "baseUrl": ""
+    },
+    "availableModels": 0,
+    "draft": "漢X10;5M字",
+    "cwdMatches": true
+  },
+  "parser": {
+    "unknown": [],
+    "incompleteBytes": 0
+  },
+  "exitCode": 0,
+  "completedAt": "2026-10-29T22:26:06.415Z",
+  "status": "FAIL",
+  "sanitization": "Absolute fixture/source paths replaced with equal-length ASCII ~ runs, preserving columns and control bytes; synthetic text only",
+  "evidenceSHA256": {
+    "terminal.ansi": "dece8b426c772e9a33344fe7903497f1e9ceb98b6df30b6ea0b828c0507e275f",
+    "screens.json": "cabc92501d8372b82f0025c5f8ea05210372561258e03e6e237de66ce9c3e80b",
+    "report.md": "361ab80ed055eec6c1485eb1981ff3af0d3034b02da7f45d326f2fa2365ebc35",
+    "actual-text.html": "fce987bd2b2891b2a86300b8e6005d253fb7bfebf6929cdd68583e0cf1a75139",
+    "actual-text.png": "6ef9492ca4cbcddcd8a43e62c35b6cf7ce844e7a721a65f68bde795a4bf6362f"
+  },
+  "presentation": {
+    "kind": "browser screenshot of reconstructed actual terminal text, not native pixels",
+    "sourceScreens": "screens.json",
+    "html": "actual-text.html",
+    "png": "actual-text.png",
+    "previewDimensions": [
+      1100,
+      1078
+    ]
+  }
+}
