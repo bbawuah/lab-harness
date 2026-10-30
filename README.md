@@ -149,6 +149,18 @@ and the unqualified request-admission boundary are explained below.
 what was tested, including the small local model's tool-use limits. Historical
 screenshots below are separate observations.
 
+## Terminal workspace
+
+Pi starts beside your regular shell. Use `/lab-appearance` for staged appearance
+controls and `lab --single-pane` in a narrow terminal.
+
+![Actual terminal text: Pi and shell, staged appearance and compact UI](docs/evidence/tui/terminal-text.png)
+
+This is a browser rendering of actual native terminal text, not live pixels;
+frame colors/fonts are editorial. [Source-labelled captures and limits](docs/evidence/tui/README.md)
+distinguish clean 944 and 4aaf runs. The separate delayed mouse-fragment diagnostic
+remains unqualified.
+
 ## Settings, caches and updates
 
 Use the same launcher with `--configure` to change endpoint/model/key, or with

@@ -102,6 +102,16 @@
     "docs/evidence/relay-workspace.json",
     "docs/evidence/relay-workspace.png",
     "docs/evidence/subsequent-project-terminal.ansi",
+    "docs/evidence/tui/README.md",
+    "docs/evidence/tui/capture.json",
+    "docs/evidence/tui/compact.txt",
+    "docs/evidence/tui/dark.txt",
+    "docs/evidence/tui/light.txt",
+    "docs/evidence/tui/split.txt",
+    "docs/evidence/tui/terminal-text.html",
+    "docs/evidence/tui/terminal-text.png",
+    "docs/evidence/tui/terminal.ansi",
+    "docs/evidence/tui/warning.txt",
     "docs/herdr.md",
     "docs/interactive-build-contract.md",
     "docs/interactive-validation.md",
@@ -305,7 +315,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "4eacdcafeebede1e4aa1f8d36239945b2560e31d5636381a3153bc49735dcdbe",
+      "sha256": "1d5b4f3cc41141062ba43a5f849575a3e5f84829ca95c8c8eb4f17fe6ad8ae7a",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -337,7 +347,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "81f54d6a9597950f366a615bf86dbebfd6a045a314f666f1615ec3f404d59a3f",
+      "sha256": "1ad36b5f5dc516fe045e6a3c305e5a225ad68a144d92e1d8ac7dafddd1398055",
       "status": "added"
     },
     "bun.lock": {
@@ -543,6 +553,46 @@
     },
     "docs/evidence/subsequent-project-terminal.ansi": {
       "sha256": "e4f29afc2fa95f1a3b6d045517b9556111d2148c08d67720968b4f9dd5dac476",
+      "status": "added"
+    },
+    "docs/evidence/tui/README.md": {
+      "sha256": "223cb4a59be10836e5147ff67df353d0bf72e76d9718dfa60f16f8617ed932ae",
+      "status": "added"
+    },
+    "docs/evidence/tui/capture.json": {
+      "sha256": "137c9f9f5ce00b7bd1d0e60bd8004cfd21fe78a9aa0375530566570e9e387964",
+      "status": "added"
+    },
+    "docs/evidence/tui/compact.txt": {
+      "sha256": "2734c18efa8fe0b7eb848b7a0c5a6ea4e676023fdb29f51b0f83a2b3b1d135ab",
+      "status": "added"
+    },
+    "docs/evidence/tui/dark.txt": {
+      "sha256": "a9ef545b87c5f3681fac6fa06ac0a8c1c74d76e8573c3d44341da1adad12972e",
+      "status": "added"
+    },
+    "docs/evidence/tui/light.txt": {
+      "sha256": "579630b277994fafac2a9bce0bd9a75a69444a4ee9434f78d4ec2f6d021b5441",
+      "status": "added"
+    },
+    "docs/evidence/tui/split.txt": {
+      "sha256": "6474a53ed1f616b79f0d17d954d4f36a036deb99304ca58fdfb17214fc5dd5a9",
+      "status": "added"
+    },
+    "docs/evidence/tui/terminal-text.html": {
+      "sha256": "2a0069baf5ea87e812c2e02e282b7df699cc6766f638022395fed5c2854dcf98",
+      "status": "added"
+    },
+    "docs/evidence/tui/terminal-text.png": {
+      "sha256": "e60c147d0a26fbe3309c72f668953167281275d09916dbd16959f9295320327f",
+      "status": "added"
+    },
+    "docs/evidence/tui/terminal.ansi": {
+      "sha256": "e1d8cfb5435ad27ec92d43619eab884e84318d4720eb9e177e5bc9dba252a4c3",
+      "status": "added"
+    },
+    "docs/evidence/tui/warning.txt": {
+      "sha256": "03cb24163f865a4ad648ad9c8dc55d177dd4c632bac103139cb02dccf1f14fd7",
       "status": "added"
     },
     "docs/herdr.md": {

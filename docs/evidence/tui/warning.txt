@@ -1,0 +1,45 @@
+
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Interactive coding workspace
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Controlled LAB tasks: unavailable
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready:
+ project-B-with-spaces/01a18a20-1c65-75e6-b560--d55b78888bdd
+ (pi-f317ac7a30009e8b47c2eda9e2b1da0f552ac719c77dbffc4c398297a9b9c516).
+ Use /relay-peers.
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────
+
+ Appearance saved. Custom colors cannot preserve contrast in 256
+ colors. Using Standard for this run; use /lab-appearance to edit or
+ Reset. Saved preferences are unchanged.
+
+ → Reload with temporary Standard
+   Reload later
+
+ ↑↓ navigate  enter select  escape/ctrl+c cancel
+
+────────────────────────────────────────────────────────────────────────
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+0.0%/8.2k (auto)                                    fixture-no-inference
