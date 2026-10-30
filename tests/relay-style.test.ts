@@ -10,6 +10,7 @@ function theme(indexed = false, light = false) {
   const accent = indexed ? 24 : light ? "0;90;156" : "88;166;255", background = indexed ? 231 : light ? "255;255;255" : "13;17;23";
   return { calls, colors: { accent, customMessageBg: background },
     fg(token: string, text: string) { calls.push(["fg", token]); return `\x1b[${indexed ? "38;5;" : "38;2;"}${accent}m${text}\x1b[39m`; },
+    bg(token: string, text: string) { calls.push(["bg", token]); return `\x1b[${indexed ? "48;5;" : "48;2;"}${background}m${text}\x1b[49m`; },
     style(text: string, options: { fg: unknown; bg: unknown }) { calls.push(["style", options]); return `\x1b[${indexed ? "38;5;" : "38;2;"}${options.fg}m\x1b[${indexed ? "48;5;" : "48;2;"}${options.bg}m${text}\x1b[0m`; },
   };
 }
@@ -31,7 +32,7 @@ test("semantic rows prevent untrusted message text from becoming a badge or dire
   expect(rows.filter(row => row.role === "title")).toHaveLength(1);
   expect(rows.find(row => row.text.includes("Received from an untrusted"))?.role).toBe("body");
   const rendered = renderStyledRelay(view, 100, native), plain = clean(rendered.join("\n"));
-  expect(rendered.join("\n").match(/48;2;/g)).toHaveLength(1);
+  expect(rendered.join("\n").match(/48;2;88;166;255/g)).toHaveLength(1);
   expect(plain).toContain("│ Relay · Received from an untrusted body");
   expect(plain).toContain("\\x1b]52;clipboard\\x07");
   expect(rendered.join("\n")).not.toContain("\x1b]52;");
@@ -54,14 +55,14 @@ test("expanded actionable details stay neutral and colored lines cannot bleed in
   const plain = clean(output.join("\n"));
   expect(plain).toContain("Receipt ID: receipt-original"); expect(plain).toContain("Request key: retry-key"); expect(plain).toContain("peer-abcdef");
   const details = output.slice(output.findIndex(line => clean(line).startsWith("Send identifiers:")));
-  for (const line of details) { expect(line).not.toMatch(/\x1b\[48;/); expect(line.endsWith("\x1b[0m")).toBe(true); }
+  for (const line of details) { expect(line).not.toContain("48;2;88;166;255"); expect(line).toContain("48;2;13;17;23"); expect(line.endsWith("\x1b[0m")).toBe(true); }
   for (const width of [14, 20, 40]) for (const line of renderStyledRelay(view, width, native, { expanded: true })) expect(Bun.stringWidth(line)).toBeLessThanOrEqual(width);
   const broken = { fg() { throw new Error("bad theme"); }, style() { throw new Error("bad theme"); }, colors: {} };
   expect(renderStyledRelay(view, 80, broken).join("\n")).not.toContain("\x1b");
 });
 
 test("throwing native capability and color getters preserve plain messages and expanded actionable details", () => {
-  for (const key of ["fg", "style", "colors"]) {
+  for (const key of ["fg", "bg", "style", "colors"]) {
     const candidate = theme();
     Object.defineProperty(candidate, key, { get() { throw new Error("getter failed"); } });
     const output = renderStyledRelay(view, 80, candidate, { expanded: true }).join("\n");
@@ -69,4 +70,11 @@ test("throwing native capability and color getters preserve plain messages and e
     expect(output).toContain("Hello"); expect(output).toContain("Receipt ID: receipt-original");
     expect(output).not.toContain("presentation unavailable"); expect(output).not.toContain("\x1b");
   }
+});
+
+test("light message text is paired with the selected surface even over a dark outer terminal", () => {
+  const native = theme(false, true), lines = renderStyledRelay(view, 90, native);
+  for (const line of lines) expect(line).toContain("48;2;255;255;255");
+  expect(lines[0]).toContain("48;2;0;90;156m Relay ");
+  expect(native.calls).toContainEqual(["bg", "customMessageBg"]);
 });

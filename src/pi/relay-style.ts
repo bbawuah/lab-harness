@@ -3,6 +3,7 @@ import { renderRelayRows, renderRelayView, type RelayRenderOptions, type RelayVi
 
 type NativeTheme = {
   fg(token: string, text: string): string;
+  bg(token: string, text: string): string;
   style(text: string, options: { fg: unknown; bg: unknown }): string;
   colors: { accent: unknown; customMessageBg: unknown };
 };
@@ -30,7 +31,7 @@ export function renderStyledRelay(view: RelayView, width: number, theme: unknown
   try {
     // Even capability getters belong inside the fallback boundary. Unusual or
     // unavailable native themes must not replace readable messages/details.
-    if (typeof native?.fg !== "function" || typeof native?.style !== "function") return rows.map(plain);
+    if (typeof native?.fg !== "function" || typeof native?.bg !== "function" || typeof native?.style !== "function") return rows.map(plain);
     // Access only trusted native theme colors, not caller- or message-supplied
     // ANSI. No product palette or terminal-global color setting is introduced.
     const colors = native.colors;
@@ -42,11 +43,11 @@ export function renderStyledRelay(view: RelayView, width: number, theme: unknown
         const direction = row.direction === "in" ? (options.ascii ? "< " : "← ") : row.direction === "out" ? (options.ascii ? "> " : "→ ") : "";
         const badge = native.style(" Relay ", { fg: colors.customMessageBg, bg: colors.accent });
         const status = view.error ? "error" : view.pending ? "muted" : "text";
-        line = badge + " " + native.fg("accent", direction) + native.fg(status, rest);
+        line = badge + native.bg("customMessageBg", " " + native.fg("accent", direction) + native.fg(status, rest));
       } else if (row.role === "body") {
-        line = native.fg("borderMuted", options.ascii ? "| " : "│ ") + native.fg("text", row.text);
-      } else if (row.role === "title-continuation") line = "  " + native.fg("text", row.text);
-      else line = native.fg(row.role === "detail" ? "text" : "muted", row.text);
+        line = native.bg("customMessageBg", native.fg("borderMuted", options.ascii ? "| " : "│ ") + native.fg("text", row.text));
+      } else if (row.role === "title-continuation") line = native.bg("customMessageBg", "  " + native.fg("text", row.text));
+      else line = native.bg("customMessageBg", native.fg(row.role === "detail" ? "text" : "muted", row.text));
       // Close the badge and all foreground attributes at every line boundary.
       // Expanded details and neighboring native components cannot inherit them.
       return line + "\x1b[0m";
