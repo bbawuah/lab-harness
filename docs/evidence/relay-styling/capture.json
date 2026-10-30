@@ -240,7 +240,7 @@
   "checks": "24 focused tests / 5203 assertions and typecheck passed; independent style/presentation/extension run 21 tests / 5162 assertions. Required CI e866 passed both platforms per root. No full-gate duplicate or reload investigation in this slice.",
   "rawHashStages": {
     "originalSHA256": "Unaliased raw PTY bytes hashed by the actual capture driver; not published.",
-    "captureStageSanitizedSHA256": "Intermediate stream after the driver aliases full project/home/checkout/fixture paths; retained privately in ignored capture output.",
+    "captureStageSanitizedSHA256": "Intermediate stream after the driver aliases full project, home, checkout and fixture paths; retained privately in ignored capture output.",
     "sanitizedSHA256": "The committed sanitizedFile, after additionally aliasing the machine title and truncated temporary-path footer. It matches files[sanitizedFile]."
   }
 }
