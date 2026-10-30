@@ -67,6 +67,12 @@ test("failed native tools retain exceptions; their presentation never forwards a
   const notice = h.notices.at(-1)!;
   expect(notice).toContain("Ack failed"); expect(notice).toContain("Use /relay-ack");
   expect(notice).not.toContain("Ctrl+O"); expect(notice).not.toContain("Details:");
+  const renderedError = (text: string) => tool.renderResult({ content: [{ type: "text", text }], details: undefined }, { expanded: false }, {}, { args: {}, isError: true }).render(100).join("\n");
+  expect(renderedError("Operation aborted")).toContain("Send cancelled");
+  expect(renderedError("Operation aborted")).toContain("may have stored");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).toContain("LAB_BRIDGE_INPUT_LIMIT");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).toContain("rejected before execution");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).not.toContain("may have stored");
   await h.event("session_shutdown", ctx);
 });
 

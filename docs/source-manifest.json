@@ -1045,11 +1045,11 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "40f51003315b1d8d06d6664a1fe9173cbab371f9294ea4f2017aa05471a98b54",
+      "sha256": "8bde96d5b6c8330c6d84a03f064eb6d5b0d412f9dc7d54f6c2ab4cc3cbfa5926",
       "status": "added"
     },
     "src/pi/relay-presentation.ts": {
-      "sha256": "56a262066f093e11755badfd0c165e07586b8a0db8be323961cff0c05ad6059c",
+      "sha256": "bb0af70a79a4562383eecc29b58190d219612d7f2b8d3000bbb88c27d960819d",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1264,7 +1264,7 @@
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
-      "sha256": "e78e2055cdd2fda3f1204817cd928672e442f229d432f09168938372625847cc",
+      "sha256": "45c3dd55efb8ce68c09fc23526ac6d7270d72e4950630022626f200d8b010b0c",
       "status": "added"
     },
     "tests/relay-loader-env-child.ts": {

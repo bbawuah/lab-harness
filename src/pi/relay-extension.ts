@@ -65,7 +65,9 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
   });
   function errorCode(error: unknown): string {
     const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
-    if (/^(?:Use \/relay-|RELAY_[A-Z0-9_]+$)/.test(message)) return safeRelayText(message);
+    // Pinned Pi turns an aborted native tool into text before renderResult.
+    if (message === "Operation aborted") return "RELAY_CANCELLED";
+    if (/^(?:Use \/relay-|RELAY_[A-Z0-9_]+$|LAB_BRIDGE_INPUT_LIMIT$)/.test(message)) return safeRelayText(message);
     if (error instanceof Error && error.name === "AbortError") return "RELAY_CANCELLED";
     return "RELAY_OUTCOME_UNKNOWN";
   }

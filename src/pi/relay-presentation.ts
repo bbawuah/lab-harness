@@ -113,7 +113,8 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
       const known = ["RELAY_INVALID", "RELAY_INVALID_PARAMETERS", "RELAY_SESSION_NOT_READY", "RELAY_SESSION_BINDING_REQUIRED", "RELAY_CONFLICT", "RELAY_UNKNOWN_PEER", "RELAY_TOO_LARGE", "RELAY_BACKPRESSURE", "RELAY_UNSUPPORTED", "RELAY_CANCELLED", "RELAY_OPERATION_REFUSED", "LAB_BRIDGE_INPUT_LIMIT"];
       const usage = ["Use /relay-send PEER REQUEST_KEY MESSAGE", "Use /relay-ack MESSAGE_ID [MESSAGE_ID ...]", "Use /relay-peers [OFFSET]", "Use /relay-inbox [WAIT_MS]"];
       if (known.includes(view.error) || usage.includes(view.error)) add(view.error);
-      if (view.action === "send") add("The outcome may be unknown and the message may have stored. For an exact retry, reuse the request key and payload.");
+      if (view.error === "LAB_BRIDGE_INPUT_LIMIT") add("Request exceeds the bridge input limit and was rejected before execution; nothing was sent.");
+      else if (view.action === "send") add("The outcome may be unknown and the message may have stored. For an exact retry, reuse the request key and payload.");
       else if (!cancelled) add("Check the request and Relay session, then try again.");
     } else if (view.pending) {
       if (view.action === "send") { title(`Send to ${label(request.to)}`); if (typeof request.body === "string") body(request.body); }
