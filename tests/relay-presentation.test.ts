@@ -103,3 +103,42 @@ test("completed results expose details and known errors remain safe", () => {
   expect(cancelled).not.toContain("Send failed");
   expect(text({ action: "ack", error: "Use /relay-evil \x1bSECRET" })).not.toContain("SECRET");
 });
+
+
+test("expanded identifiers remain available before long bodies and bounded JSON", () => {
+  const messages = Array.from({ length: 5 }, (_, i) => ({
+    id: `message-${i}-` + "i".repeat(118), from: `sender-${i}-` + "s".repeat(119), body: "z".repeat(4000),
+  }));
+  const view: RelayView = { action: "inbox", result: { messages } };
+  const before = JSON.stringify(view);
+  for (const width of [80, 20]) {
+    const expanded = renderRelayView(view, width, { expanded: true }).join("\n");
+    const projection = expanded.split("Details (request and result):".slice(0, width))[0]!.replaceAll("\n", "");
+    for (const message of messages) {
+      expect(projection).toContain(message.id);
+      expect(projection).toContain(message.from);
+    }
+    expect(expanded.replaceAll("\n", "")).toContain("Details truncated; full data remains in the original payload");
+    const collapsed = renderRelayView(view, width).join("\n").replaceAll("\n", "");
+    for (const message of messages) expect(collapsed).not.toContain(message.id);
+  }
+  expect(JSON.stringify(view)).toBe(before);
+  const send: RelayView = { action: "send", request: { to: "recipient-" + "r".repeat(118), requestKey: "key-" + "k".repeat(124), body: "z".repeat(4000) }, result: { state: "stored", id: "receipt-" + "x".repeat(120) } };
+  const expanded = renderRelayView(send, 20, { expanded: true }).join("").replaceAll("\n", "");
+  expect(expanded).toContain((send.request as { to: string }).to);
+  expect(expanded).toContain((send.request as { requestKey: string }).requestKey);
+  expect(expanded).toContain((send.result as { id: string }).id);
+  expect(expanded).toContain("Details truncated; full data remains in the original payload");
+});
+
+test("expanded identifier projection bounds malformed data and resolves recipient aliases", () => {
+  const view: RelayView = { action: "send", peers, request: { to: peers[0]!.name, requestKey: "k".repeat(500) }, result: { id: "x".repeat(500) } };
+  const expanded = text(view, true);
+  expect(expanded).toContain("Recipient ID: peer-123abc");
+  expect(expanded).toContain("[Identifier truncated]");
+  expect(expanded.split("Details (request and result):")[0]).not.toContain("k".repeat(500));
+  const many = text({ action: "inbox", result: { messages: Array.from({ length: 11 }, (_, i) => ({ id: `id-${i}`, from: `from-${i}`, body: "" })) } }, true);
+  const projection = many.split("Details (request and result):")[0]!;
+  for (let i = 0; i < 10; i++) { expect(projection).toContain(`Message ID: id-${i}`); expect(projection).toContain(`Sender ID: from-${i}`); }
+  expect(projection).toContain("[Further message identifiers omitted]");
+});

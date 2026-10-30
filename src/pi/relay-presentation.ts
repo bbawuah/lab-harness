@@ -153,6 +153,32 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
     }
     if (!view.pending && !options.expanded) hint();
     if (options.expanded) {
+      // Keep actionable identifiers ahead of the separately bounded JSON body.
+      // Valid Relay references are at most 128 UTF-16 code units.
+      const identifier = (name: string, value: unknown) => {
+        if (typeof value !== "string") return;
+        const prefix = value.slice(0, 128);
+        const rendered = wrap(`${name}: ${labelText(prefix)}`, size, 2000);
+        lines.push(...rendered.lines);
+        if (prefix.length < value.length || rendered.truncated) add("[Identifier truncated]");
+      };
+      if (view.action === "inbox" && Array.isArray(result.messages)) {
+        add("Message identifiers:");
+        for (const [index, item] of result.messages.slice(0, 10).entries()) {
+          const message = obj(item);
+          add(`Message ${index + 1}:`);
+          identifier("Message ID", message.id);
+          identifier("Sender ID", message.from);
+        }
+        if (result.messages.length > 10) add("[Further message identifiers omitted]");
+      } else if (view.action === "send") {
+        add("Send identifiers:");
+        identifier("Recipient", request.to);
+        const recipient = peers.find(peer => peer && peer.name === request.to);
+        if (recipient && recipient.id !== request.to) identifier("Recipient ID", recipient.id);
+        identifier("Request key", request.requestKey);
+        identifier("Receipt ID", result.id);
+      }
       add("Details (request and result):");
       const detail = details({ request: view.request, result: view.result, ...(view.error !== undefined ? { error: view.error } : {}) });
       const wrapped = wrap(detail.text, size, 120);
