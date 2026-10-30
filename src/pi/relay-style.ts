@@ -16,7 +16,6 @@ export function renderStyledRelay(view: RelayView, width: number, theme: unknown
   if (size < 14) return renderRelayView(view, size, options);
   const rows = renderRelayRows(view, size - 2, options);
   const native = theme as NativeTheme | undefined;
-  const color = options.color !== false && typeof native?.fg === "function" && typeof native?.style === "function";
   const plain = (row: typeof rows[number]) => {
     if (row.role === "title") {
       const rest = row.text.replace(/^Relay(?: · | - )?/, "");
@@ -27,8 +26,11 @@ export function renderStyledRelay(view: RelayView, width: number, theme: unknown
     if (row.role === "title-continuation") return "  " + row.text;
     return row.text;
   };
-  if (!color) return rows.map(plain);
+  if (options.color === false) return rows.map(plain);
   try {
+    // Even capability getters belong inside the fallback boundary. Unusual or
+    // unavailable native themes must not replace readable messages/details.
+    if (typeof native?.fg !== "function" || typeof native?.style !== "function") return rows.map(plain);
     // Access only trusted native theme colors, not caller- or message-supplied
     // ANSI. No product palette or terminal-global color setting is introduced.
     const colors = native.colors;

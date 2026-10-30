@@ -59,3 +59,14 @@ test("expanded actionable details stay neutral and colored lines cannot bleed in
   const broken = { fg() { throw new Error("bad theme"); }, style() { throw new Error("bad theme"); }, colors: {} };
   expect(renderStyledRelay(view, 80, broken).join("\n")).not.toContain("\x1b");
 });
+
+test("throwing native capability and color getters preserve plain messages and expanded actionable details", () => {
+  for (const key of ["fg", "style", "colors"]) {
+    const candidate = theme();
+    Object.defineProperty(candidate, key, { get() { throw new Error("getter failed"); } });
+    const output = renderStyledRelay(view, 80, candidate, { expanded: true }).join("\n");
+    expect(output).toContain("[Relay] → Sent to project abcdef (stored)");
+    expect(output).toContain("Hello"); expect(output).toContain("Receipt ID: receipt-original");
+    expect(output).not.toContain("presentation unavailable"); expect(output).not.toContain("\x1b");
+  }
+});
