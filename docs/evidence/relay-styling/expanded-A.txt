@@ -1,0 +1,41 @@
+
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▄▄
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀▀   LAB-HARNESS
+▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀    Powered by Pi
+▀▀▀▀▀ ▀▀▀▀▀▀ ▀▀      Interactive coding workspace
+▀▀▀▀▀ ▀▀▀▀▀▀ ▄▄▄     Controlled LAB tasks: unavailable
+▀▀▀▀▀   ▀▀▀▀ ▀▀▀▀
+▀▀▀▀▀      ▀ ▀▀▀▀▀
+▄▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄
+▀▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀
+ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready · readme-review 4abc0b. Use /relay-peers.
+
+ Relay  Peers
+readme-review 4abc0b (self) - online
+readme-review 30544c - online
+2 shown; 2 total
+[Details: expand with Ctrl+O (or /hotkeys)]
+
+ Relay  > Sent to readme-review 30544c (stored)
+| Hi, I’m checking the README. Can you check the install instructions?
+[Details: expand with Ctrl+O (or /hotkeys)]
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────
+$DEMO/...
+2.2%/8.2k (auto)                                            operator-demo-no-inference

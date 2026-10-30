@@ -86,18 +86,24 @@ function details(value: unknown): { text: string; truncated: boolean } {
   catch { return { text: "[unavailable]", truncated: true }; }
 }
 
-export function renderRelayView(view: RelayView, width: number, options: { expanded?: boolean; ascii?: boolean; detailsHint?: boolean } = {}): string[] {
+export type RelayRenderOptions = { expanded?: boolean; ascii?: boolean; detailsHint?: boolean };
+export type RelayRow = { text: string; role: "title" | "title-continuation" | "body" | "meta" | "detail"; direction?: "in" | "out" };
+
+/** Semantic annotations come from the formatter, never by interpreting message text. */
+export function renderRelayRows(view: RelayView, width: number, options: RelayRenderOptions = {}): RelayRow[] {
   const size = Number.isFinite(width) ? Math.min(1000, Math.max(0, Math.floor(width))) : 0;
   if (!size) return [];
-  const lines: string[] = [];
+  const lines: RelayRow[] = [];
   const sep = options.ascii ? " - " : " · ";
-  const add = (text: string) => { lines.push(...wrap(safeRelayText(text), size, 400).lines); };
+  const add = (text: string, role: RelayRow["role"] = "meta", direction?: RelayRow["direction"]) => {
+    lines.push(...wrap(safeRelayText(text), size, 400).lines.map((line, index) => ({ text: line, role: role === "title" && index > 0 ? "title-continuation" as const : role, ...(index === 0 && direction ? { direction } : {}) })));
+  };
   let hinted = false;
   const hint = () => { if (!hinted && options.detailsHint !== false) { add("[Details: expand with Ctrl+O (or /hotkeys)]"); hinted = true; } };
   const body = (text: string) => {
     // Bound work before wrapping even if historical data is unexpectedly huge.
     const part = text.slice(0, 16000), wrapped = wrap(safeRelayText(part), size, 3);
-    lines.push(...wrapped.lines);
+    lines.push(...wrapped.lines.map(text => ({ text, role: "body" as const })));
     if (wrapped.truncated || part.length < text.length) hint();
   };
   try {
@@ -105,7 +111,7 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
     const pagePeers = Array.isArray(result.peers) ? result.peers : [];
     const peers = [...(Array.isArray(view.peers) ? view.peers.slice(0, 500) : []), ...pagePeers.slice(0, 500)] as RelayPeer[];
     const label = (id: unknown) => relayPeerLabel(string(id), peers);
-    const title = (text: string) => add(`Relay${sep}${text}`);
+    const title = (text: string) => add(`Relay${sep}${text}`, "title", text.startsWith("Received from ") ? "in" : /^(?:Send|Sent) to /.test(text) ? "out" : undefined);
     if (view.error !== undefined) {
       const action = { peers: "Peers", send: "Send", inbox: "Inbox", ack: "Ack" }[view.action] ?? "Operation";
       const cancelled = view.error === "RELAY_CANCELLED";
@@ -160,7 +166,7 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
         if (typeof value !== "string") return;
         const prefix = value.slice(0, 128);
         const rendered = wrap(`${name}: ${labelText(prefix)}`, size, 2000);
-        lines.push(...rendered.lines);
+        lines.push(...rendered.lines.map(text => ({ text, role: "detail" as const })));
         if (prefix.length < value.length || rendered.truncated) add("[Identifier truncated]");
       };
       if (view.action === "inbox" && Array.isArray(result.messages)) {
@@ -192,9 +198,14 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
       add("Details (request and result):");
       const detail = details({ request: view.request, result: view.result, ...(view.error !== undefined ? { error: view.error } : {}) });
       const wrapped = wrap(detail.text, size, 120);
-      lines.push(...wrapped.lines);
+      lines.push(...wrapped.lines.map(text => ({ text, role: "detail" as const })));
       if (detail.truncated || wrapped.truncated) add("[Details truncated; full data remains in the original payload]");
     }
   } catch { add("Relay presentation unavailable"); }
   return lines;
+}
+
+/** Existing plain-text surface is preserved for notifications and nonstyled consumers. */
+export function renderRelayView(view: RelayView, width: number, options: RelayRenderOptions = {}): string[] {
+  return renderRelayRows(view, width, options).map(row => row.text);
 }

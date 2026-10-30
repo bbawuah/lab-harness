@@ -115,6 +115,28 @@
     "docs/evidence/relay-model-tool-events.jsonl",
     "docs/evidence/relay-recipient-screen.txt",
     "docs/evidence/relay-sender-screen.txt",
+    "docs/evidence/relay-styling/README.md",
+    "docs/evidence/relay-styling/capture.json",
+    "docs/evidence/relay-styling/expanded-A.txt",
+    "docs/evidence/relay-styling/expanded-B.txt",
+    "docs/evidence/relay-styling/fallbacks.html",
+    "docs/evidence/relay-styling/fallbacks.png",
+    "docs/evidence/relay-styling/indexed-I.txt",
+    "docs/evidence/relay-styling/light-dark-A.txt",
+    "docs/evidence/relay-styling/light-dark-B.txt",
+    "docs/evidence/relay-styling/light-dark.html",
+    "docs/evidence/relay-styling/light-dark.png",
+    "docs/evidence/relay-styling/narrow-A.txt",
+    "docs/evidence/relay-styling/narrow-B.txt",
+    "docs/evidence/relay-styling/narrow.html",
+    "docs/evidence/relay-styling/narrow.png",
+    "docs/evidence/relay-styling/no-color-N.txt",
+    "docs/evidence/relay-styling/reply-A.txt",
+    "docs/evidence/relay-styling/reply-B.txt",
+    "docs/evidence/relay-styling/session-A.ansi",
+    "docs/evidence/relay-styling/session-B.ansi",
+    "docs/evidence/relay-styling/session-I.ansi",
+    "docs/evidence/relay-styling/session-N.ansi",
     "docs/evidence/relay-workspace.html",
     "docs/evidence/relay-workspace.json",
     "docs/evidence/relay-workspace.png",
@@ -162,6 +184,7 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-human-messages-contract.md",
+    "docs/relay-message-styling-contract.md",
     "docs/relay-workspace-contract.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
@@ -242,6 +265,7 @@
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
     "src/pi/relay-presentation.ts",
+    "src/pi/relay-style.ts",
     "src/pi/terminal-mark.json",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
@@ -297,6 +321,7 @@
     "tests/relay-loader-env.test.ts",
     "tests/relay-pi-actual.test.ts",
     "tests/relay-presentation.test.ts",
+    "tests/relay-style.test.ts",
     "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
@@ -627,6 +652,94 @@
       "sha256": "a1bc6090051b0b578c7e3ceeacd798f31eb3634a00b371e3cbeb7e72652103e3",
       "status": "added"
     },
+    "docs/evidence/relay-styling/README.md": {
+      "sha256": "a6b4d9434e0f9a96a951b346215e748c1b41307e7965a1c474fde4d39d20ff33",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/capture.json": {
+      "sha256": "ef919ee61e761c6b7533ce1a99c615f9ca3e7ae3618249f4c17e7b779e7f0060",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/expanded-A.txt": {
+      "sha256": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/expanded-B.txt": {
+      "sha256": "bb6fad9e20b89657bb5d4fa7acc0717beda6f9b5718e49320718a3316e561260",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/fallbacks.html": {
+      "sha256": "b98e5781d557eb789005d0096072bf6e7837446a1c1bf223aea8457f7a9f0ab9",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/fallbacks.png": {
+      "sha256": "b8e962013af8c2d3326a23bcfaa0fd75bc56690341d3eeb46c54e8f524a1c3d6",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/indexed-I.txt": {
+      "sha256": "22a339f1a95e4105b1c97172091a88d619ef418927361e94aead8c99616756ee",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/light-dark-A.txt": {
+      "sha256": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/light-dark-B.txt": {
+      "sha256": "ee3bdbf9862f6e09a60ce67b450f942f714a2e856025d29fff806499294801e8",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/light-dark.html": {
+      "sha256": "0d4545656c184a830485a0d0de5f5ee7b3140845f97e58245aa3b6d53cacbaf5",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/light-dark.png": {
+      "sha256": "53ba192f186aee2b70b2bf60e0278ef03cd971326e5e9111175395e4afa215c2",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/narrow-A.txt": {
+      "sha256": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/narrow-B.txt": {
+      "sha256": "20244b4867ed5e746704e98578ee46bd61a6ea81625a7dd9649caef6d4998469",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/narrow.html": {
+      "sha256": "1b5081d0914865623db4fdc7b404ce5898b3a58a3206bc10bc80a9b2b587e7b9",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/narrow.png": {
+      "sha256": "bbd7d941629ed6f3288619766917a3a3bcf4415a75365716978d9f628ba02ee5",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/no-color-N.txt": {
+      "sha256": "ed5642730c096b23ae77d93ed5e7782861189d9417ae810d3f0f84c865e9d9a0",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/reply-A.txt": {
+      "sha256": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/reply-B.txt": {
+      "sha256": "ece0a5d045da4e816725300c17cb142b8b0e0741c7dcb65e6465a6e8a7c81eba",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/session-A.ansi": {
+      "sha256": "6e4a4ac175a76df6fadce5e6e5b9bd58fdf616bd3332e57384fcb0fdc1f8c7f5",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/session-B.ansi": {
+      "sha256": "dcdff49f6ba5e4a2f7104d9f6ebbb6ac515a57da333ddcad67e052ef1c37835b",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/session-I.ansi": {
+      "sha256": "5493016e8d59f48019769b21db34af688afe2d880b77d814210bc5fb36e64363",
+      "status": "added"
+    },
+    "docs/evidence/relay-styling/session-N.ansi": {
+      "sha256": "865753964cf52c910e1c4e6312db04ca538bf05982b424644402b436436ea3ea",
+      "status": "added"
+    },
     "docs/evidence/relay-workspace.html": {
       "sha256": "5beadbb75473c5dfa1cb92bf27c3569595a7a11ef2eab4986ceb57aa238b4299",
       "status": "added"
@@ -813,6 +926,10 @@
     },
     "docs/relay-human-messages-contract.md": {
       "sha256": "40f9f22701bf2a1f18425499095ebbbbf55d95965fe7f8813e1461f460d21262",
+      "status": "added"
+    },
+    "docs/relay-message-styling-contract.md": {
+      "sha256": "9f59145e0565817604b11cd3de482d8bcad0180bca2cfacd00779891fdcf49a3",
       "status": "added"
     },
     "docs/relay-workspace-contract.md": {
@@ -1130,11 +1247,15 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "8bde96d5b6c8330c6d84a03f064eb6d5b0d412f9dc7d54f6c2ab4cc3cbfa5926",
+      "sha256": "050c72e346b038250410e66563e18c87f3d142852bea5388427f5b6338a57641",
       "status": "added"
     },
     "src/pi/relay-presentation.ts": {
-      "sha256": "bb0af70a79a4562383eecc29b58190d219612d7f2b8d3000bbb88c27d960819d",
+      "sha256": "4c01325ba825189c0352d7913cd64d2674156c7e9683c52a30b7f7f24a35b0b7",
+      "status": "added"
+    },
+    "src/pi/relay-style.ts": {
+      "sha256": "e7da0cde72262a91d50d8d961ad7bf316eac91121637f678f78de1305524129d",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1333,7 +1454,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "7489f50e8905eca2ddb9736ca5d4417e99e07fa723bde460b203ea3db0191431",
+      "sha256": "04685c30a473637d0f31fe28fc672f71c7bb67c6e88bdc887c35c1e15f357825",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -1366,6 +1487,10 @@
     },
     "tests/relay-presentation.test.ts": {
       "sha256": "cb566446950cad5bf52825a7c7ac9690c4256317f9ca1b255b59003a68a4c207",
+      "status": "added"
+    },
+    "tests/relay-style.test.ts": {
+      "sha256": "49dad2ca5dea9731731e3594a5acb8f6b627e84aaec614687c2dc06cba6415ef",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {

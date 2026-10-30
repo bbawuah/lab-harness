@@ -1,0 +1,245 @@
+{
+  "sourceSHA": "817b096d408f9b8f9c1726410c3df437832e8908",
+  "baseSHA": "a178daec969eaac639983750b497aa997e972eb0",
+  "branch": "feat/relay-message-styling",
+  "platform": "darwin-arm64",
+  "runtime": "Bun1.4.2; Pi1.4.0 source4a080252; Herdr0.9.5 source2ecf19a",
+  "capture": "actual lab CLI, four owned sessions; fixture preferences selected before launch; no appearance reload",
+  "operatorDriven": true,
+  "providerRequests": 0,
+  "pass": true,
+  "cleanup": [
+    {
+      "session": "A",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "session": "B",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "session": "N",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "session": "I",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    }
+  ],
+  "nativeExpansion": true,
+  "colorEvidence": {
+    "A": {
+      "selected": {
+        "session": "A",
+        "mode": "dark",
+        "noColor": false,
+        "indexed": false,
+        "theme": "lab-appearance-dark",
+        "accent": "#8ECFFF",
+        "badgeText": "#151515",
+        "expectedBadgeBackgroundSGR": "48;2;142;207;255",
+        "observedInActualOuterPTY": true
+      },
+      "badge": {
+        "sgr": "0;38;2;21;21;21;48;2;142;207;255",
+        "textSample": " Relay ",
+        "fg": "#151515",
+        "bg": "#8ecfff"
+      },
+      "body": {
+        "sgr": "0;38;2;242;242;242;48;2;21;21;21",
+        "textSample": "Hi! I’",
+        "fg": "#f2f2f2",
+        "bg": "#151515"
+      },
+      "rail": {
+        "sgr": "0;38;2;118;129;134;48;2;21;21;21",
+        "textSample": "| ",
+        "fg": "#768186",
+        "bg": "#151515"
+      },
+      "metadata": {
+        "sgr": "0;38;2;157;165;169;48;2;21;21;21",
+        "textSample": "Fetched; not acknowledged",
+        "fg": "#9da5a9",
+        "bg": "#151515"
+      }
+    },
+    "B": {
+      "selected": {
+        "session": "B",
+        "mode": "light",
+        "noColor": false,
+        "indexed": false,
+        "theme": "lab-appearance-light",
+        "accent": "#005A9C",
+        "badgeText": "#FFFFFF",
+        "expectedBadgeBackgroundSGR": "48;2;0;90;156",
+        "observedInActualOuterPTY": true
+      },
+      "badge": {
+        "sgr": "0;38;2;255;255;255;48;2;0;90;156",
+        "textSample": " Relay ",
+        "fg": "#ffffff",
+        "bg": "#005a9c"
+      },
+      "body": {
+        "sgr": "0;38;2;255;255;255;48;2;32;32;32",
+        "textSample": "Hi, I’",
+        "fg": "#ffffff",
+        "bg": "#202020"
+      },
+      "rail": {
+        "sgr": "0;38;2;103;113;118;48;2;32;32;32",
+        "textSample": "| ",
+        "fg": "#677176",
+        "bg": "#202020"
+      },
+      "metadata": {
+        "sgr": "0;38;2;103;113;118;48;2;255;255;255",
+        "textSample": "Fetched; not acknowledged",
+        "fg": "#677176",
+        "bg": "#ffffff"
+      }
+    },
+    "N": {
+      "selected": {
+        "session": "N",
+        "mode": "light",
+        "noColor": true,
+        "indexed": false,
+        "theme": "lab-appearance-light",
+        "accent": "",
+        "badgeText": "",
+        "expectedBadgeBackgroundSGR": null,
+        "observedInActualOuterPTY": false
+      },
+      "badge": null,
+      "body": null,
+      "rail": null,
+      "metadata": {
+        "sgr": "0;39;48;2;0;0;0",
+        "textSample": "readme-review",
+        "bg": "#000000"
+      }
+    },
+    "I": {
+      "selected": {
+        "session": "I",
+        "mode": "dark",
+        "noColor": false,
+        "indexed": true,
+        "theme": "lab-appearance-dark",
+        "accent": 117,
+        "badgeText": 233,
+        "expectedBadgeBackgroundSGR": "48;5;117",
+        "observedInActualOuterPTY": true
+      },
+      "badge": {
+        "sgr": "0;38;5;233;48;5;117",
+        "textSample": " Relay ",
+        "fg": "#121212",
+        "bg": "#87d7ff"
+      },
+      "body": null,
+      "rail": null,
+      "metadata": {
+        "sgr": "0;38;2;157;165;169;48;5;233",
+        "textSample": "readme-review c549a2 (self) - online",
+        "fg": "#9da5a9",
+        "bg": "#121212"
+      }
+    }
+  },
+  "nativeNarrow": {
+    "outerCols": 72,
+    "outerRows": 24,
+    "note": "native chrome reduces Pi pane width; capture text retains actual wrapping"
+  },
+  "rendering": "Browser PNG of native text replay using sampled actual ANSI color pairs; not OS terminal pixels or physical contrast validation. Frames/fonts editorial; header/footer cropped.",
+  "sanitization": "Only owned fixture paths and machine title aliased; original IDs retained in raw/expanded text.",
+  "originalRawHashes": [
+    {
+      "session": "A",
+      "originalSHA256": "96362cc36368ace881bd02df27606690191ed7862b42ce0fad1777fa6cf9b85b",
+      "sanitizedSHA256": "6e4a4ac175a76df6fadce5e6e5b9bd58fdf616bd3332e57384fcb0fdc1f8c7f5",
+      "captureStageSanitizedSHA256": "436163522186562d00ee427a9546ee09d8b39113be66e231e4b76c01280186ff",
+      "sanitizedFile": "session-A.ansi"
+    },
+    {
+      "session": "B",
+      "originalSHA256": "6ec379756ae1533b203950e392bfd1db053f7a5662e0273dd5a8a2cea986a837",
+      "sanitizedSHA256": "dcdff49f6ba5e4a2f7104d9f6ebbb6ac515a57da333ddcad67e052ef1c37835b",
+      "captureStageSanitizedSHA256": "210cc689a84da1333f81b4cd478b8d3148062f2c31f599f0cd72020d6917a9f0",
+      "sanitizedFile": "session-B.ansi"
+    },
+    {
+      "session": "N",
+      "originalSHA256": "e38e390f4487baa216faffee006088661f91cf928549987ba41055914c5f44c5",
+      "sanitizedSHA256": "865753964cf52c910e1c4e6312db04ca538bf05982b424644402b436436ea3ea",
+      "captureStageSanitizedSHA256": "7355ebd76429f97ee4de8a15ca3e0df4dfd09da020c6bcce3023178d9196fc75",
+      "sanitizedFile": "session-N.ansi"
+    },
+    {
+      "session": "I",
+      "originalSHA256": "b94598107d001a1111e34b1e6029a531108a9600ec2af156a958acb8fe1a5892",
+      "sanitizedSHA256": "5493016e8d59f48019769b21db34af688afe2d880b77d814210bc5fb36e64363",
+      "captureStageSanitizedSHA256": "e2fd4f7923da4549c212e9ec1ad52f7b3973ab72dfb91ad8e071dbcb2a54660c",
+      "sanitizedFile": "session-I.ansi"
+    }
+  ],
+  "driverSHA256": "d81b75192a9cfbbbd2b351bc308ded399a1ce85b524c1609aacf62ea6d666a64",
+  "files": {
+    "README.md": "a6b4d9434e0f9a96a951b346215e748c1b41307e7965a1c474fde4d39d20ff33",
+    "expanded-A.txt": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+    "expanded-B.txt": "bb6fad9e20b89657bb5d4fa7acc0717beda6f9b5718e49320718a3316e561260",
+    "fallbacks.html": "b98e5781d557eb789005d0096072bf6e7837446a1c1bf223aea8457f7a9f0ab9",
+    "fallbacks.png": "b8e962013af8c2d3326a23bcfaa0fd75bc56690341d3eeb46c54e8f524a1c3d6",
+    "indexed-I.txt": "22a339f1a95e4105b1c97172091a88d619ef418927361e94aead8c99616756ee",
+    "light-dark-A.txt": "7a6c58d1dc75ac9e7d455c1a5f75300346db8bb176654f15ed6ee2726fcb334d",
+    "light-dark-B.txt": "ee3bdbf9862f6e09a60ce67b450f942f714a2e856025d29fff806499294801e8",
+    "light-dark.html": "0d4545656c184a830485a0d0de5f5ee7b3140845f97e58245aa3b6d53cacbaf5",
+    "light-dark.png": "53ba192f186aee2b70b2bf60e0278ef03cd971326e5e9111175395e4afa215c2",
+    "narrow-A.txt": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+    "narrow-B.txt": "20244b4867ed5e746704e98578ee46bd61a6ea81625a7dd9649caef6d4998469",
+    "narrow.html": "1b5081d0914865623db4fdc7b404ce5898b3a58a3206bc10bc80a9b2b587e7b9",
+    "narrow.png": "bbd7d941629ed6f3288619766917a3a3bcf4415a75365716978d9f628ba02ee5",
+    "no-color-N.txt": "ed5642730c096b23ae77d93ed5e7782861189d9417ae810d3f0f84c865e9d9a0",
+    "reply-A.txt": "d55cd9c9c896a7e1613cbe0cd1f819416899be95b889c5b8c00205942c865730",
+    "reply-B.txt": "ece0a5d045da4e816725300c17cb142b8b0e0741c7dcb65e6465a6e8a7c81eba",
+    "session-A.ansi": "6e4a4ac175a76df6fadce5e6e5b9bd58fdf616bd3332e57384fcb0fdc1f8c7f5",
+    "session-B.ansi": "dcdff49f6ba5e4a2f7104d9f6ebbb6ac515a57da333ddcad67e052ef1c37835b",
+    "session-I.ansi": "5493016e8d59f48019769b21db34af688afe2d880b77d814210bc5fb36e64363",
+    "session-N.ansi": "865753964cf52c910e1c4e6312db04ca538bf05982b424644402b436436ea3ea"
+  },
+  "rawHashStages": {
+    "originalSHA256": "Unaliased bytes recorded by capture driver, not published.",
+    "captureStageSanitizedSHA256": "Private intermediate after full-path aliases.",
+    "sanitizedSHA256": "Committed sanitizedFile after machine-title and truncated-footer aliases."
+  },
+  "checks": "24 focused tests / 5207 assertions and typecheck passed at817b096. Four actual owned sessions passed, zero HTTP requests, all16cleanup flags. Prior e866 review does not establish review of this refinement; fresh final review pending."
+}
