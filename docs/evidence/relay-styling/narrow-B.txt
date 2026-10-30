@@ -1,0 +1,23 @@
+| he install instructions?
+Fetched; not acknowledged
+[Details: expand with Ctrl+O (or /hotkeys)]
+
+ Tool output: collapsed
+
+ Relay  > Sent to readme-review 4566a4 (stored
+  )
+| Hi! I’ll check the install steps and the fir
+| st launch command.
+[Details: expand with Ctrl+O (or /hotkeys)]
+
+ Relay  < Received from readme-review 4566a4
+| Hi, I’m checking the README. Can you check t
+| he install instructions?
+Fetched; not acknowledged
+[Details: expand with Ctrl+O (or /hotkeys)]
+
+──────────────────────────────────────────────
+
+──────────────────────────────────────────────
+$DEMO_PATH
+5.8%/8.2k (auto)    operator-demo-no-inference

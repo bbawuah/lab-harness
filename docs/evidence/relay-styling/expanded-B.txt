@@ -1,0 +1,41 @@
+
+ Relay  < Received from readme-review 4566a4
+| Hi, I’m checking the README. Can you check the install instructions?
+Fetched; not acknowledged
+Message identifiers:
+Message 1:
+Message ID: 4dc5445b-b039-4ec5-9788-462de10ba9fc
+Sender ID: pi-96cc5c642361c1837b3bcf411a2e71dd68753aae30ae3ec1e5ff04da2b4566a4
+Details (request and result):
+{
+  "request": {
+    "action": "inbox"
+  },
+  "result": {
+    "messages": [
+      {
+        "version": 2,
+        "id": "4dc5445b-b039-4ec5-9788-462de10ba9fc",
+        "namespace": "lab-project-v1-58a16d245323babeb6ab53f209953ce797455d41f40f055
+dcbc98586c2c20ee0",
+        "from": "pi-96cc5c642361c1837b3bcf411a2e71dd68753aae30ae3ec1e5ff04da2b4566a4
+",
+        "to": "pi-a35dfc1434535106744f3c4612a33336b412b84c20152428a3e9d86027fa7812",
+        "body": "Hi, I’m checking the README. Can you check the install instructions
+?",
+        "conversationId": "6ad9e2ad-e5ca-47c4-b9ff-aa060f0cb85d",
+        "createdAt": 1793352964683
+      }
+    ],
+    "unread": 1,
+    "timedOut": false
+  }
+}
+
+ Tool output: expanded
+
+──────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────
+$DEMO/...
+3.4%/8.2k (auto)                                            operator-demo-no-inference
