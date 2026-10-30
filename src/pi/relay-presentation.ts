@@ -171,6 +171,15 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
           identifier("Sender ID", message.from);
         }
         if (result.messages.length > 10) add("[Further message identifiers omitted]");
+      } else if (view.action === "peers" && Array.isArray(result.peers)) {
+        add("Peer identifiers:");
+        for (const [index, item] of result.peers.slice(0, 50).entries()) {
+          const peer = obj(item);
+          add(`Peer ${index + 1}:`);
+          identifier("Peer ID", peer.id);
+          identifier("Name", peer.name);
+        }
+        if (result.peers.length > 50) add("[Further peer identifiers omitted]");
       } else if (view.action === "send") {
         add("Send identifiers:");
         identifier("Recipient", request.to);

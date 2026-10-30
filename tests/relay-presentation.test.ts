@@ -142,3 +142,32 @@ test("expanded identifier projection bounds malformed data and resolves recipien
   for (let i = 0; i < 10; i++) { expect(projection).toContain(`Message ID: id-${i}`); expect(projection).toContain(`Sender ID: from-${i}`); }
   expect(projection).toContain("[Further message identifiers omitted]");
 });
+
+
+test("expanded peer pages retain all 50 IDs and names ahead of bounded JSON", () => {
+  const catalog = Array.from({ length: 50 }, (_, i) => ({
+    id: `peer-${"x".repeat(114)}-${String(i).padStart(4, "0")}`,
+    name: `project/session-${String(i).padStart(2, "0")}-` + "n".repeat(50),
+    presence: "online", self: i === 0,
+  }));
+  const view: RelayView = { action: "peers", result: { peers: catalog, total: 50 } };
+  const before = JSON.stringify(view);
+  for (const width of [20, 80]) {
+    const expanded = renderRelayView(view, width, { expanded: true });
+    const projection = expanded.join("\n").split("Details (request and result):".slice(0, width))[0]!.replaceAll("\n", "");
+    const collapsed = renderRelayView(view, width).join("");
+    for (const peer of catalog) {
+      expect(projection).toContain(peer.id);
+      expect(projection).toContain(peer.name);
+      expect(collapsed).not.toContain(peer.id);
+    }
+    expect(expanded.length).toBeLessThan(2000);
+    for (const line of expanded) expect(Bun.stringWidth(line)).toBeLessThanOrEqual(width);
+    expect(expanded.join("")).toContain("Details truncated; full data remains in the original payload");
+  }
+  expect(JSON.stringify(view)).toBe(before);
+  const oversized = text({ action: "peers", result: { peers: Array.from({ length: 51 }, (_, i) => ({ id: i === 0 ? "z".repeat(500) : `peer-${i}`, name: "name" })) } }, true);
+  const projection = oversized.split("Details (request and result):")[0]!;
+  expect(projection).toContain("[Identifier truncated]");
+  expect(projection).toContain("[Further peer identifiers omitted]");
+});
