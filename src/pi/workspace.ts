@@ -54,7 +54,8 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
   writePrivate(join(agent, "models.json"), JSON.stringify(modelsForRoute(route)) + "\n");
   // Extensions/skills/context are explicit: do not load global user integrations.
   // Persistent native Pi sessions and its own approvals remain native behavior.
-  const appearance = prepareWorkspaceAppearance({ stateRoot: state, agentRoot: agent, installRoot, project, capability: appearanceCapability(process.env) });
+  const capability = appearanceCapability(process.env);
+  const appearance = prepareWorkspaceAppearance({ stateRoot: state, agentRoot: agent, installRoot, project, capability });
   if (appearance.warning) process.stdout.write("LAB appearance: " + appearance.warning + "\n");
   writePrivate(join(agent, "settings.json"), JSON.stringify({ ...appearance.settings, defaultProvider: "lab-workspace", defaultModel: route.model, packages: [], quietStartup: false }) + "\n");
   const relayRunRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot, projectBinding: project, runRoot: run, groupId: options.relayGroup });
@@ -76,7 +77,7 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
       ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}),
       PI_CODING_AGENT_DIR: agent, PI_OFFLINE: "1", LAB_WORKSPACE_API_KEY: key || "lab-local-no-key",
       LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_ROOT: project.root, LAB_WORKSPACE_BINDING: JSON.stringify(project),
-      LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_STATE_DIR: state, LAB_WORKSPACE_AGENT_DIR: agent, LAB_WORKSPACE_USER_HOME: homedir(),
+      LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_STATE_DIR: state, LAB_WORKSPACE_AGENT_DIR: agent, LAB_WORKSPACE_APPEARANCE_CAPABILITY: JSON.stringify(capability), LAB_WORKSPACE_USER_HOME: homedir(),
       LAB_RELAY_RUN_REF: relayRunRef,
     },
   });

@@ -662,7 +662,7 @@
       "status": "added"
     },
     "docs/pi-workspace.md": {
-      "sha256": "45536c8bb9fedcbfdf64242a92a7a0dc50b11a6e21050d7f9193c9494f342997",
+      "sha256": "b8ef35af5175aa5b8d5b817f8563d6537949a9c81167f7b2c963ca877cdb69e5",
       "status": "added"
     },
     "docs/publication-plan.md": {
@@ -806,7 +806,7 @@
       "status": "added"
     },
     "docs/tui/appearance-contract.md": {
-      "sha256": "3acbf8eb2bb3131d8785c58e783950b769d31ed9f3224aa6fc83987b5a8c4130",
+      "sha256": "30c74ecd040bb77c3aee65c520f58dd1ff1efba82669dc508d6e1412ed492b00",
       "status": "added"
     },
     "docs/tui/fullscreen-contract.md": {
@@ -818,7 +818,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "e99767de58149dadadbdde9a08bff6733f6fa3a4e30af9f8b592c1d333117b2d",
+      "sha256": "f9b568fd6ebf56e9be7acf53679a02ba86515c88c3d42010fb63a8bc20cbca90",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1000,7 +1000,7 @@
       "status": "added"
     },
     "src/pi/workspace-appearance.ts": {
-      "sha256": "d1fd7a785c7e865a9c404ec5a51e06c8ed2aaf208d2c24c65dd9b80223a6b1b6",
+      "sha256": "5abee8448d4483daf9737a99f6ea1f06b8614c3cef106bcc1dbc4572ffc671fa",
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
@@ -1008,7 +1008,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "12ea5f203fb7251765c6944e79373f1a0ad0297f158db37edf10ed645952b89a",
+      "sha256": "7fa5dbc4a2c4c797b8f1886154b563cdf8ab0fad2cf2dc16475d975ef3071b58",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -1016,7 +1016,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "597f044cf177e5e62de965961b1b961a2a5c8224ece34d6102e4a7c5d711e664",
+      "sha256": "6ae135ba2412b78c2e5c969b1f75a57fe3afc3f33222845b05df70546e564291",
       "status": "added"
     },
     "src/project.ts": {
@@ -1146,7 +1146,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "ffbc5a20d06b61373fda4b45b8db2480319bd5f01134678d3fb065712f689739",
+      "sha256": "84da764688794fef786cbf566899ce94cb4595ba49232dd73e409d30941829de",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
@@ -1166,7 +1166,7 @@
       "status": "added"
     },
     "tests/pi-workspace-appearance.test.ts": {
-      "sha256": "b154ae3878f5caec543199e88ae0d683a57b56a9cf32030eccdab64bf0b82720",
+      "sha256": "18a708e011c06507b13de343d74d8934ee305337fe3ea3b58b048b271cb0413c",
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {
@@ -1178,7 +1178,7 @@
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "924439239849d15c7d3b9428810153415da123b25aceb532833a85d567863dea",
+      "sha256": "c9c7f4bd8e3aafba06bd761812355edcdd2989db8a59c8968fc54381f42628b4",
       "status": "added"
     },
     "tests/process-crash.test.ts": {

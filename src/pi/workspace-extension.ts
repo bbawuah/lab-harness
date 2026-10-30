@@ -1,5 +1,5 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
-import { appearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
+import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
 import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -39,7 +39,7 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
     const binding = workspaceBinding();
     const child = spawn(bun, ["--no-env-file", "--no-install", extensionPath, "--bridge"], {
       cwd: binding.root, stdio: ["pipe", "pipe", "pipe"], signal,
-      env: { PATH: process.env.PATH, HOME: process.env.LAB_WORKSPACE_USER_HOME ?? process.env.HOME, LAB_WORKSPACE_ROOT: binding.root, LAB_WORKSPACE_BINDING: JSON.stringify(binding), LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_USER_HOME: process.env.LAB_WORKSPACE_USER_HOME, LAB_RELAY_RUN_REF: process.env.LAB_RELAY_RUN_REF, LAB_WORKSPACE_STATE_DIR: process.env.LAB_WORKSPACE_STATE_DIR, LAB_WORKSPACE_AGENT_DIR: process.env.LAB_WORKSPACE_AGENT_DIR, TERM: process.env.TERM, COLORTERM: process.env.COLORTERM, ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}) },
+      env: { PATH: process.env.PATH, HOME: process.env.LAB_WORKSPACE_USER_HOME ?? process.env.HOME, LAB_WORKSPACE_ROOT: binding.root, LAB_WORKSPACE_BINDING: JSON.stringify(binding), LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_USER_HOME: process.env.LAB_WORKSPACE_USER_HOME, LAB_RELAY_RUN_REF: process.env.LAB_RELAY_RUN_REF, LAB_WORKSPACE_STATE_DIR: process.env.LAB_WORKSPACE_STATE_DIR, LAB_WORKSPACE_AGENT_DIR: process.env.LAB_WORKSPACE_AGENT_DIR, LAB_WORKSPACE_APPEARANCE_CAPABILITY: process.env.LAB_WORKSPACE_APPEARANCE_CAPABILITY, TERM: process.env.TERM, COLORTERM: process.env.COLORTERM, ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}) },
     });
     let output = "", bytes = 0, failure: Error | undefined;
     const timer = setTimeout(() => { failure = new Error("LAB bridge exceeded 20 seconds"); child.kill("SIGKILL"); }, 20000);
@@ -61,7 +61,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   } });
   pi.registerCommand("lab-appearance", { description: "Preview and save LAB appearance; fonts stay terminal-owned", async handler(_args, ctx) {
     if (!ctx.isIdle || !ctx.reload || !("custom" in ctx.ui) || !("select" in ctx.ui) || !("input" in ctx.ui)) { ctx.ui.notify("Appearance requires the native interactive Pi UI.", "error"); return; }
-    await configureAppearance(ctx.ui as unknown as AppearanceUI, callWorkspaceBridge, appearanceCapability(process.env), () => ctx.isIdle!(), () => ctx.reload!());
+    await configureAppearance(ctx.ui as unknown as AppearanceUI, callWorkspaceBridge, boundAppearanceCapability(process.env), () => ctx.isIdle!(), () => ctx.reload!());
   } });
   pi.on("session_start", (_event, ctx) => {
     if (ctx.mode !== "tui") return;
@@ -91,7 +91,7 @@ export async function executeWorkspaceRequest(request: Request): Promise<unknown
     const stateRoot = workspaceStateRoot(installRoot, process.env.LAB_WORKSPACE_STATE_DIR, binding.root);
     const agentRoot = process.env.LAB_WORKSPACE_AGENT_DIR;
     if (!agentRoot) throw new Error("LAB_APPEARANCE_PRIVATE_PATH");
-    const options = { stateRoot, agentRoot, installRoot, project: binding, capability: appearanceCapability(process.env) };
+    const options = { stateRoot, agentRoot, installRoot, project: binding, capability: boundAppearanceCapability(process.env) };
     try {
       if (request.action === "appearance-load") {
         if (Object.keys(request).sort().join(",") !== "action,scope" || !["user", "project"].includes(request.scope)) throw new Error("LAB_APPEARANCE_INVALID_INPUT");

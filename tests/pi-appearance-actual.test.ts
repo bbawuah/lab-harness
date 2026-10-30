@@ -2,6 +2,7 @@
 import { expect, test } from "bun:test";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { beginAppearance, resolveAppearance, stageAppearance, type Snapshot } from "../src/pi/appearance.ts";
 import { request } from "../src/herdr/protocol.ts";
@@ -28,6 +29,38 @@ test("appearance readiness rejects late success and never starts an expired prob
   expect(called).toBe(false);
 });
 
+/** Only discovery's read-only ping may be retried while startup is pending. */
+async function ownedPing(socket: string, remaining: () => number): Promise<boolean> {
+  let pong;
+  try { pong = await request(socket, "ping", {}, Math.min(150, remaining())); }
+  catch (error) {
+    if (error instanceof Error && error.message === "ping: timeout; delivery/outcome unknown") return false;
+    if (error && typeof error === "object" && "code" in error && ["ENOENT", "ECONNREFUSED"].includes(String(error.code))) return false;
+    throw error;
+  }
+  if (pong.type !== "pong" || pong.version !== "0.9.5") throw new Error("Owned Herdr protocol/version mismatch");
+  return true;
+}
+test("owned read-only ping retries delayed readiness but propagates protocol errors within its deadline", async () => {
+  const root = mkdtempSync("/tmp/lab-ping-"), socket = join(root, "s.sock"), timers = new Set<ReturnType<typeof setTimeout>>();
+  let calls = 0, version = "0.9.5", malformed = false;
+  let delay: (n: number) => number = n => n === 1 ? 180 : 0;
+  const server = createServer(connection => connection.once("data", data => {
+    const input = JSON.parse(data.toString()), n = ++calls;
+    const timer = setTimeout(() => { timers.delete(timer); if (!connection.destroyed) connection.end(malformed ? "broken\n" : JSON.stringify({ id: input.id, result: { type: "pong", version } }) + "\n"); }, delay(n)); timers.add(timer);
+  }));
+  await new Promise<void>((done, reject) => { server.once("error", reject); server.listen(socket, done); });
+  const fail = () => new Error("discovery deadline");
+  try {
+    await beforeDeadline(remaining => ownedPing(socket, remaining), Date.now() + 1000, fail); expect(calls).toBe(2);
+    delay = () => 300; await expect(beforeDeadline(remaining => ownedPing(socket, remaining), Date.now() + 220, fail)).rejects.toThrow("discovery deadline");
+    delay = () => 0; version = "wrong"; const before = calls;
+    await expect(beforeDeadline(remaining => ownedPing(socket, remaining), Date.now() + 1000, fail)).rejects.toThrow("protocol/version mismatch");expect(calls).toBe(before + 1);
+    version = "0.9.5"; malformed = true;
+    await expect(beforeDeadline(remaining => ownedPing(socket, remaining), Date.now() + 1000, fail)).rejects.toThrow();
+  } finally { for (const timer of timers) clearTimeout(timer); await new Promise<void>(done => server.close(() => done())); rmSync(root, {recursive:true,force:true}); }
+});
+
 const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preserves shell/owned cleanup", async () => {
   const source = resolve(import.meta.dir, ".."), root = mkdtempSync(join(realpathSync(tmpdir()), "lab-appearance-ui-")), home = join(root, "home"), project = join(root, "project B with spaces"), state = join(home, "state");
@@ -42,9 +75,9 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
   const deadline = Date.now() + 45000;
   async function wait(label: string, predicate: (remaining: () => number) => boolean | Promise<boolean>, actor?: typeof actors[number], end = Math.min(deadline, Date.now() + 10000)) {
     const failure = () => new Error(`${label}; exit=${actor?.child.exitCode}; evidence=${root}; shellReady=${existsSync(join(root,"shell-ready"))}; cells=${JSON.stringify(actor?.view.snapshot().lines.join("\n").slice(-1300))}; tail=${JSON.stringify(actor?.raw.slice(-500))}`);
-    await beforeDeadline(async remaining => { if (actor && actor.child.exitCode !== null) throw failure(); return predicate(remaining); }, end, failure);
+    await beforeDeadline(async remaining => { if (actor && actor.child.exitCode !== null) throw failure(); const ready = await predicate(remaining); if (actor && actor.child.exitCode !== null) throw failure(); return ready; }, end, failure);
   }
-  async function screen(a: typeof actors[number], remaining?: () => number) { return String((await request(a.socket, "pane.read", { pane_id: a.pi, source: "visible", lines: 100, format: "text", strip_ansi: true }, Math.min(1000, remaining?.() ?? 1000))).read.text); }
+  async function screen(a: typeof actors[number], remaining: () => number) { return String((await request(a.socket, "pane.read", { pane_id: a.pi, source: "visible", lines: 100, format: "text", strip_ansi: true }, Math.min(1000, remaining()))).read.text); }
   async function start(noColor: boolean, indexed = false) {
     const a = { child: undefined as any, raw: "", socket: "", agent: "", pi: "", view: new TerminalScreen(150, 48), reloads: 0, bannerVisible: false, relayRendered: false, fallbackRendered: false } as typeof actors[number];
     const startDeadline = Math.min(deadline, Date.now() + 10000);
@@ -66,7 +99,7 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
         const fields = Bun.spawnSync([Bun.which("lsof")!, "-a", "-p", String(pid), "-U", "-Fn"], { timeout: Math.min(150, remaining()), maxBuffer: 131072 }).stdout.toString();
         for (const line of fields.split("\n")) {
           const path = /^n(\/(?:private\/)?tmp\/lab-h-[A-Za-z0-9_-]+\/s\.sock)(?:\s|$)/.exec(line)?.[1];
-          if (path) { const pong = await request(path, "ping", {}, Math.min(150, remaining())); if (pong.type === "pong" && pong.version === "0.9.5") a.socket = path; }
+          if (path) { if (await ownedPing(path, remaining)) a.socket = path; }
         }
         if (a.socket) return true;
       }
@@ -108,15 +141,15 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
     expect(JSON.parse(readFileSync(join(a.agent, "settings.json"), "utf8")).theme).toBe("lab-appearance-light");
     const preferences = readFileSync(join(state, "appearance/preferences.json"), "utf8");
     await paste(a, "/lab-appearance"); await wait("cancel dialog", async remaining => (await screen(a, remaining)).includes("LAB Appearance - staged sample"), a); a.child.terminal!.write("8");
-    await wait("cancel returns native composer", async () => !(await screen(a)).includes("LAB Appearance - staged sample"), a);
+    await wait("cancel returns native composer", async remaining => !(await screen(a, remaining)).includes("LAB Appearance - staged sample"), a);
     expect(readFileSync(join(state, "appearance/preferences.json"), "utf8")).toBe(preferences);
     await quit(a);
     const b = await start(true);
     expect(JSON.parse(readFileSync(join(b.agent, "settings.json"), "utf8")).theme).toBe("lab-appearance-light");
     expect(Object.values(JSON.parse(readFileSync(join(b.agent, "themes/lab-appearance-light.json"), "utf8")).colors).every(value => value === "")).toBe(true);
     b.view.resize(40, 16); b.child.terminal!.resize(40, 16); await paste(b, "/lab-appearance"); await wait("narrow keyboard appearance", async remaining => (await screen(b, remaining)).includes("LAB Appearance"), b);
-    expect(await screen(b)).toContain("> Focused control"); b.child.terminal!.write("\x1b");
-    await wait("narrow Cancel", async () => !(await screen(b)).includes("LAB Appearance"), b);
+    expect(await screen(b, () => { const ms = deadline - Date.now(); if (ms <= 0) throw new Error("appearance test deadline"); return ms; })).toContain("> Focused control"); b.child.terminal!.write("\x1b");
+    await wait("narrow Cancel", async remaining => !(await screen(b, remaining)).includes("LAB Appearance"), b);
     await quit(b);
     // Simulate preferences previously saved on a truecolor terminal. The inactive
     // light variant passes RGB contrast but fails indexed conversion.

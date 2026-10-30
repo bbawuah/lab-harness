@@ -100,3 +100,9 @@ cwd naming (source `session-manager.ts:getDefaultSessionDirPath`, release
 appearance fields from historical settings, never native auth. The operator-only
 appearance dialog owns staged preview, Apply/Cancel/Reset, native resource reload,
 and help. No model tools or provider protocol/authentication changes are added.
+
+Terminal capability revision: capture the outer color capability once in the
+launcher and pass a strict nonsecret binding to the Pi extension and Bun bridge.
+Pinned Herdr may supply COLORTERM=truecolor when that variable was absent; it
+must not upgrade LAB's captured 256-color or no-color decision during Apply.
+Native light/dark terminal appearance selection remains Pi-owned.

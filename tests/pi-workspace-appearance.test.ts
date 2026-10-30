@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { configureAppearance, appearanceCapability, appearanceSample, type AppearanceUI, type AppearanceRequest } from "../src/pi/workspace-appearance.ts";
+import { configureAppearance, appearanceCapability, boundAppearanceCapability, appearanceSample, type AppearanceUI, type AppearanceRequest } from "../src/pi/workspace-appearance.ts";
 import { beginAppearance, stageAppearance, resolveAppearance, type Snapshot } from "../src/pi/appearance.ts";
 import { mkdtempSync, mkdirSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -15,6 +15,16 @@ function fixture(keys: string[], selections: string[] = [], inputs: (string | un
   };
   return { ui, rendered, notices, titles, calls, reloads: () => reloads, async reload() { reloads++; }, async bridge(request: AppearanceRequest) { calls.push(structuredClone(request)); return request.action === "appearance-load" ? { ...initial, scope: request.scope === "user" ? initial.scope : { kind: "project", binding: { root: "/synthetic/project", device: 1, inode: 2 } } } : initial; } };
 }
+test("captured outer capability survives Herdr truecolor injection and distinguishes missing binding", () => {
+  for (const outer of [{TERM:"xterm-256color"},{TERM:"xterm-256color",COLORTERM:""}]) {
+    const captured = appearanceCapability(outer);
+    expect(captured.color).toBe("256");
+    expect(boundAppearanceCapability({COLORTERM:"truecolor",LAB_WORKSPACE_APPEARANCE_CAPABILITY:JSON.stringify(captured)})).toEqual(captured);
+  }
+  expect(() => boundAppearanceCapability({LAB_WORKSPACE_APPEARANCE_CAPABILITY:'{"color":["256"],"terminalAppearance":"unknown"}'})).toThrow("CAPABILITY_INVALID");
+  expect(() => boundAppearanceCapability({COLORTERM:"truecolor"})).toThrow("CAPABILITY_REQUIRED");
+  expect(() => boundAppearanceCapability({LAB_WORKSPACE_APPEARANCE_CAPABILITY:'{"color":"256","terminalAppearance":"unknown","extra":true}'})).toThrow("CAPABILITY_INVALID");
+});
 test("appearance mode preview and Cancel never save or reload", async () => {
   const f = fixture(["2", "8"], ["light"]);
   await configureAppearance(f.ui, f.bridge, appearanceCapability({ TERM: "dumb" }), () => true, f.reload);

@@ -84,7 +84,9 @@ Use /lab-appearance to change LAB appearance. Its staged sample has numbered
 controls: Scope, Mode, Palette, editor/transcript padding, Reset, Apply and
 Cancel. Use arrows or j/k and Enter, or press a number. Esc cancels. Mode offers
 light, dark and terminal; terminal follows Pi's reported terminal appearance,
-with dark fallback when it cannot be determined. This does not detect OS mode.
+with dark fallback when it cannot be determined. This does not detect OS mode. Color depth is captured at launch; relaunch after
+changing terminal color capabilities. Herdr defaults do not upgrade that captured
+LAB capability during Apply.
 If a saved custom palette loses contrast on a 256-color terminal, LAB opens
 with a visible temporary Standard palette and preserves the saved values. Use
 /lab-appearance to choose Standard or Reset; Apply checks both modes before saving. If a changed project override needs

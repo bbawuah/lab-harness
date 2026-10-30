@@ -11,6 +11,17 @@ export type AppearanceUI = {
 export function appearanceCapability(env: NodeJS.ProcessEnv): Capability {
   return { color: env.NO_COLOR !== undefined || env.TERM === "dumb" ? "none" : /truecolor|24bit/i.test(env.COLORTERM ?? "") ? "truecolor" : /256color/.test(env.TERM ?? "") ? "256" : "16", terminalAppearance: "unknown" };
 }
+/** Herdr may add COLORTERM=truecolor to a leaf. Appearance must use the
+ * launcher's captured outer capability, not reinterpret that injected value. */
+export function boundAppearanceCapability(env: NodeJS.ProcessEnv): Capability {
+  const raw = env.LAB_WORKSPACE_APPEARANCE_CAPABILITY;
+  if (!raw || raw.length > 512) throw new Error("LAB_APPEARANCE_CAPABILITY_REQUIRED");
+  let value: unknown; try { value = JSON.parse(raw); } catch { throw new Error("LAB_APPEARANCE_CAPABILITY_INVALID"); }
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("LAB_APPEARANCE_CAPABILITY_INVALID");
+  const v = value as Record<string, unknown>;
+  if (Object.keys(v).sort().join(",") !== "color,terminalAppearance" || typeof v.color !== "string" || typeof v.terminalAppearance !== "string" || !["truecolor", "256", "16", "none", "unknown"].includes(String(v.color)) || !["light", "dark", "unknown"].includes(String(v.terminalAppearance))) throw new Error("LAB_APPEARANCE_CAPABILITY_INVALID");
+  return { color: v.color as Capability["color"], terminalAppearance: v.terminalAppearance as Capability["terminalAppearance"] };
+}
 const roles: (keyof Palette)[] = ["accent", "text", "background", "border", "focus", "success", "warning", "error"];
 const labels = ["Scope", "Mode", "Palette", "Editor padding", "Transcript padding", "Reset this scope", "Apply", "Cancel"] as const;
 type Action = typeof labels[number];

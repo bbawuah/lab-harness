@@ -257,3 +257,11 @@ artifact behavior, not universal NO_COLOR handling in Herdr or the user's shell.
 Contrast checks apply to the eight semantic palette roles and staged sample;
 whole-app contrast, physical mouse, IME, clipboard, tmux and WSL remain separate
 qualification. The standalone delayed-SGR baseline remains FAIL 11/12.
+
+The launcher freezes the outer color capability for LAB's preview and bridge in
+a strict nonsecret environment binding. This avoids reinterpreting Herdr's
+virtual-pane defaults as physical-terminal support during Apply. The pinned
+[Herdr pane source](https://github.com/herdrdev/herdr/blob/2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01/src/pane.rs#L104)
+sets TERM/COLORTERM before applying explicit overrides; absence and an explicit
+empty value differ. This change does not rewrite the shell's virtual-terminal
+identity or establish physical-terminal color correctness.

@@ -48,6 +48,7 @@ test("native launch uses caller or explicit project B while all startup writes s
     expect(launch.command).toContain("--session-dir");
     expect(launch.command).toContain(join(state,"agent/sessions",`--${project.replace(/^[/\\]/,"").replace(/[/\\:]/g,"-")}--`));
     expect(launch.environment.LAB_WORKSPACE_AGENT_DIR).toBe(launch.environment.PI_CODING_AGENT_DIR);
+    expect(JSON.parse(launch.environment.LAB_WORKSPACE_APPEARANCE_CAPABILITY)).toEqual({color:"16",terminalAppearance:"unknown"});
     expect(launch.executable).toBe(join(install,".tmp/herdr/herdr"));
     expect(launch.command).toContain(join(install,"src/pi/workspace-extension.ts"));
     expect(launch.command).toContain("/verified/pi");
