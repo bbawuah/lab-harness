@@ -95,6 +95,23 @@
     "docs/evidence/provider-design.html",
     "docs/evidence/provider-design.json",
     "docs/evidence/provider-design.png",
+    "docs/evidence/relay-human/README.md",
+    "docs/evidence/relay-human/after-A.ansi",
+    "docs/evidence/relay-human/after-A.txt",
+    "docs/evidence/relay-human/after-B.ansi",
+    "docs/evidence/relay-human/after-B.txt",
+    "docs/evidence/relay-human/after.html",
+    "docs/evidence/relay-human/after.png",
+    "docs/evidence/relay-human/before-A.ansi",
+    "docs/evidence/relay-human/before-A.txt",
+    "docs/evidence/relay-human/before-B.ansi",
+    "docs/evidence/relay-human/before-B.txt",
+    "docs/evidence/relay-human/before.html",
+    "docs/evidence/relay-human/before.png",
+    "docs/evidence/relay-human/capture.json",
+    "docs/evidence/relay-human/exchange.gif",
+    "docs/evidence/relay-human/expanded-A.txt",
+    "docs/evidence/relay-human/expanded-B.txt",
     "docs/evidence/relay-model-tool-events.jsonl",
     "docs/evidence/relay-recipient-screen.txt",
     "docs/evidence/relay-sender-screen.txt",
@@ -318,7 +335,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "d70c9b2250f921411e01eea089bc6dcb3d03f006bb9481baa11daa2d80fe2775",
+      "sha256": "df60a8c0f860f93c92055f94c05b7231da826ba689586eac54b7ebbd9ea08c85",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -350,7 +367,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "1ad36b5f5dc516fe045e6a3c305e5a225ad68a144d92e1d8ac7dafddd1398055",
+      "sha256": "0a87b0b5136d8b9bf513f3d442f2a5131c0b52fa193071c43a86c886ca1685ba",
       "status": "added"
     },
     "bun.lock": {
@@ -528,6 +545,74 @@
     },
     "docs/evidence/provider-design.png": {
       "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/README.md": {
+      "sha256": "46471e1ea8af23a8e6323de284e2c43d4bd1590ce4d04e5c9449ccbd13276254",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-A.ansi": {
+      "sha256": "c8a94be0e3e3aecdf8f6674d042d065d888c82655a3b22e19b99cfdc39f29db8",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-A.txt": {
+      "sha256": "a0365064758c4b03dd1e50d4f852e483ad9056ae0b3b50fae6e495353d67f59c",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-B.ansi": {
+      "sha256": "30198f4146a200d548a40a7bd82876491fb468ca3842c6b7aa3150996780dde3",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-B.txt": {
+      "sha256": "f718021c73887d9b422e5c49e90d959ce54a3a5cd836bdd6ed0b3698af9e31f3",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after.html": {
+      "sha256": "17e44b0e6b87d8f1529ddb23867ab7fa85f5170f20fd216e707cad290f74e161",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after.png": {
+      "sha256": "ed38baaf5be0dfd8be235aaaf47e643adfb506933b1f9fee923d309d68256306",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-A.ansi": {
+      "sha256": "b29b32415bfa629adfdbb649a64f68e209ba49b86cca6806b2b68ac5684fa581",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-A.txt": {
+      "sha256": "0c0c1ce16258a708fb6ab5434cf7708b3c04aaa033dc1a5f79f8a14e176067a0",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-B.ansi": {
+      "sha256": "eacf6b2ff3322406208b261dee9f6e5ff3b01f7d9df2e3fc3016bc540ea770e5",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-B.txt": {
+      "sha256": "f539e9353179be7e2cf2e1941f68fec60df445636c63352b779e30f8d3011243",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before.html": {
+      "sha256": "dff4b6bb0f2565d0091acf464de337926c7ad98990b537b9935db956a3d1d6e8",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before.png": {
+      "sha256": "23e799287dab36856ec35920b4044fa3dc569e776b3fd018ca03334fb845367f",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/capture.json": {
+      "sha256": "d293b2394520dd790db759353776d37526ad7930348c4497d36cd93d8e59963c",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/exchange.gif": {
+      "sha256": "186cac1a1405d7f1cadc4bebbf0e15f494ee24025db6fd9afe95debbf6fb6675",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/expanded-A.txt": {
+      "sha256": "0eafe3adf36c9f8c73f8e2c91bc3029ac15f70282f2d436ff23bc36f8d96b09a",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/expanded-B.txt": {
+      "sha256": "eb8f0ad32839d988d3e087f821791fa8ca440466adeceb98a224a5394769a8b3",
       "status": "added"
     },
     "docs/evidence/relay-model-tool-events.jsonl": {

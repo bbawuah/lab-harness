@@ -1,0 +1,41 @@
+
+
+ [relay-send]
+
+ {
+   "id": "945a44b3-c2c5-42a9-8c42-5fe5e331cb22",
+   "state": "stored",
+   "duplicate": false,
+   "createdAt": 1793341486080,
+   "expiresAt": 1795933486080,
+   "requestKey": "readme-hi"
+ }
+
+
+
+ [relay-inbox]
+
+ {
+   "messages": [
+     {
+       "version": 2,
+       "id": "efd65fd7-bc63-4b9a-8614-2cbae5abe0a4",
+       "namespace":
+ "lab-project-v1-312bb057b2d3ff80a10421f33fc2388df0339d1a46cc8d460b41ec2f2ff6823a",
+       "from": "pi-9a509e7b6b675bcedfc85c5aea73bbe890ea78c88d8598b11aaafcb16327dc1c",
+       "to": "pi-ec6a9cd346d201ed392ffce1cfc3608d932704ee5b5dafd4d2dae1992d95290d",
+       "body": "Hi! I’ll check the install steps and the first launch command.",
+       "conversationId": "dbb14826-3966-458d-9da8-c8cc3da5dd0f",
+       "createdAt": 1793341487211
+     }
+   ],
+   "unread": 1,
+   "timedOut": false
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────
+$DEMO/...
+4.0%/8.2k (auto)                                            operator-demo-no-inference
