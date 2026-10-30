@@ -929,7 +929,7 @@
       "status": "added"
     },
     "docs/relay-message-styling-contract.md": {
-      "sha256": "de3c0f5fac3598d64cb4de8801ddb093027fda85b501a107aed9c1611b092405",
+      "sha256": "9f59145e0565817604b11cd3de482d8bcad0180bca2cfacd00779891fdcf49a3",
       "status": "added"
     },
     "docs/relay-workspace-contract.md": {
@@ -1255,7 +1255,7 @@
       "status": "added"
     },
     "src/pi/relay-style.ts": {
-      "sha256": "aa241d22b4c3de11dd88819ce6a83f48a9f1a3e6589131e92c81b991a0119408",
+      "sha256": "e7da0cde72262a91d50d8d961ad7bf316eac91121637f678f78de1305524129d",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1490,7 +1490,7 @@
       "status": "added"
     },
     "tests/relay-style.test.ts": {
-      "sha256": "2a415cf5f3c4b7dac78058eed2cc4d8711f17010d5c33de566a03d0815bb3b6b",
+      "sha256": "49dad2ca5dea9731731e3594a5acb8f6b627e84aaec614687c2dc06cba6415ef",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {

@@ -5,7 +5,8 @@ type NativeTheme = {
   fg(token: string, text: string): string;
   bg(token: string, text: string): string;
   style(text: string, options: { fg: unknown; bg: unknown }): string;
-  colors: { accent: unknown; customMessageBg: unknown };
+  readonly appearance?: "light" | "dark";
+  colors: { accent: unknown; customMessageBg: unknown; text?: unknown; muted?: unknown };
 };
 export type RelayStyleOptions = RelayRenderOptions & { color?: boolean };
 
@@ -45,7 +46,14 @@ export function renderStyledRelay(view: RelayView, width: number, theme: unknown
         const status = view.error ? "error" : view.pending ? "muted" : "text";
         line = badge + native.bg("customMessageBg", " " + native.fg("accent", direction) + native.fg(status, rest));
       } else if (row.role === "body") {
-        line = native.bg("customMessageBg", native.fg("borderMuted", options.ascii ? "| " : "│ ") + native.fg("text", row.text));
+        const rail = options.ascii ? "| " : "│ ";
+        // Keep the selected light header while its actual message text uses a
+        // dark surface. Swapping the native light text/background pair preserves
+        // its contrast and introduces no fixed product palette or settings.
+        if (native.appearance === "light" && colors.text !== undefined) {
+          line = native.style(rail, { fg: colors.muted ?? colors.customMessageBg, bg: colors.text })
+            + native.style(row.text, { fg: colors.customMessageBg, bg: colors.text });
+        } else line = native.bg("customMessageBg", native.fg("borderMuted", rail) + native.fg("text", row.text));
       } else if (row.role === "title-continuation") line = native.bg("customMessageBg", "  " + native.fg("text", row.text));
       else line = native.bg("customMessageBg", native.fg(row.role === "detail" ? "text" : "muted", row.text));
       // Close the badge and all foreground attributes at every line boundary.
