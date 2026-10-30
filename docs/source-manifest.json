@@ -144,6 +144,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/relay-human-messages-contract.md",
     "docs/relay-workspace-contract.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
@@ -721,6 +722,10 @@
     },
     "docs/publication-status.md": {
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
+      "status": "added"
+    },
+    "docs/relay-human-messages-contract.md": {
+      "sha256": "ed24c7ff4eadade648e6f3724c35940baf02c10c9ca3f86193e82c0782145f87",
       "status": "added"
     },
     "docs/relay-workspace-contract.md": {
