@@ -1049,7 +1049,7 @@
       "status": "added"
     },
     "src/pi/relay-presentation.ts": {
-      "sha256": "db01f267d3f50a222b5204e4993dc63f10551ca53487d1de41ef2713e3241023",
+      "sha256": "05bc093dab15808411d559b33a91aa1bdafb4d893057914deeb35f6f923cfaf8",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1248,7 +1248,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "8d5e654aa3ee5dbc5e5c7cf093cdde7866c867f91d9623a4ec3f5abe2b8aa59e",
+      "sha256": "7489f50e8905eca2ddb9736ca5d4417e99e07fa723bde460b203ea3db0191431",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -1280,7 +1280,7 @@
       "status": "added"
     },
     "tests/relay-presentation.test.ts": {
-      "sha256": "0d6df29b27d205b7df38049e7488af4e24688c0276e4138ab1f8849d6ffa0687",
+      "sha256": "8c647f760fcc8bd5a48fab437c0bfcc32a3be3b60a11a1b6f1af33f31241f64a",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
