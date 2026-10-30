@@ -1,0 +1,75 @@
+import { expect, test } from "bun:test";
+import { relayPeerLabel, renderRelayView, safeRelayText, type RelayView } from "../src/pi/relay-presentation.ts";
+
+const peers = [
+  { id: "peer-123abc", name: "project/session-one", presence: "online", self: true },
+  { id: "peer-456abc", name: "project/session-two", presence: "offline" },
+];
+const text = (view: RelayView, expanded = false) => renderRelayView(view, 200, { expanded }).join("\n");
+
+test("labels use project names and extend colliding suffixes", () => {
+  expect(relayPeerLabel(peers[0]!.id, peers)).toBe("project 123abc");
+  expect(relayPeerLabel("unknown-deadbe", peers)).toBe("Peer deadbe");
+  expect(relayPeerLabel("one-123abc", [{ id: "one-123abc", name: "x/a" }, { id: "two-123abc", name: "x/b" }])).toBe("x e-123abc");
+  expect(relayPeerLabel("abcd", [{ id: "abcd", name: "p\n\x1b\u202e/q" }])).toBe("p\\n\\x1b\\u{202e} abcd");
+});
+
+test("send distinguishes pending, stored, duplicate and unknown, and hides metadata", () => {
+  const request = { to: peers[0]!.id, requestKey: "secret-key", body: "hello", conversationId: "conversation-secret" };
+  const result = { state: "stored", id: "message-secret", receipt: "receipt-secret", duplicate: true };
+  const view: RelayView = { action: "send", request, result, peers };
+  const before = JSON.stringify(view);
+  const collapsed = text(view);
+  expect(collapsed).toContain("Sent to project 123abc (stored)");
+  expect(collapsed).toContain("Already stored; no duplicate created");
+  for (const secret of ["secret-key", "conversation-secret", "message-secret", "receipt-secret", "peer-123abc"]) expect(collapsed).not.toContain(secret);
+  const expanded = text(view, true);
+  for (const original of ["secret-key", "conversation-secret", "message-secret", "receipt-secret", "peer-123abc"]) expect(expanded).toContain(original);
+  expect(JSON.stringify(view)).toBe(before);
+  expect(text({ ...view, pending: true })).toContain("Send to project 123abc");
+  expect(text({ ...view, pending: true })).not.toContain("stored");
+  expect(text({ ...view, result: {} })).toContain("may have stored");
+  const error = text({ ...view, error: "\x1b[31mprivate" });
+  expect(error).toContain("Send failed"); expect(error).toContain("reuse the request key and payload"); expect(error).not.toContain("private");
+});
+
+test("inbox, peer pages and ack reflect only confirmed results", () => {
+  const inbox = text({ action: "inbox", peers, result: { messages: [{ from: peers[1]!.id, body: "first\nsecond", id: "hidden-id" }] } });
+  expect(inbox).toContain("Received from project 456abc\nfirst\nsecond");
+  expect(inbox).toContain("Fetched; not acknowledged"); expect(inbox).not.toContain("hidden-id");
+  expect(text({ action: "inbox", result: { messages: [], timedOut: true } })).toContain("no messages fetched before the wait ended");
+  expect(text({ action: "inbox", result: { messages: [] } })).toContain("Inbox empty");
+  const page = text({ action: "peers", result: { peers, total: 4, nextOffset: 2 } });
+  expect(page).toContain("project 123abc (self) - online"); expect(page).toContain("2 shown; 4 total; more pages available");
+  expect(text({ action: "peers", result: { peers: [], total: 0 } })).toContain("No peers on this page");
+  expect(text({ action: "ack", result: { acknowledged: 2, ignored: 1 } })).toContain("Acknowledged 2 message(s); ignored 1");
+  expect(text({ action: "ack", error: "RELAY_CONFLICT" })).toContain("Ack failed\nRELAY_CONFLICT");
+  expect(text({ action: "ack", result: {} })).toContain("Ack outcome unknown");
+});
+
+test("escapes terminal controls and bounds previews and expanded data", () => {
+  expect(safeRelayText("a\n\x1b\x00\x7f\u009b\u202e\u200b")).toBe("a\n\\x1b\\x00\\x7f\\x9b\\u{202e}\\u{200b}");
+  const v: RelayView = { action: "inbox", result: { messages: [{ from: "a", body: "line\n".repeat(20000) + "end\x1b" }] } };
+  const collapsed = text(v);
+  expect(collapsed).toContain("line\nline\nline\n[Expand for more");
+  expect(collapsed).not.toContain("end");
+  expect(text(v, true)).toContain("Details truncated");
+  const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;
+  expect(text({ action: "ack", request: cyclic, result: { acknowledged: 0 } }, true)).toContain("[circular]");
+  expect(text({ action: "ack", request: cyclic, result: { acknowledged: 0 } }, true)).toContain("Details truncated");
+});
+
+test("narrow, Unicode and ASCII output is plain, bounded by display cells and never throws", () => {
+  const view: RelayView = { action: "send", peers, request: { to: peers[0]!.id, body: "界e\u0301😀👩‍💻\n\x1b[31m" }, result: { state: "stored" } };
+  for (const width of [0, 1, 20, 40]) for (const ascii of [false, true]) for (const expanded of [false, true]) {
+    const lines = renderRelayView(view, width, { ascii, expanded });
+    if (width === 0) expect(lines).toEqual([]);
+    for (const line of lines) {
+      expect(Bun.stringWidth(line)).toBeLessThanOrEqual(width);
+      expect(line).not.toMatch(/[\p{Cc}\p{Cf}\p{Cs}\p{Zl}\p{Zp}]/u);
+    }
+  }
+  expect(text(view)).toContain("界e\u0301😀");
+  expect(renderRelayView(view, 100, { ascii: true }).join("\n")).toContain("Relay - Sent");
+  expect(() => renderRelayView({ action: "inbox", result: { messages: [null, 1, {}] } }, 20, { expanded: true })).not.toThrow();
+});
