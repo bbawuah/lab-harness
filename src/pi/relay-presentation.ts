@@ -26,9 +26,9 @@ const count = (value: unknown) => typeof value === "number" && Number.isSafeInte
 export function relayPeerLabel(id: string, peers: readonly RelayPeer[] = []): string {
   try {
     const catalog = Array.isArray(peers) ? peers.slice(0, 500).filter(p => p && typeof p.id === "string") : [];
-    const peer = catalog.find(p => p.id === id);
+    const peer = catalog.find(p => p.id === id) ?? catalog.find(p => p.name === id);
     const project = string(peer?.name).split("/")[0] || "Peer";
-    const identity = string(id) || "?";
+    const identity = string(peer?.id) || string(id) || "?";
     let length = Math.min(6, identity.length);
     while (length < identity.length && catalog.some(p => p.id !== identity && p.id.slice(-length) === identity.slice(-length))) length++;
     return `${labelText(project.slice(0, 120))} ${labelText(identity.slice(-length))}`;
@@ -92,7 +92,8 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
   const lines: string[] = [];
   const sep = options.ascii ? " - " : " · ";
   const add = (text: string) => { lines.push(...wrap(safeRelayText(text), size, 400).lines); };
-  const hint = () => add(options.ascii ? "[Expand for more (Ctrl+O / /hotkeys)]" : "[Expand for more (Ctrl+O / /hotkeys)]");
+  let hinted = false;
+  const hint = () => { if (!hinted) { add("[Details: expand with Ctrl+O (or /hotkeys)]"); hinted = true; } };
   const body = (text: string) => {
     // Bound work before wrapping even if historical data is unexpectedly huge.
     const part = text.slice(0, 16000), wrapped = wrap(safeRelayText(part), size, 3);
@@ -107,11 +108,13 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
     const title = (text: string) => add(`Relay${sep}${text}`);
     if (view.error !== undefined) {
       const action = { peers: "Peers", send: "Send", inbox: "Inbox", ack: "Ack" }[view.action] ?? "Operation";
-      title(`${action} failed`);
-      const known = ["RELAY_INVALID_PARAMETERS", "RELAY_SESSION_NOT_READY", "RELAY_SESSION_BINDING_REQUIRED", "RELAY_CONFLICT", "RELAY_OPERATION_REFUSED", "LAB_BRIDGE_INPUT_LIMIT"];
-      if (known.includes(view.error)) add(view.error);
+      const cancelled = view.error === "RELAY_CANCELLED";
+      title(`${action} ${cancelled ? "cancelled" : "failed"}`);
+      const known = ["RELAY_INVALID", "RELAY_INVALID_PARAMETERS", "RELAY_SESSION_NOT_READY", "RELAY_SESSION_BINDING_REQUIRED", "RELAY_CONFLICT", "RELAY_UNKNOWN_PEER", "RELAY_TOO_LARGE", "RELAY_BACKPRESSURE", "RELAY_UNSUPPORTED", "RELAY_CANCELLED", "RELAY_OPERATION_REFUSED", "LAB_BRIDGE_INPUT_LIMIT"];
+      const usage = ["Use /relay-send PEER REQUEST_KEY MESSAGE", "Use /relay-ack MESSAGE_ID [MESSAGE_ID ...]", "Use /relay-peers [OFFSET]", "Use /relay-inbox [WAIT_MS]"];
+      if (known.includes(view.error) || usage.includes(view.error)) add(view.error);
       if (view.action === "send") add("The outcome may be unknown and the message may have stored. For an exact retry, reuse the request key and payload.");
-      else add("Check the request and Relay session, then try again.");
+      else if (!cancelled) add("Check the request and Relay session, then try again.");
     } else if (view.pending) {
       if (view.action === "send") { title(`Send to ${label(request.to)}`); if (typeof request.body === "string") body(request.body); }
       else title(`${({ peers: "Peers", inbox: "Inbox", ack: "Ack" } as Record<string, string>)[view.action] ?? "Operation"} pending`);
@@ -148,6 +151,7 @@ export function renderRelayView(view: RelayView, width: number, options: { expan
       if (acknowledged === undefined) title("Ack outcome unknown");
       else title(`Acknowledged ${acknowledged} message(s)${ignored !== undefined ? `; ignored ${ignored}` : ""}`);
     }
+    if (!view.pending && !options.expanded) hint();
     if (options.expanded) {
       add("Details (request and result):");
       const detail = details({ request: view.request, result: view.result, ...(view.error !== undefined ? { error: view.error } : {}) });

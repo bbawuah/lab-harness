@@ -10,6 +10,8 @@ const text = (view: RelayView, expanded = false) => renderRelayView(view, 200, {
 test("labels use project names and extend colliding suffixes", () => {
   expect(relayPeerLabel(peers[0]!.id, peers)).toBe("project 123abc");
   expect(relayPeerLabel("unknown-deadbe", peers)).toBe("Peer deadbe");
+  expect(relayPeerLabel("project/session-one", peers)).toBe(relayPeerLabel(peers[0]!.id, peers));
+  expect(relayPeerLabel("x/a", [{ id: "one-123abc", name: "x/a" }, { id: "two-123abc", name: "x/b" }])).toBe("x e-123abc");
   expect(relayPeerLabel("one-123abc", [{ id: "one-123abc", name: "x/a" }, { id: "two-123abc", name: "x/b" }])).toBe("x e-123abc");
   expect(relayPeerLabel("abcd", [{ id: "abcd", name: "p\n\x1b\u202e/q" }])).toBe("p\\n\\x1b\\u{202e} abcd");
 });
@@ -21,6 +23,8 @@ test("send distinguishes pending, stored, duplicate and unknown, and hides metad
   const before = JSON.stringify(view);
   const collapsed = text(view);
   expect(collapsed).toContain("Sent to project 123abc (stored)");
+  expect(collapsed).toContain("[Details: expand with Ctrl+O (or /hotkeys)]");
+  expect(text({ ...view, request: { ...request, to: peers[0]!.name } })).toContain("Sent to project 123abc (stored)");
   expect(collapsed).toContain("Already stored; no duplicate created");
   for (const secret of ["secret-key", "conversation-secret", "message-secret", "receipt-secret", "peer-123abc"]) expect(collapsed).not.toContain(secret);
   const expanded = text(view, true);
@@ -51,7 +55,7 @@ test("escapes terminal controls and bounds previews and expanded data", () => {
   expect(safeRelayText("a\n\x1b\x00\x7f\u009b\u202e\u200b")).toBe("a\n\\x1b\\x00\\x7f\\x9b\\u{202e}\\u{200b}");
   const v: RelayView = { action: "inbox", result: { messages: [{ from: "a", body: "line\n".repeat(20000) + "end\x1b" }] } };
   const collapsed = text(v);
-  expect(collapsed).toContain("line\nline\nline\n[Expand for more");
+  expect(collapsed).toContain("line\nline\nline\n[Details: expand");
   expect(collapsed).not.toContain("end");
   expect(text(v, true)).toContain("Details truncated");
   const cyclic: Record<string, unknown> = {}; cyclic.self = cyclic;
@@ -72,4 +76,30 @@ test("narrow, Unicode and ASCII output is plain, bounded by display cells and ne
   expect(text(view)).toContain("界e\u0301😀");
   expect(renderRelayView(view, 100, { ascii: true }).join("\n")).toContain("Relay - Sent");
   expect(() => renderRelayView({ action: "inbox", result: { messages: [null, 1, {}] } }, 20, { expanded: true })).not.toThrow();
+});
+
+
+test("completed results expose details and known errors remain safe", () => {
+  const views: RelayView[] = [
+    { action: "peers", result: { peers: [], total: 0 } },
+    { action: "send", result: { state: "stored" } },
+    { action: "inbox", result: { messages: [] } },
+    { action: "ack", result: { acknowledged: 0 } },
+    { action: "ack", error: "RELAY_CONFLICT" },
+  ];
+  for (const view of views) {
+    expect(text(view)).toContain("[Details: expand with Ctrl+O (or /hotkeys)]");
+    expect(text(view, true)).not.toContain("[Details: expand with Ctrl+O");
+  }
+  expect(text({ action: "ack", pending: true })).not.toContain("[Details:");
+  for (const code of ["RELAY_INVALID", "RELAY_UNKNOWN_PEER", "RELAY_TOO_LARGE", "RELAY_BACKPRESSURE", "RELAY_UNSUPPORTED", "RELAY_CANCELLED"])
+    expect(text({ action: "send", error: code })).toContain(code);
+  for (const usage of ["Use /relay-send PEER REQUEST_KEY MESSAGE", "Use /relay-ack MESSAGE_ID [MESSAGE_ID ...]", "Use /relay-peers [OFFSET]", "Use /relay-inbox [WAIT_MS]"])
+    expect(text({ action: "ack", error: usage })).toContain(usage);
+  const cancelled = text({ action: "send", error: "RELAY_CANCELLED" });
+  expect(cancelled).toContain("Send cancelled");
+  expect(cancelled).toContain("may have stored");
+  expect(cancelled).toContain("reuse the request key and payload");
+  expect(cancelled).not.toContain("Send failed");
+  expect(text({ action: "ack", error: "Use /relay-evil \x1bSECRET" })).not.toContain("SECRET");
 });
