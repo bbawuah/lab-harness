@@ -2,6 +2,7 @@
 import type { WorkspaceContext, WorkspaceExtensionAPI } from "./workspace-extension.ts";
 import type { RelayRequest } from "../relay/workspace.ts";
 import { relayPeerLabel, renderRelayView, safeRelayText, type RelayPeer, type RelayView } from "./relay-presentation.ts";
+import { renderStyledRelay } from "./relay-style.ts";
 
 export type RelayBridgeRequest =
   | { action: "relay-bind" | "relay-heartbeat" | "relay-release"; sessionId: string }
@@ -57,9 +58,9 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
       peers.set(value.id, { id: value.id, name: value.name, presence: typeof value.presence === "string" ? value.presence : undefined, self: value.self === true });
     }
   }
-  const component = (view: RelayView, expanded: boolean) => ({
+  const component = (view: RelayView, expanded: boolean, theme: unknown) => ({
     render(width: number) {
-      try { return renderRelayView(view, width, { expanded, ascii: process.env.TERM === "dumb" || process.env.LC_ALL === "C" || /(?:^|\.)ascii$/i.test(process.env.LANG ?? "") }); }
+      try { return renderStyledRelay(view, width, theme, { expanded, color: process.env.NO_COLOR === undefined && process.env.TERM !== "dumb", ascii: process.env.TERM === "dumb" || process.env.LC_ALL === "C" || /(?:^|\.)ascii$/i.test(process.env.LANG ?? "") }); }
       catch { return ["Relay: presentation unavailable. Original data retained in session details.".slice(0, Math.max(0, width))]; }
     }, invalidate() {},
   });
@@ -71,12 +72,12 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
     if (error instanceof Error && error.name === "AbortError") return "RELAY_CANCELLED";
     return "RELAY_OUTCOME_UNKNOWN";
   }
-  for (const definition of relayTools) pi.registerMessageRenderer("relay-" + definition.action, (message, options) => {
+  for (const definition of relayTools) pi.registerMessageRenderer("relay-" + definition.action, (message, options, theme) => {
     const details = message.details as { version?: number; request?: RelayRequest; result?: unknown; peers?: RelayPeer[] } | undefined;
     let result: unknown;
     if (details?.version === 1) result = details.result;
     else { try { result = typeof message.content === "string" ? JSON.parse(message.content) : undefined; } catch { result = undefined; } }
-    return component({ action: definition.action, request: details?.version === 1 ? details.request : undefined, result, peers: details?.version === 1 ? details.peers : catalog() }, options.expanded);
+    return component({ action: definition.action, request: details?.version === 1 ? details.request : undefined, result, peers: details?.version === 1 ? details.peers : catalog() }, options.expanded, theme);
   });
   function nativeId(ctx: WorkspaceContext): string {
     const id = ctx.sessionManager?.getSessionId();
@@ -137,10 +138,10 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
     pi.registerTool({
       name: definition.name, label: definition.name, description: definition.description,
       parameters: { type: "object", properties: definition.properties, required: definition.required, additionalProperties: false },
-      renderCall(args, _theme, context) { return component({ action: definition.action, request: args, peers: catalog(), pending: true }, context.expanded); },
-      renderResult(result, options, _theme, context) {
+      renderCall(args, theme, context) { return component({ action: definition.action, request: args, peers: catalog(), pending: true }, context.expanded, theme); },
+      renderResult(result, options, theme, context) {
         const rawError = context.isError ? result.content.filter(item => item.type === "text").map(item => item.text).join("\n") : undefined;
-        return component({ action: definition.action, request: context.args, result: context.isError ? undefined : result.details, peers: catalog(), ...(rawError !== undefined ? { error: errorCode(rawError) } : {}) }, options.expanded);
+        return component({ action: definition.action, request: context.args, result: context.isError ? undefined : result.details, peers: catalog(), ...(rawError !== undefined ? { error: errorCode(rawError) } : {}) }, options.expanded, theme);
       },
       async execute(_id, params, signal, _update, ctx) {
         if (!ctx) throw new Error("RELAY_SESSION_BINDING_REQUIRED");

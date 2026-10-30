@@ -243,6 +243,7 @@
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
     "src/pi/relay-presentation.ts",
+    "src/pi/relay-style.ts",
     "src/pi/terminal-mark.json",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
@@ -298,6 +299,7 @@
     "tests/relay-loader-env.test.ts",
     "tests/relay-pi-actual.test.ts",
     "tests/relay-presentation.test.ts",
+    "tests/relay-style.test.ts",
     "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
@@ -1135,11 +1137,15 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "8bde96d5b6c8330c6d84a03f064eb6d5b0d412f9dc7d54f6c2ab4cc3cbfa5926",
+      "sha256": "050c72e346b038250410e66563e18c87f3d142852bea5388427f5b6338a57641",
       "status": "added"
     },
     "src/pi/relay-presentation.ts": {
-      "sha256": "bb0af70a79a4562383eecc29b58190d219612d7f2b8d3000bbb88c27d960819d",
+      "sha256": "4c01325ba825189c0352d7913cd64d2674156c7e9683c52a30b7f7f24a35b0b7",
+      "status": "added"
+    },
+    "src/pi/relay-style.ts": {
+      "sha256": "cd3684912d63a2604625bd59d4c9a67bfaed71810c581698a95b07d0b30db492",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1338,7 +1344,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "7489f50e8905eca2ddb9736ca5d4417e99e07fa723bde460b203ea3db0191431",
+      "sha256": "04685c30a473637d0f31fe28fc672f71c7bb67c6e88bdc887c35c1e15f357825",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -1371,6 +1377,10 @@
     },
     "tests/relay-presentation.test.ts": {
       "sha256": "cb566446950cad5bf52825a7c7ac9690c4256317f9ca1b255b59003a68a4c207",
+      "status": "added"
+    },
+    "tests/relay-style.test.ts": {
+      "sha256": "e911748d44a374b69d43784653fb13a75ec27b0959717f22a54d62bcc5b3c0f5",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
