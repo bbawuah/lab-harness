@@ -86,14 +86,14 @@ function details(value: unknown): { text: string; truncated: boolean } {
   catch { return { text: "[unavailable]", truncated: true }; }
 }
 
-export function renderRelayView(view: RelayView, width: number, options: { expanded?: boolean; ascii?: boolean } = {}): string[] {
+export function renderRelayView(view: RelayView, width: number, options: { expanded?: boolean; ascii?: boolean; detailsHint?: boolean } = {}): string[] {
   const size = Number.isFinite(width) ? Math.min(1000, Math.max(0, Math.floor(width))) : 0;
   if (!size) return [];
   const lines: string[] = [];
   const sep = options.ascii ? " - " : " · ";
   const add = (text: string) => { lines.push(...wrap(safeRelayText(text), size, 400).lines); };
   let hinted = false;
-  const hint = () => { if (!hinted) { add("[Details: expand with Ctrl+O (or /hotkeys)]"); hinted = true; } };
+  const hint = () => { if (!hinted && options.detailsHint !== false) { add("[Details: expand with Ctrl+O (or /hotkeys)]"); hinted = true; } };
   const body = (text: string) => {
     // Bound work before wrapping even if historical data is unexpectedly huge.
     const part = text.slice(0, 16000), wrapped = wrap(safeRelayText(part), size, 3);

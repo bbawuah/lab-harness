@@ -155,7 +155,9 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
           pi.sendMessage({ customType: "relay-" + definition.action, content: JSON.stringify(result, null, 2), details: { version: 1, request, result, peers: catalog() }, display: true }, { triggerTurn: false });
         } catch (error) {
           const view: RelayView = { action: definition.action, error: errorCode(error), peers: catalog() };
-          ctx.ui.notify(renderRelayView(view, 80).join("\n"), "error");
+          // Notifications are transient native UI, not expandable transcript
+          // messages. Do not advertise the tool-output expansion control here.
+          ctx.ui.notify(renderRelayView(view, 80, { detailsHint: false }).join("\n"), "error");
         }
       },
     });

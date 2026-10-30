@@ -63,6 +63,10 @@ test("failed native tools retain exceptions; their presentation never forwards a
   await expect(tool.execute("failed", { to: "peer", body: "hello", requestKey: "k" }, undefined, undefined, ctx)).rejects.toBe(failure);
   const view = tool.renderResult({ content: [{ type: "text", text: "\x1b]52;private\x07" }], details: undefined }, { expanded: false }, {}, { args: {}, isError: true }).render(90).join("\n");
   expect(view).toContain("Send failed"); expect(view).toContain("may have stored"); expect(view).not.toContain("private"); expect(view).not.toContain("\x1b");
+  await h.commands.get("relay-ack").handler("", ctx);
+  const notice = h.notices.at(-1)!;
+  expect(notice).toContain("Ack failed"); expect(notice).toContain("Use /relay-ack");
+  expect(notice).not.toContain("Ctrl+O"); expect(notice).not.toContain("Details:");
   await h.event("session_shutdown", ctx);
 });
 

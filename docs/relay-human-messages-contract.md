@@ -47,10 +47,12 @@ type RelayView = {
 relayPeerLabel(id: string, peers?: readonly RelayPeer[]): string;
 safeRelayText(value: string): string;
 renderRelayView(view: RelayView, width: number,
-  options?: { expanded?: boolean; ascii?: boolean }): string[];
+  options?: { expanded?: boolean; ascii?: boolean; detailsHint?: boolean }): string[];
 ```
 
 No filesystem, process, bridge, model, bus mutation or registration belongs in this module. It must tolerate malformed legacy data without exposing raw controls. Shared extension integration registers both tool and custom-message renderers, passes native expansion, keeps `triggerTurn:false`, and maintains only bounded presentation lookup state. No extra bus queries are allowed for rendering.
+
+Review corrections: expanded views put every fetched message's actionable ID and sender, send receipt/recipient/request key, and every displayed peer's ID/name before bounded long JSON. Transient slash-error notifications set `detailsHint:false`, because native notifications have no expandable transcript component. This does not add error messages to model context or change exception behavior.
 
 ## Acceptance and release
 
