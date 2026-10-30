@@ -88,7 +88,7 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
       env: { HOME: home, SHELL: "/bin/bash", PATH: "/usr/bin:/bin", TERM: "xterm-256color", ...(indexed ? {} : { COLORTERM: "truecolor" }), LANG: "C", LAB_WORKSPACE_STATE_ROOT: state, ...(noColor ? { NO_COLOR: "1" } : {}) },
       terminal: { cols: 150, rows: 48, data(term, data) { const text = decoder.decode(data, { stream: true }); a.raw += text; a.view.write(text);
         const cells = a.view.snapshot().lines.join("\n");
-        a.relayRendered ||= cells.includes("Relay ready:"); a.fallbackRendered ||= cells.includes("Using Standard for this run");
+        a.relayRendered ||= cells.includes("Relay ready"); a.fallbackRendered ||= cells.includes("Using Standard for this run");
         const banner = cells.includes("Reloaded keybindings"); if (banner && !a.bannerVisible) a.reloads++; a.bannerVisible = banner; if (text.includes("\x1b[6n")) term.write("\x1b[1;1R"); if (text.includes("\x1b]11;?")) term.write("\x1b]11;rgb:ffff/ffff/ffff\x1b\\"); } },
     }); actors.push(a);
     await wait("owned native endpoint", async remaining => {
@@ -115,7 +115,7 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
     await wait("native client cells, Pi session and independent shell readiness", async remaining => {
       const text = await screen(a, remaining);
       if (!trusted && text.includes("Trust project folder?")) { trusted = true; a.child.terminal!.write("\r"); }
-      return a.relayRendered && text.includes("Relay ready:") && existsSync(join(root, "shell-ready"));
+      return a.relayRendered && text.includes("Relay ready") && existsSync(join(root, "shell-ready"));
     }, a, startDeadline);
     const run = readdirSync(join(state, "runs")).find(name => !before.has(name));
     if (!run) throw new Error("Owned appearance run missing");

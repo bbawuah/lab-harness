@@ -15,7 +15,7 @@ test("shell help is available without TTY, configuration or model startup; unkno
 
 test("LAB help is an operator command, preserves native help and reports only available LAB commands", async () => {
   const commands = new Map<string, any>(), messages: any[] = [], options: unknown[] = [];
-  extension({ on() {}, registerTool() {}, registerCommand(name, command) { commands.set(name, command); }, sendMessage(message, option) { messages.push(message); options.push(option); } });
+  extension({ on() {}, registerTool() {}, registerMessageRenderer() {}, registerCommand(name, command) { commands.set(name, command); }, sendMessage(message, option) { messages.push(message); options.push(option); } });
   expect(commands.has("help")).toBe(false);
   await commands.get("lab-help").handler("", {});
   expect(messages).toEqual([{ customType: "lab-help", content: workspaceHelp(), display: true }]);

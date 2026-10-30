@@ -224,6 +224,7 @@
     "src/pi/commands.ts",
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
+    "src/pi/relay-presentation.ts",
     "src/pi/terminal-mark.json",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
@@ -278,6 +279,7 @@
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
     "tests/relay-pi-actual.test.ts",
+    "tests/relay-presentation.test.ts",
     "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
@@ -316,7 +318,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "1d5b4f3cc41141062ba43a5f849575a3e5f84829ca95c8c8eb4f17fe6ad8ae7a",
+      "sha256": "d70c9b2250f921411e01eea089bc6dcb3d03f006bb9481baa11daa2d80fe2775",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -873,7 +875,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "f9b568fd6ebf56e9be7acf53679a02ba86515c88c3d42010fb63a8bc20cbca90",
+      "sha256": "beaa890e5aa47a74efe69ef6ec457d6ab8762475aa595871cf5eba81b9fd012e",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1035,7 +1037,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "027369eee49b06e686d7093b683122f967b8abc6fe39521230c9addb2bc2fa80",
+      "sha256": "e501fd69fbf1f0de9e2ea2aec33fe2c049fa2b508fc016aceacee611d145a334",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -1043,7 +1045,11 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
+      "sha256": "1270aea6db6d6a5dde6edd9c1a54de9804b83462e9b8f43ee5f682d957f41395",
+      "status": "added"
+    },
+    "src/pi/relay-presentation.ts": {
+      "sha256": "db01f267d3f50a222b5204e4993dc63f10551ca53487d1de41ef2713e3241023",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1063,7 +1069,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "7fa5dbc4a2c4c797b8f1886154b563cdf8ab0fad2cf2dc16475d975ef3071b58",
+      "sha256": "3b41405b078d4563d83c4acc537572fd377ebfc968eab68ed1b9904159f37e98",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -1201,7 +1207,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "84da764688794fef786cbf566899ce94cb4595ba49232dd73e409d30941829de",
+      "sha256": "5b15320a2c08563096db41d9f04769d2b4a4ac248fc47ab2b4bf307da5e91898",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
@@ -1229,7 +1235,7 @@
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
-      "sha256": "a6a8fc7c42562dbac34b05bc4ad15b987d051b46f5be81701f69ed80a4a4a8b5",
+      "sha256": "1f63d31d791888cd1bbb335403fdf63b9bb23475c085fcf84a6451aa1c72c87a",
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
@@ -1258,7 +1264,7 @@
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
-      "sha256": "f7b5238901ed9c5ddcb343e114ce98a40ddfac8128e567347ccd236a726355ae",
+      "sha256": "4628390af6b9a2cb328d09212505f25fec62686033915e2d55077391cc076696",
       "status": "added"
     },
     "tests/relay-loader-env-child.ts": {
@@ -1270,7 +1276,11 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "4c6eeb775dcbf421bfe0d326c4907e0f7328d6c8f3ec57c5b6bd3eed4a455be8",
+      "sha256": "ad6d7a18119e6d006946ee3c6a318761c13bfcf1dad2f71f35e4da2f1ea1004b",
+      "status": "added"
+    },
+    "tests/relay-presentation.test.ts": {
+      "sha256": "0d6df29b27d205b7df38049e7488af4e24688c0276e4138ab1f8849d6ffa0687",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
@@ -1300,7 +1310,7 @@
       "status": "added"
     },
     "tests/workspace-help.test.ts": {
-      "sha256": "80791b7f5c07e7424346f00637c9b62114bf3740eecebfa642bc8a4d733b0afb",
+      "sha256": "c084089344e064a5b97334ed8d82055ce38be29ea53a1c8620f4eefa7abda55e",
       "status": "added"
     },
     "tests/workspace.test.ts": {
