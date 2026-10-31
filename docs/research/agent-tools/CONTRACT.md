@@ -6,7 +6,7 @@ Binding verified: existing app-bound browser-research worktree, clean at 87107f8
 
 ## Scope and evidence contract
 
-Own `docs/research/agent-tools/**`, `experiments/agent-tools/**` and normal publication-manifest refresh. Acquisition, caches and disposable state use project-local `.tmp/agent-tools` (excluded by existing publication policy), never a global installation. Read upstream skills before tool operation. Source-proven, deterministic local observations, operator actions and real model/Pi tool observations are separate evidence classes.
+Own `docs/research/agent-tools/**`, `experiments/agent-tools/**` and normal publication-manifest refresh. Acquisition, caches and disposable state use project-local `.tmp/agent-tools` (excluded by existing publication policy), never a global installation. Socket-only portability exception: desktop command-host sockets use an owned mode-0700 short absolute directory under `/private/tmp`, removed after the preflight. Release/cache/fixture state remains project-local; this changes no permission policy. Read upstream skills before tool operation. Source-proven, deterministic local observations, operator actions and real model/Pi tool observations are separate evidence classes.
 
 First trial: native macOS arm64 tools, ephemeral owned browser, loopback synthetic fixture, bounded snapshot/reference/form/action/assertion/screenshot/error/close checks. Desktop reads target only an owned disposable fixture application's PID; interactions only if existing AX permission allows them. No personal app enumeration, desktop-wide capture, user profiles/cookies, TCC bypass or security-setting changes. Genuine permission failures are outcomes.
 
