@@ -1,0 +1,37 @@
+bun test v1.4.2 (744846f84)
+
+tests/herdr-shell.test.ts:
+(pass) capture preserves presence and strips Pi-only names [0.30ms]
+(pass) actual split preserves synthetic bash startup, focus, Ctrl-C and shell exit [4341.11ms]
+(pass) actual split preserves synthetic zsh startup, focus, Ctrl-C and shell exit [4268.90ms]
+(pass) startup lifecycle: shell-rc-exit [1718.80ms]
+(pass) startup lifecycle: fast-pi-single [1052.56ms]
+(pass) startup lifecycle: fast-pi-split [1417.20ms]
+(pass) startup lifecycle: malformed-pi-single [1158.06ms]
+(pass) startup lifecycle: malformed-pi-split [1321.99ms]
+(pass) startup lifecycle: stale-status [36.41ms]
+(pass) startup signal cleanup refuses unsupported PID and absence claims [0.21ms]
+(pass) fast startup Pi exit preserves TERM priority (single, natural) [1147.30ms]
+(pass) fast startup Pi exit preserves TERM priority (single, known-pid) [1449.35ms]
+(pass) fast startup Pi exit preserves TERM priority (single, absent-pid) [1269.95ms]
+(pass) fast startup Pi exit preserves TERM priority (split, natural) [1400.40ms]
+(pass) fast startup Pi exit preserves TERM priority (split, known-pid) [1559.00ms]
+(pass) fast startup Pi exit preserves TERM priority (split, absent-pid) [1524.56ms]
+(pass) fast startup Pi exit preserves HUP priority (single, natural) [1175.37ms]
+(pass) fast startup Pi exit preserves HUP priority (single, known-pid) [1441.75ms]
+(pass) fast startup Pi exit preserves HUP priority (single, absent-pid) [1261.71ms]
+(pass) fast startup Pi exit preserves HUP priority (split, natural) [1405.65ms]
+(pass) fast startup Pi exit preserves HUP priority (split, known-pid) [1610.35ms]
+(pass) fast startup Pi exit preserves HUP priority (split, absent-pid) [1610.18ms]
+(pass) fast startup Pi exit preserves TERM priority (split, natural, malformed) [1407.23ms]
+(pass) actual split cleans up on native-shell-close [2772.66ms]
+(pass) actual split cleans up on native-pi-close [2065.86ms]
+(pass) actual split cleans up on workspace-close [2299.94ms]
+(pass) actual split cleans up on detach [1860.75ms]
+(pass) actual split cleans up on TERM [2228.30ms]
+(pass) actual split cleans up on HUP [1836.39ms]
+
+ 29 pass
+ 0 fail
+ 345 expect() calls
+Ran 29 tests across 1 file. [46.65s]
