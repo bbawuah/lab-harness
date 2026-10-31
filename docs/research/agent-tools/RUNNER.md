@@ -4,7 +4,7 @@ Status: **first authenticated live run PARTIAL; complete acceptance still pendin
 
 ## One live entrypoint, after root's credential-ready handoff
 
-From this research branch's worktree root, in the authenticated graphical terminal, root's private wrapper injects `OLLAMA_API_KEY` in memory and sets nonsecret `LAB_AGENT_TOOLS_CREDENTIAL_READY=1`, then executes:
+From this research branch's worktree root, in the authenticated graphical terminal, root's private wrapper injects `OLLAMA_API_KEY` in memory and sets nonsecret `LAB_AGENT_TOOLS_CREDENTIAL_READY=1` and `LAB_AGENT_TOOLS_PRIOR_USAGE=first-live-72b1`, then executes:
 
 ```sh
 bun --no-env-file --no-install experiments/agent-tools/model-runner.ts --live
@@ -22,6 +22,7 @@ The [first guard-only probe](evidence/runner-probe-first.json) preceded healthy 
 
 ## Limits and accounting
 
+- [Continuation accounting](CONTINUATION.md) binds prior 4/4147/117 spend to immutable evidence before allocation and independently in the guard; the original ceilings are cumulative, leaving at most six further admissions.
 - Native Pi `before_provider_request` modifies the serialized payload to `max_tokens=400`, allows at most ten admissions (stricter than twelve), and refuses cumulative serialized UTF-8 bytes plus 512 units/request above 20,000. **These admission units are not exact model tokens.** They are a conservative heuristic, not a tokenizer guarantee.
 - The guard records native assistant usage, including input/cache counts and output. It refuses missing usage, Pi-shaped all-zero placeholder counters and zero input totals for this nonempty exchange, plus observed totals above 20k input/4k output. An observed overrun is a failed trial, not proof it was prevented. Ten requested 400-token output caps bound requested output at 4k if the provider honors them; exact server behavior remains unverified until live execution.
 - Both agent and provider retries are disabled; compaction is disabled. The native guard has a 120-second deadline, child wrapper 130 seconds, browser commands 30 seconds, bounded stdout/events. No new provider engine or proxy is used.

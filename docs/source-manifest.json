@@ -152,6 +152,7 @@
     "docs/publication-status.md",
     "docs/relay-workspace-contract.md",
     "docs/research/agent-tools/CONTINUATION-CONTRACT.md",
+    "docs/research/agent-tools/CONTINUATION.md",
     "docs/research/agent-tools/CONTRACT.md",
     "docs/research/agent-tools/FIRST-LIVE.md",
     "docs/research/agent-tools/PROJECTION-CONTRACT.md",
@@ -163,6 +164,7 @@
     "docs/research/agent-tools/evidence/browser-native.png",
     "docs/research/agent-tools/evidence/browser-trial-first.json",
     "docs/research/agent-tools/evidence/browser-trial.json",
+    "docs/research/agent-tools/evidence/continuation-probe.json",
     "docs/research/agent-tools/evidence/desktop-host-diagnostic.json",
     "docs/research/agent-tools/evidence/desktop-permissions.json",
     "docs/research/agent-tools/evidence/desktop-socket-diagnostic.json",
@@ -226,10 +228,12 @@
     "experiments/agent-tools/check_adapter.py",
     "experiments/agent-tools/check_budget.ts",
     "experiments/agent-tools/check_cleanup.py",
+    "experiments/agent-tools/check_continuation.ts",
     "experiments/agent-tools/check_guard.ts",
     "experiments/agent-tools/check_observation.ts",
     "experiments/agent-tools/check_projection.py",
     "experiments/agent-tools/check_setup.ts",
+    "experiments/agent-tools/continuation.ts",
     "experiments/agent-tools/desktop_trial.py",
     "experiments/agent-tools/fixture-observation.ts",
     "experiments/agent-tools/fixture.html",
@@ -817,12 +821,16 @@
       "sha256": "b3c4c1b94491f8ca1bc0b36db4d1b92c9dc7012e38ff28a87f69696430a031ee",
       "status": "added"
     },
+    "docs/research/agent-tools/CONTINUATION.md": {
+      "sha256": "463dc6ea4323c132a2be669a17bd3ceb2c7d261036099a5810387480e736a33d",
+      "status": "added"
+    },
     "docs/research/agent-tools/CONTRACT.md": {
       "sha256": "2e5545f3f1c2ee221aa3ce9bf07d3df0c57c5054d4015331bf9d474829abbcba",
       "status": "added"
     },
     "docs/research/agent-tools/FIRST-LIVE.md": {
-      "sha256": "47b57b4703c8351c73465d7cd24431f690f26f84c1d6f66f3451920829aff34a",
+      "sha256": "7445053eaf6e5bb257ef5a07eeb915357bb7e4aae850b816352bd49113d77bf0",
       "status": "added"
     },
     "docs/research/agent-tools/PROJECTION-CONTRACT.md": {
@@ -842,7 +850,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/RUNNER.md": {
-      "sha256": "3f90d22c94cf8285efcb90cb57043706b4db4b7f72f5a09f16a9f7f4cfacd7a5",
+      "sha256": "7a3b8844f0aa089df2cdf16a4be579e02fd25c8f28d4f9a5c43538abcb804706",
       "status": "added"
     },
     "docs/research/agent-tools/SOURCES.md": {
@@ -859,6 +867,10 @@
     },
     "docs/research/agent-tools/evidence/browser-trial.json": {
       "sha256": "524f5587adc076a3228dac3533c24b282bcc33c7d38ee31ab386d7d31deb6cdd",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/continuation-probe.json": {
+      "sha256": "505f1f6a5f91facc35cff2bb3d6bbc43f231dac6f07e1605d1cdc721f67aaecc",
       "status": "added"
     },
     "docs/research/agent-tools/evidence/desktop-host-diagnostic.json": {
@@ -1078,7 +1090,7 @@
       "status": "added"
     },
     "experiments/agent-tools/README.md": {
-      "sha256": "3e6ed123af58d113ef9a0c47444b5c06d419ccc7820b83f468be31e6347146c2",
+      "sha256": "7c49230455314b00ca90498484283cdb88166bb86d8a20b3b21cc5aad0d18d9d",
       "status": "added"
     },
     "experiments/agent-tools/acquire.py": {
@@ -1094,7 +1106,7 @@
       "status": "added"
     },
     "experiments/agent-tools/budget.ts": {
-      "sha256": "5fec8b007c6bf8967d44dd1f78cca389de985f8dfeb01f1dff12e651a600eaff",
+      "sha256": "50d99ea2b9c8012677725b9fed12e266d18d98d9652b577e5a09f8fa084461f0",
       "status": "added"
     },
     "experiments/agent-tools/check_adapter.py": {
@@ -1102,11 +1114,15 @@
       "status": "added"
     },
     "experiments/agent-tools/check_budget.ts": {
-      "sha256": "c5f5a8d8120715854ed0cc8d091df0413a82c9981a6ed7e7615d185fbea8e482",
+      "sha256": "1bb638a72d39ee8923178f34be356b7817f7d2b4841b751597edcfe28bc43271",
       "status": "added"
     },
     "experiments/agent-tools/check_cleanup.py": {
       "sha256": "7b719cc3d339ed77e9811185c2a3b467bd91bffa3027087d78d646d29e575547",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_continuation.ts": {
+      "sha256": "88c8d819277e7c20727b01a4acf2bccd4255a7a0c3c8a47446389a72bafd806d",
       "status": "added"
     },
     "experiments/agent-tools/check_guard.ts": {
@@ -1125,6 +1141,10 @@
       "sha256": "4ab0a61b2d1bdb2f762a3c19eb82d99ead605c0c0c77cab518b10dadcfe5812e",
       "status": "added"
     },
+    "experiments/agent-tools/continuation.ts": {
+      "sha256": "8b41e982dfb17358972dd9158cc02a84c2fc5ca1cca8452ba26fd65c13e572a4",
+      "status": "added"
+    },
     "experiments/agent-tools/desktop_trial.py": {
       "sha256": "2d54ce5c5c3583833ed9de7b44aa0548063bc96b697ea75d28e1387d579a6246",
       "status": "added"
@@ -1138,7 +1158,7 @@
       "status": "added"
     },
     "experiments/agent-tools/guard-extension.ts": {
-      "sha256": "b6317309f0acdcff47a7b26e238d5011e8704b140b578909658a0223f62bb817",
+      "sha256": "e0ad428ecd96d94bb64807c44f1c1e37f6be509d33eb11bf8d34bbe6dafc697c",
       "status": "added"
     },
     "experiments/agent-tools/mcp_bridge.py": {
@@ -1150,7 +1170,7 @@
       "status": "added"
     },
     "experiments/agent-tools/model-runner.ts": {
-      "sha256": "66061271e98a23b73940702104f7a20ff1a8f576a4d54c6e31923190df777163",
+      "sha256": "120abf3143cdedaaf8c8ccbeb3e9b96197efc8496d8a5826592c1466dc46b057",
       "status": "added"
     },
     "experiments/agent-tools/pi-child.ts": {
