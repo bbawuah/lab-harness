@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Prepared experimental Pi boundary; no model requests. Trusted operator prepares session."""
 from support import *
-import re,sys
+import re,sys,uuid
+from mcp_projection import project
 
 def translate(p):
  if not isinstance(p,dict) or set(p)-{'operation','ref','text'}: raise ValueError('invalid keys')
@@ -27,6 +28,14 @@ def main():
  if cfg.get('allowedDomains')!=['127.0.0.1'] or cfg.get('noWebmcp') is not True or cfg.get('maxOutput')!=8000: raise ValueError('trusted limits required')
  # Exact fixture/session must be prepared by the operator. This is not an ownership sandbox.
  result=run([CACHE/'agent-browser','mcp','call',tool,json.dumps(args)],extra_env={'AGENT_BROWSER_CONFIG':str(config),'AGENT_BROWSER_SESSION':session})
- if result['exit']!=0: raise RuntimeError('MCP operation refused')
- print(result['stdout'],end='')
+ # Diagnostics remain private and out of model context. Fail on overflow; never slice results.
+ diagnostics=config.parent/'mcp-diagnostics'
+ if diagnostics.is_symlink(): raise RuntimeError('Unsafe diagnostics directory')
+ diagnostics.mkdir(mode=0o700,exist_ok=True)
+ raw=json.dumps({'tool':tool,**result})
+ if len(raw.encode())>65536 or len(list(diagnostics.glob('*.json')))>=64: raise RuntimeError('Diagnostics limit')
+ path=diagnostics/(uuid.uuid4().hex+'.json')
+ with path.open('x') as output:
+  os.chmod(path,0o600);output.write(raw)
+ print(project(tool,result))
 if __name__=='__main__':main()

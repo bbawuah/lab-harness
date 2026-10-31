@@ -1,6 +1,6 @@
 # Prepared native Pi/LAB model trial
 
-Status: **native zero-HTTP probe passed; live model acceptance PENDING authenticated user run**. Root owns credential injection. No credential lookup or live model request was made by this worker.
+Status: **first authenticated live run PARTIAL; complete acceptance still pending**. See [actual sequence/spend and projection correction](FIRST-LIVE.md). Root owns credential injection and any newly authorized remaining allowance. No credential lookup or model request was made by this worker during the correction.
 
 ## One live entrypoint, after root's credential-ready handoff
 
@@ -10,7 +10,7 @@ From this research branch's worktree root, in the authenticated graphical termin
 bun --no-env-file --no-install experiments/agent-tools/model-runner.ts --live
 ```
 
-The route is fixed to `https://ollama.com/v1`; model is `gemma4:31b`. No interactive config, persistent key file, secret argv, auth lookup or alternative transport is implemented. This is an experimental launcher; public LAB availability is unchanged. Do not paste the key into a command or report. Root separately pins the trusted Bun executable and reviewed commit for its private wrapper.
+The route is fixed to `https://ollama.com/v1`; model is `gemma4:31b`. No interactive config, persistent key file, secret argv, auth lookup or alternative transport is implemented. This is an experimental launcher; public LAB availability is unchanged. This historical entrypoint is not permission to retry: root must provide a new reviewed wrapper and remaining allowance. Do not paste the key into a command or report. Root separately pins the trusted Bun executable and reviewed commit for its private wrapper.
 
 Already acquired in this worktree: repository-pinned Pi 1.4.0 and Herdr 0.9.5, agent-browser 0.41.0 and approved existing Chrome 156.0.8078.74. Runner calls existing full Pi-tree/hash and Herdr-artifact verification before allocating state. See repository `contracts/pi-runtime.json` and `contracts/herdr-source.json`; Pi runtime release commit is `4a080252f06caf63a525d7873c5d94d3c23887e0`, distinct from the historical source-inspection pin. No automatic acquisition in runner. Native browser/helper acquisition remains in the original experiment. Python 3.12+, installed Chrome and a TTY are required. Browser binaries must remain the acquired pinned artifacts; this runner currently relies on the acquisition hash verification, unlike its per-run Pi/Herdr verification.
 

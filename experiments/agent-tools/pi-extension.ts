@@ -5,8 +5,8 @@ import type { WorkspaceExtensionAPI } from '../../src/pi/workspace-extension.ts'
 export default function experiment(pi: WorkspaceExtensionAPI) {
   pi.registerTool({
     name: 'lab_owned_browser', label: 'Owned fixture browser',
-    description: 'Experimental synthetic fixture only. Snapshot before ref actions; get_result verifies the form. No arbitrary navigation, files, JavaScript or desktop access.',
-    parameters: { type: 'object', properties: { operation: {type:'string',enum:['snapshot','fill','click','get_result']}, ref:{type:'string',pattern:'^@e[0-9]+$'}, text:{type:'string',maxLength:80}}, required:['operation'],additionalProperties:false },
+    description: 'Experimental synthetic fixture only. Snapshot before ref actions. Refs require the @ prefix: use @e4, never e4. get_result verifies the form. No arbitrary navigation, files, JavaScript or desktop access.',
+    parameters: { type: 'object', properties: { operation: {type:'string',enum:['snapshot','fill','click','get_result']}, ref:{type:'string',pattern:'^@e[0-9]+$',description:'Exact snapshot ref with @ prefix, for example @e4'}, text:{type:'string',maxLength:80}}, required:['operation'],additionalProperties:false },
     async execute(_id, params, signal) {
       if (!process.env.LAB_AGENT_TOOLS_SESSION || !process.env.LAB_AGENT_TOOLS_CONFIG) throw new Error('EXPERIMENT_NOT_PREPARED');
       const text = await new Promise<string>((resolve,reject) => {

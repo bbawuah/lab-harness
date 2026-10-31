@@ -10,6 +10,8 @@ import { bindProjectRoot } from '../../src/project.ts';
 import { prepareState } from './prepare-state.ts';
 import { provisionWorkspaceRelayRun,openBoundWorkspaceRelay } from '../../src/relay/workspace.ts';
 import { Database } from 'bun:sqlite';
+import { observeFixture } from './fixture-observation.ts';
+import priorSpend from './prior-spend.json';
 import { modelsForRoute } from '../../src/pi/workspace-config.ts';
 const root=resolve(import.meta.dir,'../..'),cache=join(root,'.tmp/agent-tools');
 const mode=process.argv[2];
@@ -31,7 +33,7 @@ const browser=(args:string[])=>new Promise<any>((res,rej)=>{
  p.on('close',code=>{clearTimeout(timer);if(!failed){if(code!==0)rej(new Error('BROWSER_REFUSED'));else{try{res(JSON.parse(text));}catch{rej(new Error('BROWSER_JSON'));}}}});
 });
 let relayRef:string|undefined,herdrStarted=false;
-let sinkRequests=0,browserStarted=false,closeVerified=false,server:any,sink:any,status:any={mode:mode.slice(2),model:'gemma4:31b',liveRoute:'https://ollama.com/v1',actualRoute:mode==='--probe'?'owned-loopback-sink':'https://ollama.com/v1',liveAcceptance:false};
+let sinkRequests=0,browserStarted=false,closeVerified=false,server:any,sink:any,status:any={mode:mode.slice(2),model:'gemma4:31b',liveRoute:'https://ollama.com/v1',actualRoute:mode==='--probe'?'owned-loopback-sink':'https://ollama.com/v1',liveAcceptance:false,priorReportedSpend:{requests:priorSpend.requests,inputTokens:priorSpend.inputTokens,outputTokens:priorSpend.outputTokens}};
 const beforeProfiles=new Set(readdirSync(join(cache,'t')).filter(x=>x.startsWith('agent-browser-chrome-')));
 try {
  writeFileSync(events,'',{mode:0o600});
@@ -56,18 +58,23 @@ try {
  status.piExit=await runHerdrInteractive({executable:herdr,command,cwd:project,stateRoot:join(run,'herdr'),environment,exitFile});
  const rows=readFileSync(events,'utf8').trim().split('\n').filter(Boolean).map(x=>JSON.parse(x));
  status.events=rows;status.piVersion=pi.version;
+ const usage=rows.filter(x=>x.kind==='usage').at(-1)?.data;
+ status.cumulativeReportedSpend={requests:priorSpend.requests+(mode==='--live'?rows.filter(x=>x.kind==='request_admitted').length:0),inputTokens:priorSpend.inputTokens+(usage?.inputTokens??0),outputTokens:priorSpend.outputTokens+(usage?.outputTokens??0),currentUsageAvailable:!!usage};
  if(mode==='--probe'){
   if(status.piExit!==78||sinkRequests!==0||!rows.some(x=>x.kind==='probe_pre_request')||!rows.some(x=>x.kind==='session_start'&&x.data.relayHealthy))throw new Error('PROBE_NOT_PROVEN');
   status.probeZeroHTTP=true;
  }else{
-  const result=await browser(['--json','get','text','#result']);
+  status.fixtureObservation=await observeFixture(browser,`http://127.0.0.1:${server.port}/`);
   const final=rows.filter(x=>x.kind==='assistant').at(-1);
-  if(status.piExit!==0||!rows.some(x=>x.kind==='tool_start')||!JSON.stringify(result).includes('Saved: Fixture Model')||!final?.data?.text?.includes('Saved: Fixture Model')||rows.some(x=>x.kind==='refused'))throw new Error('MODEL_ACCEPTANCE_FAILED');
+  if(status.piExit!==0||!rows.some(x=>x.kind==='tool_start')||status.fixtureObservation.text!=='Saved: Fixture Model'||!final?.data?.text?.includes('Saved: Fixture Model')||rows.some(x=>x.kind==='refused'))throw new Error('MODEL_ACCEPTANCE_FAILED');
   await browser(['--json','screenshot',join(run,'model-native.png')]);
   status.fixtureResult='Saved: Fixture Model';status.liveAcceptance=true;
  }
 }catch(error){status.failure=error instanceof Error?error.message:'UNKNOWN';process.exitCode=1;}
 finally{
+ if(browserStarted&&status.failure&&!status.fixtureObservation){
+  try{status.fixtureObservation=await observeFixture(browser,`http://127.0.0.1:${server.port}/`);}catch{status.fixtureObservation={kind:'independent-local-fixture-observation',unavailable:true,notModelConfirmation:true};}
+ }
  try{if(browserStarted)await browser(['--json','close']);const remaining=readdirSync(join(cache,'t')).filter(x=>x.startsWith('agent-browser-chrome-')&&!beforeProfiles.has(x));if(remaining.length)throw new Error('PROFILE_REMAINS');closeVerified=true;}
  catch{status.cleanupFailure='OWNED_BROWSER_CLEANUP';status.liveAcceptance=false;process.exitCode=1;}
  server?.stop(true);sink?.stop(true);status.browserCleanupVerified=closeVerified;status.sinkRequests=sinkRequests;
