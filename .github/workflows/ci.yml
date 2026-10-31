@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, macos-14]
+        os: [ubuntu-24.04, macos-15]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     env:
@@ -71,4 +71,6 @@ jobs:
           python -m venv .tmp/media-audit
           .tmp/media-audit/bin/python -m pip --cache-dir .tmp/pip-cache install --disable-pip-version-check --only-binary=:all: --require-hashes -r docs/demos/requirements-audit.txt
       - name: Decode media, verify provenance, privacy and recorded behavior
-        run: .tmp/media-audit/bin/python docs/demos/audit.py --check
+        run: |
+          .tmp/media-audit/bin/python docs/demos/audit.py --check
+          python docs/evidence/pixel-lb/audit.py

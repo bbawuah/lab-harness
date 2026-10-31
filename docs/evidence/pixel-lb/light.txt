@@ -1,0 +1,45 @@
+
+███████ ███████████▄▄
+███████ ██████████████▄
+███████ ███████████████▄
+███████ ████████████████   LAB-HARNESS
+███████ ████████████████   Powered by Pi
+███████ ███████████████▀   Interactive coding workspace
+███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+███████ ███████ ▀▀▀▀
+███████ ███████ ███▄▄
+████████ ▀▀████ ██████▄
+███████▀    ▀██ ███████▄
+▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+███████████████ ████████
+███████████████ ███████▀
+███████████████ ██████▀
+ ▀█████████████ ███▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Reloaded keybindings, extensions, skills, prompts, themes, and context
+ files
+
+
+
+
+LAB Appearance - staged sample
+> 1. Scope: user
+  2. Mode: light
+  3. Palette: Standard
+  4. Editor padding: 1
+  5. Transcript padding: 1
+  6. Reset this scope: remove saved override
+  7. Apply: save and reload Pi resources
+  8. Cancel: discard this draft
+
+> Focused control
+Text / Success: saved / Warning: check
+Error: retry (labels do not rely on color)
+Up/Down or j/k; Enter. Esc cancels.
+Fonts/size/line height: terminal settings.
+[OWNED_RUN]                                                             
+0.0%/8.2k (auto)                                    fixture-no-inference

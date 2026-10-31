@@ -8,10 +8,15 @@ review remains part of the implementation workflow; it is not represented as a
 GitHub human approval. Publication authorization does not authorize a main merge.
 
 The exact required status names are `check (ubuntu-24.04)` and
-`check (macos-14)`. Preserve these names unless the ruleset and workflow receive
+`check (macos-15)`. Preserve these names unless the ruleset and workflow receive
 a coordinated migration. The workflow runs on every pull request and main push;
 transient feature names are not hardcoded. Concurrency cancels obsolete runs for
 the same pull request or branch.
+
+The macOS runner is pinned to `macos-15` following the
+[macOS 14 retirement](https://github.com/actions/runner-images/issues/13518).
+The matching required check is migrated with the workflow; both platform checks
+remain mandatory and no bypass actor is added.
 
 Both matrix jobs use pinned checkout, Bun and Python setup actions, a read-only
 repository token and no persisted checkout credentials. Bun development packages

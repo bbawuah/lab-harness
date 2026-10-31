@@ -45,6 +45,8 @@
     "README.md",
     "assets/branding/PROVENANCE.json",
     "assets/branding/README.md",
+    "assets/branding/pixel-lb-dark.svg",
+    "assets/branding/pixel-lb-light.svg",
     "assets/branding/social-preview.html",
     "assets/branding/social-preview.png",
     "assets/branding/social-preview.svg",
@@ -90,6 +92,18 @@
     "docs/evidence/interactive-terminal.ansi",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
+    "docs/evidence/pixel-lb/README.md",
+    "docs/evidence/pixel-lb/audit.py",
+    "docs/evidence/pixel-lb/capture.json",
+    "docs/evidence/pixel-lb/compact.txt",
+    "docs/evidence/pixel-lb/dark.txt",
+    "docs/evidence/pixel-lb/fallback.txt",
+    "docs/evidence/pixel-lb/light.txt",
+    "docs/evidence/pixel-lb/prepare.py",
+    "docs/evidence/pixel-lb/render.py",
+    "docs/evidence/pixel-lb/split.txt",
+    "docs/evidence/pixel-lb/terminal-text.html",
+    "docs/evidence/pixel-lb/terminal-text.png",
     "docs/evidence/project-events.json",
     "docs/evidence/project-terminal.ansi",
     "docs/evidence/provider-design.html",
@@ -376,7 +390,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "a08c7a0c9215528aaf70cb900edb5e0d6f4a12d73a264b80d8a61de65fd927f6",
+      "sha256": "137042d022788a974dc9caa149c91b53931c9f9bc283709b008e24791d38cc18",
       "status": "added"
     },
     ".gitignore": {
@@ -388,15 +402,23 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "1d5b4f3cc41141062ba43a5f849575a3e5f84829ca95c8c8eb4f17fe6ad8ae7a",
+      "sha256": "50432471dcbd4f5e9f130ad581c92f8f988130774ad4c7aabc7afc669cb214c2",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
-      "sha256": "a5e2f223bff188aecdae9dca906b132cdb5143a4765ac9c5dbc2e825c553c182",
+      "sha256": "2b1bff6085c6868d3b5e3b4584c3e6a638a0569f572143225623ca8d19ff8018",
       "status": "added"
     },
     "assets/branding/README.md": {
-      "sha256": "e218984147c885ef854043ba659ba00972d4e27e0e4227e3768e462f76b2961a",
+      "sha256": "2c10494b4d9c4f89652600c82202bd94542358981937d755b7c2827bae8d5330",
+      "status": "added"
+    },
+    "assets/branding/pixel-lb-dark.svg": {
+      "sha256": "e3be28970afcbb66fc67b3f207ab868a9cc55fa5efc50905e304f5114eeca1e2",
+      "status": "added"
+    },
+    "assets/branding/pixel-lb-light.svg": {
+      "sha256": "7574b9bb30024b7acac6a44b5c52835c353086e4ffa54a58faf3096970a6d761",
       "status": "added"
     },
     "assets/branding/social-preview.html": {
@@ -457,7 +479,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "499878b3d273c4060edf107a8d8601916cdba8285e10bd1e2f417ef75bb462e1",
+      "sha256": "c70ef88afaadc2f607729dcd10a2704ce47911eacfe11fa7e1e57c366ee86dfb",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -469,7 +491,7 @@
       "status": "added"
     },
     "docs/ci.md": {
-      "sha256": "9eb07b76cb116910d662bc394534090a8dc1f52b2d6b32a758f93321696f912a",
+      "sha256": "ae534d2ff22ce8e13f67799c1d4f62775639bc8ab2814893e1623be1c1d4b9bf",
       "status": "added"
     },
     "docs/demos/README.md": {
@@ -578,6 +600,54 @@
     },
     "docs/evidence/pi-local-tool-events.jsonl": {
       "sha256": "c1923747ef6344e53e6106d754ca6a0b90ff96bc8d9094618123618920569aac",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/README.md": {
+      "sha256": "350efa524dd538909c5f4d80d7b2e984bcaa6ed4c5115586400ad3c71b09b309",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/audit.py": {
+      "sha256": "7d9f403b5c041f91cb2a3d17709297563f80b07eb55f29ab3c726f52b25aeec5",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/capture.json": {
+      "sha256": "c0115c3f67cf2cc2de1d141e6fc23ab8510d3ff41ada94206d7b3757f443374e",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/compact.txt": {
+      "sha256": "f6ab1ce8104d05a8c17bc36188ab89a67127e40c27d9b35aa197542f4263eb7d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/dark.txt": {
+      "sha256": "3069f555c73bc1ac75ac8170fe3d46364ff16b1104ffc6f2d4f4989b2a4b172d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/fallback.txt": {
+      "sha256": "8862ab453086ab3706249366b0e8b441eba33d4c3e9bc881147d095c40da7efe",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/light.txt": {
+      "sha256": "769f2559208f9759d6c8f21b3467dc2e74c0e0e9af7b0ccceaae500d68343fd5",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/prepare.py": {
+      "sha256": "23c3d1617b7b1dc16fd22d850dad32524a0d643e46fffe93b1497ecc9be24590",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/render.py": {
+      "sha256": "e6c4ea19bf51c35c85cb8fe3593c8d13e09da8a51c9a48e5aa04d86e51501bd0",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/split.txt": {
+      "sha256": "800d0171e6621d6ab590b236fbe6fa1cc2cac67da7581c479caf42da4033dc75",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/terminal-text.html": {
+      "sha256": "1128a0b3e73eddaf98eb4ff5343fb372da50148344c20e557fec5dffe4b3ed8d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/terminal-text.png": {
+      "sha256": "588469dbf25c668291028685ccf14e167a8189fcc12aee2a0607c047907b80ac",
       "status": "added"
     },
     "docs/evidence/project-events.json": {
@@ -697,7 +767,7 @@
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
-      "sha256": "05faf0ca35cebeaea9e1855efd091883147efdfa32bb30eb461d96fa82753e49",
+      "sha256": "03033cad034d0ef711b3cfbab8583abdf01ba84e5d04eccf978ee20f4108188e",
       "status": "added"
     },
     "docs/interactive-validation.md": {
@@ -797,7 +867,7 @@
       "status": "added"
     },
     "docs/pi-header.md": {
-      "sha256": "8fc58b852cc4b06a331168da437a035ca2d50d4557bf074ca73182410cda62ec",
+      "sha256": "5248deb66fd59a2792016ae62e7b7f66a6e56706db009a520141d3c7652cb9c1",
       "status": "added"
     },
     "docs/pi-runtime.md": {
@@ -1285,7 +1355,7 @@
       "status": "added"
     },
     "scripts/pi/derive-terminal-mark.ts": {
-      "sha256": "6bac4b0d48b836b97cf1d04b2e0ebbb37cf337911739baf0864c78eca060c2e5",
+      "sha256": "aeba094f777ce93b6f19a95bfeed923f55869060b86483181a01704e6828881c",
       "status": "added"
     },
     "scripts/pi/render-header.ts": {
@@ -1399,7 +1469,7 @@
       "status": "added"
     },
     "src/pi/header.ts": {
-      "sha256": "b1fb14217ddc76ab615aab5585a8a4a9986d20d505804cbe93ec5dc1be2e8f7f",
+      "sha256": "60ae08c41314761de5eadd9a37a984c05429a0845596a9b99bddc1fc6a5dd256",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
@@ -1407,7 +1477,7 @@
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
-      "sha256": "d85b2cafcc8e6184e953b09a9ce374b4c4524b8e87f2ef6e63058497e03baea4",
+      "sha256": "6d4f694a1bb26ee27be3c2209a35be4133214c375e98393b0470bd22822eee2d",
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
@@ -1561,7 +1631,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "84da764688794fef786cbf566899ce94cb4595ba49232dd73e409d30941829de",
+      "sha256": "a061ba34153b15e87239b1ae78715bbaaa341d3c6aaf17e1fe5f823ac53eabd6",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
@@ -1577,7 +1647,7 @@
       "status": "added"
     },
     "tests/pi-header.test.ts": {
-      "sha256": "a08500a5bf906214e23cc5a97c439d0fb539119d40451fa11167cf120de9d332",
+      "sha256": "314e0278550b54fda39be07e0d28626041a7088056ebc3528b8954709750222b",
       "status": "added"
     },
     "tests/pi-workspace-appearance.test.ts": {

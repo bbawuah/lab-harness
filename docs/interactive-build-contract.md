@@ -54,7 +54,7 @@ return commits and validation to the coordinator; do not merge or watch PRs.
 3. Coordinator owns all other files: shell bootstrap and launcher, CLI/package/
    lock/CI, search/skills existing APIs, architecture/docs/publication, integration
    and end-to-end evidence. Retain immutable Relay nine-file pin and original
-   provenance. Keep required jobs `check (ubuntu-24.04)` and `check (macos-14)`;
+   provenance. Keep required jobs `check (ubuntu-24.04)` and `check (macos-15)`;
    Python setup follows Bun/Relay checks because of loader guard environment.
 
 ## Evidence and timing

@@ -73,6 +73,11 @@ unqualified until directly exercised on their actual targets.
 
 ## Owner branding addition
 
+The current README and terminal header use the approved 24×32 monochrome pixel
+LB. Terminal cells are extracted exactly from the six pixel SVG paths; full
+cells use solid blocks so text captures preserve the silhouette. The original
+mesh assets below are retained as historical source geometry.
+
 The owner authorized the canonical terminal B with its four-spot mesh in neutral
 monochrome, as standalone light/dark SVGs and in the actual terminal UI. Exact
 geometry, open gutters and source-byte provenance are kept in `assets/branding`.
