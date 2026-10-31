@@ -1,0 +1,78 @@
+<!doctype html><meta charset="utf-8"><title>Actual LAB Relay exchange</title><style>body{margin:0;background:#111318;color:#e8e9ec;font-family:system-ui,sans-serif;padding:24px}h1{font-size:23px;margin:0 0 6px;font-weight:600}p{font-size:14px;color:#bdc1c9;margin:0 0 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.label{padding:12px 16px;background:#252830;font-size:15px;font-weight:600}.term{background:#090b0e;border:1px solid #343841;border-radius:7px;overflow:hidden}pre{margin:0;padding:10px 16px;font:13px/18px Menlo,Consolas,monospace;white-space:pre;overflow:hidden;height:720px;box-sizing:content-box}.note{font-size:12px;margin:12px 0 0;color:#a8aeb7}</style><h1>README review · two LAB sessions</h1><p>ACTUAL · Operator-driven native commands · zero model calls · Before · source846e7fbe</p><main class="grid"><section class="term"><div class="label">Session A · README check</div><pre> [relay-send]
+
+ {
+   &quot;id&quot;: &quot;945a44b3-c2c5-42a9-8c42-5fe5e331cb22&quot;,
+   &quot;state&quot;: &quot;stored&quot;,
+   &quot;duplicate&quot;: false,
+   &quot;createdAt&quot;: 1793341486080,
+   &quot;expiresAt&quot;: 1795933486080,
+   &quot;requestKey&quot;: &quot;readme-hi&quot;
+ }
+
+
+
+ [relay-inbox]
+
+ {
+   &quot;messages&quot;: [
+     {
+       &quot;version&quot;: 2,
+       &quot;id&quot;: &quot;efd65fd7-bc63-4b9a-8614-2cbae5abe0a4&quot;,
+       &quot;namespace&quot;:
+ &quot;lab-project-v1-312bb057b2d3ff80a10421f33fc2388df0339d1a46cc8d460b41ec2f2ff6823a&quot;,
+       &quot;from&quot;: &quot;pi-9a509e7b6b675bcedfc85c5aea73bbe890ea78c88d8598b11aaafcb16327dc1c&quot;,
+       &quot;to&quot;: &quot;pi-ec6a9cd346d201ed392ffce1cfc3608d932704ee5b5dafd4d2dae1992d95290d&quot;,
+       &quot;body&quot;: &quot;Hi! I’ll check the install steps and the first launch command.&quot;,
+       &quot;conversationId&quot;: &quot;dbb14826-3966-458d-9da8-c8cc3da5dd0f&quot;,
+       &quot;createdAt&quot;: 1793341487211
+     }
+   ],
+   &quot;unread&quot;: 1,
+   &quot;timedOut&quot;: false
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────
+$DEMO/...
+4.0%/8.2k (auto)                                            operator-demo-no-inference</pre></section><section class="term"><div class="label">Session B · Install check</div><pre> [relay-inbox]
+
+ {
+   &quot;messages&quot;: [
+     {
+       &quot;version&quot;: 2,
+       &quot;id&quot;: &quot;945a44b3-c2c5-42a9-8c42-5fe5e331cb22&quot;,
+       &quot;namespace&quot;:
+ &quot;lab-project-v1-312bb057b2d3ff80a10421f33fc2388df0339d1a46cc8d460b41ec2f2ff6823a&quot;,
+       &quot;from&quot;: &quot;pi-ec6a9cd346d201ed392ffce1cfc3608d932704ee5b5dafd4d2dae1992d95290d&quot;,
+       &quot;to&quot;: &quot;pi-9a509e7b6b675bcedfc85c5aea73bbe890ea78c88d8598b11aaafcb16327dc1c&quot;,
+       &quot;body&quot;: &quot;Hi, I’m checking the README. Can you check the install
+ instructions?&quot;,
+       &quot;conversationId&quot;: &quot;bac3ad55-c113-4454-b7c3-ddb0d54d255e&quot;,
+       &quot;createdAt&quot;: 1793341486080
+     }
+   ],
+   &quot;unread&quot;: 1,
+   &quot;timedOut&quot;: false
+ }
+
+
+
+ [relay-send]
+
+ {
+   &quot;id&quot;: &quot;efd65fd7-bc63-4b9a-8614-2cbae5abe0a4&quot;,
+   &quot;state&quot;: &quot;stored&quot;,
+   &quot;duplicate&quot;: false,
+   &quot;createdAt&quot;: 1793341487211,
+   &quot;expiresAt&quot;: 1795933487211,
+   &quot;requestKey&quot;: &quot;install-hi&quot;
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────
+$DEMO/...
+2.4%/8.2k (auto)                                            operator-demo-no-inference</pre></section></main><p class="note">Native Pi pane text replay; not an OS pixel capture. Full visible pane text retained; current-at-source metadata unchanged.</p>

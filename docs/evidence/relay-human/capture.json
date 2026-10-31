@@ -1,0 +1,102 @@
+{
+  "label": "Actual native Pi/Herdr sessions; operator-driven, not model collaboration",
+  "before": {
+    "sourceSHA": "846e7fbe79f2c6aa7addfa00ad0ad3b2586091ad",
+    "files": {
+      "before-A.txt": "0c0c1ce16258a708fb6ab5434cf7708b3c04aaa033dc1a5f79f8a14e176067a0",
+      "before-A.ansi": "b29b32415bfa629adfdbb649a64f68e209ba49b86cca6806b2b68ac5684fa581",
+      "before-B.txt": "f539e9353179be7e2cf2e1941f68fec60df445636c63352b779e30f8d3011243",
+      "before-B.ansi": "eacf6b2ff3322406208b261dee9f6e5ff3b01f7d9df2e3fc3016bc540ea770e5"
+    }
+  },
+  "after": {
+    "sourceSHA": "436982ec79ac362d2ff7c4f19242d6c795441055",
+    "files": {
+      "after-A.txt": "a0365064758c4b03dd1e50d4f852e483ad9056ae0b3b50fae6e495353d67f59c",
+      "after-A.ansi": "c8a94be0e3e3aecdf8f6674d042d065d888c82655a3b22e19b99cfdc39f29db8",
+      "after-B.txt": "f718021c73887d9b422e5c49e90d959ce54a3a5cd836bdd6ed0b3698af9e31f3",
+      "after-B.ansi": "30198f4146a200d548a40a7bd82876491fb468ca3842c6b7aa3150996780dde3",
+      "expanded-A.txt": "0eafe3adf36c9f8c73f8e2c91bc3029ac15f70282f2d436ff23bc36f8d96b09a",
+      "expanded-B.txt": "eb8f0ad32839d988d3e087f821791fa8ca440466adeceb98a224a5394769a8b3"
+    }
+  },
+  "environment": "Darwin arm64; Bun1.4.2, Pi1.4.0 release4a080252, Herdr0.9.5 release2ecf19a",
+  "sanitization": "Only owned temporary/checkout/home paths and machine title aliased. Message/peer IDs remain in raw/full text and expanded details. Cropped after images remove only header/empty margins; collapsed metadata is hidden by the actual application, not the capture.",
+  "rendering": "Browser screenshots of actual native pane text replay; fonts/colors/frame editorial. Not OS pixel captures. GIF is a sequence of snapshots, not continuous terminal recording.",
+  "operatorDriven": true,
+  "actualModelCalls": 0,
+  "providerRequests": 0,
+  "nativeExpansion": true,
+  "cleanup": [
+    {
+      "session": "A",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "session": "B",
+      "exit": 0,
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    }
+  ],
+  "driverSHA256": "2a74a8dc7a2db6059728b1f6a4190a76cbb5b743c56381dbac7661e2626bbd5b",
+  "originalRawHashes": [
+    {
+      "session": "A",
+      "originalSHA256": "6a28a50f5c9d1a85ae1471bb42bf354bd790b923c067a416c7d011bac0d03ec6",
+      "sanitizedSHA256": "8a0cc9a7a4bfe4230d051a7537dd42723209b9b3306e76432b0482f953e2e1a6"
+    },
+    {
+      "session": "B",
+      "originalSHA256": "1badcf0cde3c12b1bfdb2d08aa2695117a0596117a40764e500e7806750654f2",
+      "sanitizedSHA256": "caf2f0f519905023c345ad2fa777654d5a70e172095246bda04b8872e467c91c"
+    }
+  ],
+  "screenshots": {
+    "before.png": "before.html",
+    "after.png": "after.html"
+  },
+  "artifacts": {
+    "before-A.txt": "0c0c1ce16258a708fb6ab5434cf7708b3c04aaa033dc1a5f79f8a14e176067a0",
+    "before-B.txt": "f539e9353179be7e2cf2e1941f68fec60df445636c63352b779e30f8d3011243",
+    "after-A.txt": "a0365064758c4b03dd1e50d4f852e483ad9056ae0b3b50fae6e495353d67f59c",
+    "after-B.txt": "f718021c73887d9b422e5c49e90d959ce54a3a5cd836bdd6ed0b3698af9e31f3",
+    "expanded-A.txt": "0eafe3adf36c9f8c73f8e2c91bc3029ac15f70282f2d436ff23bc36f8d96b09a",
+    "expanded-B.txt": "eb8f0ad32839d988d3e087f821791fa8ca440466adeceb98a224a5394769a8b3",
+    "before-A.ansi": "b29b32415bfa629adfdbb649a64f68e209ba49b86cca6806b2b68ac5684fa581",
+    "before-B.ansi": "eacf6b2ff3322406208b261dee9f6e5ff3b01f7d9df2e3fc3016bc540ea770e5",
+    "after-A.ansi": "c8a94be0e3e3aecdf8f6674d042d065d888c82655a3b22e19b99cfdc39f29db8",
+    "after-B.ansi": "30198f4146a200d548a40a7bd82876491fb468ca3842c6b7aa3150996780dde3",
+    "before.html": "dff4b6bb0f2565d0091acf464de337926c7ad98990b537b9935db956a3d1d6e8",
+    "after.html": "17e44b0e6b87d8f1529ddb23867ab7fa85f5170f20fd216e707cad290f74e161",
+    "before.png": "23e799287dab36856ec35920b4044fa3dc569e776b3fd018ca03334fb845367f",
+    "after.png": "ed38baaf5be0dfd8be235aaaf47e643adfb506933b1f9fee923d309d68256306",
+    "exchange.gif": "186cac1a1405d7f1cadc4bebbf0e15f494ee24025db6fd9afe95debbf6fb6675"
+  },
+  "animation": {
+    "file": "exchange.gif",
+    "durationSeconds": 11,
+    "phases": [
+      "before: 2s",
+      "request: 2s",
+      "reply: 3s",
+      "finding: 4s"
+    ],
+    "type": "actual native-text snapshot sequence; not continuous OS recording"
+  },
+  "validation": {
+    "runtimeReview": "round4 no blocking findings at436982ec79ac362d2ff7c4f19242d6c795441055",
+    "nativeRelayCapture": "PASS, twoactualsessions, samegreeting/READMEtask, nativeCtrlO, 0HTTP, allcleanup",
+    "localFullGate": "23501fa:284pass1skip0fail.436982e:284pass1skip1fail; existing actualappearance finalrepairreload10s completionwait. Cause remains unknown; no observer/native distinction established. RequiredCI436 both pass, reported byroot. No timeout/skip alteration."
+  }
+}

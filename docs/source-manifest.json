@@ -95,6 +95,23 @@
     "docs/evidence/provider-design.html",
     "docs/evidence/provider-design.json",
     "docs/evidence/provider-design.png",
+    "docs/evidence/relay-human/README.md",
+    "docs/evidence/relay-human/after-A.ansi",
+    "docs/evidence/relay-human/after-A.txt",
+    "docs/evidence/relay-human/after-B.ansi",
+    "docs/evidence/relay-human/after-B.txt",
+    "docs/evidence/relay-human/after.html",
+    "docs/evidence/relay-human/after.png",
+    "docs/evidence/relay-human/before-A.ansi",
+    "docs/evidence/relay-human/before-A.txt",
+    "docs/evidence/relay-human/before-B.ansi",
+    "docs/evidence/relay-human/before-B.txt",
+    "docs/evidence/relay-human/before.html",
+    "docs/evidence/relay-human/before.png",
+    "docs/evidence/relay-human/capture.json",
+    "docs/evidence/relay-human/exchange.gif",
+    "docs/evidence/relay-human/expanded-A.txt",
+    "docs/evidence/relay-human/expanded-B.txt",
     "docs/evidence/relay-model-tool-events.jsonl",
     "docs/evidence/relay-recipient-screen.txt",
     "docs/evidence/relay-sender-screen.txt",
@@ -150,6 +167,7 @@
     "docs/pi-workspace.md",
     "docs/publication-plan.md",
     "docs/publication-status.md",
+    "docs/relay-human-messages-contract.md",
     "docs/relay-workspace-contract.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
@@ -229,6 +247,7 @@
     "src/pi/commands.ts",
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
+    "src/pi/relay-presentation.ts",
     "src/pi/terminal-mark.json",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
@@ -283,6 +302,7 @@
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
     "tests/relay-pi-actual.test.ts",
+    "tests/relay-presentation.test.ts",
     "tests/relay-workspace.test.ts",
     "tests/relay.test.ts",
     "tests/review-regressions.test.ts",
@@ -321,7 +341,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "1d5b4f3cc41141062ba43a5f849575a3e5f84829ca95c8c8eb4f17fe6ad8ae7a",
+      "sha256": "df60a8c0f860f93c92055f94c05b7231da826ba689586eac54b7ebbd9ea08c85",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -353,7 +373,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "1ad36b5f5dc516fe045e6a3c305e5a225ad68a144d92e1d8ac7dafddd1398055",
+      "sha256": "0a87b0b5136d8b9bf513f3d442f2a5131c0b52fa193071c43a86c886ca1685ba",
       "status": "added"
     },
     "bun.lock": {
@@ -531,6 +551,74 @@
     },
     "docs/evidence/provider-design.png": {
       "sha256": "153f37caaa94b2b7264c8ec0aab8b1d1b4e47a79e3d2edaeed806ef75f8e63b7",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/README.md": {
+      "sha256": "46471e1ea8af23a8e6323de284e2c43d4bd1590ce4d04e5c9449ccbd13276254",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-A.ansi": {
+      "sha256": "c8a94be0e3e3aecdf8f6674d042d065d888c82655a3b22e19b99cfdc39f29db8",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-A.txt": {
+      "sha256": "a0365064758c4b03dd1e50d4f852e483ad9056ae0b3b50fae6e495353d67f59c",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-B.ansi": {
+      "sha256": "30198f4146a200d548a40a7bd82876491fb468ca3842c6b7aa3150996780dde3",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after-B.txt": {
+      "sha256": "f718021c73887d9b422e5c49e90d959ce54a3a5cd836bdd6ed0b3698af9e31f3",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after.html": {
+      "sha256": "17e44b0e6b87d8f1529ddb23867ab7fa85f5170f20fd216e707cad290f74e161",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/after.png": {
+      "sha256": "ed38baaf5be0dfd8be235aaaf47e643adfb506933b1f9fee923d309d68256306",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-A.ansi": {
+      "sha256": "b29b32415bfa629adfdbb649a64f68e209ba49b86cca6806b2b68ac5684fa581",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-A.txt": {
+      "sha256": "0c0c1ce16258a708fb6ab5434cf7708b3c04aaa033dc1a5f79f8a14e176067a0",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-B.ansi": {
+      "sha256": "eacf6b2ff3322406208b261dee9f6e5ff3b01f7d9df2e3fc3016bc540ea770e5",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before-B.txt": {
+      "sha256": "f539e9353179be7e2cf2e1941f68fec60df445636c63352b779e30f8d3011243",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before.html": {
+      "sha256": "dff4b6bb0f2565d0091acf464de337926c7ad98990b537b9935db956a3d1d6e8",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/before.png": {
+      "sha256": "23e799287dab36856ec35920b4044fa3dc569e776b3fd018ca03334fb845367f",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/capture.json": {
+      "sha256": "d293b2394520dd790db759353776d37526ad7930348c4497d36cd93d8e59963c",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/exchange.gif": {
+      "sha256": "186cac1a1405d7f1cadc4bebbf0e15f494ee24025db6fd9afe95debbf6fb6675",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/expanded-A.txt": {
+      "sha256": "0eafe3adf36c9f8c73f8e2c91bc3029ac15f70282f2d436ff23bc36f8d96b09a",
+      "status": "added"
+    },
+    "docs/evidence/relay-human/expanded-B.txt": {
+      "sha256": "eb8f0ad32839d988d3e087f821791fa8ca440466adeceb98a224a5394769a8b3",
       "status": "added"
     },
     "docs/evidence/relay-model-tool-events.jsonl": {
@@ -753,6 +841,10 @@
       "sha256": "1000e531e5034818fe75f03cd5469d162ab39898cdfcfd6ce55881f0a4d353b2",
       "status": "added"
     },
+    "docs/relay-human-messages-contract.md": {
+      "sha256": "40f9f22701bf2a1f18425499095ebbbbf55d95965fe7f8813e1461f460d21262",
+      "status": "added"
+    },
     "docs/relay-workspace-contract.md": {
       "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
       "status": "added"
@@ -898,7 +990,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "f9b568fd6ebf56e9be7acf53679a02ba86515c88c3d42010fb63a8bc20cbca90",
+      "sha256": "beaa890e5aa47a74efe69ef6ec457d6ab8762475aa595871cf5eba81b9fd012e",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1060,7 +1152,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "027369eee49b06e686d7093b683122f967b8abc6fe39521230c9addb2bc2fa80",
+      "sha256": "e501fd69fbf1f0de9e2ea2aec33fe2c049fa2b508fc016aceacee611d145a334",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -1068,7 +1160,11 @@
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
+      "sha256": "8bde96d5b6c8330c6d84a03f064eb6d5b0d412f9dc7d54f6c2ab4cc3cbfa5926",
+      "status": "added"
+    },
+    "src/pi/relay-presentation.ts": {
+      "sha256": "bb0af70a79a4562383eecc29b58190d219612d7f2b8d3000bbb88c27d960819d",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1088,7 +1184,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "7fa5dbc4a2c4c797b8f1886154b563cdf8ab0fad2cf2dc16475d975ef3071b58",
+      "sha256": "3b41405b078d4563d83c4acc537572fd377ebfc968eab68ed1b9904159f37e98",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -1226,7 +1322,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "84da764688794fef786cbf566899ce94cb4595ba49232dd73e409d30941829de",
+      "sha256": "5b15320a2c08563096db41d9f04769d2b4a4ac248fc47ab2b4bf307da5e91898",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
@@ -1254,7 +1350,7 @@
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
-      "sha256": "a6a8fc7c42562dbac34b05bc4ad15b987d051b46f5be81701f69ed80a4a4a8b5",
+      "sha256": "1f63d31d791888cd1bbb335403fdf63b9bb23475c085fcf84a6451aa1c72c87a",
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
@@ -1267,7 +1363,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "8d5e654aa3ee5dbc5e5c7cf093cdde7866c867f91d9623a4ec3f5abe2b8aa59e",
+      "sha256": "7489f50e8905eca2ddb9736ca5d4417e99e07fa723bde460b203ea3db0191431",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -1283,7 +1379,7 @@
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
-      "sha256": "f7b5238901ed9c5ddcb343e114ce98a40ddfac8128e567347ccd236a726355ae",
+      "sha256": "45c3dd55efb8ce68c09fc23526ac6d7270d72e4950630022626f200d8b010b0c",
       "status": "added"
     },
     "tests/relay-loader-env-child.ts": {
@@ -1295,7 +1391,11 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "4c6eeb775dcbf421bfe0d326c4907e0f7328d6c8f3ec57c5b6bd3eed4a455be8",
+      "sha256": "ad6d7a18119e6d006946ee3c6a318761c13bfcf1dad2f71f35e4da2f1ea1004b",
+      "status": "added"
+    },
+    "tests/relay-presentation.test.ts": {
+      "sha256": "cb566446950cad5bf52825a7c7ac9690c4256317f9ca1b255b59003a68a4c207",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
@@ -1325,7 +1425,7 @@
       "status": "added"
     },
     "tests/workspace-help.test.ts": {
-      "sha256": "80791b7f5c07e7424346f00637c9b62114bf3740eecebfa642bc8a4d733b0afb",
+      "sha256": "c084089344e064a5b97334ed8d82055ce38be29ea53a1c8620f4eefa7abda55e",
       "status": "added"
     },
     "tests/workspace.test.ts": {

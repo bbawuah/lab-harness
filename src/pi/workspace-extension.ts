@@ -12,11 +12,17 @@ import { installRelayExtension, type RelayBridgeRequest } from "./relay-extensio
 type SourceRequest = { action: "search" | "files" | "skills" | "load"; query?: string };
 type Request = SourceRequest | RelayBridgeRequest | AppearanceRequest;
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
+export type WorkspaceComponent = { render(width: number): string[]; invalidate(): void };
+export type WorkspaceToolRenderContext = { args: Record<string, unknown>; expanded: boolean; isError: boolean; executionStarted: boolean; isPartial: boolean };
 export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
-  registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
+  registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult>;
+    renderCall?(args: Record<string, unknown>, theme: unknown, ctx: WorkspaceToolRenderContext): WorkspaceComponent;
+    renderResult?(result: ToolResult, options: { expanded: boolean; isPartial: boolean }, theme: unknown, ctx: WorkspaceToolRenderContext): WorkspaceComponent;
+  }): void;
   registerCommand(name: string, options: { description: string; handler(args: string, ctx: WorkspaceContext): Promise<void> }): void;
+  registerMessageRenderer(type: string, renderer: (message: { content: unknown; details?: unknown }, options: { expanded: boolean; outputPad: number }, theme: unknown) => WorkspaceComponent): void;
   sendMessage(message: { customType: string; content: string; display: boolean; details?: unknown }, options?: { triggerTurn?: boolean; deliverAs?: "steer" | "followUp" | "nextTurn" }): void;
 };
 const extensionPath = fileURLToPath(import.meta.url);

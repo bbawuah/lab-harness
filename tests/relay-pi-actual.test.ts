@@ -8,6 +8,7 @@ import { bindProjectRoot } from "../src/project.ts";
 import { provisionWorkspaceRelayRun } from "../src/relay/workspace.ts";
 import { createMessageStore } from "../vendor/relay/src/storage/store.ts";
 import { request } from "../src/herdr/protocol.ts";
+import { TerminalScreen } from "../docs/evidence/fullscreen/fixtures/screen.ts";
 
 const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
@@ -165,7 +166,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
   writeFileSync(join(state, "route.json"), JSON.stringify({ version: 1, kind: "local", endpoint, model: "fixture-relay" }), { mode: 0o600 });
   writeFileSync(join(state, "key"), "", { mode: 0o600 });
   const env = { HOME: home, PATH: "/usr/bin:/bin", TERM: "xterm-256color", LANG: "en_US.UTF-8" };
-  const actors: { child: ReturnType<typeof Bun.spawn>; raw: string; peer?: Peer; socket?: string }[] = [];
+  const actors: { child: ReturnType<typeof Bun.spawn>; raw: string; view: TerminalScreen; peer?: Peer; socket?: string }[] = [];
   let store: ReturnType<typeof createMessageStore> | undefined;
   let control: Database | undefined;
   let namespace = "", busRoot = "";
@@ -195,9 +196,9 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
   async function start() {
     const startDeadline = Date.now() + 20000;
     const known = new Set((await rows(startDeadline)).map(peer => peer.peer_id));
-    const actor = { child: undefined as any, raw: "", peer: undefined as Peer | undefined, socket: undefined as string | undefined };
+    const actor = { child: undefined as any, raw: "", view: new TerminalScreen(160, 60), peer: undefined as Peer | undefined, socket: undefined as string | undefined };
     actor.child = Bun.spawn([join(source, "lab"), "--offline"], { cwd: project, env, terminal: { cols: 160, rows: 60, data(terminal, bytes) {
-      const text = new TextDecoder().decode(bytes); actor.raw += text;
+      const text = new TextDecoder().decode(bytes); actor.raw += text; actor.view.write(text);
       if (text.includes("\x1b[6n")) terminal.write("\x1b[1;1R");
       if (text.includes("\x1b]11;?")) terminal.write("\x1b]11;rgb:1111/1111/1111\x1b\\");
     } } });
@@ -206,7 +207,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     await wait(async deadline => {
       if (!trusted && actor.raw.includes("Trust project folder?")) { trusted = true; actor.child.terminal!.write("\r"); }
       actor.peer = (await rows(deadline)).find(peer => peer.phase === "active" && !known.has(peer.peer_id));
-      return !!actor.peer && actor.raw.includes(actor.peer.name);
+      return !!actor.peer && actor.view.snapshot().lines.join("\n").includes(actor.peer.peer_id.slice(-6));
     }, "native peer registration and client rendering", Math.max(0, startDeadline - Date.now()));
     const pids: number[] = [];
     function children(pid: number) {
@@ -250,14 +251,24 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     expect(a.peer!.peer_id).not.toBe(b.peer!.peer_id);
     store = createMessageStore({ path: join(busRoot, "messages.sqlite") });
     namespace = store.listPeers((control!.query("SELECT namespace FROM sessions LIMIT 1").get() as { namespace: string }).namespace)[0]!.namespace;
-    await paste(a, "/relay-peers"); await visible(a, b.peer!.name);
+    await paste(a, "/relay-peers"); await visible(a, b.peer!.peer_id.slice(-6));
     await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A");
     await wait(() => store!.unread(namespace, b.peer!.peer_id) === 1, "durable send");
     const message = store.read(namespace, b.peer!.peer_id, 10)[0]!;
     expect(message.body).toBe("Explicit mail from A");
-    await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, '"duplicate": true');
+    await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, "Already stored; no duplicate created");
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
     await paste(b, "/relay-inbox"); await visible(b, "Explicit mail from A");
+    const collapsedInbox = await screen(b);
+    expect(collapsedInbox).toContain("Received from");
+    expect(collapsedInbox).not.toContain(message.id);
+    expect(collapsedInbox).not.toContain(message.from);
+    // The exact pinned Pi app.tools.expand shortcut expands custom messages as
+    // well as model tools. Preserve full metadata behind the native control.
+    b.child.terminal!.write("\x0f"); await visible(b, message.id);
+    expect(await screen(b)).toContain("Details (request and result)");
+    b.child.terminal!.write("\x0f");
+    await wait(async () => !(await screen(b)).includes(message.id), "native Relay details collapse");
     await paste(b, "/relay-inbox"); await visible(b, "Explicit mail from A");
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
     await paste(a, "/relay-ack " + message.id); await visible(a, "RELAY_CONFLICT");
@@ -275,8 +286,8 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     await wait(async deadline => (await rows(deadline)).some(peer => peer.peer_id === b.peer!.peer_id && peer.generation === oldGeneration + 1 && peer.phase === "active"), "native reload reconnect");
     // The ready notification is transient. A fresh successful inbox command
     // proves the reloaded handler can use the renewed binding.
-    await paste(b, "/relay-inbox"); await visible(b, '"messages": []');
-    await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, '"duplicate": true');
+    await paste(b, "/relay-inbox"); await visible(b, "Inbox empty");
+    await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, "Already stored; no duplicate created");
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(0);
     const lease = (await rows()).find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until;
     await wait(async deadline => (await rows(deadline)).find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until > lease, "host-only heartbeat", 18000);

@@ -190,7 +190,11 @@ configure. In each TUI:
 /relay-peers
 ~~~
 
-Copy the other session's displayed peer ID or alias. Send from session A:
+Relay shows compact session labels and message text. These labels are visual
+identifiers, not new routing aliases or assigned task roles. Use Pi's native
+tool-output expansion (default **Ctrl+O**; `/hotkeys` shows remaps) to inspect
+details and copy the other session's full peer ID or existing directory alias.
+Send from session A:
 
 ~~~text
 /relay-send OTHER_PEER intro-1 Hello from session A
@@ -207,14 +211,20 @@ In session B, read:
 /relay-inbox
 ~~~
 
-Reading again returns the same unacknowledged message. After handling it:
+Reading again returns the same unacknowledged message.
+The row says **Received from** only after an inbox fetch. Expand its details to
+copy the message ID; receipt, conversation and request-key metadata stay out of
+the collapsed view. Long messages show a bounded preview and an expansion hint.
+Terminal control sequences in messages are displayed as escaped text.
+
+After handling the message:
 
 ~~~text
 /relay-ack MESSAGE_ID
 /relay-send FIRST_PEER reply-1 --reply-to MESSAGE_ID Reply from B
 ~~~
 
-Replace the displayed IDs. A foreign inbox cannot be acknowledged. Reply
+Replace the IDs copied from expanded details. A foreign inbox cannot be acknowledged. Reply
 references preserve the conversation between those peers. Ack is message
 acknowledgement; it never completes or accepts a LAB task.
 

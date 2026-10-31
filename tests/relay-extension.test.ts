@@ -4,9 +4,9 @@ import type { WorkspaceContext, WorkspaceExtensionAPI } from "../src/pi/workspac
 
 function host(bridge?: (request: RelayBridgeRequest, signal?: AbortSignal) => Promise<unknown>) {
   const events = new Map<string, ((event: unknown, ctx: WorkspaceContext) => void | Promise<void>)[]>();
-  const tools = new Map<string, any>(), commands = new Map<string, any>(), messages: unknown[] = [], messageOptions: unknown[] = [], notices: string[] = [], calls: RelayBridgeRequest[] = [];
+  const tools = new Map<string, any>(), commands = new Map<string, any>(), renderers = new Map<string, any>(), messages: any[] = [], messageOptions: unknown[] = [], notices: string[] = [], calls: RelayBridgeRequest[] = [];
   let shutdowns = 0;
-  const api: WorkspaceExtensionAPI = { on(name, handler) { events.set(name, [...events.get(name) ?? [], handler]); }, registerTool(tool) { tools.set(tool.name, tool); }, registerCommand(name, command) { commands.set(name, command); }, sendMessage(message, options) { messages.push(message); messageOptions.push(options); } };
+  const api: WorkspaceExtensionAPI = { on(name, handler) { events.set(name, [...events.get(name) ?? [], handler]); }, registerTool(tool) { tools.set(tool.name, tool); }, registerCommand(name, command) { commands.set(name, command); }, registerMessageRenderer(type, renderer) { renderers.set(type, renderer); }, sendMessage(message, options) { messages.push(message); messageOptions.push(options); } };
   installRelayExtension(api, async (request, signal) => {
     calls.push(request);
     if (bridge) return bridge(request, signal);
@@ -14,7 +14,7 @@ function host(bridge?: (request: RelayBridgeRequest, signal?: AbortSignal) => Pr
   });
   const ctx = (id: string): WorkspaceContext => ({ mode: "tui", sessionManager: { getSessionId: () => id }, shutdown() { shutdowns++; }, ui: { setHeader() {}, notify(message) { notices.push(message); } } });
   const event = async (name: string, context: WorkspaceContext) => { for (const handler of events.get(name) ?? []) await handler({}, context); };
-  return { tools, commands, messages, messageOptions, notices, calls, ctx, event, shutdowns: () => shutdowns };
+  return { tools, commands, renderers, messages, messageOptions, notices, calls, ctx, event, shutdowns: () => shutdowns };
 }
 
 test("every Relay operator result is explicitly nontriggering, including delivery during a stream", async () => {
@@ -23,6 +23,56 @@ test("every Relay operator result is explicitly nontriggering, including deliver
   for (const [action, args] of [["peers", ""], ["send", "peer-B key-1 explicit body"], ["inbox", "0"], ["ack", "message-1"]]) await h.commands.get("relay-" + action).handler(args, ctx);
   expect(h.messages).toHaveLength(4);
   expect(h.messageOptions).toEqual(Array.from({ length: 4 }, () => ({ triggerTurn: false })));
+  await h.event("session_shutdown", ctx);
+});
+
+test("native tool and slash renderers hide metadata without changing model data or making bridge calls", async () => {
+  const peer = { id: "pi-" + "b".repeat(64), name: "readme-review/native-uuid-b", presence: "online", self: false };
+  const receipt = Object.freeze({ id: "original-message-id", state: "stored", duplicate: false, requestKey: "original-request-key", createdAt: 12, expiresAt: 34 });
+  const h = host(async request => request.action === "relay-bind" ? { peerId: "pi-" + "a".repeat(64), name: "readme-review/native-uuid-a" }
+    : request.action === "relay" && request.request.action === "peers" ? { peers: [peer], total: 1 } : receipt), ctx = h.ctx("native-original");
+  await h.event("session_start", ctx);
+  expect(h.notices[0]).toContain("Relay ready"); expect(h.notices[0]).not.toContain("native-uuid"); expect(h.notices[0]).not.toContain("pi-");
+  await h.tools.get("relay_peers").execute("catalog", {}, undefined, undefined, ctx);
+  const args = { to: peer.id, body: "hello\n\x1b[31mnot terminal control", requestKey: "original-request-key" };
+  const tool = h.tools.get("relay_send"), result = await tool.execute("send", args, undefined, undefined, ctx);
+  expect(result).toEqual({ content: [{ type: "text", text: JSON.stringify(receipt) }], details: receipt }); expect(result.details).toBe(receipt);
+  const before = JSON.stringify(result), calls = h.calls.length, context = { args, expanded: false, isError: false, executionStarted: true, isPartial: false };
+  const collapsed = tool.renderResult(result, { expanded: false, isPartial: false }, {}, context).render(90).join("\n");
+  expect(collapsed).toContain("Sent to readme-review bbbbbb (stored)"); expect(collapsed).toContain("hello"); expect(collapsed).toContain("\\x1b"); expect(collapsed).not.toContain("\x1b");
+  for (const hidden of [receipt.id, receipt.requestKey, peer.id, "createdAt"]) expect(collapsed).not.toContain(hidden);
+  const expanded = tool.renderResult(result, { expanded: true, isPartial: false }, {}, context).render(90).join("\n");
+  for (const detail of [receipt.id, receipt.requestKey, peer.id, "createdAt"]) expect(expanded).toContain(detail);
+  expect(JSON.stringify(result)).toBe(before); expect(h.calls).toHaveLength(calls);
+  await h.commands.get("relay-send").handler(peer.id + " original-request-key hello", ctx);
+  const message = h.messages.at(-1);
+  expect(message.content).toBe(JSON.stringify(receipt, null, 2)); expect(message.details.result).toBe(receipt);
+  const slash = h.renderers.get("relay-send");
+  expect(slash(message, { expanded: false }, {}).render(90).join("\n")).not.toContain(receipt.id);
+  expect(slash(message, { expanded: true }, {}).render(90).join("\n")).toContain(receipt.id);
+  expect(h.messageOptions.at(-1)).toEqual({ triggerTurn: false });
+  const badLegacy = slash({ content: "\x1b]52;private\x07" }, { expanded: false }, {}).render(20).join("\n");
+  expect(badLegacy).not.toContain("\x1b"); expect(badLegacy).not.toContain("private");
+  await h.event("session_shutdown", ctx);
+});
+
+test("failed native tools retain exceptions; their presentation never forwards arbitrary provider or control text", async () => {
+  const failure = new Error("RELAY_CONFLICT"), h = host(async request => { if (request.action === "relay-bind") return { peerId: "owned-peer", name: "project/native" }; throw failure; }), ctx = h.ctx("error");
+  await h.event("session_start", ctx);
+  const tool = h.tools.get("relay_send");
+  await expect(tool.execute("failed", { to: "peer", body: "hello", requestKey: "k" }, undefined, undefined, ctx)).rejects.toBe(failure);
+  const view = tool.renderResult({ content: [{ type: "text", text: "\x1b]52;private\x07" }], details: undefined }, { expanded: false }, {}, { args: {}, isError: true }).render(90).join("\n");
+  expect(view).toContain("Send failed"); expect(view).toContain("may have stored"); expect(view).not.toContain("private"); expect(view).not.toContain("\x1b");
+  await h.commands.get("relay-ack").handler("", ctx);
+  const notice = h.notices.at(-1)!;
+  expect(notice).toContain("Ack failed"); expect(notice).toContain("Use /relay-ack");
+  expect(notice).not.toContain("Ctrl+O"); expect(notice).not.toContain("Details:");
+  const renderedError = (text: string) => tool.renderResult({ content: [{ type: "text", text }], details: undefined }, { expanded: false }, {}, { args: {}, isError: true }).render(100).join("\n");
+  expect(renderedError("Operation aborted")).toContain("Send cancelled");
+  expect(renderedError("Operation aborted")).toContain("may have stored");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).toContain("LAB_BRIDGE_INPUT_LIMIT");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).toContain("rejected before execution");
+  expect(renderedError("LAB_BRIDGE_INPUT_LIMIT")).not.toContain("may have stored");
   await h.event("session_shutdown", ctx);
 });
 

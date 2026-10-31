@@ -138,7 +138,12 @@ on the same project, use /relay-peers, then
 /relay-send PEER REQUEST_KEY MESSAGE and /relay-inbox. Reading never acknowledges;
 /relay-ack MESSAGE_ID is explicit. Tool-capable models receive the same
 relay_peers/send/inbox/ack tools; operator commands provide a fallback. Messages
-do not wake models or accept tasks. [Two-session workflow](docs/user-guide.md#message-another-workspace-session).
+do not wake models or accept tasks. Relay rows show who sent or fetched each
+message; native expansion (default Ctrl+O) reveals full IDs and receipts.
+Stored is not delivered, and fetched is not acknowledged.
+[Two-session workflow](docs/user-guide.md#message-another-workspace-session).
+[Actual before/after Relay exchange](docs/evidence/relay-human/README.md) shows the
+same operator-driven README/install check, with expandable native details.
 
 This is a **native Pi coding workspace**. Controlled LAB ledger-task execution
 remains unavailable; terminal output never accepts a LAB task. Native shell and
