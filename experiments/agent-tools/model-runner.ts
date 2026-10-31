@@ -12,6 +12,7 @@ import { provisionWorkspaceRelayRun,openBoundWorkspaceRelay } from '../../src/re
 import { Database } from 'bun:sqlite';
 import { observeFixture } from './fixture-observation.ts';
 import { loadBaseline } from './continuation.ts';
+import { summarizeBudget } from './budget-report.ts';
 import { modelsForRoute } from '../../src/pi/workspace-config.ts';
 const root=resolve(import.meta.dir,'../..'),cache=join(root,'.tmp/agent-tools');
 const mode=process.argv[2];
@@ -59,8 +60,7 @@ try {
  status.piExit=await runHerdrInteractive({executable:herdr,command,cwd:project,stateRoot:join(run,'herdr'),environment,exitFile});
  const rows=readFileSync(events,'utf8').trim().split('\n').filter(Boolean).map(x=>JSON.parse(x));
  status.events=rows;status.piVersion=pi.version;
- const usage=rows.filter(x=>x.kind==='usage').at(-1)?.data;
- status.budget={baseline,attempt:usage?.attempt??(mode==='--probe'?{requests:0,inputTokens:0,outputTokens:0}:null),cumulative:usage?.cumulative??(mode==='--probe'?baseline:null),usageComplete:mode==='--probe'||(usage?.complete===true&&rows.filter(x=>x.kind==='request_admitted').length===rows.filter(x=>x.kind==='usage').length)};
+ status.budget=summarizeBudget(baseline,rows,mode==='--probe');
  if(mode==='--probe'){
   if(status.piExit!==78||sinkRequests!==0||!rows.some(x=>x.kind==='probe_pre_request')||!rows.some(x=>x.kind==='session_start'&&x.data.relayHealthy))throw new Error('PROBE_NOT_PROVEN');
   status.probeZeroHTTP=true;

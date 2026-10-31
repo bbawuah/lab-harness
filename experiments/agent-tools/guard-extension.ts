@@ -42,11 +42,12 @@ export default function guard(pi:API) {
  pi.on('tool_execution_end',event=>record('tool_end',{tool:event.toolName,isError:event.isError===true}));
  pi.on('message_end',event=>{
    if(event.message?.role!=='assistant')return;
+   const before=budget.usageReports;
    try{
     budget.observe(event.message.usage);
     record('usage',{attempt:budget.attempt,cumulative:budget.cumulative,usageReports:budget.usageReports,complete:!budget.pendingUsage});
     // Text only, bounded; no provider headers, raw response payload or credentials.
     record('assistant',{stopReason:event.message.stopReason,text:(event.message.content??[]).filter((x:any)=>x.type==='text').map((x:any)=>x.text).join('\n').slice(0,4000)});
-   }catch{return stop('USAGE_MISSING_OR_OVER_BUDGET');}
+   }catch{record('usage_refused',{observationRecorded:budget.usageReports>before,attempt:budget.attempt,cumulative:budget.cumulative,usageReports:budget.usageReports});return stop('USAGE_MISSING_OR_OVER_BUDGET');}
  });
 }

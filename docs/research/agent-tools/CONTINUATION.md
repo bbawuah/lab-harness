@@ -16,7 +16,7 @@ The original cumulative ceilings remain **10 requests / 20,000 observed input / 
 
 Serialized UTF-8 payload bytes plus 512 units/request remain capped at **20,000 per attempt**, separately from cumulative actual usage. The next payload estimate must also fit the currently observed input allowance remaining. This estimate is not a model tokenizer; unexpected server usage can still exceed the estimate. Such an observed overrun immediately fails the trial and refuses further work. No exact preflight token guarantee is claimed. Both retry layers, model/route/key handling, projection/ref validation, deadlines and owned cleanup remain unchanged.
 
-Native events record the baseline once, then explicitly distinguish attempt and cumulative usage. Final `result.json` has `budget.baseline`, `budget.attempt`, `budget.cumulative` and `usageComplete`; it does not add baseline twice. If usage is unavailable, attempt/cumulative totals remain unknown rather than inventing zero measured spend. The historical first-live evidence and its original files are unchanged.
+Native events record the baseline once, then explicitly distinguish attempt and cumulative usage. Final `result.json` has `budget.baseline`, `budget.attempt`, `budget.cumulative` and `usageComplete`; it does not add baseline twice. Request counts always derive from admission events, even if the latest request has no usage. If any usage is missing, token totals are null, with separately labelled last-known reported tokens when available. Observed overruns are retained before refusal; `usageComplete:true` means all usage was reported, not that it was within budget or accepted. `observedBudgetExceeded:true` identifies that failed case. The historical first-live evidence and its original files are unchanged.
 
 ## Actual checks
 
@@ -33,3 +33,5 @@ bun --no-env-file --no-install experiments/agent-tools/model-runner.ts --live
 ```
 
 Route/model remain `https://ollama.com/v1` / `gemma4:31b`. The worker does not access credentials, reset locks, run this live command or claim acceptance. Root must pin the reviewed commit/runtime and issue the new command; the earlier wrapper is stale. Complete live acceptance remains pending, and the first attempt remains PARTIAL.
+
+Review5 found stale final request counts when a later admitted request lacked usage, plus lost overrun totals on thrown observation. The reporting fix derives counts from admissions and records observed overruns before refusal. `check_budget_report.ts` reproduces baseline4 → completedrequest5 → missing-usage request6 (count6, token totals unknown), then verifies that an observed aggregate20247 input overrun remains visible and failed. The budget ceilings/admission enforcement and cleanup are unchanged by this reporting fix.

@@ -224,9 +224,11 @@
     "experiments/agent-tools/acquire.py",
     "experiments/agent-tools/application-state.ts",
     "experiments/agent-tools/browser_trial.py",
+    "experiments/agent-tools/budget-report.ts",
     "experiments/agent-tools/budget.ts",
     "experiments/agent-tools/check_adapter.py",
     "experiments/agent-tools/check_budget.ts",
+    "experiments/agent-tools/check_budget_report.ts",
     "experiments/agent-tools/check_cleanup.py",
     "experiments/agent-tools/check_continuation.ts",
     "experiments/agent-tools/check_guard.ts",
@@ -822,7 +824,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/CONTINUATION.md": {
-      "sha256": "463dc6ea4323c132a2be669a17bd3ceb2c7d261036099a5810387480e736a33d",
+      "sha256": "403dc2b81076f54ab1d6fef07d7b5282bb5ccf854ae58c753441ea79cd6d4781",
       "status": "added"
     },
     "docs/research/agent-tools/CONTRACT.md": {
@@ -1105,6 +1107,10 @@
       "sha256": "1a464227d9d821beeaf9cc050cb329964edf413b1d977e951a7ec90592a28c79",
       "status": "added"
     },
+    "experiments/agent-tools/budget-report.ts": {
+      "sha256": "06d3ad40b758f67f4a284fdf89956190a7f2821b8dd7802b98ea6c49fc59fb82",
+      "status": "added"
+    },
     "experiments/agent-tools/budget.ts": {
       "sha256": "50d99ea2b9c8012677725b9fed12e266d18d98d9652b577e5a09f8fa084461f0",
       "status": "added"
@@ -1115,6 +1121,10 @@
     },
     "experiments/agent-tools/check_budget.ts": {
       "sha256": "1bb638a72d39ee8923178f34be356b7817f7d2b4841b751597edcfe28bc43271",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_budget_report.ts": {
+      "sha256": "56555f7f1a6b4e9f1d78b0d989414678487f1ed9926b8b67b6372e94b5c6192c",
       "status": "added"
     },
     "experiments/agent-tools/check_cleanup.py": {
@@ -1158,7 +1168,7 @@
       "status": "added"
     },
     "experiments/agent-tools/guard-extension.ts": {
-      "sha256": "e0ad428ecd96d94bb64807c44f1c1e37f6be509d33eb11bf8d34bbe6dafc697c",
+      "sha256": "5675d54c21da57da621ca1081d085a0ddab64a3977d4efef5e209eb40a129cbf",
       "status": "added"
     },
     "experiments/agent-tools/mcp_bridge.py": {
@@ -1170,7 +1180,7 @@
       "status": "added"
     },
     "experiments/agent-tools/model-runner.ts": {
-      "sha256": "120abf3143cdedaaf8c8ccbeb3e9b96197efc8496d8a5826592c1466dc46b057",
+      "sha256": "b3bc66dcbccbe0f87f5e7e832939bc3ac5dcbcb07b660056274701b7a1ef7ad7",
       "status": "added"
     },
     "experiments/agent-tools/pi-child.ts": {
