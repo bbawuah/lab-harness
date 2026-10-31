@@ -145,6 +145,7 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-workspace-contract.md",
+    "docs/research/agent-tools/CONTRACT.md",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
     "docs/research/airgap-browser/DESIGN.json",
@@ -725,6 +726,10 @@
     },
     "docs/relay-workspace-contract.md": {
       "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
+      "status": "added"
+    },
+    "docs/research/agent-tools/CONTRACT.md": {
+      "sha256": "9fee2f452c26b9338b32e3f8cf346e7226643a16cf5312529d6ca93953cadb64",
       "status": "added"
     },
     "docs/research/airgap-browser/ARCHITECTURE.md": {
