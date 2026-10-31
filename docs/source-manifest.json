@@ -148,6 +148,7 @@
     "docs/research/agent-tools/CONTRACT.md",
     "docs/research/agent-tools/REPORT.md",
     "docs/research/agent-tools/REVIEW.md",
+    "docs/research/agent-tools/RUNNER-CONTRACT.md",
     "docs/research/agent-tools/SOURCES.md",
     "docs/research/agent-tools/evidence/browser-native.png",
     "docs/research/agent-tools/evidence/browser-trial-first.json",
@@ -762,6 +763,10 @@
     },
     "docs/research/agent-tools/REVIEW.md": {
       "sha256": "b3291f7846b21ec0ddc79d0f815a44d0a8b9d105ae7c49fd6ee3fe6dda144dd7",
+      "status": "added"
+    },
+    "docs/research/agent-tools/RUNNER-CONTRACT.md": {
+      "sha256": "3f22550a220d61492d304c249cd0907beeac34bc84d1687d2a804f677161e55f",
       "status": "added"
     },
     "docs/research/agent-tools/SOURCES.md": {
