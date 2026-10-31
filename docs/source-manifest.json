@@ -311,7 +311,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "a08c7a0c9215528aaf70cb900edb5e0d6f4a12d73a264b80d8a61de65fd927f6",
+      "sha256": "8a7ecbfc04569fa87a8bc092cabbd1989b24d815958e33db971c0aeb4e16a096",
       "status": "added"
     },
     ".gitignore": {
@@ -412,7 +412,7 @@
       "status": "added"
     },
     "docs/ci.md": {
-      "sha256": "9eb07b76cb116910d662bc394534090a8dc1f52b2d6b32a758f93321696f912a",
+      "sha256": "ae534d2ff22ce8e13f67799c1d4f62775639bc8ab2814893e1623be1c1d4b9bf",
       "status": "added"
     },
     "docs/demos/README.md": {
@@ -640,7 +640,7 @@
       "status": "added"
     },
     "docs/interactive-build-contract.md": {
-      "sha256": "05faf0ca35cebeaea9e1855efd091883147efdfa32bb30eb461d96fa82753e49",
+      "sha256": "03033cad034d0ef711b3cfbab8583abdf01ba84e5d04eccf978ee20f4108188e",
       "status": "added"
     },
     "docs/interactive-validation.md": {
