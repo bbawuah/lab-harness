@@ -146,20 +146,20 @@ file tools run as your user, so project binding is not an OS sandbox. Details
 and the unqualified request-admission boundary are explained below.
 
 [Actual current terminal/model evidence](docs/interactive-validation.md) records
-what was tested, including the small local model's tool-use limits. Historical
-screenshots below are separate observations.
+what was tested, including the small local model's tool-use limits. The terminal
+branding captures below are separate no-model observations.
 
 ## Terminal workspace
 
 Pi starts beside your regular shell. Use `/lab-appearance` for staged appearance
 controls and `lab --single-pane` in a narrow terminal.
 
-![Actual terminal text: Pi and shell, staged appearance and compact UI](docs/evidence/tui/terminal-text.png)
+![Current pixel LB terminal text: Pi and shell, light/dark appearance and compact UI](docs/evidence/pixel-lb/terminal-text.png)
 
 This is a browser rendering of actual native terminal text, not live pixels;
-frame colors/fonts are editorial. [Source-labelled captures and limits](docs/evidence/tui/README.md)
-distinguish clean 944 and 4aaf runs. The separate delayed mouse-fragment diagnostic
-remains unqualified.
+frame colors/fonts are editorial. [Source-labelled captures and limits](docs/evidence/pixel-lb/README.md)
+document the clean pixel LB capture and link the earlier historical runs. The
+separate delayed mouse-fragment diagnostic remains unqualified.
 
 ## Settings, caches and updates
 
@@ -193,7 +193,7 @@ These commands demonstrate task/search/terminal contracts; they do not start the
 AI workspace. `demo:terminal` uses a harmless real Herdr worker; `demo` uses
 fixture workers. Developer checks require the source Git checkout.
 
-![Historical no-model Pi startup text; not the current interactive workspace](docs/media/pi-startup-text.png)
+[Historical no-model Pi startup capture](docs/media/pi-startup-text.png)
 
 This historical image captures startup text at source commit `93a831c4`, before
 the interactive workspace. It is a text reconstruction, not a current screenshot
@@ -296,7 +296,7 @@ existing client destination; this project deploys no gateway or inference backen
 The README uses the owner's monochrome pixel LB, adapted from the six original
 LAB-BAWUAH tiles. [Light](assets/branding/pixel-lb-light.svg) and
 [dark](assets/branding/pixel-lb-dark.svg) SVGs have transparent backgrounds and
-no private runtime dependency. The terminal UI retains the original mesh mark.
+no private runtime dependency. The terminal UI uses the same pixel silhouette.
 [Original brand preview](docs/branding-preview.html) and
 [provenance](assets/branding/PROVENANCE.json) document the source identity and
 pixel adaptation.

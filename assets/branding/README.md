@@ -12,7 +12,9 @@ Curves become stepped contours and gutters occupy at least one grid module;
 this is a pixel adaptation, not identical canonical geometry. Use integer
 multiples of 24×32, with a recommended minimum height of 32px.
 Source and output hashes are recorded under `pixelLB` in `PROVENANCE.json`.
-The original `terminal-b-*.svg` assets remain the sources for the terminal UI.
+The terminal UI uses this same pixel grid, extracted by
+`scripts/pi/derive-terminal-mark.ts`. The original `terminal-b-*.svg` assets
+remain available as historical source geometry.
 
 `social-preview.png` is the repository-owned 1280×640 social preview: canonical B,
 LAB-HARNESS and a short terminal-harness descriptor. It has safe margins and a
