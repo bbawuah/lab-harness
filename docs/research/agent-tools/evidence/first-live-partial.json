@@ -1,0 +1,226 @@
+{
+  "mode": "live",
+  "model": "gemma4:31b",
+  "liveRoute": "https://ollama.com/v1",
+  "actualRoute": "https://ollama.com/v1",
+  "liveAcceptance": false,
+  "piExit": 78,
+  "events": [
+    {
+      "kind": "session_start",
+      "data": {
+        "activeTools": [
+          "lab_owned_browser"
+        ],
+        "labExtensionExplicit": true,
+        "relayHealthy": true,
+        "sessionId": "01a19113-0350-778b-a085-fcbd5f7922d6"
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "request": 1,
+        "admissionUnits": 1695,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "requests": 1,
+        "inputTokens": 244,
+        "outputTokens": 17,
+        "usageReports": 1
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "snapshot"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "request": 2,
+        "admissionUnits": 6399,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "requests": 2,
+        "inputTokens": 1283,
+        "outputTokens": 52,
+        "usageReports": 2
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "fill",
+          "ref": "e4",
+          "text": "Fixture Model"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": true
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "request": 3,
+        "admissionUnits": 11577,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "requests": 3,
+        "inputTokens": 2429,
+        "outputTokens": 88,
+        "usageReports": 3
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "fill",
+          "ref": "@e4",
+          "text": "Fixture Model"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "request": 4,
+        "admissionUnits": 18912,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "requests": 4,
+        "inputTokens": 4147,
+        "outputTokens": 117,
+        "usageReports": 4
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "click",
+          "ref": "@e5"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "refused",
+      "data": {
+        "code": "ADMISSION_FAILED"
+      }
+    }
+  ],
+  "piVersion": "1.4.0",
+  "failure": "MODEL_ACCEPTANCE_FAILED",
+  "browserCleanupVerified": true,
+  "sinkRequests": 0,
+  "herdrAttachment": {
+    "label": "actual-herdr-native-client",
+    "runtimeVersion": "0.9.5",
+    "paneId": "w1:p2",
+    "serverPid": 65378,
+    "clientPid": 65464,
+    "shellPid": 65459,
+    "exitCode": 78,
+    "failed": false,
+    "startupProof": {
+      "bootstrapStopped": true
+    },
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "piChildStopped": true,
+  "piProcessGroupStopped": true,
+  "relayReleased": true,
+  "listenersStopped": true,
+  "applicationStateRemoved": true,
+  "classification": "PARTIAL \u2014 final validation missing",
+  "sinkCounterInterpretation": "sinkRequests is probe-only; this live run made four real provider requests",
+  "independentFinalDOMPersisted": false,
+  "modelFinalConfirmation": false,
+  "nativeScreenshot": false,
+  "originalResultSHA256": "bbec342f25a292be47b11576d9955f8508fcb49fcebc339fe2d1fa81b69bae77"
+}

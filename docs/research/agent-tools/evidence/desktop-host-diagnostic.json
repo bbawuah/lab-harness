@@ -1,0 +1,6 @@
+{
+  "kind": "bounded-host-diagnostic",
+  "exit": 0,
+  "stdout": "{\"version\":\"2.5\",\"ok\":true,\"command\":\"version\",\"data\":{\"os\":\"macos\",\"target\":\"aarch64\",\"version\":\"1.0.2\"}}\n",
+  "stderr": ""
+}

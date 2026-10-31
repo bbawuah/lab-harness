@@ -1,0 +1,144 @@
+{
+  "kind": "deterministic-cli-and-one-shot-mcp",
+  "date": "2026-10-31",
+  "agentBrowser": "0.41.0",
+  "chromeVersion": "156.0.8078.74",
+  "chromeExecutableSHA256": "cf864393a84aa983ba58feea2c24050748e39738591205ecaa54b2c1199ad28c",
+  "session": "lab-76bf81c6c3",
+  "steps": [
+    {
+      "args": [
+        "open",
+        "http://127.0.0.1:64713/"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"1ee13e7bca021572440d89ae85ea6838\",\"origin\":\"http://127.0.0.1:64713/\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"targetId\":\"0AEDB5B5B2A13123E7827FAFC8F9DD09\",\"title\":\"LAB owned fixture\",\"url\":\"http://127.0.0.1:64713/\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "snapshot",
+        "-i"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"31ec9acbbe489308080b7c5822673a95\",\"origin\":\"http://127.0.0.1:64713/\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"origin\":\"http://127.0.0.1:64713/\",\"refs\":{\"e1\":{\"name\":\"LAB owned browser fixture\",\"role\":\"heading\"},\"e2\":{\"name\":\"Remove this control\",\"role\":\"button\"},\"e3\":{\"name\":\"Second page\",\"role\":\"link\"},\"e4\":{\"name\":\"Fixture name\",\"role\":\"textbox\"},\"e5\":{\"name\":\"Save fixture\",\"role\":\"button\"}},\"removedRefs\":[],\"snapshot\":\"- heading \\\"LAB owned browser fixture\\\" [level=1, ref=e1]\\n- textbox \\\"Fixture name\\\" [ref=e4]\\n- button \\\"Save fixture\\\" [ref=e5]\\n- button \\\"Remove this control\\\" [ref=e2]\\n- link \\\"Second page\\\" [ref=e3]\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "fill",
+        "@e4",
+        "Fixture Alpha"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"6ef33ad9d5656690d346a1ade599b93d\",\"origin\":\"unknown\"},\"data\":{\"filled\":\"@e4\",\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"}},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "click",
+        "@e5"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"c5ad0813626c998784a8ce75a39cf3e5\",\"origin\":\"unknown\"},\"data\":{\"clicked\":\"@e5\",\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"}},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "get",
+        "text",
+        "#result"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"30106e2930c85862626799031730979c\",\"origin\":\"http://127.0.0.1:64713/\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"origin\":\"http://127.0.0.1:64713/\",\"text\":\"Saved: Fixture Alpha\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "screenshot",
+        "<WORKTREE>/docs/research/agent-tools/evidence/browser-native.png"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"1e887590fc9c02846bc1d79209edbe12\",\"origin\":\"unknown\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"path\":\"<WORKTREE>/docs/research/agent-tools/evidence/browser-native.png\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "click",
+        "@e2"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"aeb54631c8bbcf1cfb5f6436d58dc3ee\",\"origin\":\"unknown\"},\"data\":{\"clicked\":\"@e2\",\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"}},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "click",
+        "@e2"
+      ],
+      "exit": 1,
+      "stdout": "{\"_boundary\":{\"nonce\":\"46a6f8506fb103bc505c7148acfe7eb7\",\"origin\":\"unknown\"},\"data\":null,\"error\":\"Could not locate element with role=button name=Remove this control\",\"success\":false}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "snapshot",
+        "-i"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"eebee77e71de639d9e83c35b7809254f\",\"origin\":\"http://127.0.0.1:64713/\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"origin\":\"http://127.0.0.1:64713/\",\"refs\":{\"e1\":{\"name\":\"LAB owned browser fixture\",\"role\":\"heading\"},\"e3\":{\"name\":\"Second page\",\"role\":\"link\"},\"e4\":{\"name\":\"Fixture name\",\"role\":\"textbox\"},\"e5\":{\"name\":\"Save fixture\",\"role\":\"button\"}},\"removedRefs\":[\"@e2\"],\"snapshot\":\"- heading \\\"LAB owned browser fixture\\\" [level=1, ref=e1]\\n- textbox \\\"Fixture name\\\" [ref=e4]: Fixture Alpha\\n- button \\\"Save fixture\\\" [ref=e5]\\n- link \\\"Second page\\\" [ref=e3]\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "open",
+        "http://127.0.0.1:64713/second"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"f49e57962c780d70740e2964c8d2d0b0\",\"origin\":\"http://127.0.0.1:64713/second\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"targetId\":\"0AEDB5B5B2A13123E7827FAFC8F9DD09\",\"title\":\"Second fixture\",\"url\":\"http://127.0.0.1:64713/second\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "get",
+        "title"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"924ce22b09c6aba125f3feecc404650f\",\"origin\":\"unknown\"},\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":2920677383614336396},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":true,\"saveStatus\":\"not_attempted\"},\"title\":\"Second fixture\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "mcp",
+        "call",
+        "agent_browser_snapshot",
+        "{}"
+      ],
+      "exit": 0,
+      "stdout": "{\"_meta\":{\"agentBrowserVersion\":\"0.41.0\"},\"content\":[{\"text\":\"(no interactive elements)\",\"type\":\"text\"}],\"isError\":false,\"structuredContent\":{\"exitCode\":0,\"response\":{\"data\":{\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":true,\"engine\":\"chrome\",\"launchHash\":11677035664275010974},\"launched\":true,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":false,\"saveStatus\":\"not_attempted\"},\"origin\":\"about:blank\",\"refs\":{},\"removedRefs\":[],\"snapshot\":\"(no interactive elements)\"},\"error\":null,\"success\":true},\"stderr\":\"\",\"stdout\":\"{\\\"success\\\":true,\\\"data\\\":{\\\"lifecycle\\\":{\\\"effectiveLaunch\\\":{\\\"browserLaunched\\\":true,\\\"engine\\\":\\\"chrome\\\",\\\"launchHash\\\":11677035664275010974},\\\"launched\\\":true,\\\"relaunchedBrowser\\\":false,\\\"restartedBackground\\\":false,\\\"restoreStatus\\\":\\\"not_configured\\\",\\\"reused\\\":false,\\\"saveStatus\\\":\\\"not_attempted\\\"},\\\"origin\\\":\\\"about:blank\\\",\\\"refs\\\":{},\\\"removedRefs\\\":[],\\\"snapshot\\\":\\\"(no interactive elements)\\\"},\\\"error\\\":null}\\n\"}}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "open",
+        "https://example.invalid"
+      ],
+      "exit": 1,
+      "stdout": "{\"_boundary\":{\"nonce\":\"d8f7ddd0205a7d47dde912e863823cc7\",\"origin\":\"unknown\"},\"data\":null,\"error\":\"Domain 'example.invalid' is not in the allowed domains list\",\"success\":false}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "close"
+      ],
+      "exit": 0,
+      "stdout": "{\"_boundary\":{\"nonce\":\"09dc8be960ddaaf368e5567cda801ffb\",\"origin\":\"unknown\"},\"data\":{\"closed\":true,\"lifecycle\":{\"effectiveLaunch\":{\"browserLaunched\":false,\"engine\":\"chrome\",\"launchHash\":null},\"launched\":false,\"relaunchedBrowser\":false,\"restartedBackground\":false,\"restoreStatus\":\"not_configured\",\"reused\":false,\"saveStatus\":\"not_configured\"},\"restoreStatus\":\"not_configured\",\"saveStatus\":\"not_configured\"},\"error\":null,\"success\":true}\n",
+      "stderr": ""
+    }
+  ],
+  "modelCalls": 0,
+  "serverClosed": true,
+  "temporaryProfilesRemaining": [
+    "agent-browser-chrome-59f2e2ce-7808-4301-9aea-9f1e1766f836"
+  ]
+}

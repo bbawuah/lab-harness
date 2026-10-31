@@ -1,0 +1,42 @@
+{
+  "mode": "probe",
+  "model": "gemma4:31b",
+  "liveAcceptance": false,
+  "piExit": 78,
+  "events": [
+    {
+      "kind": "refused",
+      "data": {
+        "code": "LAB_RELAY_STARTUP_FAILED_RELAY_INVALID"
+      }
+    }
+  ],
+  "piVersion": "1.4.0",
+  "failure": "PROBE_NOT_PROVEN",
+  "browserCleanupVerified": true,
+  "sinkRequests": 0,
+  "herdrAttachment": {
+    "label": "actual-herdr-native-client",
+    "runtimeVersion": "0.9.5",
+    "paneId": "w1:p2",
+    "serverPid": 86232,
+    "clientPid": 86329,
+    "shellPid": 86327,
+    "exitCode": 78,
+    "failed": false,
+    "startupProof": {
+      "bootstrapStopped": true
+    },
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "relayReleased": true,
+  "applicationStateRemoved": true,
+  "interpretation": "Relay rejected missing actual-user-home bridge binding; no provider dispatch.",
+  "liveRoute": "https://ollama.com/v1",
+  "actualRoute": "owned-loopback-sink"
+}

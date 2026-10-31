@@ -1,0 +1,46 @@
+{
+  "kind": "native-cli-permission-preflight",
+  "date": "2026-10-31",
+  "steps": [
+    {
+      "args": [
+        "version"
+      ],
+      "exit": 0,
+      "stdout": "{\"command\":\"version\",\"data\":{\"os\":\"macos\",\"target\":\"aarch64\",\"version\":\"1.0.2\"},\"ok\":true,\"version\":\"2.5\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": [
+        "skills",
+        "get",
+        "desktop"
+      ],
+      "exit": 0,
+      "stdoutBytes": 5612,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "skills",
+        "get",
+        "platform"
+      ],
+      "exit": 0,
+      "stdoutBytes": 5914,
+      "stderr": ""
+    },
+    {
+      "args": [
+        "permissions"
+      ],
+      "exit": 0,
+      "stdout": "{\"command\":\"permissions\",\"data\":{\"accessibility\":{\"state\":\"denied\",\"suggestion\":\"Run agent-desktop permissions --guide. It opens System Settings > Privacy & Security > Accessibility (Device Control and Data Access on macOS 27 and later) with a guide that shows which app to drag into the list: the app that launches agent-desktop, such as Terminal, iTerm, or Codex. If macOS lists the built binary separately, add that binary too.\"},\"automation\":{\"state\":\"unknown\"},\"screen_recording\":{\"state\":\"denied\",\"suggestion\":\"Run agent-desktop permissions --guide. It opens System Settings > Privacy & Security > Screen Recording with a guide that shows which app to drag into the list: the app that launches agent-desktop, such as Terminal, iTerm, or Codex. If macOS lists the built binary separately, add that binary too.\"}},\"ok\":true,\"version\":\"2.5\"}\n",
+      "stderr": ""
+    }
+  ],
+  "socketPathException": "owned0700 short absolute temporary directory",
+  "ownedHostsTerminated": [],
+  "noAppSnapshot": true,
+  "noPermissionChanges": true
+}

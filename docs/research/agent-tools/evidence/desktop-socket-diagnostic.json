@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "stdout": "{\"version\":\"2.5\",\"ok\":false,\"command\":\"host\",\"error\":{\"code\":\"INVALID_ARGS\",\"message\":\"Command host socket requires an absolute path\",\"disposition\":{\"delivery\":\"not_delivered\",\"retry\":\"safe\"}}}\n",
+  "stderr": ""
+}

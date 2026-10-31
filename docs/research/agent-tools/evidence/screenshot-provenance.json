@@ -1,0 +1,10 @@
+{
+  "kind": "native-browser-capture",
+  "source": "browser_trial.py screenshot step in browser-trial.json",
+  "file": "browser-native.png",
+  "sha256": "5017829885c952367f411c30f7281b52f3bbf22bc5c00c9221b9c82d1486e6d6",
+  "date": "2026-10-31",
+  "syntheticFixture": true,
+  "modelObservation": false,
+  "designRender": false
+}

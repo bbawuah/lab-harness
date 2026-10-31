@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "stdout": "{\"version\":\"2.5\",\"ok\":false,\"command\":\"permissions\",\"error\":{\"code\":\"INTERNAL\",\"message\":\"Command host exited during startup\",\"disposition\":{\"delivery\":\"not_delivered\",\"retry\":\"safe\"}}}\n",
+  "stderr": ""
+}

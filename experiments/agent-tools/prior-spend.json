@@ -1,0 +1,9 @@
+{
+  "source": "first authenticated GUI-run attempt at source 72b1c74ef2f590a26be8b4dbb1a13b904f7f2d7e",
+  "sourceResultSHA256": "bbec342f25a292be47b11576d9955f8508fcb49fcebc339fe2d1fa81b69bae77",
+  "requests": 4,
+  "inputTokens": 4147,
+  "outputTokens": 117,
+  "status": "PARTIAL",
+  "followupAuthorization": "Root must separately allocate/enforce remaining overall allowance; no retry authorized here"
+}
