@@ -19,6 +19,7 @@ export function renderTerminalMark(appearance: "light" | "dark"): string[] {
       if (top < 0 && bottom < 0) line += " ";
       else if (top < 0) line += `\x1b[38;5;${gray(bottom)}m▄${reset}`;
       else if (bottom < 0) line += `\x1b[38;5;${gray(top)}m▀${reset}`;
+      else if (top === bottom) line += `\x1b[38;5;${gray(top)}m█${reset}`;
       else line += `\x1b[38;5;${gray(top)};48;5;${gray(bottom)}m▀${reset}`;
     }
     lines.push(line);
@@ -53,7 +54,7 @@ export function renderHeader(options: HeaderOptions): string[] {
     ? ["LAB-HARNESS", attribution, "Interactive coding workspace", "Controlled LAB tasks: unavailable"]
     : ["LAB-HARNESS", attribution, NATIVE_LAB_LABEL, NATIVE_LAB_DETAIL];
   if (!options.color || columns < mark.columns + 3 + Math.max(...text.map(line => line.length))) {
-    return ["[B] (text fallback)", ...text].flatMap(line => wrap(line, columns));
+    return ["[LB] (text fallback)", ...text].flatMap(line => wrap(line, columns));
   }
   const logo = renderTerminalMark(options.appearance ?? "dark");
   return logo.map((line, row) => line + (text[row - 3] ? `   ${text[row - 3]}` : ""));

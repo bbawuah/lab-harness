@@ -323,7 +323,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "30bb2b326aec01c49c8697dbe9e94400faf7dce90748f08eff0113fc34954ca7",
+      "sha256": "ae8ead6ba13f68e3ff7bcab76ce2f2647df55fc7f59247bb4be1e8cd75f4a472",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -331,7 +331,7 @@
       "status": "added"
     },
     "assets/branding/README.md": {
-      "sha256": "4c37f6d8d2a84601ed793919423e2b19d2d32a55feadd2dc5f580ba54fa48f59",
+      "sha256": "2c10494b4d9c4f89652600c82202bd94542358981937d755b7c2827bae8d5330",
       "status": "added"
     },
     "assets/branding/pixel-lb-dark.svg": {
@@ -400,7 +400,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "499878b3d273c4060edf107a8d8601916cdba8285e10bd1e2f417ef75bb462e1",
+      "sha256": "c70ef88afaadc2f607729dcd10a2704ce47911eacfe11fa7e1e57c366ee86dfb",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -740,7 +740,7 @@
       "status": "added"
     },
     "docs/pi-header.md": {
-      "sha256": "8fc58b852cc4b06a331168da437a035ca2d50d4557bf074ca73182410cda62ec",
+      "sha256": "5248deb66fd59a2792016ae62e7b7f66a6e56706db009a520141d3c7652cb9c1",
       "status": "added"
     },
     "docs/pi-runtime.md": {
@@ -960,7 +960,7 @@
       "status": "added"
     },
     "scripts/pi/derive-terminal-mark.ts": {
-      "sha256": "6bac4b0d48b836b97cf1d04b2e0ebbb37cf337911739baf0864c78eca060c2e5",
+      "sha256": "aeba094f777ce93b6f19a95bfeed923f55869060b86483181a01704e6828881c",
       "status": "added"
     },
     "scripts/pi/render-header.ts": {
@@ -1074,7 +1074,7 @@
       "status": "added"
     },
     "src/pi/header.ts": {
-      "sha256": "b1fb14217ddc76ab615aab5585a8a4a9986d20d505804cbe93ec5dc1be2e8f7f",
+      "sha256": "60ae08c41314761de5eadd9a37a984c05429a0845596a9b99bddc1fc6a5dd256",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
@@ -1082,7 +1082,7 @@
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
-      "sha256": "d85b2cafcc8e6184e953b09a9ce374b4c4524b8e87f2ef6e63058497e03baea4",
+      "sha256": "6d4f694a1bb26ee27be3c2209a35be4133214c375e98393b0470bd22822eee2d",
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
@@ -1236,7 +1236,7 @@
       "status": "added"
     },
     "tests/pi-appearance-actual.test.ts": {
-      "sha256": "84da764688794fef786cbf566899ce94cb4595ba49232dd73e409d30941829de",
+      "sha256": "a061ba34153b15e87239b1ae78715bbaaa341d3c6aaf17e1fe5f823ac53eabd6",
       "status": "added"
     },
     "tests/pi-appearance-store.test.ts": {
@@ -1252,7 +1252,7 @@
       "status": "added"
     },
     "tests/pi-header.test.ts": {
-      "sha256": "a08500a5bf906214e23cc5a97c439d0fb539119d40451fa11167cf120de9d332",
+      "sha256": "314e0278550b54fda39be07e0d28626041a7088056ebc3528b8954709750222b",
       "status": "added"
     },
     "tests/pi-workspace-appearance.test.ts": {

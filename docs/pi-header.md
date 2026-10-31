@@ -2,7 +2,7 @@
 
 `src/pi/header.ts` is an opt-in Pi extension. It uses the supported
 `session_start` → `ctx.ui.setHeader` API to replace the built-in startup logo
-and keybinding hints. The actual header contains the canonical monochrome B,
+and keybinding hints. The actual header contains the monochrome pixel LB,
 `LAB-HARNESS`, `Powered by Pi`, `Native LAB activation: BLOCKED`, and
 `Request admission unqualified`. It registers only `session_start`, and does
 nothing outside TUI mode. No tools, request hooks, acceptance or admission
@@ -23,38 +23,24 @@ new package dependency. It can be loaded explicitly with
 `pi -e /absolute/project/src/pi/header.ts`. This only changes branding;
 operators must still obey the native LAB activation refusal.
 
-## Canonical terminal mesh
+## Pixel LB terminal mark
 
-`src/pi/terminal-mark.json` is generated from the two owner-authorized SVGs:
+`src/pi/terminal-mark.json` is extracted from the approved `pixel-lb-light.svg`
+and `pixel-lb-dark.svg` assets. The generator pins their exact SHA-256 identities,
+checks the six ordered tile paths and reads each integer SVG run without
+resampling. The 24×32 grid preserves the README logo's silhouette and gutters.
+Provenance is recorded in the generated JSON and `assets/branding/PROVENANCE.json`.
 
-- `assets/branding/terminal-b-light.svg`: SHA-256
-  `8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71`.
-- `assets/branding/terminal-b-dark.svg`: SHA-256
-  `5a46de364f7019736c6202e0f81384fc8ac1d87d68a46f515b740d2ebc5b8c29`.
+The runtime uses 24 columns × 16 rows of terminal cells. Full foreground cells
+use U+2588; partial cells use upper/lower half-blocks. Thus the silhouette remains
+intact even when a capture API drops ANSI colors. Neutral indexed foregrounds
+approximate the light/dark asset fills. Transparent cells retain the terminal
+background. This assumes terminal cells approximately twice as tall as wide.
 
-The provenance refers back to `assets/branding/PROVENANCE.json`. Owner
-authorization covers this adaptation; no general reuse license is granted.
-There is no private source-repository dependency and no runtime rasterizer.
-
-The offline generator reads the actual six SVG clip paths and four gradient
-spots. It flattens each cubic curve in 32 steps, samples each output pixel on
-an 8×8 grid, and composites the four radial overlays in SVG order. A pixel
-must have at least 80% coverage by one tile. This conservative threshold
-keeps gutters open at low resolution. The resulting 18×24 neutral-gray
-pixels use 18×12 terminal cells, with upper/lower half-blocks and neutral
-256-color grayscale indices 232–255. This assumes terminal cells roughly
-twice as tall as they are wide; low resolution necessarily approximates
-curves and gradients. The runtime performs only palette quantization and
-half-block composition of the bounded stored samples.
-
-The mesh is shown at widths of at least 50 columns with detected color
-support. Narrow terminals, `NO_COLOR` (including an empty value), `TERM=dumb`,
-and terminals without detected 256-color/truecolor support use
-`[B] (text fallback)`. The fallback is explicitly identified and retains
-the name, attribution and blocked status. All text wraps to the supplied
-columns; zero/invalid widths render no lines. Older themes without an
-appearance property default to the dark palette. Header text uses the
-terminal's default foreground; only the mesh emits neutral color escapes.
+The full logo appears only when it fits beside all header text and detected color
+support is available. Narrow terminals, `NO_COLOR`, `TERM=dumb`, or missing color
+support use `[LB] (text fallback)`. All text wraps to the supplied columns;
+zero/invalid widths render no lines. Old themes default to the dark palette.
 
 ## Fixture checks
 
@@ -68,8 +54,9 @@ bun --no-env-file --no-install scripts/pi/derive-terminal-mark.ts --check
 bun --no-env-file --no-install test tests/pi-header.test.ts
 ```
 
-The five focused tests verify exact source hashes and deterministic mesh
-reproduction, dimensions and gutters, neutral ANSI colors, all widths 1–120,
+The focused tests verify exact source hashes and integer-grid extraction,
+lossless text-only silhouette reconstruction, dimensions and gutters, neutral
+ANSI colors, all widths 1–120,
 no-color/dumb/narrow fallback, attribution/blocked labels, and TUI-only
 registration. Fixture rendering and actual startup are separate evidence.
 

@@ -70,6 +70,12 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
   const sink = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch() { requests++; return new Response("No inference expected", { status: 500 }); } });
   writeFileSync(join(state, "route.json"), JSON.stringify({ version: 1, kind: "local", endpoint: `http://127.0.0.1:${sink.port}/v1`, model: "fixture-no-inference" }), { mode: 0o600 });
   writeFileSync(join(state, "key"), "", { mode: 0o600 });
+  // Opt-in evidence capture from this same no-inference regression. Raw paths
+  // remain in ignored project state; publishing requires explicit sanitization.
+  const captureDirectory = process.env.LAB_BRAND_CAPTURE_DIR;
+  const captures: Record<string, string> = {};
+  const cleanups: unknown[] = [];
+  if (captureDirectory && !resolve(captureDirectory).startsWith(join(source, ".tmp") + "/")) throw new Error("Capture directory must be under project .tmp");
   const actors: { child: ReturnType<typeof Bun.spawn>; raw: string; socket: string; agent: string; pi: string; view: TerminalScreen; reloads: number; bannerVisible: boolean; relayRendered: boolean; fallbackRendered: boolean }[] = [];
   const pause = (ms: number) => new Promise(done => setTimeout(done, ms));
   const deadline = Date.now() + 45000;
@@ -122,25 +128,33 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
     a.agent = join(state, "runs", run, "agent");
     return a;
   }
+  async function capture(name: string, a: typeof actors[number]) {
+    if (!captureDirectory) return;
+    captures[name + "-pane.txt"] = await screen(a, () => Math.max(1, deadline - Date.now()));
+    captures[name + "-outer.txt"] = a.view.snapshot().lines.join("\n");
+  }
   async function paste(a: typeof actors[number], text: string) { a.child.terminal!.write("\x1b[200~" + text + "\x1b[201~"); await pause(300); a.child.terminal!.write("\r"); }
   async function quit(a: typeof actors[number]) {
     await paste(a, "/exit"); await wait("normal owned exit", () => a.child.exitCode !== null);
     expect(await a.child.exited).toBe(0);
     const attachment = JSON.parse(readFileSync(join(a.agent, "../attachment.json"), "utf8"));
+    cleanups.push(attachment.cleanup);
     expect(attachment.cleanup).toEqual({ serverExited: true, clientExited: true, workerStopped: true, socketsRemoved: true });
   }
   mkdirSync(join(state, "runs"), { mode: 0o700 });
   const hardStop = setTimeout(() => { for (const a of actors) if (a.child.exitCode === null) a.child.kill("SIGTERM"); }, 48000);
   try {
     const a = await start(false);
+    await capture("split", a);
     await paste(a, "/lab-appearance"); await wait("appearance staged dialog", async remaining => (await screen(a, remaining)).includes("LAB Appearance - staged sample"), a);
+    await capture("dark", a);
     a.child.terminal!.write("2"); await wait("native mode selector", async remaining => { const text = await screen(a, remaining); return text.includes("dark") && text.includes("light") && text.includes("terminal") && text.includes("navigate") && text.includes("escape/ctrl+c cancel") && !text.includes("7. Apply"); }, a);
     a.child.terminal!.write("\x1b[B"); a.child.terminal!.write("\r"); await wait("light sample", async remaining => (await screen(a, remaining)).includes("2. Mode: light"), a);
     const beforeReload = a.reloads; a.child.terminal!.write("7"); await wait("native reload", () => a.reloads > beforeReload, a);
     expect(JSON.parse(readFileSync(join(state, "appearance/preferences.json"), "utf8")).user.mode).toBe("light");
     expect(JSON.parse(readFileSync(join(a.agent, "settings.json"), "utf8")).theme).toBe("lab-appearance-light");
     const preferences = readFileSync(join(state, "appearance/preferences.json"), "utf8");
-    await paste(a, "/lab-appearance"); await wait("cancel dialog", async remaining => (await screen(a, remaining)).includes("LAB Appearance - staged sample"), a); a.child.terminal!.write("8");
+    await paste(a, "/lab-appearance"); await wait("cancel dialog", async remaining => (await screen(a, remaining)).includes("LAB Appearance - staged sample"), a); await capture("light", a); a.child.terminal!.write("8");
     await wait("cancel returns native composer", async remaining => !(await screen(a, remaining)).includes("LAB Appearance - staged sample"), a);
     expect(readFileSync(join(state, "appearance/preferences.json"), "utf8")).toBe(preferences);
     await quit(a);
@@ -148,6 +162,7 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
     expect(JSON.parse(readFileSync(join(b.agent, "settings.json"), "utf8")).theme).toBe("lab-appearance-light");
     expect(Object.values(JSON.parse(readFileSync(join(b.agent, "themes/lab-appearance-light.json"), "utf8")).colors).every(value => value === "")).toBe(true);
     b.view.resize(40, 16); b.child.terminal!.resize(40, 16); await paste(b, "/lab-appearance"); await wait("narrow keyboard appearance", async remaining => (await screen(b, remaining)).includes("LAB Appearance"), b);
+    await capture("compact", b);
     expect(await screen(b, () => { const ms = deadline - Date.now(); if (ms <= 0) throw new Error("appearance test deadline"); return ms; })).toContain("> Focused control"); b.child.terminal!.write("\x1b");
     await wait("narrow Cancel", async remaining => !(await screen(b, remaining)).includes("LAB Appearance"), b);
     await quit(b);
@@ -161,12 +176,23 @@ actual("actual Pi appearance Apply/Cancel/relaunch uses native themes and preser
     stored.user = { ...stored.user, mode: "dark", palette: { kind: "custom", light: { ...light, text: "#277CA7" }, dark } };
     const custom = JSON.stringify(stored) + "\n"; writeFileSync(join(state, "appearance/preferences.json"), custom, { mode: 0o600 });
     const c = await start(false, true);
+    await capture("fallback", c);
     expect(c.fallbackRendered).toBe(true); expect(readFileSync(join(state, "appearance/preferences.json"), "utf8")).toBe(custom);
     await paste(c, "/lab-appearance"); await wait("indexed repair dialog", async remaining => (await screen(c, remaining)).includes("LAB Appearance - staged"), c);
     c.child.terminal!.write("6"); await wait("Reset preview", async remaining => (await screen(c, remaining)).includes("inherited/default"), c);
     const beforeRepair = c.reloads; c.child.terminal!.write("7"); await wait("native repair reload", () => c.reloads > beforeRepair, c);
     expect(JSON.parse(readFileSync(join(state, "appearance/preferences.json"), "utf8")).user).toBeNull();
     await quit(c); expect(requests).toBe(0);
+    if (captureDirectory) {
+      mkdirSync(captureDirectory, { recursive: true });
+      for (const [name, text] of Object.entries(captures)) writeFileSync(join(captureDirectory, name), text);
+      writeFileSync(join(captureDirectory, "run.json"), JSON.stringify({
+        sourceSHA: Bun.spawnSync(["git", "rev-parse", "HEAD"], { cwd: source }).stdout.toString().trim(),
+        workingTree: Bun.spawnSync(["git", "status", "--porcelain"], { cwd: source }).stdout.toString(),
+        providerRequests: requests, cleanup: cleanups,
+        privateRoot: root, sourceRoot: source,
+      }, null, 2) + "\n");
+    }
   } finally {
     clearTimeout(hardStop);
     for (const [index, a] of actors.entries()) { if (a.child.exitCode === null) { a.child.kill("SIGTERM"); await a.child.exited; } a.child.terminal!.close(); writeFileSync(join(root, `terminal-${index}.ansi`), a.raw); }

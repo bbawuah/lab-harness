@@ -296,7 +296,7 @@ existing client destination; this project deploys no gateway or inference backen
 The README uses the owner's monochrome pixel LB, adapted from the six original
 LAB-BAWUAH tiles. [Light](assets/branding/pixel-lb-light.svg) and
 [dark](assets/branding/pixel-lb-dark.svg) SVGs have transparent backgrounds and
-no private runtime dependency. The terminal UI retains the original mesh mark.
+no private runtime dependency. The terminal UI uses the same pixel silhouette.
 [Original brand preview](docs/branding-preview.html) and
 [provenance](assets/branding/PROVENANCE.json) document the source identity and
 pixel adaptation.

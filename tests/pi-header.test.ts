@@ -8,22 +8,22 @@ import { deriveTerminalMark } from "../scripts/pi/derive-terminal-mark.ts";
 
 const plain = (value: string) => value.replace(/\x1b\[[0-9;]*m/g, "");
 
-test("mesh is reproducibly sampled from both exact owner-authorized SVG byte identities", () => {
+test("pixel LB is extracted exactly from both exact owner-authorized SVG byte identities", () => {
   expect(deriveTerminalMark()).toEqual(mark);
   for (const source of mark.provenance.sources) {
     expect(createHash("sha256").update(readFileSync(new URL(`../${source.path}`, import.meta.url))).digest("hex")).toBe(source.sha256);
   }
-  expect(mark.columns).toBe(18);
-  expect(mark.pixelRows).toBe(24);
+  expect(mark.columns).toBe(24);
+  expect(mark.pixelRows).toBe(32);
   for (const appearance of ["light", "dark"] as const) {
-    expect(mark[appearance]).toHaveLength(24);
+    expect(mark[appearance]).toHaveLength(32);
     for (const row of mark[appearance]) {
-      expect(row).toHaveLength(18);
+      expect(row).toHaveLength(24);
       expect(row.every(pixel => Number.isInteger(pixel) && pixel >= -1 && pixel <= 255)).toBe(true);
     }
     // Canonical vertical gutter between stem/top tile, and lower tile separation.
-    expect(mark[appearance].slice(0, 16).every(row => row[5] === -1)).toBe(true);
-    expect(mark[appearance][20]![12]).toBe(-1);
+    expect(mark[appearance].slice(0, 18).every(row => row[7] === -1)).toBe(true);
+    expect(mark[appearance][27]![15]).toBe(-1);
   }
   expect(mark.light.map(row => row.map(pixel => pixel < 0))).toEqual(mark.dark.map(row => row.map(pixel => pixel < 0)));
 });
@@ -31,10 +31,10 @@ test("mesh is reproducibly sampled from both exact owner-authorized SVG byte ide
 test("half-blocks have exact dimensions, neutral 256-color values, and reset every cell", () => {
   for (const appearance of ["light", "dark"] as const) {
     const rows = renderTerminalMark(appearance);
-    expect(rows).toHaveLength(12);
+    expect(rows).toHaveLength(16);
     for (const row of rows) {
-      expect(plain(row)).toHaveLength(18);
-      expect(plain(row)).toMatch(/^[ ▀▄]+$/);
+      expect(plain(row)).toHaveLength(24);
+      expect(plain(row)).toMatch(/^[ ▀▄█]+$/);
       const codes = [...row.matchAll(/\x1b\[([^m]+)m/g)].map(match => match[1]!);
       for (const code of codes) expect(code === "0" || /^(?:38;5;\d+)(?:;48;5;\d+)?$/.test(code)).toBe(true);
       for (const match of row.matchAll(/(?:38|48);5;(\d+)/g)) {
@@ -44,6 +44,15 @@ test("half-blocks have exact dimensions, neutral 256-color values, and reset eve
       expect(row.endsWith(" ") || row.endsWith("\x1b[0m")).toBe(true);
     }
   }
+  // Reconstruct the text-only silhouette, including solid cells: captures must
+  // retain the same geometry when the pane API strips ANSI color information.
+  const rows = renderTerminalMark("dark").map(plain);
+  const reconstructed = rows.flatMap(row => [
+    [...row].map(cell => cell === "█" || cell === "▀"),
+    [...row].map(cell => cell === "█" || cell === "▄"),
+  ]);
+  expect(reconstructed).toEqual(mark.dark.map(row => row.map(pixel => pixel >= 0)));
+  expect(rows.join("")).toContain("█");
   expect(renderTerminalMark("light")).not.toEqual(renderTerminalMark("dark"));
 });
 
@@ -67,7 +76,7 @@ test("no-color, dumb and narrow terminals use an explicit readable text fallback
   for (const env of [{ TERM: "xterm-256color" }, { COLORTERM: "truecolor" }]) expect(terminalHasColor(env)).toBe(true);
   for (const options of [{ columns: 80, color: false }, { columns: 40, color: true }]) {
     const text = renderHeader(options).join("\n");
-    expect(text).toContain("[B] (text fallback)");
+    expect(text).toContain("[LB] (text fallback)");
     expect(text).toContain("LAB-HARNESS");
     expect(text).toContain("Powered by Pi");
     expect(text).toContain(NATIVE_LAB_LABEL);
