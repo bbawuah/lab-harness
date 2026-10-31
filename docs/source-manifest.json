@@ -167,6 +167,7 @@
     "docs/research/agent-tools/evidence/desktop-socket-diagnostic.json",
     "docs/research/agent-tools/evidence/desktop-trial.json",
     "docs/research/agent-tools/evidence/desktop-version.json",
+    "docs/research/agent-tools/evidence/failed-observation-probe.json",
     "docs/research/agent-tools/evidence/first-live-partial.json",
     "docs/research/agent-tools/evidence/first-mcp-cleanup.json",
     "docs/research/agent-tools/evidence/projection-replay.json",
@@ -816,7 +817,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/FIRST-LIVE.md": {
-      "sha256": "95b8b7f0618d857e58fb2fd31b589f92553de7560b3a657a5f38a95d3e3bbe31",
+      "sha256": "47b57b4703c8351c73465d7cd24431f690f26f84c1d6f66f3451920829aff34a",
       "status": "added"
     },
     "docs/research/agent-tools/PROJECTION-CONTRACT.md": {
@@ -873,6 +874,10 @@
     },
     "docs/research/agent-tools/evidence/desktop-version.json": {
       "sha256": "81e4abd01ad74d9708232060e7b80e41cbd5326f93a9c5e0367f51058d524759",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/failed-observation-probe.json": {
+      "sha256": "4a952b3595bf41970a24f067e3a974ce8772286023c84f95a0b430ac9975315d",
       "status": "added"
     },
     "docs/research/agent-tools/evidence/first-live-partial.json": {

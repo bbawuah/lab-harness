@@ -34,7 +34,7 @@ The bridge now validates the pinned version, process and structured exit, `isErr
 
 That is about 82% less tool-output serialization in this fixture. It is not a measured reduction in provider tokens or full request payloads, nor proof that a future model run will fit. Deterministic replay verified `Saved: Fixture Model`, retained all five snapshot refs, rejected bare `e4`, and closed its own browser/listener with no remaining profile. It cannot supply the missing final validation for the earlier live run.
 
-A [separate injected failure](evidence/failed-observation-probe.json) now preserves a bounded independent local `#result` observation before cleanup when available. It records empty output in the untouched fixture, labels it `notModelConfirmation:true`, keeps acceptance false and verifies cleanup. Real failure observations must match the owned origin and reused browser, succeed without truncation, and stay within 1000 bytes; unavailable observation is explicit. No cloud request is needed for this capture.
+A [separate injected failure](evidence/failed-observation-probe.json) now preserves a bounded independent local `#result` observation before cleanup when available. It records `Not saved` in the untouched fixture, labels it `notModelConfirmation:true`, keeps acceptance false and verifies cleanup. Real failure observations must match the owned origin and reused browser, succeed without truncation, and stay within 1000 bytes; unavailable observation is explicit. No cloud request is needed for this capture.
 
 ## Spend and next gate
 
