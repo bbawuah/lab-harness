@@ -7,5 +7,6 @@ const large=new Budget();assert.throws(()=>large.admit({messages:'x'.repeat(2000
 assert.throws(()=>new Budget().observe({}),/USAGE_UNAVAILABLE/);
 assert.throws(()=>new Budget().observe({input:20001,output:1}),/OBSERVED_TOKEN_BUDGET_EXCEEDED/);
 assert.throws(()=>new Budget().observe({input:1,output:4001}),/OBSERVED_TOKEN_BUDGET_EXCEEDED/);
+assert.throws(()=>new Budget().observe({input:0,output:0,cacheRead:0,cacheWrite:0}),/USAGE_UNAVAILABLE/);
 const used=new Budget();used.observe({input:10,output:2,cacheRead:4,cacheWrite:1});assert.equal(used.inputTokens,15);
 console.log('Budget refusal/usage checks passed; HTTP/model calls: 0');

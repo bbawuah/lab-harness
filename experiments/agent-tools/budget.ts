@@ -11,7 +11,7 @@ export class Budget {
   }
   observe(usage: {input?:number;output?:number;cacheRead?:number;cacheWrite?:number}) {
     const values=[usage.input,usage.output,usage.cacheRead??0,usage.cacheWrite??0];
-    if(values.some(v=>typeof v!=='number'||!Number.isFinite(v)||v<0)) throw new Error('USAGE_UNAVAILABLE');
+    if(values.some(v=>typeof v!=='number'||!Number.isFinite(v)||v<0)||values.reduce((sum,v)=>sum+(v??0),0)===0||((usage.input??0)+(usage.cacheRead??0)+(usage.cacheWrite??0))===0) throw new Error('USAGE_UNAVAILABLE');
     this.inputTokens+=usage.input!+(usage.cacheRead??0)+(usage.cacheWrite??0);this.outputTokens+=usage.output!;this.usageReports++;
     if(this.inputTokens>20000 || this.outputTokens>4000) throw new Error('OBSERVED_TOKEN_BUDGET_EXCEEDED');
   }

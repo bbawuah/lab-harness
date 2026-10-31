@@ -161,6 +161,8 @@
     "docs/research/agent-tools/evidence/desktop-version.json",
     "docs/research/agent-tools/evidence/first-mcp-cleanup.json",
     "docs/research/agent-tools/evidence/runner-failure-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-group-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-probe-before-group.json",
     "docs/research/agent-tools/evidence/runner-probe-first.json",
     "docs/research/agent-tools/evidence/runner-probe-relay-refused.json",
     "docs/research/agent-tools/evidence/runner-probe.json",
@@ -212,6 +214,7 @@
     "experiments/agent-tools/check_adapter.py",
     "experiments/agent-tools/check_budget.ts",
     "experiments/agent-tools/check_cleanup.py",
+    "experiments/agent-tools/check_guard.ts",
     "experiments/agent-tools/check_setup.ts",
     "experiments/agent-tools/desktop_trial.py",
     "experiments/agent-tools/fixture.html",
@@ -221,6 +224,8 @@
     "experiments/agent-tools/pi-child.ts",
     "experiments/agent-tools/pi-extension.ts",
     "experiments/agent-tools/prepare-state.ts",
+    "experiments/agent-tools/probe_group.ts",
+    "experiments/agent-tools/process-group.ts",
     "experiments/agent-tools/support.py",
     "install.sh",
     "lab",
@@ -775,7 +780,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/REVIEW.md": {
-      "sha256": "b3291f7846b21ec0ddc79d0f815a44d0a8b9d105ae7c49fd6ee3fe6dda144dd7",
+      "sha256": "feecca30347095bc6c1f4f700b228ec23f9f29fc62d825526f26aafc4d8066b4",
       "status": "added"
     },
     "docs/research/agent-tools/RUNNER-CONTRACT.md": {
@@ -783,7 +788,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/RUNNER.md": {
-      "sha256": "4907c0eb3c31ee62d6292c258871b4235e03f14e787796669f5069f850ad3d9f",
+      "sha256": "a3baabc0a5a77e5dd656212c574dc49699c50db28b44de88aa462d55afae736b",
       "status": "added"
     },
     "docs/research/agent-tools/SOURCES.md": {
@@ -830,6 +835,14 @@
       "sha256": "f3b2b41357188a0cc2fe860758e7ea34319f408d3dda706420e0f25cecd1808f",
       "status": "added"
     },
+    "docs/research/agent-tools/evidence/runner-group-cleanup.json": {
+      "sha256": "cb0379f0b5af914eb20193b468f152f858033fbc06a3acd23f50b86c23abd62b",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-before-group.json": {
+      "sha256": "dbb44af2d363a1a8fa691d545ed7225db698bcc682406092057777491562157e",
+      "status": "added"
+    },
     "docs/research/agent-tools/evidence/runner-probe-first.json": {
       "sha256": "d7e6428a53fa16939958d3fc52116dd9b7fec3a5da442c0c04574254ca911024",
       "status": "added"
@@ -839,7 +852,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/evidence/runner-probe.json": {
-      "sha256": "dbb44af2d363a1a8fa691d545ed7225db698bcc682406092057777491562157e",
+      "sha256": "075d571776e408fb0ff6dd187399c9e3d3ab3e03e2478d16e7a1e1011a884de3",
       "status": "added"
     },
     "docs/research/agent-tools/evidence/screenshot-provenance.json": {
@@ -1015,7 +1028,7 @@
       "status": "added"
     },
     "experiments/agent-tools/budget.ts": {
-      "sha256": "1d9e61c5dc0d5156d664a5c824671c56e5ece987d5d515b54534e9043c46ca0e",
+      "sha256": "5fec8b007c6bf8967d44dd1f78cca389de985f8dfeb01f1dff12e651a600eaff",
       "status": "added"
     },
     "experiments/agent-tools/check_adapter.py": {
@@ -1023,11 +1036,15 @@
       "status": "added"
     },
     "experiments/agent-tools/check_budget.ts": {
-      "sha256": "fb4d9cf904d0242fa9dcdc0d9d6222221888147c4655b64e58bf2e1d1d66e8c9",
+      "sha256": "c5f5a8d8120715854ed0cc8d091df0413a82c9981a6ed7e7615d185fbea8e482",
       "status": "added"
     },
     "experiments/agent-tools/check_cleanup.py": {
       "sha256": "7b719cc3d339ed77e9811185c2a3b467bd91bffa3027087d78d646d29e575547",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_guard.ts": {
+      "sha256": "530235d42102fb80d5b1f2fddc25ed3e985f641e4ee14a2d33e658f216d4f1a4",
       "status": "added"
     },
     "experiments/agent-tools/check_setup.ts": {
@@ -1043,7 +1060,7 @@
       "status": "added"
     },
     "experiments/agent-tools/guard-extension.ts": {
-      "sha256": "ce24a3cab16cc4a8f66d480d4aa24402953c777c6be3520cb38d604a85e3aed9",
+      "sha256": "b6317309f0acdcff47a7b26e238d5011e8704b140b578909658a0223f62bb817",
       "status": "added"
     },
     "experiments/agent-tools/mcp_bridge.py": {
@@ -1051,11 +1068,11 @@
       "status": "added"
     },
     "experiments/agent-tools/model-runner.ts": {
-      "sha256": "20fad5b62a1aebf0d5be57605048ffa0613c491775ef58e674a4416524ffb381",
+      "sha256": "481e70de03a369878abefe302749419d6aa9a400bec77bf08bea2a19c175e5e2",
       "status": "added"
     },
     "experiments/agent-tools/pi-child.ts": {
-      "sha256": "71eaf2fb516788ec486e45bd5b8f3ed61e15755e17d9d717429f5c7ceac4f5a1",
+      "sha256": "5fe6d652d8aac61a4b97e3155b5814fbc1e856b089482fb050fe2d719e341813",
       "status": "added"
     },
     "experiments/agent-tools/pi-extension.ts": {
@@ -1064,6 +1081,14 @@
     },
     "experiments/agent-tools/prepare-state.ts": {
       "sha256": "341e365345b588308808c1f605dd4d029308b98ce9414cbc1163435d5c713f8e",
+      "status": "added"
+    },
+    "experiments/agent-tools/probe_group.ts": {
+      "sha256": "dbfe0a7f7421aae41e654ee2220502702ba1a2c5aeb6380501a41ea3f5b5c480",
+      "status": "added"
+    },
+    "experiments/agent-tools/process-group.ts": {
+      "sha256": "80a7ffe514ee71c8f7a33a446ec470e0fcac9c6c73375b58e3e0aa072d03abee",
       "status": "added"
     },
     "experiments/agent-tools/support.py": {

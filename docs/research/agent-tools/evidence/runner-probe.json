@@ -14,7 +14,7 @@
         ],
         "labExtensionExplicit": true,
         "relayHealthy": true,
-        "sessionId": "01a190f7-52c5-70c7-8169-7a0830f66a64"
+        "sessionId": "01a190fd-517b-776d-9aa1-6bfd16a4a994"
       }
     },
     {
@@ -32,9 +32,9 @@
     "label": "actual-herdr-native-client",
     "runtimeVersion": "0.9.5",
     "paneId": "w1:p2",
-    "serverPid": 88775,
-    "clientPid": 88914,
-    "shellPid": 88908,
+    "serverPid": 4358,
+    "clientPid": 4464,
+    "shellPid": 4461,
     "exitCode": 78,
     "failed": false,
     "startupProof": {
@@ -48,8 +48,9 @@
     }
   },
   "piChildStopped": true,
+  "piProcessGroupStopped": true,
   "relayReleased": true,
   "listenersStopped": true,
   "applicationStateRemoved": true,
-  "interpretation": "Healthy Relay + native Pi/Herdr guard with zero owned-sink requests."
+  "interpretation": "Healthy native Pi/LAB/Relay/Herdr probe after guard/usage/group fixes; zero HTTP; no live model acceptance."
 }

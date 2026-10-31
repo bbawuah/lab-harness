@@ -10,9 +10,9 @@ export default function guard(pi:API) {
  const record=(kind:string,data:unknown)=>{
    const line=JSON.stringify({kind,data})+'\n';size+=Buffer.byteLength(line);
    if(size>64000) process.exit(79);
-   appendFileSync(path,line,{mode:0o600});
+   try{appendFileSync(path,line,{mode:0o600});}catch{process.exit(79);}
  };
- const stop=(code:string):never=>{record('refused',{code});process.exit(78);};
+ const stop=(code:string):never=>{try{record('refused',{code});}finally{process.exit(78);}};
  const deadline=setTimeout(()=>stop('DEADLINE'),120000);deadline.unref();
  pi.on('session_start',async (_event,ctx)=>{
   try {

@@ -23,9 +23,9 @@ The [first guard-only probe](evidence/runner-probe-first.json) preceded healthy 
 ## Limits and accounting
 
 - Native Pi `before_provider_request` modifies the serialized payload to `max_tokens=400`, allows at most ten admissions (stricter than twelve), and refuses cumulative serialized UTF-8 bytes plus 512 units/request above 20,000. **These admission units are not exact model tokens.** They are a conservative heuristic, not a tokenizer guarantee.
-- The guard records native assistant usage, including input/cache counts and output. It refuses missing usage and observed totals above 20k input/4k output. An observed overrun is a failed trial, not proof it was prevented. Ten requested 400-token output caps bound requested output at 4k if the provider honors them; exact server behavior remains unverified until live execution.
+- The guard records native assistant usage, including input/cache counts and output. It refuses missing usage, Pi-shaped all-zero placeholder counters and zero input totals for this nonempty exchange, plus observed totals above 20k input/4k output. An observed overrun is a failed trial, not proof it was prevented. Ten requested 400-token output caps bound requested output at 4k if the provider honors them; exact server behavior remains unverified until live execution.
 - Both agent and provider retries are disabled; compaction is disabled. The native guard has a 120-second deadline, child wrapper 130 seconds, browser commands 30 seconds, bounded stdout/events. No new provider engine or proxy is used.
-- Pi catches exceptions from pre-request hooks. Refusal therefore records a bounded code then **synchronously exits the owned Pi process**, ensuring it cannot fall through to dispatch. The outer controller performs cleanup; the native sink probe demonstrates this path.
+- Pi catches exceptions from pre-request hooks. Refusal **unconditionally exits the owned Pi process**, even if evidence writing fails. Recording errors terminate rather than escape as caught hook exceptions. Normal refusal records a bounded code before the synchronous exit, ensuring it cannot fall through to dispatch. The outer controller performs cleanup; the native sink probe demonstrates this path.
 
 ## Scope, state and acceptance
 
@@ -41,3 +41,9 @@ A successful live run must contain real native Pi tool events, independently obs
 - [Pi release extension events](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/extensions/types.ts): pre-request, usage/message and tool events.
 - [Pi release settings](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/core/settings-manager.ts): separate retry layers.
 - [Pi release CLI](https://github.com/earendil-works/pi/blob/4a080252f06caf63a525d7873c5d94d3c23887e0/packages/coding-agent/src/cli/args.ts): explicit extension/tool flags and print/JSON mode.
+
+## Review fixes and process ownership
+
+The second independent review found log-write failure could let Pi swallow a refusal exception, missing usage could appear as default zero counters, and Pi descendants were not proven stopped. Fixes add unconditional exits on logging/refusal failure, reject unavailable zero usage, and launch native Pi in a dedicated POSIX process group. The wrapper stops/verifies that exact group on normal completion, timeout, output failure or signal; the parent independently verifies group absence before Relay cleanup/app-state removal. The actual [in-flight helper probe](evidence/runner-group-cleanup.json) created and stopped only an owned leader/helper group. `check_guard.ts` injects an unavailable evidence destination and models helper/group cleanup failure offline.
+
+This group boundary covers Pi's normal child bridges/adapters, which inherit its group; it is not a system-wide descendant scanner. The agent-browser daemon/browser may detach and is separately closed by the exact owned session with profile cleanup verification. An unverified group, native worker, Relay release or browser close fails acceptance and retains app state. The previous healthy probe before group hardening is retained separately.

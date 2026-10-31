@@ -77,9 +77,10 @@ finally{
   if(!closeVerified||(herdrStarted&&(!hc?.serverExited||!hc.clientExited||hc.workerStopped!==true||!hc.socketsRemoved)))throw new Error('OWNED_PROCESS_CLEANUP_UNCERTAIN');
   if(herdrStarted){
    const child=JSON.parse(readFileSync(join(run,'pi-exit.process.json'),'utf8'));
-   if(!child.exited||!Number.isSafeInteger(child.pid))throw new Error('PI_CHILD_EXIT_UNCERTAIN');
+   if(!child.exited||!child.groupStopped||child.processGroup!==child.pid||!Number.isSafeInteger(child.pid))throw new Error('PI_CHILD_EXIT_UNCERTAIN');
    try{process.kill(child.pid,0);throw new Error('PI_CHILD_REMAINS');}catch(error:any){if(error.code!=='ESRCH')throw error;}
-   status.piChildStopped=true;
+   try{process.kill(-child.processGroup,0);throw new Error('PI_GROUP_REMAINS');}catch(error:any){if(error.code!=='ESRCH')throw error;}
+   status.piChildStopped=true;status.piProcessGroupStopped=true;
   }
   if(!relayRef)throw new Error('RELAY_PROVISION_UNCERTAIN');
   const ref=JSON.parse(readFileSync(relayRef,'utf8'));

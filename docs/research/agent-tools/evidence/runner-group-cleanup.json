@@ -1,0 +1,9 @@
+{
+  "kind": "actual-owned-process-group-failure-probe",
+  "leader": 7639,
+  "helper": 7641,
+  "groupStopped": true,
+  "leaderStopped": true,
+  "helperStopped": true,
+  "modelCalls": 0
+}
