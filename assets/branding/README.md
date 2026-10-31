@@ -1,9 +1,18 @@
 # Repository branding
 
-The README begins with accessible light/dark `picture` sources using the approved
-monochrome mesh B, followed by the LAB-HARNESS name. References are relative and
-work in GitHub's README renderer. The canonical six tile paths, original gutters
-and four mesh spots are preserved. No colored accent is introduced.
+The README uses the approved monochrome pixel LB in light/dark `picture`
+sources, followed by the LAB-HARNESS name. `pixel-lb-light.svg` is near-black
+(#080808); `pixel-lb-dark.svg` is near-white (#FAFAFA). Both have transparent
+backgrounds and six separately editable tile paths on a 24×32 integer grid.
+The 72×96 display size keeps each module at exactly three CSS pixels.
+
+The pixel silhouette derives from the original six LAB-BAWUAH tile paths,
+retaining the 3:4 proportions, L stem and foot, B lobes and internal divisions.
+Curves become stepped contours and gutters occupy at least one grid module;
+this is a pixel adaptation, not identical canonical geometry. Use integer
+multiples of 24×32, with a recommended minimum height of 32px.
+Source and output hashes are recorded under `pixelLB` in `PROVENANCE.json`.
+The original `terminal-b-*.svg` assets remain the sources for the terminal UI.
 
 `social-preview.png` is the repository-owned 1280×640 social preview: canonical B,
 LAB-HARNESS and a short terminal-harness descriptor. It has safe margins and a

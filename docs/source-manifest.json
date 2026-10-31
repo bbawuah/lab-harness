@@ -45,6 +45,8 @@
     "README.md",
     "assets/branding/PROVENANCE.json",
     "assets/branding/README.md",
+    "assets/branding/pixel-lb-dark.svg",
+    "assets/branding/pixel-lb-light.svg",
     "assets/branding/social-preview.html",
     "assets/branding/social-preview.png",
     "assets/branding/social-preview.svg",
@@ -321,15 +323,23 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "1d5b4f3cc41141062ba43a5f849575a3e5f84829ca95c8c8eb4f17fe6ad8ae7a",
+      "sha256": "30bb2b326aec01c49c8697dbe9e94400faf7dce90748f08eff0113fc34954ca7",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
-      "sha256": "a5e2f223bff188aecdae9dca906b132cdb5143a4765ac9c5dbc2e825c553c182",
+      "sha256": "2b1bff6085c6868d3b5e3b4584c3e6a638a0569f572143225623ca8d19ff8018",
       "status": "added"
     },
     "assets/branding/README.md": {
-      "sha256": "e218984147c885ef854043ba659ba00972d4e27e0e4227e3768e462f76b2961a",
+      "sha256": "4c37f6d8d2a84601ed793919423e2b19d2d32a55feadd2dc5f580ba54fa48f59",
+      "status": "added"
+    },
+    "assets/branding/pixel-lb-dark.svg": {
+      "sha256": "e3be28970afcbb66fc67b3f207ab868a9cc55fa5efc50905e304f5114eeca1e2",
+      "status": "added"
+    },
+    "assets/branding/pixel-lb-light.svg": {
+      "sha256": "7574b9bb30024b7acac6a44b5c52835c353086e4ffa54a58faf3096970a6d761",
       "status": "added"
     },
     "assets/branding/social-preview.html": {

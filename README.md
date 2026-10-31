@@ -1,6 +1,6 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/branding/terminal-b-dark.svg">
-  <img src="assets/branding/terminal-b-light.svg" alt="LAB-HARNESS terminal B" width="84" height="112">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/branding/pixel-lb-dark.svg">
+  <img src="assets/branding/pixel-lb-light.svg" alt="LAB-HARNESS pixel LB monogram" width="72" height="96">
 </picture>
 
 # LAB-HARNESS
@@ -293,11 +293,13 @@ swallowed hook exceptions, compaction/retry paths, auth-dependent routing and
 cache warming as reasons native activation remains blocked. LiteLLM remains an
 existing client destination; this project deploys no gateway or inference backend.
 
-The owner's terminal B uses the canonical six paths and four-spot mesh in neutral
-monochrome. [Light](assets/branding/terminal-b-light.svg) and
-[dark](assets/branding/terminal-b-dark.svg) SVGs have no private runtime dependency.
-[Brand preview](docs/branding-preview.html) and
-[provenance](assets/branding/PROVENANCE.json) retain the source identity.
+The README uses the owner's monochrome pixel LB, adapted from the six original
+LAB-BAWUAH tiles. [Light](assets/branding/pixel-lb-light.svg) and
+[dark](assets/branding/pixel-lb-dark.svg) SVGs have transparent backgrounds and
+no private runtime dependency. The terminal UI retains the original mesh mark.
+[Original brand preview](docs/branding-preview.html) and
+[provenance](assets/branding/PROVENANCE.json) document the source identity and
+pixel adaptation.
 
 The [supported Pi header extension](src/pi/header.ts) replaces Pi's built-in
 startup logo and hints through `ctx.ui.setHeader`, while retaining **Powered by

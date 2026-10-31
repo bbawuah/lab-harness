@@ -52,5 +52,19 @@
       "social-preview.html": "839553df473058ccd8db1beeb8481740fb50fdea57523595cbb92f7fb90af796",
       "social-preview.png": "8c66bb44a0593fd092906510401e8472975c2654cc6d09b5ff2fb5f9cfeb0410"
     }
+  },
+  "pixelLB": {
+    "authorization": "Owner selected the pixel LB silhouette and original monochrome palette, and requested its use in the repository README. No general reuse license is granted.",
+    "source": "assets/branding/terminal-b-light.svg",
+    "sourceSHA256": "8aab0cd157a63c0d1982fcedadcddd3fd300e7227ac8f8431a4f3860c7723e71",
+    "adaptation": "24x32 integer grid sampled from the six original tile paths, with one-module gutters; six editable SVG paths, transparent background, 3:4 proportions.",
+    "palettes": {
+      "light": "#080808",
+      "dark": "#FAFAFA"
+    },
+    "files": {
+      "pixel-lb-light.svg": "7574b9bb30024b7acac6a44b5c52835c353086e4ffa54a58faf3096970a6d761",
+      "pixel-lb-dark.svg": "e3be28970afcbb66fc67b3f207ab868a9cc55fa5efc50905e304f5114eeca1e2"
+    }
   }
 }
