@@ -1,0 +1,53 @@
+{
+  "mode": "live",
+  "model": "gemma4:31b",
+  "actualRoute": "https://ollama.com/v1",
+  "liveAcceptance": true,
+  "budget": {
+    "baseline": {
+      "requests": 4,
+      "inputTokens": 4147,
+      "outputTokens": 117
+    },
+    "attempt": {
+      "requests": 5,
+      "inputTokens": 3104,
+      "outputTokens": 115
+    },
+    "cumulative": {
+      "requests": 9,
+      "inputTokens": 7251,
+      "outputTokens": 232
+    },
+    "usageComplete": true,
+    "observedBudgetExceeded": false
+  },
+  "piExit": 0,
+  "piVersion": "1.4.0",
+  "fixtureResult": "Saved: Fixture Model",
+  "browserCleanupVerified": true,
+  "piChildStopped": true,
+  "piProcessGroupStopped": true,
+  "relayReleased": true,
+  "listenersStopped": true,
+  "applicationStateRemoved": true,
+  "sourceCommit": "715cddeb6ec0e63659de55345771d42973015fd9",
+  "originalResultSHA256": "44cf586d5864eaf6a9355374204376b7858c4e163acf2f8bc3328169b6989f9d",
+  "date": "2026-10-31",
+  "herdrVersion": "0.9.5",
+  "herdrCleanup": {
+    "serverExited": true,
+    "clientExited": true,
+    "workerStopped": true,
+    "socketsRemoved": true
+  },
+  "admissionUnits": 15764,
+  "probeCounterNotice": "sinkRequests is probe-only and omitted; this live continuation made five cloud requests.",
+  "fixtureObservation": {
+    "kind": "independent-local-fixture-observation",
+    "origin": "<OWNED_LOOPBACK_FIXTURE>",
+    "text": "Saved: Fixture Model",
+    "notModelConfirmation": true
+  },
+  "sanitization": "Ephemeral origin/session/process/pane identifiers omitted; no credential/config/state paths included."
+}

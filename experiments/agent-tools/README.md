@@ -1,6 +1,6 @@
 # Owned agent-tool experiments
 
-Status: deterministic macOS browser trial executed; desktop permission preflight executed; first actual Pi/model attempt PARTIAL (see FIRST-LIVE.md), no automatic retry. Read the [report](../../docs/research/agent-tools/REPORT.md) and [contract](../../docs/research/agent-tools/CONTRACT.md) first.
+Status: deterministic macOS browser trial executed; desktop permission preflight executed; first actual Pi/model attempt PARTIAL; authorized continuation PASSED (see [verified evidence](../../docs/research/agent-tools/LIVE-SUCCESS.md)). No automatic retry. Read the [report](../../docs/research/agent-tools/REPORT.md) and [contract](../../docs/research/agent-tools/CONTRACT.md) first.
 
 On an approved macOS arm64 host with Python 3.12+ and existing Google Chrome, from repository root:
 

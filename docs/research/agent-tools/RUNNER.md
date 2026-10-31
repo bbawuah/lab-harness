@@ -1,6 +1,8 @@
 # Prepared native Pi/LAB model trial
 
-Status: **first authenticated live run PARTIAL; complete acceptance still pending**. See [actual sequence/spend and projection correction](FIRST-LIVE.md). Root owns credential injection and any newly authorized remaining allowance. No credential lookup or model request was made by this worker during the correction.
+**Current status:** [Authorized live continuation passed](LIVE-SUCCESS.md) at source `715cddeb`; first run remains PARTIAL. Cumulative usage: 9 requests / 7251 input / 232 output tokens. Earlier preparation/probe descriptions below retain their historical context.
+
+Status: **first authenticated live run PARTIAL; subsequent continuation passed**. See [actual sequence/spend and projection correction](FIRST-LIVE.md). Root owns credential injection and any newly authorized remaining allowance. No credential lookup or model request was made by this worker during the correction.
 
 ## One live entrypoint, after root's credential-ready handoff
 

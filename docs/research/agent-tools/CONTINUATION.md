@@ -1,5 +1,7 @@
 # Evidence-bound remaining allowance
 
+**Current status:** [Authorized live continuation passed](LIVE-SUCCESS.md) at source `715cddeb`; first run remains PARTIAL. Cumulative usage: 9 requests / 7251 input / 232 output tokens. Earlier preparation/probe descriptions below retain their historical context.
+
 The projection correction at `8bc43097f20826cdc25b09d3454cb1ab4a7fadf3` was independently approved. This subsequent experiment-only delta prevents the next authorized live attempt from starting with zero prior spend. No new model/auth call was made.
 
 The required nonsecret selector is **`LAB_AGENT_TOOLS_PRIOR_USAGE=first-live-72b1`**. Both the launcher (before allocation) and the guard independently validate the committed first-live evidence:
@@ -32,6 +34,6 @@ After independent review and root's new authorization, its private GUI wrapper s
 bun --no-env-file --no-install experiments/agent-tools/model-runner.ts --live
 ```
 
-Route/model remain `https://ollama.com/v1` / `gemma4:31b`. The worker does not access credentials, reset locks, run this live command or claim acceptance. Root must pin the reviewed commit/runtime and issue the new command; the earlier wrapper is stale. Complete live acceptance remains pending, and the first attempt remains PARTIAL.
+Route/model remain `https://ollama.com/v1` / `gemma4:31b`. The worker does not access credentials, reset locks, run this live command or claim acceptance. Root must pin the reviewed commit/runtime and issue the new command; the earlier wrapper is stale. The authorized continuation subsequently passed; the first attempt remains PARTIAL (see LIVE-SUCCESS.md).
 
 Review5 found stale final request counts when a later admitted request lacked usage, plus lost overrun totals on thrown observation. The reporting fix derives counts from admissions and records observed overruns before refusal. `check_budget_report.ts` reproduces baseline4 → completedrequest5 → missing-usage request6 (count6, token totals unknown), then verifies that an observed aggregate20247 input overrun remains visible and failed. The budget ceilings/admission enforcement and cleanup are unchanged by this reporting fix.

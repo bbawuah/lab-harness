@@ -1,0 +1,256 @@
+{
+  "sourceCommit": "715cddeb6ec0e63659de55345771d42973015fd9",
+  "projection": "Exact recorded events with ephemeral sessionId omitted; no tool-result bodies added.",
+  "events": [
+    {
+      "kind": "budget_baseline",
+      "data": {
+        "requests": 4,
+        "inputTokens": 4147,
+        "outputTokens": 117
+      }
+    },
+    {
+      "kind": "session_start",
+      "data": {
+        "activeTools": [
+          "lab_owned_browser"
+        ],
+        "labExtensionExplicit": true,
+        "relayHealthy": true
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "attemptRequest": 1,
+        "cumulativeRequest": 5,
+        "admissionUnits": 1807,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "attempt": {
+          "requests": 1,
+          "inputTokens": 276,
+          "outputTokens": 17
+        },
+        "cumulative": {
+          "requests": 5,
+          "inputTokens": 4423,
+          "outputTokens": 134
+        },
+        "usageReports": 1,
+        "complete": true
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "snapshot"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "attemptRequest": 2,
+        "cumulativeRequest": 6,
+        "admissionUnits": 4630,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "attempt": {
+          "requests": 2,
+          "inputTokens": 821,
+          "outputTokens": 53
+        },
+        "cumulative": {
+          "requests": 6,
+          "inputTokens": 4968,
+          "outputTokens": 170
+        },
+        "usageReports": 2,
+        "complete": true
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "fill",
+          "ref": "@e4",
+          "text": "Fixture Model"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "attemptRequest": 3,
+        "cumulativeRequest": 7,
+        "admissionUnits": 7900,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "attempt": {
+          "requests": 3,
+          "inputTokens": 1472,
+          "outputTokens": 82
+        },
+        "cumulative": {
+          "requests": 7,
+          "inputTokens": 5619,
+          "outputTokens": 199
+        },
+        "usageReports": 3,
+        "complete": true
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "click",
+          "ref": "@e5"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "attemptRequest": 4,
+        "cumulativeRequest": 8,
+        "admissionUnits": 11592,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "attempt": {
+          "requests": 4,
+          "inputTokens": 2222,
+          "outputTokens": 105
+        },
+        "cumulative": {
+          "requests": 8,
+          "inputTokens": 6369,
+          "outputTokens": 222
+        },
+        "usageReports": 4,
+        "complete": true
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "toolUse",
+        "text": ""
+      }
+    },
+    {
+      "kind": "tool_start",
+      "data": {
+        "tool": "lab_owned_browser",
+        "args": {
+          "operation": "get_result"
+        }
+      }
+    },
+    {
+      "kind": "tool_end",
+      "data": {
+        "tool": "lab_owned_browser",
+        "isError": false
+      }
+    },
+    {
+      "kind": "request_admitted",
+      "data": {
+        "attemptRequest": 5,
+        "cumulativeRequest": 9,
+        "admissionUnits": 15764,
+        "maxOutputTokens": 400
+      }
+    },
+    {
+      "kind": "usage",
+      "data": {
+        "attempt": {
+          "requests": 5,
+          "inputTokens": 3104,
+          "outputTokens": 115
+        },
+        "cumulative": {
+          "requests": 9,
+          "inputTokens": 7251,
+          "outputTokens": 232
+        },
+        "usageReports": 5,
+        "complete": true
+      }
+    },
+    {
+      "kind": "assistant",
+      "data": {
+        "stopReason": "stop",
+        "text": "Saved: Fixture Model"
+      }
+    }
+  ]
+}

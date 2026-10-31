@@ -1,6 +1,8 @@
 # Agent browser and desktop: bounded local evaluation
 
-Evidence date: 2026-10-31. **Browser deterministic fixture: passed. Desktop AX interaction: BLOCKED PERMISSION. Model/Pi first live run: PARTIAL.** This is an experiment, not a qualified LAB feature or airgap release.
+**Current status:** [Authorized live continuation passed](LIVE-SUCCESS.md) at source `715cddeb`; first run remains PARTIAL. Cumulative usage: 9 requests / 7251 input / 232 output tokens. Earlier preparation/probe descriptions below retain their historical context.
+
+Evidence date: 2026-10-31. **Browser deterministic fixture: passed. Desktop AX interaction: BLOCKED PERMISSION. Model/Pi: authorized continuation PASSED; first run PARTIAL.** This is an experiment, not a qualified LAB feature or airgap release.
 
 Recommend evaluating an explicit, narrow Pi tool extension over agent-browser's official one-shot MCP commands. Keep the owned ephemeral browser first. Defer desktop interaction until an operator has approved the launching application's Accessibility access and a disposable app/PID is prepared. No production integration, installer, provider route or enterprise configuration changed.
 
@@ -21,7 +23,7 @@ Desktop 1.0.2 initially failed command-host startup ([original](evidence/desktop
 | Native CLI subprocess | Actual fixture proof; model-neutral JSON; simple operator reproduction | Own argument validation, time/output bounds, environment and session lifecycle; exposing shell grants unnecessary authority |
 | Official one-shot MCP | Actual same-session title and denied-host proof; version-matched tool schemas/annotations/profiles in generated catalog | Re-exec needs explicit environment/session propagation; MCP itself is transport, not profile isolation |
 | Persistent MCP server | Source-supported protocol/server lifecycle, schema discovery | Extra process lifecycle and channel management; public LAB launcher disables ambient MCP; not run |
-| Explicit experimental Pi extension | Prepared [adapter](../../../experiments/agent-tools/pi-extension.ts) maps four fixture operations to official tools, with no arbitrary shell, URL, file, eval or desktop operations | Actually invoked by native Pi/model in the partial first live run; public LAB launcher does not load it |
+| Explicit experimental Pi extension | Prepared [adapter](../../../experiments/agent-tools/pi-extension.ts) maps four fixture operations to official tools, with no arbitrary shell, URL, file, eval or desktop operations | Actually invoked by native Pi/model in the successful continuation; public LAB launcher does not load it |
 | Built-in chat/eve integration | Upstream integrations demonstrate packaging choices | Not equivalent to LAB/Pi integration; not installed or invoked |
 
 The generated `@agent-browser/sandbox/mcp-tools.json` catalog includes schemas and startup profiles; use it rather than inventing a complete CLI-to-tool mapping. This experiment narrows the surface to snapshot, fill, click and result text. See [first live evidence and correction](FIRST-LIVE.md): four real model requests invoked snapshot/fill/click, then admission refused continuation before final verification. The adapter is provider-neutral and uses no SDK for Anthropic/Ollama. Its subprocess environment omits credentials. It bounds returned stdout and duration; browser `maxOutput` bounds normal content. Input validation is not a browser sandbox: the trusted operator must create the exact owned fixture/session/config and serialize actions. The prepared bridge can launch a missing session; it does not independently prove fixture identity. A future model launcher must verify the marker before enabling tools and own close/recovery in `finally`.
@@ -59,6 +61,6 @@ Manual setup, only after operator authorization: open System Settings → Privac
 
 ## Remaining acceptance gates
 
-1. Model **PARTIAL**: first live attempt used four requests and 4147/117 reported tokens; root owns any newly authorized follow-up allowance. No duplicate auth attempts or secrets in this report. The fixed prepared route/model and budget/cleanup gates are documented in RUNNER.md; actual native model/tool invocation and usage still require the authorized live run.
+1. Model **PASSED in the subsequent bounded continuation** (LIVE-SUCCESS.md): first live attempt used four requests and 4147/117 reported tokens; root owns any newly authorized follow-up allowance. No duplicate auth attempts or secrets in this report. The fixed prepared route/model and budget/cleanup gates are documented in RUNNER.md; the subsequent authorized live run passed (see LIVE-SUCCESS.md).
 2. Desktop **BLOCKED PERMISSION**: existing approved Accessibility grant, owned fixture app/PID, semantic read/action/verification, stale-ref check and owned-host cleanup. No grant prompt or settings change performed.
 3. Cross-platform/airgap: offline cold start with staged assets; Windows/WSL Edge prerequisites; network boundaries; concurrency/locking; crash cleanup; existing-session no-effects gate. All unexecuted.

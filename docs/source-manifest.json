@@ -155,6 +155,7 @@
     "docs/research/agent-tools/CONTINUATION.md",
     "docs/research/agent-tools/CONTRACT.md",
     "docs/research/agent-tools/FIRST-LIVE.md",
+    "docs/research/agent-tools/LIVE-SUCCESS.md",
     "docs/research/agent-tools/PROJECTION-CONTRACT.md",
     "docs/research/agent-tools/REPORT.md",
     "docs/research/agent-tools/REVIEW.md",
@@ -173,6 +174,10 @@
     "docs/research/agent-tools/evidence/failed-observation-probe.json",
     "docs/research/agent-tools/evidence/first-live-partial.json",
     "docs/research/agent-tools/evidence/first-mcp-cleanup.json",
+    "docs/research/agent-tools/evidence/live-success-events.json",
+    "docs/research/agent-tools/evidence/live-success.json",
+    "docs/research/agent-tools/evidence/model-native-provenance.json",
+    "docs/research/agent-tools/evidence/model-native.png",
     "docs/research/agent-tools/evidence/projection-replay.json",
     "docs/research/agent-tools/evidence/runner-failure-cleanup.json",
     "docs/research/agent-tools/evidence/runner-group-cleanup.json",
@@ -824,7 +829,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/CONTINUATION.md": {
-      "sha256": "403dc2b81076f54ab1d6fef07d7b5282bb5ccf854ae58c753441ea79cd6d4781",
+      "sha256": "e449353f0e162702db5307de32d86faf8efb0d29596239b28bba8312062606f2",
       "status": "added"
     },
     "docs/research/agent-tools/CONTRACT.md": {
@@ -835,12 +840,16 @@
       "sha256": "7445053eaf6e5bb257ef5a07eeb915357bb7e4aae850b816352bd49113d77bf0",
       "status": "added"
     },
+    "docs/research/agent-tools/LIVE-SUCCESS.md": {
+      "sha256": "dcb2814cc028febef1af789aad8300ac864aec465da591f8f4a90f234160b32f",
+      "status": "added"
+    },
     "docs/research/agent-tools/PROJECTION-CONTRACT.md": {
       "sha256": "ec89b3051591f202cc3ecb8a23c73926d5bf8fec8221dffa49e00ffc10873daa",
       "status": "added"
     },
     "docs/research/agent-tools/REPORT.md": {
-      "sha256": "9432a2d52a078d5d881ee5db509a8e565ddc7e15ded486e0bf8cb464b28628d3",
+      "sha256": "3dcace735063a6bdcc28ec17ee581a53e38d81499a4a75cb2edbe9b5de88d189",
       "status": "added"
     },
     "docs/research/agent-tools/REVIEW.md": {
@@ -852,7 +861,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/RUNNER.md": {
-      "sha256": "7a3b8844f0aa089df2cdf16a4be579e02fd25c8f28d4f9a5c43538abcb804706",
+      "sha256": "c175b0fc8c973c28808cb2d7315f65c183e89de20931cc2bb61b29e7550c9581",
       "status": "added"
     },
     "docs/research/agent-tools/SOURCES.md": {
@@ -907,6 +916,22 @@
       "sha256": "5412f9ad8110e7ea6bc120549b703526a2e954b5b3713e42d2c61424b0134e39",
       "status": "added"
     },
+    "docs/research/agent-tools/evidence/live-success-events.json": {
+      "sha256": "5c3193009cca5f3fb89dfe303610cc7517f7d561a738674f4999d4e153ffeb19",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/live-success.json": {
+      "sha256": "6880055338ff3e11e829224d5a61b9fad39123e50337ceb1bcfef15f4ade7c50",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/model-native-provenance.json": {
+      "sha256": "36e7e883665ea00eabd3bddd49e5918cb98d0b2820089d372636408f951f1762",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/model-native.png": {
+      "sha256": "d0265b2b9915f7b5c59dc36d32981435435d3308e9872a204a3af501aac7d11e",
+      "status": "added"
+    },
     "docs/research/agent-tools/evidence/projection-replay.json": {
       "sha256": "1428a12ae5318fdfb30288a055a41c880df2d8e3c892b1ef022f3b4287e87944",
       "status": "added"
@@ -940,7 +965,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/report.html": {
-      "sha256": "4f79f84ad9a5ba8db93913e7fe9a52e6f7faa924b2f5ab8af0c989d0fd603b33",
+      "sha256": "b17f3ccdcb415351774e5ec2f5347c5f5e18d96a5df09fb296fa002b80cbcc8c",
       "status": "added"
     },
     "docs/research/airgap-browser/ARCHITECTURE.md": {
@@ -1092,7 +1117,7 @@
       "status": "added"
     },
     "experiments/agent-tools/README.md": {
-      "sha256": "7c49230455314b00ca90498484283cdb88166bb86d8a20b3b21cc5aad0d18d9d",
+      "sha256": "d4c629a3040398a5517cdc017addd2fbe4314fb4edd0ae19fc8e686d0901ee2f",
       "status": "added"
     },
     "experiments/agent-tools/acquire.py": {
