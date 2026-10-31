@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "captureType": "sanitized actual-Herdr test observations; no Pi/model calls; rendered report is not terminal UI pixels",
+  "sourceBase": "5a4edc2797d005643a1fc2f4c40404f4a2974b39",
+  "testSHA256": "ddd294229e6ccc8ce6838fc26c712e085db0020394eec84d31791e195f83a112",
+  "environment": {
+    "os": "Darwin arm64",
+    "bun": "1.4.2",
+    "herdr": "0.9.5",
+    "herdrSource": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+    "herdrExecutableSHA256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2"
+  },
+  "originalCI": {
+    "prHead": "a56152f8d6164f1711c907fd5a00b1906c791316",
+    "run": 41182010948,
+    "job": 124481170851,
+    "privateRawSHA256": "91a9cb0b027316eebd71d1f98452f038b80e02eb9ca238bb69626aca3124d4bb",
+    "result": "273 pass, 1 skip, 1 fail; result 143 passed before absence-only proof failed; later cleanup assertions not reached"
+  },
+  "focused": {
+    "command": "LAB_HERDR_ACTUAL=1 bun --no-env-file --no-install test tests/herdr-shell.test.ts",
+    "tests": 29,
+    "assertions": 345,
+    "failures": 0,
+    "durationSeconds": 46.65,
+    "logSHA256": "ab9fade218a5be171c55ef535c9d050ce514a3e10522093a901ad2a1c6c4584f"
+  },
+  "oldAssertionReproduction": {
+    "command": "LAB_HERDR_ACTUAL=1 bun --no-env-file --no-install test ./.tmp/startup-signal-diagnosis/old-assumption.test.ts --test-name-pattern 'TERM priority \\(single, known-pid\\)'",
+    "change": "Same corrected fixture with only the old unconditional absent-PID assertion appended after the new cleanup assertions. Absolute import paths adjusted for ignored copy.",
+    "expectedFailure": "Expected authoritative-exit-and-pane-absent; received undefined",
+    "tests": 1,
+    "failures": 1,
+    "logSHA256": "e0ba24cf6be8092f157f45498f794fdbca856ebddfb6190ddac4bfae68886a3b",
+    "observations": [
+      {
+        "signal": "TERM",
+        "layout": "single",
+        "malformed": false,
+        "ordering": {
+          "ordering": "known-pid",
+          "nativePid": 91692,
+          "aliveAfterStatus": true,
+          "signalObserved": true
+        },
+        "workerPID": 91692,
+        "adapterPID": 91692,
+        "result": "143",
+        "error": null,
+        "failed": false,
+        "startupProof": {
+          "bootstrapStopped": true
+        },
+        "cleanup": {
+          "serverExited": true,
+          "clientExited": true,
+          "workerStopped": true,
+          "socketsRemoved": true
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "signal": "TERM",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "known-pid",
+        "nativePid": 91380,
+        "aliveAfterStatus": true,
+        "signalObserved": true
+      },
+      "workerPID": 91380,
+      "adapterPID": 91380,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "absent-pid",
+        "nativePaneAbsent": true,
+        "workerGone": true
+      },
+      "workerPID": 91510,
+      "adapterPID": null,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "known-pid",
+        "nativePid": 91155,
+        "aliveAfterStatus": true,
+        "signalObserved": true
+      },
+      "workerPID": 91155,
+      "adapterPID": 91155,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "natural"
+      },
+      "workerPID": 91476,
+      "adapterPID": null,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "natural"
+      },
+      "workerPID": 91134,
+      "adapterPID": null,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "split",
+      "malformed": true,
+      "ordering": {
+        "ordering": "natural"
+      },
+      "workerPID": 91554,
+      "adapterPID": null,
+      "result": null,
+      "error": "Error: Invalid Pi exit status",
+      "failed": true,
+      "startupProof": {
+        "bootstrapStopped": true
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "natural"
+      },
+      "workerPID": 91303,
+      "adapterPID": null,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "absent-pid",
+        "nativePaneAbsent": true,
+        "workerGone": true
+      },
+      "workerPID": 91409,
+      "adapterPID": null,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "split",
+      "malformed": false,
+      "ordering": {
+        "ordering": "known-pid",
+        "nativePid": 91501,
+        "aliveAfterStatus": true,
+        "signalObserved": true
+      },
+      "workerPID": 91501,
+      "adapterPID": 91501,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "absent-pid",
+        "nativePaneAbsent": true,
+        "workerGone": true
+      },
+      "workerPID": 91463,
+      "adapterPID": null,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "TERM",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "absent-pid",
+        "nativePaneAbsent": true,
+        "workerGone": true
+      },
+      "workerPID": 91166,
+      "adapterPID": null,
+      "result": "143",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "known-pid",
+        "nativePid": 91449,
+        "aliveAfterStatus": true,
+        "signalObserved": true
+      },
+      "workerPID": 91449,
+      "adapterPID": 91449,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": true,
+        "socketsRemoved": true
+      }
+    },
+    {
+      "signal": "HUP",
+      "layout": "single",
+      "malformed": false,
+      "ordering": {
+        "ordering": "natural"
+      },
+      "workerPID": 91431,
+      "adapterPID": null,
+      "result": "129",
+      "error": null,
+      "failed": false,
+      "startupProof": {
+        "bootstrapStopped": true,
+        "pi": "authoritative-exit-and-pane-absent"
+      },
+      "cleanup": {
+        "serverExited": true,
+        "clientExited": true,
+        "workerStopped": "unknown",
+        "socketsRemoved": true
+      }
+    }
+  ],
+  "limits": [
+    "The original CI attachment was not available; its exact scheduling order cannot be reconstructed. The controlled reproduction proves the assertion rejects a legitimate recorded-PID ordering.",
+    "Controlled native request wrapper forwards original response objects and errors. It gates scheduling only; extra observations are read-only. Known-PID workers remain alive until real cleanup; absent-PID workers exit before returning the original layout response.",
+    "A preliminary wrapper lacked an event-loop signal-delivery acknowledgement and returned status 37. The final gate waits for a real signal event and status before returning the native response; it does not assign production signal state. This is fixture qualification, not proof of an additional production defect.",
+    "Darwin native validation only here; Ubuntu CI remains required. No full local gate, model calls, live user state, production changes or installer repin.",
+    "PR17 reload HOLD and PR18 frozen styling are unchanged."
+  ]
+}
