@@ -92,6 +92,18 @@
     "docs/evidence/interactive-terminal.ansi",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
+    "docs/evidence/pixel-lb/README.md",
+    "docs/evidence/pixel-lb/audit.py",
+    "docs/evidence/pixel-lb/capture.json",
+    "docs/evidence/pixel-lb/compact.txt",
+    "docs/evidence/pixel-lb/dark.txt",
+    "docs/evidence/pixel-lb/fallback.txt",
+    "docs/evidence/pixel-lb/light.txt",
+    "docs/evidence/pixel-lb/prepare.py",
+    "docs/evidence/pixel-lb/render.py",
+    "docs/evidence/pixel-lb/split.txt",
+    "docs/evidence/pixel-lb/terminal-text.html",
+    "docs/evidence/pixel-lb/terminal-text.png",
     "docs/evidence/project-events.json",
     "docs/evidence/project-terminal.ansi",
     "docs/evidence/provider-design.html",
@@ -311,7 +323,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "8a7ecbfc04569fa87a8bc092cabbd1989b24d815958e33db971c0aeb4e16a096",
+      "sha256": "137042d022788a974dc9caa149c91b53931c9f9bc283709b008e24791d38cc18",
       "status": "added"
     },
     ".gitignore": {
@@ -323,7 +335,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "ae8ead6ba13f68e3ff7bcab76ce2f2647df55fc7f59247bb4be1e8cd75f4a472",
+      "sha256": "50432471dcbd4f5e9f130ad581c92f8f988130774ad4c7aabc7afc669cb214c2",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -521,6 +533,54 @@
     },
     "docs/evidence/pi-local-tool-events.jsonl": {
       "sha256": "c1923747ef6344e53e6106d754ca6a0b90ff96bc8d9094618123618920569aac",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/README.md": {
+      "sha256": "350efa524dd538909c5f4d80d7b2e984bcaa6ed4c5115586400ad3c71b09b309",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/audit.py": {
+      "sha256": "7d9f403b5c041f91cb2a3d17709297563f80b07eb55f29ab3c726f52b25aeec5",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/capture.json": {
+      "sha256": "c0115c3f67cf2cc2de1d141e6fc23ab8510d3ff41ada94206d7b3757f443374e",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/compact.txt": {
+      "sha256": "f6ab1ce8104d05a8c17bc36188ab89a67127e40c27d9b35aa197542f4263eb7d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/dark.txt": {
+      "sha256": "3069f555c73bc1ac75ac8170fe3d46364ff16b1104ffc6f2d4f4989b2a4b172d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/fallback.txt": {
+      "sha256": "8862ab453086ab3706249366b0e8b441eba33d4c3e9bc881147d095c40da7efe",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/light.txt": {
+      "sha256": "769f2559208f9759d6c8f21b3467dc2e74c0e0e9af7b0ccceaae500d68343fd5",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/prepare.py": {
+      "sha256": "23c3d1617b7b1dc16fd22d850dad32524a0d643e46fffe93b1497ecc9be24590",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/render.py": {
+      "sha256": "e6c4ea19bf51c35c85cb8fe3593c8d13e09da8a51c9a48e5aa04d86e51501bd0",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/split.txt": {
+      "sha256": "800d0171e6621d6ab590b236fbe6fa1cc2cac67da7581c479caf42da4033dc75",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/terminal-text.html": {
+      "sha256": "1128a0b3e73eddaf98eb4ff5343fb372da50148344c20e557fec5dffe4b3ed8d",
+      "status": "added"
+    },
+    "docs/evidence/pixel-lb/terminal-text.png": {
+      "sha256": "588469dbf25c668291028685ccf14e167a8189fcc12aee2a0607c047907b80ac",
       "status": "added"
     },
     "docs/evidence/project-events.json": {

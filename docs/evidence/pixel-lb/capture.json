@@ -1,0 +1,67 @@
+{
+  "sourceSHA": "b4cc6d2a9b6c0ae468ed5f9af68a65d5d4cb6c24",
+  "providerRequests": 0,
+  "cleanup": [
+    {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    },
+    {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    },
+    {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  ],
+  "kind": "Browser rendering of recorded native terminal text, not live pixels",
+  "cleanAtCapture": true,
+  "platform": "Darwin arm64",
+  "pi": "1.4.0",
+  "herdr": "0.9.5",
+  "bun": "1.4.2",
+  "captures": {
+    "split.txt": {
+      "source": "split-outer.txt",
+      "originalSHA256": "d8ac3f3d562d8948eb398ae6c8cf918cd9458c875a6331db89afd15fcc0b8b7d",
+      "sanitizedSHA256": "800d0171e6621d6ab590b236fbe6fa1cc2cac67da7581c479caf42da4033dc75",
+      "sanitization": "Equal-width substitution of owned run/checkout paths, including truncated owned-path prefixes; no logo edits."
+    },
+    "light.txt": {
+      "source": "light-pane.txt",
+      "originalSHA256": "c2b61a185155f791d9a84d25668cd14f414fd1aebadf3d203c12e3cbe4931153",
+      "sanitizedSHA256": "769f2559208f9759d6c8f21b3467dc2e74c0e0e9af7b0ccceaae500d68343fd5",
+      "sanitization": "Equal-width substitution of owned run/checkout paths, including truncated owned-path prefixes; no logo edits."
+    },
+    "dark.txt": {
+      "source": "dark-pane.txt",
+      "originalSHA256": "0adb2d0f499c4d262580c9af7c31888c40569ca55baa1bc878fe6c312f938742",
+      "sanitizedSHA256": "3069f555c73bc1ac75ac8170fe3d46364ff16b1104ffc6f2d4f4989b2a4b172d",
+      "sanitization": "Equal-width substitution of owned run/checkout paths, including truncated owned-path prefixes; no logo edits."
+    },
+    "compact.txt": {
+      "source": "compact-pane.txt",
+      "originalSHA256": "5f8bd923896461a41fa7b1713cf5647ba1944e3cf6ac55df7a473ef08c9bcc31",
+      "sanitizedSHA256": "f6ab1ce8104d05a8c17bc36188ab89a67127e40c27d9b35aa197542f4263eb7d",
+      "sanitization": "Equal-width substitution of owned run/checkout paths, including truncated owned-path prefixes; no logo edits."
+    },
+    "fallback.txt": {
+      "source": "fallback-pane.txt",
+      "originalSHA256": "97281572d4165020bc07f70d0c685d796d0c00e24f65366430ae5f44b36b112a",
+      "sanitizedSHA256": "8862ab453086ab3706249366b0e8b441eba33d4c3e9bc881147d095c40da7efe",
+      "sanitization": "Equal-width substitution of owned run/checkout paths, including truncated owned-path prefixes; no logo edits."
+    }
+  },
+  "renderedAssets": {
+    "terminal-text.html": "1128a0b3e73eddaf98eb4ff5343fb372da50148344c20e557fec5dffe4b3ed8d",
+    "terminal-text.png": "588469dbf25c668291028685ccf14e167a8189fcc12aee2a0607c047907b80ac"
+  },
+  "renderer": "T3 html_preview, width 1280, height 1959; browser text reconstruction"
+}
