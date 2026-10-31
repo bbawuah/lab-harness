@@ -101,6 +101,12 @@
     "docs/evidence/relay-workspace.html",
     "docs/evidence/relay-workspace.json",
     "docs/evidence/relay-workspace.png",
+    "docs/evidence/startup-signal/README.md",
+    "docs/evidence/startup-signal/focused.txt",
+    "docs/evidence/startup-signal/old-assumption.txt",
+    "docs/evidence/startup-signal/report.html",
+    "docs/evidence/startup-signal/report.json",
+    "docs/evidence/startup-signal/report.png",
     "docs/evidence/subsequent-project-terminal.ansi",
     "docs/evidence/tui/README.md",
     "docs/evidence/tui/capture.json",
@@ -593,6 +599,30 @@
     },
     "docs/evidence/relay-workspace.png": {
       "sha256": "e73c82a14b33ba11627f9a35de15cfb412547745df25033aca6afea68579b7e8",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/README.md": {
+      "sha256": "8465b1b6242890dd952957ffe7c35e21cf17d69dd52a3b8d246ff1ce3b3bb03d",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/focused.txt": {
+      "sha256": "ab9fade218a5be171c55ef535c9d050ce514a3e10522093a901ad2a1c6c4584f",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/old-assumption.txt": {
+      "sha256": "8c3460eddaeb96fec62e825ff77017bf82cbdad3b4ce9dfa7121cf05d932c591",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/report.html": {
+      "sha256": "bea3fca439f83a8b32d11ef10a9f78276826dcf1157d4e862421629f990b8168",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/report.json": {
+      "sha256": "cac2d9037ebeae92033bcce5f96fa47d322b6ba6123fc684772f380fb6da6c5c",
+      "status": "added"
+    },
+    "docs/evidence/startup-signal/report.png": {
+      "sha256": "dd2bc2cc4ef641b0f148a9209fc4743e5c0e3b2ae1d95b01f63ac30380e7a54a",
       "status": "added"
     },
     "docs/evidence/subsequent-project-terminal.ansi": {
@@ -1391,7 +1421,7 @@
       "status": "added"
     },
     "tests/herdr-shell.test.ts": {
-      "sha256": "01e8c918ccdfb5832cd1b33ba0c9fa5934498c06a55161629c060508a41141f2",
+      "sha256": "ddd294229e6ccc8ce6838fc26c712e085db0020394eec84d31791e195f83a112",
       "status": "added"
     },
     "tests/herdr.test.ts": {

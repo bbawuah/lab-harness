@@ -1,0 +1,23 @@
+bun test v1.4.2 (744846f84)
+
+.tmp/startup-signal-diagnosis/old-assumption.test.ts:
+299 |       expect(readFileSync(join(root, "exit"), "utf8").trim()).toBe("37");
+300 |       expect(readFileSync(join(root, "result"), "utf8")).toBe(signal === "TERM" ? "143" : "129");
+301 |     }
+302 |     const observation = JSON.parse(readFileSync(join(root, "attachment.json"), "utf8"));
+303 |     assertSignalCleanup(observation, malformed);
+304 |     expect(observation.startupProof.pi).toBe("authoritative-exit-and-pane-absent");
+                                              ^
+error: expect(received).toBe(expected)
+
+Expected: "authoritative-exit-and-pane-absent"
+Received: undefined
+
+      at <anonymous> (<checkout>/.tmp/startup-signal-diagnosis/old-assumption.test.ts:304:41)
+(fail) fast startup Pi exit preserves TERM priority (single, known-pid) [1423.16ms]
+
+ 0 pass
+ 28 filtered out
+ 1 fail
+ 12 expect() calls
+Ran 1 test across 1 file. [1432.00ms]

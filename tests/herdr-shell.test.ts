@@ -198,20 +198,96 @@ for (const scenario of ["shell-rc-exit", "fast-pi-single", "fast-pi-split", "mal
   }
 }, 25000);
 
-for (const { signal, split, malformed } of [
-  { signal: "TERM", split: false, malformed: false }, { signal: "TERM", split: true, malformed: false },
-  { signal: "HUP", split: false, malformed: false }, { signal: "HUP", split: true, malformed: false },
-  { signal: "TERM", split: true, malformed: true },
-] as const) actual(`fast startup Pi exit preserves ${signal} priority (${split ? "split" : "single"}${malformed ? ", malformed" : ""})`, async () => {
+/** PID evidence is conditional, never interchangeable with an unproven unknown. */
+function assertSignalCleanup(observation: any, malformed = false): void {
+  expect(observation.failed).toBe(malformed);
+  expect(observation.startupProof.bootstrapStopped).toBe(true);
+  expect(observation.cleanup.serverExited).toBe(true);
+  expect(observation.cleanup.clientExited).toBe(true);
+  expect(observation.cleanup.socketsRemoved).toBe(true);
+  if (observation.shellPid !== undefined) {
+    expect(Number.isSafeInteger(observation.shellPid) && observation.shellPid > 1).toBe(true);
+    expect(observation.startupProof.pi).toBeUndefined();
+    expect(observation.cleanup.workerStopped).toBe(true);
+  } else {
+    expect(observation.cleanup.workerStopped).toBe("unknown");
+    if (malformed) expect(observation.startupProof.pi).toBeUndefined();
+    else expect(observation.startupProof.pi).toBe("authoritative-exit-and-pane-absent");
+  }
+}
+
+test("startup signal cleanup refuses unsupported PID and absence claims", () => {
+  const absent = { failed: false, startupProof: { bootstrapStopped: true, pi: "authoritative-exit-and-pane-absent" }, cleanup: { serverExited: true, clientExited: true, workerStopped: "unknown", socketsRemoved: true } };
+  const known = { ...absent, shellPid: 123, startupProof: { bootstrapStopped: true }, cleanup: { ...absent.cleanup, workerStopped: true } };
+  assertSignalCleanup(absent); assertSignalCleanup(known);
+  expect(() => assertSignalCleanup({ ...absent, startupProof: { bootstrapStopped: true } })).toThrow();
+  expect(() => assertSignalCleanup({ ...known, cleanup: { ...known.cleanup, workerStopped: "unknown" } })).toThrow();
+  expect(() => assertSignalCleanup({ ...known, shellPid: 0 })).toThrow();
+  expect(() => assertSignalCleanup({ ...absent, cleanup: { ...absent.cleanup, workerStopped: true } })).toThrow();
+  for (const field of ["serverExited", "clientExited", "socketsRemoved"]) expect(() => assertSignalCleanup({ ...known, cleanup: { ...known.cleanup, [field]: false } })).toThrow();
+});
+
+const signalCases = (["TERM", "HUP"] as const).flatMap(signal => [false, true].flatMap(split =>
+  (["natural", "known-pid", "absent-pid"] as const).map(ordering => ({ signal, split, ordering, malformed: false }))));
+signalCases.push({ signal: "TERM", split: true, ordering: "natural", malformed: true });
+for (const { signal, split, malformed, ordering } of signalCases) actual(`fast startup Pi exit preserves ${signal} priority (${split ? "split" : "single"}, ${ordering}${malformed ? ", malformed" : ""})`, async () => {
   mkdirSync(resolve(".tmp"), { recursive: true });
   const root = mkdtempSync(resolve(".tmp/split-signal-")), home = join(root, "user"), project = join(root, "project");
   mkdirSync(home); mkdirSync(project);
   writeFileSync(join(home, ".bashrc"), `printf '%s' $$ > '${root}/shell-pid'\n`);
   const worker = join(root, "worker.sh"), driver = join(root, "driver.ts");
-  // The owned worker signals its adapter before writing the authoritative exit.
-  writeFileSync(worker, `kill -${signal} "$2"\nprintf '${malformed ? "bad" : "37"}\\n' > "$1/exit"\nexit 37\n`);
+  if (ordering === "known-pid") for (const name of ["release", "hold"]) {
+    const fifo = Bun.spawnSync(["/usr/bin/mkfifo", join(root, name)]);
+    if (fifo.exitCode !== 0) throw new Error(`Owned worker FIFO creation failed: ${fifo.stderr.toString()}`);
+  }
+  // Known-PID order: block until native process_info has observed this worker,
+  // then signal/write status but remain alive until actual Herdr cleanup.
+  // Absent-PID order: hold the real layout response until native pane absence.
+  writeFileSync(worker, `printf '%s' $$ > "$1/worker-pid"\n${ordering === "known-pid" ? 'IFS= read -r gate < "$1/release"\n' : ""}kill -${signal} "$2"\nprintf '${malformed ? "bad" : "37"}\\n' > "$1/exit"\n${ordering === "known-pid" ? 'IFS= read -r ignored < "$1/hold"\n' : "exit 37\n"}`);
   const shell = split ? `buildRegularShell({SHELL:'/bin/bash',HOME:${JSON.stringify(home)},PATH:'/usr/bin:/bin'})` : "undefined";
-  writeFileSync(driver, `import {runHerdrInteractive} from ${JSON.stringify(resolve("src/herdr/interactive.ts"))}; import {buildRegularShell} from ${JSON.stringify(resolve("src/herdr/shell.ts"))};\ntry {const n=await runHerdrInteractive({executable:${JSON.stringify(resolve(".tmp/herdr/herdr"))},command:['/bin/sh',${JSON.stringify(worker)},${JSON.stringify(root)},String(process.pid)],cwd:${JSON.stringify(project)},stateRoot:${JSON.stringify(root)},exitFile:${JSON.stringify(join(root,"exit"))},environment:{},shell:${shell}}); await Bun.write(${JSON.stringify(join(root,"result"))},String(n));} catch(e) {await Bun.write(${JSON.stringify(join(root,"error"))},String(e));}`);
+  // The copy is byte-for-byte production protocol code, avoiding mock rebinding
+  // of its native export. Every response/error below comes from actual Herdr.
+  writeFileSync(join(root, "native-protocol.ts"), readFileSync(resolve("src/herdr/protocol.ts")));
+  writeFileSync(driver, `import {mock} from 'bun:test'; import {request as nativeRequest} from './native-protocol.ts'; import {constants,existsSync,readFileSync,writeFileSync,openSync,closeSync,writeSync} from 'node:fs';
+const root=${JSON.stringify(root)}, ordering=${JSON.stringify(ordering)}, deadline=Date.now()+10000; let piPane, workspaceId, signalObserved=false;
+process.once('SIG${signal}',()=>{signalObserved=true;});
+const remaining=()=>{const ms=deadline-Date.now();if(ms<=0)throw new Error('Owned startup ordering handshake timed out');return Math.min(1000,ms);};
+const wait=async(predicate)=>{for(;;){remaining();if(await predicate()){remaining();return;}await Bun.sleep(Math.min(10,remaining()));}};
+mock.module(${JSON.stringify(resolve("src/herdr/protocol.ts"))},()=>({request:async(socket,method,params={},timeout)=>{
+ const response=await nativeRequest(socket,method,params,timeout);
+ if(method==='workspace.create') {workspaceId=response.workspace?.workspace_id;if(typeof workspaceId!=='string')throw new Error('Native workspace ID missing');}
+ if(method==='layout.apply') {
+  piPane=${split ? "response.layout.root.first.pane_id" : "response.layout.root.pane_id"};
+  if(ordering==='absent-pid') {
+   await wait(async()=>{
+    if(!existsSync(root+'/worker-pid'))return false;
+    const workspaces=await nativeRequest(socket,'workspace.list',{},remaining());
+    if(!Array.isArray(workspaces.workspaces))throw new Error('Invalid native workspace list');
+    let present=false;
+    if(workspaces.workspaces.some(w=>w.workspace_id===workspaceId)) {
+     const panes=await nativeRequest(socket,'pane.list',{workspace_id:workspaceId},remaining());if(!Array.isArray(panes.panes))throw new Error('Invalid native pane list');present=panes.panes.some(p=>p.pane_id===piPane);
+    }
+    if(present)return false;
+    try{process.kill(Number(readFileSync(root+'/worker-pid','utf8')),0);return false;}catch(e){if(e.code!=='ESRCH')throw e;}
+    writeFileSync(root+'/ordering.json',JSON.stringify({ordering,nativePaneAbsent:true,workerGone:true}));return true;
+   });
+  }
+ }
+ if(method==='pane.process_info'&&params.pane_id===piPane&&ordering==='known-pid') {
+  const pid=response.process_info.shell_pid;
+  if(!Number.isSafeInteger(pid)||pid<=1)throw new Error('Native worker PID missing');
+  await wait(()=>{
+   let fd;try{fd=openSync(root+'/release',constants.O_WRONLY|constants.O_NONBLOCK);}catch(e){if(e.code==='ENXIO')return false;throw e;}
+   try{writeSync(fd,'go\\n');}finally{closeSync(fd);}return true;
+  });
+  await wait(()=>signalObserved&&existsSync(root+'/exit'));
+  process.kill(pid,0);
+  writeFileSync(root+'/ordering.json',JSON.stringify({ordering,nativePid:pid,aliveAfterStatus:true,signalObserved}));
+ }
+ return response;
+}}));
+const {runHerdrInteractive}=await import(${JSON.stringify(resolve("src/herdr/interactive.ts"))}); const {buildRegularShell}=await import(${JSON.stringify(resolve("src/herdr/shell.ts"))});
+try {const n=await runHerdrInteractive({executable:${JSON.stringify(resolve(".tmp/herdr/herdr"))},command:['/bin/sh',${JSON.stringify(worker)},root,String(process.pid)],cwd:${JSON.stringify(project)},stateRoot:root,exitFile:root+'/exit',environment:{},shell:${shell}}); writeFileSync(root+'/result',String(n));} catch(e) {writeFileSync(root+'/error',String(e));}`);
   let raw = "";
   const child = Bun.spawn([process.execPath, "--no-env-file", "--no-install", driver], { terminal: { cols: 150, rows: 40, data(_term, data) { raw += new TextDecoder().decode(data); } } });
   const timeout = setTimeout(() => child.kill("SIGTERM"), 20000);
@@ -224,11 +300,17 @@ for (const { signal, split, malformed } of [
       expect(readFileSync(join(root, "result"), "utf8")).toBe(signal === "TERM" ? "143" : "129");
     }
     const observation = JSON.parse(readFileSync(join(root, "attachment.json"), "utf8"));
-    expect(observation.failed).toBe(!!malformed);
-    expect(observation.startupProof.bootstrapStopped).toBe(true);
-    if (!malformed) expect(observation.startupProof.pi).toBe("authoritative-exit-and-pane-absent");
-    else expect(observation.startupProof.pi).toBeUndefined();
-    expect(observation.cleanup).toEqual({ serverExited: true, clientExited: true, workerStopped: "unknown", socketsRemoved: true });
+    assertSignalCleanup(observation, malformed);
+    if (ordering === "known-pid") {
+      const ordered = JSON.parse(readFileSync(join(root, "ordering.json"), "utf8"));
+      expect(ordered).toEqual({ ordering, nativePid: observation.shellPid, aliveAfterStatus: true, signalObserved: true });
+      expect(observation.shellPid).toBe(Number(readFileSync(join(root, "worker-pid"), "utf8")));
+    } else if (ordering === "absent-pid") {
+      expect(observation.shellPid).toBeUndefined();
+      expect(JSON.parse(readFileSync(join(root, "ordering.json"), "utf8"))).toEqual({ ordering, nativePaneAbsent: true, workerGone: true });
+    }
+    // Verify the actual worker independently, even when the adapter never saw it.
+    expect(() => process.kill(Number(readFileSync(join(root, "worker-pid"), "utf8")), 0)).toThrow();
     if (existsSync(join(root, "shell-pid"))) expect(() => process.kill(Number(readFileSync(join(root, "shell-pid"), "utf8")), 0)).toThrow();
   } finally {
     clearTimeout(timeout); if (child.exitCode === null) { child.kill("SIGTERM"); await child.exited; }
