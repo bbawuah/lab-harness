@@ -151,6 +151,37 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-workspace-contract.md",
+    "docs/research/agent-tools/CONTINUATION-CONTRACT.md",
+    "docs/research/agent-tools/CONTINUATION.md",
+    "docs/research/agent-tools/CONTRACT.md",
+    "docs/research/agent-tools/FIRST-LIVE.md",
+    "docs/research/agent-tools/PROJECTION-CONTRACT.md",
+    "docs/research/agent-tools/REPORT.md",
+    "docs/research/agent-tools/REVIEW.md",
+    "docs/research/agent-tools/RUNNER-CONTRACT.md",
+    "docs/research/agent-tools/RUNNER.md",
+    "docs/research/agent-tools/SOURCES.md",
+    "docs/research/agent-tools/evidence/browser-native.png",
+    "docs/research/agent-tools/evidence/browser-trial-first.json",
+    "docs/research/agent-tools/evidence/browser-trial.json",
+    "docs/research/agent-tools/evidence/continuation-probe.json",
+    "docs/research/agent-tools/evidence/desktop-host-diagnostic.json",
+    "docs/research/agent-tools/evidence/desktop-permissions.json",
+    "docs/research/agent-tools/evidence/desktop-socket-diagnostic.json",
+    "docs/research/agent-tools/evidence/desktop-trial.json",
+    "docs/research/agent-tools/evidence/desktop-version.json",
+    "docs/research/agent-tools/evidence/failed-observation-probe.json",
+    "docs/research/agent-tools/evidence/first-live-partial.json",
+    "docs/research/agent-tools/evidence/first-mcp-cleanup.json",
+    "docs/research/agent-tools/evidence/projection-replay.json",
+    "docs/research/agent-tools/evidence/runner-failure-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-group-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-probe-before-group.json",
+    "docs/research/agent-tools/evidence/runner-probe-first.json",
+    "docs/research/agent-tools/evidence/runner-probe-relay-refused.json",
+    "docs/research/agent-tools/evidence/runner-probe.json",
+    "docs/research/agent-tools/evidence/screenshot-provenance.json",
+    "docs/research/agent-tools/report.html",
     "docs/research/airgap-browser/ARCHITECTURE.md",
     "docs/research/airgap-browser/DESIGN.html",
     "docs/research/airgap-browser/DESIGN.json",
@@ -189,6 +220,37 @@
     "docs/tui/split-contract.md",
     "docs/user-guide.md",
     "examples/skills/terminal-evidence/SKILL.md",
+    "experiments/agent-tools/README.md",
+    "experiments/agent-tools/acquire.py",
+    "experiments/agent-tools/application-state.ts",
+    "experiments/agent-tools/browser_trial.py",
+    "experiments/agent-tools/budget-report.ts",
+    "experiments/agent-tools/budget.ts",
+    "experiments/agent-tools/check_adapter.py",
+    "experiments/agent-tools/check_budget.ts",
+    "experiments/agent-tools/check_budget_report.ts",
+    "experiments/agent-tools/check_cleanup.py",
+    "experiments/agent-tools/check_continuation.ts",
+    "experiments/agent-tools/check_guard.ts",
+    "experiments/agent-tools/check_observation.ts",
+    "experiments/agent-tools/check_projection.py",
+    "experiments/agent-tools/check_setup.ts",
+    "experiments/agent-tools/continuation.ts",
+    "experiments/agent-tools/desktop_trial.py",
+    "experiments/agent-tools/fixture-observation.ts",
+    "experiments/agent-tools/fixture.html",
+    "experiments/agent-tools/guard-extension.ts",
+    "experiments/agent-tools/mcp_bridge.py",
+    "experiments/agent-tools/mcp_projection.py",
+    "experiments/agent-tools/model-runner.ts",
+    "experiments/agent-tools/pi-child.ts",
+    "experiments/agent-tools/pi-extension.ts",
+    "experiments/agent-tools/prepare-state.ts",
+    "experiments/agent-tools/prior-spend.json",
+    "experiments/agent-tools/probe_group.ts",
+    "experiments/agent-tools/process-group.ts",
+    "experiments/agent-tools/projection_replay.py",
+    "experiments/agent-tools/support.py",
     "install.sh",
     "lab",
     "package.json",
@@ -757,6 +819,130 @@
       "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
       "status": "added"
     },
+    "docs/research/agent-tools/CONTINUATION-CONTRACT.md": {
+      "sha256": "b3c4c1b94491f8ca1bc0b36db4d1b92c9dc7012e38ff28a87f69696430a031ee",
+      "status": "added"
+    },
+    "docs/research/agent-tools/CONTINUATION.md": {
+      "sha256": "403dc2b81076f54ab1d6fef07d7b5282bb5ccf854ae58c753441ea79cd6d4781",
+      "status": "added"
+    },
+    "docs/research/agent-tools/CONTRACT.md": {
+      "sha256": "2e5545f3f1c2ee221aa3ce9bf07d3df0c57c5054d4015331bf9d474829abbcba",
+      "status": "added"
+    },
+    "docs/research/agent-tools/FIRST-LIVE.md": {
+      "sha256": "7445053eaf6e5bb257ef5a07eeb915357bb7e4aae850b816352bd49113d77bf0",
+      "status": "added"
+    },
+    "docs/research/agent-tools/PROJECTION-CONTRACT.md": {
+      "sha256": "ec89b3051591f202cc3ecb8a23c73926d5bf8fec8221dffa49e00ffc10873daa",
+      "status": "added"
+    },
+    "docs/research/agent-tools/REPORT.md": {
+      "sha256": "9432a2d52a078d5d881ee5db509a8e565ddc7e15ded486e0bf8cb464b28628d3",
+      "status": "added"
+    },
+    "docs/research/agent-tools/REVIEW.md": {
+      "sha256": "feecca30347095bc6c1f4f700b228ec23f9f29fc62d825526f26aafc4d8066b4",
+      "status": "added"
+    },
+    "docs/research/agent-tools/RUNNER-CONTRACT.md": {
+      "sha256": "0360ebeeac7c933762f1091966910644ef032880d5d58bf96ae0850769d587c1",
+      "status": "added"
+    },
+    "docs/research/agent-tools/RUNNER.md": {
+      "sha256": "7a3b8844f0aa089df2cdf16a4be579e02fd25c8f28d4f9a5c43538abcb804706",
+      "status": "added"
+    },
+    "docs/research/agent-tools/SOURCES.md": {
+      "sha256": "af10c521300e89ea021cd23a99ad0be689247d72ca1c0da001dd5202b8d8ea9b",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/browser-native.png": {
+      "sha256": "5017829885c952367f411c30f7281b52f3bbf22bc5c00c9221b9c82d1486e6d6",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/browser-trial-first.json": {
+      "sha256": "f2ec93735fd85063489d98d796839d972b861d6950a5be97185ee98d0656c065",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/browser-trial.json": {
+      "sha256": "524f5587adc076a3228dac3533c24b282bcc33c7d38ee31ab386d7d31deb6cdd",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/continuation-probe.json": {
+      "sha256": "505f1f6a5f91facc35cff2bb3d6bbc43f231dac6f07e1605d1cdc721f67aaecc",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/desktop-host-diagnostic.json": {
+      "sha256": "00b8fc954a19cc908550623fc26b7989a21721dde5a14d6e2f45f28efa007cd0",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/desktop-permissions.json": {
+      "sha256": "243421d6a34a432f1995a37fb34a351f0c69186c5c1e582bd6ee4721a14d69a1",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/desktop-socket-diagnostic.json": {
+      "sha256": "3bd555290863ff4b0de1ec976d2420949be61e7bdab3293f702d3f4be7c84d3e",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/desktop-trial.json": {
+      "sha256": "69fd750a690aae16cda45d2cfc204780b0bc35298dea9c25030e0ccb1fe97d2d",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/desktop-version.json": {
+      "sha256": "81e4abd01ad74d9708232060e7b80e41cbd5326f93a9c5e0367f51058d524759",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/failed-observation-probe.json": {
+      "sha256": "4a952b3595bf41970a24f067e3a974ce8772286023c84f95a0b430ac9975315d",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/first-live-partial.json": {
+      "sha256": "c8f08e22b590369b628e67e3ebc1350e35ee21c67d312558b83d1766694d794d",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/first-mcp-cleanup.json": {
+      "sha256": "5412f9ad8110e7ea6bc120549b703526a2e954b5b3713e42d2c61424b0134e39",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/projection-replay.json": {
+      "sha256": "1428a12ae5318fdfb30288a055a41c880df2d8e3c892b1ef022f3b4287e87944",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-failure-cleanup.json": {
+      "sha256": "f3b2b41357188a0cc2fe860758e7ea34319f408d3dda706420e0f25cecd1808f",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-group-cleanup.json": {
+      "sha256": "cb0379f0b5af914eb20193b468f152f858033fbc06a3acd23f50b86c23abd62b",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-before-group.json": {
+      "sha256": "dbb44af2d363a1a8fa691d545ed7225db698bcc682406092057777491562157e",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-first.json": {
+      "sha256": "d7e6428a53fa16939958d3fc52116dd9b7fec3a5da442c0c04574254ca911024",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-relay-refused.json": {
+      "sha256": "dfbc664a5589d0681ceb218e9cff1008705a51a40901cfab401a60b65a7229b9",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe.json": {
+      "sha256": "075d571776e408fb0ff6dd187399c9e3d3ab3e03e2478d16e7a1e1011a884de3",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/screenshot-provenance.json": {
+      "sha256": "b856b2c43794610e4ddad184abb0a5760db80096ced0dcf9aa1a808810e57dcf",
+      "status": "added"
+    },
+    "docs/research/agent-tools/report.html": {
+      "sha256": "4f79f84ad9a5ba8db93913e7fe9a52e6f7faa924b2f5ab8af0c989d0fd603b33",
+      "status": "added"
+    },
     "docs/research/airgap-browser/ARCHITECTURE.md": {
       "sha256": "47d6c70a5c11939206e2b17a53364247caa0cc964ec3a35484c99df99ed5672a",
       "status": "added"
@@ -903,6 +1089,130 @@
     },
     "examples/skills/terminal-evidence/SKILL.md": {
       "sha256": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+      "status": "added"
+    },
+    "experiments/agent-tools/README.md": {
+      "sha256": "7c49230455314b00ca90498484283cdb88166bb86d8a20b3b21cc5aad0d18d9d",
+      "status": "added"
+    },
+    "experiments/agent-tools/acquire.py": {
+      "sha256": "76437caffba2197c5388f00089f5e1d12b2be2e4c3d3fbc8e11dff5925781862",
+      "status": "added"
+    },
+    "experiments/agent-tools/application-state.ts": {
+      "sha256": "1aa86f3daf59cb49a6e481b0ee1c13f2417746f4b6d5e376100f60c9937f78e1",
+      "status": "added"
+    },
+    "experiments/agent-tools/browser_trial.py": {
+      "sha256": "1a464227d9d821beeaf9cc050cb329964edf413b1d977e951a7ec90592a28c79",
+      "status": "added"
+    },
+    "experiments/agent-tools/budget-report.ts": {
+      "sha256": "06d3ad40b758f67f4a284fdf89956190a7f2821b8dd7802b98ea6c49fc59fb82",
+      "status": "added"
+    },
+    "experiments/agent-tools/budget.ts": {
+      "sha256": "50d99ea2b9c8012677725b9fed12e266d18d98d9652b577e5a09f8fa084461f0",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_adapter.py": {
+      "sha256": "2a2083c2828dadad4e23e83ad0e9622c492d502ce801220c523976c5da7a7400",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_budget.ts": {
+      "sha256": "1bb638a72d39ee8923178f34be356b7817f7d2b4841b751597edcfe28bc43271",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_budget_report.ts": {
+      "sha256": "56555f7f1a6b4e9f1d78b0d989414678487f1ed9926b8b67b6372e94b5c6192c",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_cleanup.py": {
+      "sha256": "7b719cc3d339ed77e9811185c2a3b467bd91bffa3027087d78d646d29e575547",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_continuation.ts": {
+      "sha256": "88c8d819277e7c20727b01a4acf2bccd4255a7a0c3c8a47446389a72bafd806d",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_guard.ts": {
+      "sha256": "530235d42102fb80d5b1f2fddc25ed3e985f641e4ee14a2d33e658f216d4f1a4",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_observation.ts": {
+      "sha256": "b5380c407560478c03643c8577a249bb2f42a3165c3ac2deb15cd4ab1b4f6d5a",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_projection.py": {
+      "sha256": "fe0f64edf2da6ebe35f3504dc11b2158546eeb0285c39e3d7716b0bde73ca163",
+      "status": "added"
+    },
+    "experiments/agent-tools/check_setup.ts": {
+      "sha256": "4ab0a61b2d1bdb2f762a3c19eb82d99ead605c0c0c77cab518b10dadcfe5812e",
+      "status": "added"
+    },
+    "experiments/agent-tools/continuation.ts": {
+      "sha256": "8b41e982dfb17358972dd9158cc02a84c2fc5ca1cca8452ba26fd65c13e572a4",
+      "status": "added"
+    },
+    "experiments/agent-tools/desktop_trial.py": {
+      "sha256": "2d54ce5c5c3583833ed9de7b44aa0548063bc96b697ea75d28e1387d579a6246",
+      "status": "added"
+    },
+    "experiments/agent-tools/fixture-observation.ts": {
+      "sha256": "1cc54a02c1f5fb7900cc8054e28bd7904afe28b5f9b05ac096c6f5483f710856",
+      "status": "added"
+    },
+    "experiments/agent-tools/fixture.html": {
+      "sha256": "682b35afa3946c04cba784c2ea81061bbdf7f4b633372029448fe67dc4b98d83",
+      "status": "added"
+    },
+    "experiments/agent-tools/guard-extension.ts": {
+      "sha256": "5675d54c21da57da621ca1081d085a0ddab64a3977d4efef5e209eb40a129cbf",
+      "status": "added"
+    },
+    "experiments/agent-tools/mcp_bridge.py": {
+      "sha256": "3e42f5b4f9a75fa3e01fe294d0300751632b2aa375e1535ed468e40893e0c7bf",
+      "status": "added"
+    },
+    "experiments/agent-tools/mcp_projection.py": {
+      "sha256": "f4b0d15b24216a922bbe91f3f5709a3a1ac00026bf09f500e13fa18d054f494e",
+      "status": "added"
+    },
+    "experiments/agent-tools/model-runner.ts": {
+      "sha256": "b3bc66dcbccbe0f87f5e7e832939bc3ac5dcbcb07b660056274701b7a1ef7ad7",
+      "status": "added"
+    },
+    "experiments/agent-tools/pi-child.ts": {
+      "sha256": "5fe6d652d8aac61a4b97e3155b5814fbc1e856b089482fb050fe2d719e341813",
+      "status": "added"
+    },
+    "experiments/agent-tools/pi-extension.ts": {
+      "sha256": "e55141f3a368b86701fddf11ffb3346005b266826df7f6ec718092b05103eb93",
+      "status": "added"
+    },
+    "experiments/agent-tools/prepare-state.ts": {
+      "sha256": "341e365345b588308808c1f605dd4d029308b98ce9414cbc1163435d5c713f8e",
+      "status": "added"
+    },
+    "experiments/agent-tools/prior-spend.json": {
+      "sha256": "b8daa5ee70ccca11279d3d657cfeca9ed2e27481e3ac6aae05689df4286211b0",
+      "status": "added"
+    },
+    "experiments/agent-tools/probe_group.ts": {
+      "sha256": "dbfe0a7f7421aae41e654ee2220502702ba1a2c5aeb6380501a41ea3f5b5c480",
+      "status": "added"
+    },
+    "experiments/agent-tools/process-group.ts": {
+      "sha256": "80a7ffe514ee71c8f7a33a446ec470e0fcac9c6c73375b58e3e0aa072d03abee",
+      "status": "added"
+    },
+    "experiments/agent-tools/projection_replay.py": {
+      "sha256": "b077c036593094041fde589090d22a7e004d452466dc859497f8b8793d441121",
+      "status": "added"
+    },
+    "experiments/agent-tools/support.py": {
+      "sha256": "0b80c0d3d7cbd821cda88be43d9f975c140c731b31e3e05823418cbd4fc6745a",
       "status": "added"
     },
     "install.sh": {

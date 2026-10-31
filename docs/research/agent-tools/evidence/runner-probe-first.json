@@ -1,0 +1,49 @@
+{
+  "mode": "probe",
+  "model": "gemma4:31b",
+  "liveAcceptance": false,
+  "piExit": 78,
+  "events": [
+    {
+      "kind": "session_start",
+      "data": {
+        "activeTools": [
+          "lab_owned_browser"
+        ],
+        "labExtensionExplicit": true
+      }
+    },
+    {
+      "kind": "probe_pre_request",
+      "data": {
+        "dispatched": false
+      }
+    }
+  ],
+  "piVersion": "1.4.0",
+  "probeZeroHTTP": true,
+  "browserCleanupVerified": true,
+  "sinkRequests": 0,
+  "herdrAttachment": {
+    "label": "actual-herdr-native-client",
+    "runtimeVersion": "0.9.5",
+    "paneId": "w1:p2",
+    "serverPid": 80046,
+    "clientPid": 80142,
+    "shellPid": 80139,
+    "exitCode": 78,
+    "failed": false,
+    "startupProof": {
+      "bootstrapStopped": true
+    },
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "interpretation": "Guard-only probe before healthy Relay provisioning; not LAB startup acceptance.",
+  "liveRoute": "https://ollama.com/v1",
+  "actualRoute": "owned-loopback-sink"
+}

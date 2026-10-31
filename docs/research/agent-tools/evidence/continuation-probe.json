@@ -1,0 +1,82 @@
+{
+  "mode": "probe",
+  "model": "gemma4:31b",
+  "liveRoute": "https://ollama.com/v1",
+  "actualRoute": "owned-loopback-sink",
+  "liveAcceptance": false,
+  "budget": {
+    "baseline": {
+      "requests": 4,
+      "inputTokens": 4147,
+      "outputTokens": 117
+    },
+    "attempt": {
+      "requests": 0,
+      "inputTokens": 0,
+      "outputTokens": 0
+    },
+    "cumulative": {
+      "requests": 4,
+      "inputTokens": 4147,
+      "outputTokens": 117
+    },
+    "usageComplete": true
+  },
+  "piExit": 78,
+  "events": [
+    {
+      "kind": "budget_baseline",
+      "data": {
+        "requests": 4,
+        "inputTokens": 4147,
+        "outputTokens": 117
+      }
+    },
+    {
+      "kind": "session_start",
+      "data": {
+        "activeTools": [
+          "lab_owned_browser"
+        ],
+        "labExtensionExplicit": true,
+        "relayHealthy": true,
+        "sessionId": "01a1911c-d3ad-70c8-aa70-c6149c705b47"
+      }
+    },
+    {
+      "kind": "probe_pre_request",
+      "data": {
+        "dispatched": false
+      }
+    }
+  ],
+  "piVersion": "1.4.0",
+  "probeZeroHTTP": true,
+  "browserCleanupVerified": true,
+  "sinkRequests": 0,
+  "herdrAttachment": {
+    "label": "actual-herdr-native-client",
+    "runtimeVersion": "0.9.5",
+    "paneId": "w1:p2",
+    "serverPid": 32042,
+    "clientPid": 32121,
+    "shellPid": 32117,
+    "exitCode": 78,
+    "failed": false,
+    "startupProof": {
+      "bootstrapStopped": true
+    },
+    "cleanup": {
+      "serverExited": true,
+      "clientExited": true,
+      "workerStopped": true,
+      "socketsRemoved": true
+    }
+  },
+  "piChildStopped": true,
+  "piProcessGroupStopped": true,
+  "relayReleased": true,
+  "listenersStopped": true,
+  "applicationStateRemoved": true,
+  "interpretation": "Actual continuation native zero-HTTP probe: baseline validated by launcher and guard, no new paid attempt, exact owned cleanup passed."
+}
