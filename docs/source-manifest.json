@@ -151,6 +151,7 @@
     "docs/publication-plan.md",
     "docs/publication-status.md",
     "docs/relay-workspace-contract.md",
+    "docs/research/agent-tools/CONTINUATION-CONTRACT.md",
     "docs/research/agent-tools/CONTRACT.md",
     "docs/research/agent-tools/FIRST-LIVE.md",
     "docs/research/agent-tools/PROJECTION-CONTRACT.md",
@@ -810,6 +811,10 @@
     },
     "docs/relay-workspace-contract.md": {
       "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
+      "status": "added"
+    },
+    "docs/research/agent-tools/CONTINUATION-CONTRACT.md": {
+      "sha256": "b3c4c1b94491f8ca1bc0b36db4d1b92c9dc7012e38ff28a87f69696430a031ee",
       "status": "added"
     },
     "docs/research/agent-tools/CONTRACT.md": {
