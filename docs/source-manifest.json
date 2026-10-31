@@ -149,6 +149,7 @@
     "docs/research/agent-tools/REPORT.md",
     "docs/research/agent-tools/REVIEW.md",
     "docs/research/agent-tools/RUNNER-CONTRACT.md",
+    "docs/research/agent-tools/RUNNER.md",
     "docs/research/agent-tools/SOURCES.md",
     "docs/research/agent-tools/evidence/browser-native.png",
     "docs/research/agent-tools/evidence/browser-trial-first.json",
@@ -159,6 +160,10 @@
     "docs/research/agent-tools/evidence/desktop-trial.json",
     "docs/research/agent-tools/evidence/desktop-version.json",
     "docs/research/agent-tools/evidence/first-mcp-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-failure-cleanup.json",
+    "docs/research/agent-tools/evidence/runner-probe-first.json",
+    "docs/research/agent-tools/evidence/runner-probe-relay-refused.json",
+    "docs/research/agent-tools/evidence/runner-probe.json",
     "docs/research/agent-tools/evidence/screenshot-provenance.json",
     "docs/research/agent-tools/report.html",
     "docs/research/airgap-browser/ARCHITECTURE.md",
@@ -201,11 +206,13 @@
     "examples/skills/terminal-evidence/SKILL.md",
     "experiments/agent-tools/README.md",
     "experiments/agent-tools/acquire.py",
+    "experiments/agent-tools/application-state.ts",
     "experiments/agent-tools/browser_trial.py",
     "experiments/agent-tools/budget.ts",
     "experiments/agent-tools/check_adapter.py",
     "experiments/agent-tools/check_budget.ts",
     "experiments/agent-tools/check_cleanup.py",
+    "experiments/agent-tools/check_setup.ts",
     "experiments/agent-tools/desktop_trial.py",
     "experiments/agent-tools/fixture.html",
     "experiments/agent-tools/guard-extension.ts",
@@ -213,6 +220,7 @@
     "experiments/agent-tools/model-runner.ts",
     "experiments/agent-tools/pi-child.ts",
     "experiments/agent-tools/pi-extension.ts",
+    "experiments/agent-tools/prepare-state.ts",
     "experiments/agent-tools/support.py",
     "install.sh",
     "lab",
@@ -763,7 +771,7 @@
       "status": "added"
     },
     "docs/research/agent-tools/REPORT.md": {
-      "sha256": "c30109585ceeba8efad1d02951b269af81dac3cb172c1071a70eee6a0c1a9b02",
+      "sha256": "06727209f4bf4ada8492158caa620cefcfd057cecd571036333b1c15bb5f72b7",
       "status": "added"
     },
     "docs/research/agent-tools/REVIEW.md": {
@@ -772,6 +780,10 @@
     },
     "docs/research/agent-tools/RUNNER-CONTRACT.md": {
       "sha256": "0360ebeeac7c933762f1091966910644ef032880d5d58bf96ae0850769d587c1",
+      "status": "added"
+    },
+    "docs/research/agent-tools/RUNNER.md": {
+      "sha256": "4907c0eb3c31ee62d6292c258871b4235e03f14e787796669f5069f850ad3d9f",
       "status": "added"
     },
     "docs/research/agent-tools/SOURCES.md": {
@@ -814,12 +826,28 @@
       "sha256": "5412f9ad8110e7ea6bc120549b703526a2e954b5b3713e42d2c61424b0134e39",
       "status": "added"
     },
+    "docs/research/agent-tools/evidence/runner-failure-cleanup.json": {
+      "sha256": "f3b2b41357188a0cc2fe860758e7ea34319f408d3dda706420e0f25cecd1808f",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-first.json": {
+      "sha256": "d7e6428a53fa16939958d3fc52116dd9b7fec3a5da442c0c04574254ca911024",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe-relay-refused.json": {
+      "sha256": "dfbc664a5589d0681ceb218e9cff1008705a51a40901cfab401a60b65a7229b9",
+      "status": "added"
+    },
+    "docs/research/agent-tools/evidence/runner-probe.json": {
+      "sha256": "dbb44af2d363a1a8fa691d545ed7225db698bcc682406092057777491562157e",
+      "status": "added"
+    },
     "docs/research/agent-tools/evidence/screenshot-provenance.json": {
       "sha256": "b856b2c43794610e4ddad184abb0a5760db80096ced0dcf9aa1a808810e57dcf",
       "status": "added"
     },
     "docs/research/agent-tools/report.html": {
-      "sha256": "74170e5c4a148458dcb247094bd1bbc80ff1a768c0680794a37c39510dc7faf7",
+      "sha256": "7b55508c3b10529d33d2730057ca39a7e357f2b5704658112e58cf3291be2c51",
       "status": "added"
     },
     "docs/research/airgap-browser/ARCHITECTURE.md": {
@@ -971,11 +999,15 @@
       "status": "added"
     },
     "experiments/agent-tools/README.md": {
-      "sha256": "dae024cef2104c9b4b70ec1bb26516abf58487de090ca58c2c78485dfea5fd13",
+      "sha256": "d0f4eabd386da3a50d7aa32c92747f129f37f9cfe0a18fb3574cb983e47cf8db",
       "status": "added"
     },
     "experiments/agent-tools/acquire.py": {
       "sha256": "76437caffba2197c5388f00089f5e1d12b2be2e4c3d3fbc8e11dff5925781862",
+      "status": "added"
+    },
+    "experiments/agent-tools/application-state.ts": {
+      "sha256": "1aa86f3daf59cb49a6e481b0ee1c13f2417746f4b6d5e376100f60c9937f78e1",
       "status": "added"
     },
     "experiments/agent-tools/browser_trial.py": {
@@ -998,6 +1030,10 @@
       "sha256": "7b719cc3d339ed77e9811185c2a3b467bd91bffa3027087d78d646d29e575547",
       "status": "added"
     },
+    "experiments/agent-tools/check_setup.ts": {
+      "sha256": "4ab0a61b2d1bdb2f762a3c19eb82d99ead605c0c0c77cab518b10dadcfe5812e",
+      "status": "added"
+    },
     "experiments/agent-tools/desktop_trial.py": {
       "sha256": "2d54ce5c5c3583833ed9de7b44aa0548063bc96b697ea75d28e1387d579a6246",
       "status": "added"
@@ -1007,7 +1043,7 @@
       "status": "added"
     },
     "experiments/agent-tools/guard-extension.ts": {
-      "sha256": "2bbefece853d65a0b2d8f1fbb2763bc06cadf79bb204db7a1b7519e1990cfe6b",
+      "sha256": "ce24a3cab16cc4a8f66d480d4aa24402953c777c6be3520cb38d604a85e3aed9",
       "status": "added"
     },
     "experiments/agent-tools/mcp_bridge.py": {
@@ -1015,15 +1051,19 @@
       "status": "added"
     },
     "experiments/agent-tools/model-runner.ts": {
-      "sha256": "cd4bfd6180496741a7240c3d177e083bfc01d36452716e0c71f47b579149dc53",
+      "sha256": "20fad5b62a1aebf0d5be57605048ffa0613c491775ef58e674a4416524ffb381",
       "status": "added"
     },
     "experiments/agent-tools/pi-child.ts": {
-      "sha256": "0cebeb007b5830503b978f3f53d59de85320e8c222728da2040f8beb16cba570",
+      "sha256": "71eaf2fb516788ec486e45bd5b8f3ed61e15755e17d9d717429f5c7ceac4f5a1",
       "status": "added"
     },
     "experiments/agent-tools/pi-extension.ts": {
       "sha256": "7d226cbbd10f11bc56e131bd5a030fdc1e22822ab7d6256e1a1a37a28b1feb7a",
+      "status": "added"
+    },
+    "experiments/agent-tools/prepare-state.ts": {
+      "sha256": "341e365345b588308808c1f605dd4d029308b98ce9414cbc1163435d5c713f8e",
       "status": "added"
     },
     "experiments/agent-tools/support.py": {

@@ -1,0 +1,11 @@
+import { strict as assert } from 'node:assert';
+import { Budget } from './budget.ts';
+const small=new Budget();
+for(let i=0;i<10;i++)assert.equal(small.admit({model:'gemma4:31b',max_tokens:9000}).max_tokens,400);
+assert.throws(()=>small.admit({}),/BUDGET_REFUSED/);
+const large=new Budget();assert.throws(()=>large.admit({messages:'x'.repeat(20000)}),/BUDGET_REFUSED/);assert.equal(large.requests,0);
+assert.throws(()=>new Budget().observe({}),/USAGE_UNAVAILABLE/);
+assert.throws(()=>new Budget().observe({input:20001,output:1}),/OBSERVED_TOKEN_BUDGET_EXCEEDED/);
+assert.throws(()=>new Budget().observe({input:1,output:4001}),/OBSERVED_TOKEN_BUDGET_EXCEEDED/);
+const used=new Budget();used.observe({input:10,output:2,cacheRead:4,cacheWrite:1});assert.equal(used.inputTokens,15);
+console.log('Budget refusal/usage checks passed; HTTP/model calls: 0');

@@ -22,7 +22,7 @@ def main():
  session=os.environ.get('LAB_AGENT_TOOLS_SESSION','')
  if not re.fullmatch(r'lab-[a-f0-9]{10}',session): raise ValueError('owned session required')
  config=Path(os.environ.get('LAB_AGENT_TOOLS_CONFIG','')).resolve()
- if config!=CACHE/'trial-config.json': raise ValueError('trusted config required')
+ if config!=CACHE/'trial-config.json' and not (config.name=='browser.json' and config.parent.parent==CACHE/'model-runs' and config.parent.name.startswith('run-')): raise ValueError('trusted config required')
  cfg=json.loads(config.read_text())
  if cfg.get('allowedDomains')!=['127.0.0.1'] or cfg.get('noWebmcp') is not True or cfg.get('maxOutput')!=8000: raise ValueError('trusted limits required')
  # Exact fixture/session must be prepared by the operator. This is not an ownership sandbox.

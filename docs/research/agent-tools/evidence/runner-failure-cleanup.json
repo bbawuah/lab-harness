@@ -1,0 +1,15 @@
+{
+  "mode": "probe",
+  "model": "gemma4:31b",
+  "liveRoute": "https://ollama.com/v1",
+  "actualRoute": "owned-loopback-sink",
+  "liveAcceptance": false,
+  "failure": "INJECTED_AFTER_BROWSER",
+  "browserCleanupVerified": true,
+  "sinkRequests": 0,
+  "herdrAttachment": null,
+  "relayReleased": true,
+  "listenersStopped": true,
+  "applicationStateRemoved": true,
+  "interpretation": "Injected failure after browser open, before Herdr; no inference."
+}

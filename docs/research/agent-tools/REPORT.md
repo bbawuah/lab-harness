@@ -26,7 +26,7 @@ Desktop 1.0.2 initially failed command-host startup ([original](evidence/desktop
 
 The generated `@agent-browser/sandbox/mcp-tools.json` catalog includes schemas and startup profiles; use it rather than inventing a complete CLI-to-tool mapping. This experiment narrows the surface to snapshot, fill, click and result text. The adapter is provider-neutral and uses no SDK for Anthropic/Ollama. Its subprocess environment omits credentials. It bounds returned stdout and duration; browser `maxOutput` bounds normal content. Input validation is not a browser sandbox: the trusted operator must create the exact owned fixture/session/config and serialize actions. The prepared bridge can launch a missing session; it does not independently prove fixture identity. A future model launcher must verify the marker before enabling tools and own close/recovery in `finally`.
 
-A model trial still needs an experiments-only launcher using verified Pi plus the LAB workspace extension/Herdr and this explicit extension, no ambient bash/file tools, a coordinated key/route, recorded tool-call evidence and enforced request/token budgets. No such launcher or model call was executed here. The 12-request/20k-input/4k-output limits remain **planned**, not implemented budget enforcement. Do not run inference merely by loading this extension. Direct CLI success is not model success.
+The [prepared native runner](RUNNER.md) now uses verified Pi, the LAB workspace extension/real Relay and owned Herdr with the explicit adapter. A zero-HTTP loopback probe verifies healthy startup and the synchronous pre-request guard. This is not a model call or tool-driven model success. Live inference remains PENDING authenticated user execution; the 20k input admission estimator is explicitly not exact tokenization, and actual usage must be inspected. Direct CLI success is not model success.
 
 ## Security, sessions and offline implications
 
@@ -59,6 +59,6 @@ Manual setup, only after operator authorization: open System Settings → Privac
 
 ## Remaining acceptance gates
 
-1. Model **PENDING KEY**: root resolves 1Password access; no duplicate auth attempts, credential searches or secret values in this report. Before a call, agree exact cloud/local route/model, enforce budgets, record actual Pi tool invocation and usage, and ensure subprocesses cannot inherit the key.
+1. Model **PENDING KEY**: root resolves 1Password access; no duplicate auth attempts, credential searches or secret values in this report. The fixed prepared route/model and budget/cleanup gates are documented in RUNNER.md; actual native model/tool invocation and usage still require the authorized live run.
 2. Desktop **BLOCKED PERMISSION**: existing approved Accessibility grant, owned fixture app/PID, semantic read/action/verification, stale-ref check and owned-host cleanup. No grant prompt or settings change performed.
 3. Cross-platform/airgap: offline cold start with staged assets; Windows/WSL Edge prerequisites; network boundaries; concurrency/locking; crash cleanup; existing-session no-effects gate. All unexecuted.
