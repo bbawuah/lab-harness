@@ -1,0 +1,5 @@
+# Independent review checkpoint
+
+2026-10-31. Fresh isolated read-only Codex gpt-6-astra review of `a56152f8d6164f1711c907fd5a00b1906c791316` requested two P2 fixes: desktop timeout skipped host cleanup, and browser close failure did not fail the script. The reviewer confirmed source links, publication identities, screenshot provenance, corrected MCP reuse/domain denial, permission instructions and honest pending-model boundaries.
+
+Response: desktop ownership-checked host termination now runs in `finally`, waits for exit and preserves sockets when cleanup is uncertain. Browser close failure or remaining temporary profiles now fail the trial after evidence is saved. An offline injected desktop timeout verifies cleanup discovery/signalling; browser close/profile failure cases reject success. These checks use mocks and start/signal no real processes. Historical native evidence remains unchanged; it is not relabelled as a rerun of these fixes. A focused independent follow-up will cover the fixes together with the separately authorized prepared model runner.

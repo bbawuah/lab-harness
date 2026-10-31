@@ -10,6 +10,9 @@ class Handler(BaseHTTPRequestHandler):
   self.send_response(200);self.send_header('Content-Type','text/html');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
  def log_message(self,*args): pass
 
+def require_cleanup(close,profiles):
+ if close.get("exit")!=0 or profiles: raise RuntimeError("Owned browser cleanup incomplete; inspect retained evidence")
+
 def main():
  if not CHROME.is_file(): raise RuntimeError('Approved installed Chrome binary missing; no automatic acquisition')
  server=ThreadingHTTPServer(('127.0.0.1',0),Handler);threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -42,8 +45,12 @@ def main():
   # Refuse a denied hostname before any network request.
   command('open','https://example.invalid',expected=1)
  finally:
-  try: command('close',expected=None)
+  close={'exit':None}
+  try: close=command('close',expected=None)
+  except Exception as error: rows.append({'cleanupException':type(error).__name__})
   finally: server.shutdown();server.server_close()
   plist=plistlib.loads(Path('/Applications/Google Chrome.app/Contents/Info.plist').read_bytes())
-  save('browser-trial.json',{'kind':'deterministic-cli-and-one-shot-mcp','date':'2026-10-31','agentBrowser':'0.41.0','chromeVersion':plist['CFBundleShortVersionString'],'chromeExecutableSHA256':hashlib.sha256(CHROME.read_bytes()).hexdigest(),'session':session,'steps':rows,'modelCalls':0,'serverClosed':True,'temporaryProfilesRemaining':[x.name for x in (CACHE/'t').glob('agent-browser-chrome-*')]})
+  profiles=[x.name for x in (CACHE/'t').glob('agent-browser-chrome-*')]
+  save('browser-trial.json',{'kind':'deterministic-cli-and-one-shot-mcp','date':'2026-10-31','agentBrowser':'0.41.0','chromeVersion':plist['CFBundleShortVersionString'],'chromeExecutableSHA256':hashlib.sha256(CHROME.read_bytes()).hexdigest(),'session':session,'steps':rows,'modelCalls':0,'serverClosed':True,'temporaryProfilesRemaining':profiles})
+  require_cleanup(close,profiles)
 if __name__=='__main__': main()

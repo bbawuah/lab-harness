@@ -147,6 +147,7 @@
     "docs/relay-workspace-contract.md",
     "docs/research/agent-tools/CONTRACT.md",
     "docs/research/agent-tools/REPORT.md",
+    "docs/research/agent-tools/REVIEW.md",
     "docs/research/agent-tools/SOURCES.md",
     "docs/research/agent-tools/evidence/browser-native.png",
     "docs/research/agent-tools/evidence/browser-trial-first.json",
@@ -201,6 +202,7 @@
     "experiments/agent-tools/acquire.py",
     "experiments/agent-tools/browser_trial.py",
     "experiments/agent-tools/check_adapter.py",
+    "experiments/agent-tools/check_cleanup.py",
     "experiments/agent-tools/desktop_trial.py",
     "experiments/agent-tools/fixture.html",
     "experiments/agent-tools/mcp_bridge.py",
@@ -758,6 +760,10 @@
       "sha256": "c30109585ceeba8efad1d02951b269af81dac3cb172c1071a70eee6a0c1a9b02",
       "status": "added"
     },
+    "docs/research/agent-tools/REVIEW.md": {
+      "sha256": "b3291f7846b21ec0ddc79d0f815a44d0a8b9d105ae7c49fd6ee3fe6dda144dd7",
+      "status": "added"
+    },
     "docs/research/agent-tools/SOURCES.md": {
       "sha256": "af10c521300e89ea021cd23a99ad0be689247d72ca1c0da001dd5202b8d8ea9b",
       "status": "added"
@@ -963,15 +969,19 @@
       "status": "added"
     },
     "experiments/agent-tools/browser_trial.py": {
-      "sha256": "2ff2e94379b888036c9c07253cee37e2c75900fa4112046b09a516eedbb60084",
+      "sha256": "1a464227d9d821beeaf9cc050cb329964edf413b1d977e951a7ec90592a28c79",
       "status": "added"
     },
     "experiments/agent-tools/check_adapter.py": {
       "sha256": "2a2083c2828dadad4e23e83ad0e9622c492d502ce801220c523976c5da7a7400",
       "status": "added"
     },
+    "experiments/agent-tools/check_cleanup.py": {
+      "sha256": "7b719cc3d339ed77e9811185c2a3b467bd91bffa3027087d78d646d29e575547",
+      "status": "added"
+    },
     "experiments/agent-tools/desktop_trial.py": {
-      "sha256": "25e05b63bab609693816ad34bf7ea6f56b9a0b67a952b8711e733a933bc63aed",
+      "sha256": "2d54ce5c5c3583833ed9de7b44aa0548063bc96b697ea75d28e1387d579a6246",
       "status": "added"
     },
     "experiments/agent-tools/fixture.html": {
