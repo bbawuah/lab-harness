@@ -350,7 +350,11 @@ after actions and cause closure if out of scope. This detects a boundary breach;
 it cannot undo site requests and is not a network sandbox. Browser subprocesses
 receive no model keys or Relay capability. Page content remains untrusted data.
 Timeout/cancellation or an uncertain action closes the owned session rather than
-retrying. Cleanup failure retains owned state and is reported.
+retrying. After any failure the browser stays disabled for the rest of the run,
+including after `/reload`. If cleanup also fails, owned state is kept,
+`/lab-browser status` says so, and `/lab-browser close` retries cleanup only.
+Ctrl+C or SIGTERM during browser startup cancels it and closes the browser;
+signals during final cleanup wait for it to finish.
 
 Actual validation: macOS arm64 with existing Chrome. macOS Intel/Linux x64 have
 pinned tool assets but need platform acceptance; Windows/WSL-to-Windows Edge,

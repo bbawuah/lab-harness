@@ -1,3 +1,20 @@
+ Relay ready: <RELAY_PEER>
+ (<RELAY_SESSION>). Use /relay-peers.
+
+
+ fixture run
+
+
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
+
+ Browser · fill
+ Browser · completed (expand for page data)
+
+
 
  Browser · snapshot
  Browser · completed (expand for page data)
@@ -13,11 +30,10 @@
  Browser · completed (expand for page data)
 
 
- Deterministic local protocol fixture completed. This
- is not a model response.
+ Deterministic local protocol fixture completed. This is not a model response.
 
-──────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────────────────────────
 
-──────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────────────────────────
 <OWNED_PROJECT>
-↑600 ↓120 1.5%/8.2k (auto)             browser-fixture
+↑600 ↓120 1.5%/8.2k (auto)                                                     browser-fixture

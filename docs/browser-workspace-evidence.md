@@ -5,9 +5,31 @@ LAB's native Pi extension/Relay/Herdr. It does not import the historical Python
 experiment or require another model gateway. PR19's successful cloud-model trial
 remains immutable historical evidence, not evidence for this implementation.
 
+## Check classification
+
+- **Required CI** (`check (ubuntu-24.04)`, `check (macos-15)`): run by GitHub on
+  each pushed head. Their results are reported in the PR, not here.
+- **Local normal gate** (`bun run check`: tests, typecheck, publication). This is
+  a non-actual gate: 256 pass, 34 skip at this head. The skipped tests are gated by
+  `LAB_HERDR_ACTUAL` or `LAB_PI_FULLSCREEN_ACTUAL`. It does not launch a browser.
+- **Actual browser scripts** (below): explicit, operator-run, need the pinned tool
+  and an approved browser. They are not part of `check` or `check:actual`.
+- `check:actual` (actual Herdr cases) was not run locally for this slice.
+
 ## Actual local acceptance (2026-11-02)
 
+Captured from clean commit `04328b6` after the review fixes. The screenshot and
+both result files reproduced byte-for-byte from the earlier capture, which had
+been taken from the uncommitted tree before `a893e0d`. See
+[provenance](browser-evidence/provenance.json) for the per-file hash mapping.
+
 - Pinned agent-browser 0.41.0, approved existing Chrome 156.0.8078.74, macOS arm64.
+- Unit tests (in the normal gate) cover failure-state persistence across rebind
+  with cleanup-retry only, the startup/cleanup signal guard, and hostile renderer
+  input: wide CJK/emoji, combining marks, ESC/BEL, bidi controls and lone
+  surrogates at widths 1-40, plus Pi-reported errors with empty details. The
+  native capture shows ordinary text only. Hostile text inside the live Pi TUI was
+  not captured.
 - `scripts/browser-smoke.ts`: two independent owned sessions; snapshot/fill,
   stale-ref refusal, fresh snapshot/click, independent DOM assertion; other session
   unchanged. Same-origin refusal, post-click other-port redirect, HTTP redirect,

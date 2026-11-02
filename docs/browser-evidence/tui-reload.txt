@@ -1,5 +1,23 @@
 
 
+ fixture run
+
+
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
+
+ Browser · fill
+ Browser · completed (expand for page data)
+
+
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
 
  Browser · click
  Browser · completed (expand for page data)
@@ -10,14 +28,12 @@
  Browser · completed (expand for page data)
 
 
- Deterministic local protocol fixture completed. This
- is not a model response.
+ Deterministic local protocol fixture completed. This is not a model response.
 
- Owned browser · http://127.0.0.1:<FIXTURE_PORT> · fresh
- snapshot required before actions.
+ Owned browser · http://127.0.0.1:<FIXTURE_PORT> · fresh snapshot required before actions.
 
-──────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────────────────────────
 
-──────────────────────────────────────────────────────
+──────────────────────────────────────────────────────────────────────────────────────────────
 <OWNED_PROJECT>
-↑600 ↓120 1.5%/8.2k (auto)             browser-fixture
+↑600 ↓120 1.5%/8.2k (auto)                                                     browser-fixture

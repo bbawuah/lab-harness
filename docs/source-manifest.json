@@ -517,7 +517,7 @@
       "status": "added"
     },
     "docs/browser-evidence/provenance.json": {
-      "sha256": "9f3c671e39e53b2cf7203d2d636cc425d674bb7780e8aefa29bca3c4a40d6581",
+      "sha256": "f4ae30a9b4b2f4d48100e1b5116b683e96960ccc538340cab309b1abba233fe3",
       "status": "added"
     },
     "docs/browser-evidence/session-result.json": {
@@ -525,11 +525,11 @@
       "status": "added"
     },
     "docs/browser-evidence/tui-reload.txt": {
-      "sha256": "1466c9ca7a44fc5a3c9387f1ec617d09f02471beeb15207111abbed1f898037e",
+      "sha256": "d6f8911065f9c0511e79171a483bc39bf9eea02fb152b9c7d09600c2bf051c52",
       "status": "added"
     },
     "docs/browser-evidence/tui-tools.txt": {
-      "sha256": "98e69675a297c4a10e4e11f2d0f012d4f46c94dffcd99f3b1c16f22c5573657b",
+      "sha256": "c4859204de1c02bab7c8554d4af99f4988159654b5a8475696c9611086b3757f",
       "status": "added"
     },
     "docs/browser-workspace-contract.md": {
@@ -537,7 +537,7 @@
       "status": "added"
     },
     "docs/browser-workspace-evidence.md": {
-      "sha256": "ae7b0d776b67b85c604ce6b5bc3463674fe682a5378997de94177cb83cef32d8",
+      "sha256": "e6bcbea0981a7efa821871e74aedb08c80b101d88a52443517edd67a882845dc",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1233,7 +1233,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "dce4d44a6c7086fad25cb544d1f17c8445a20516096e0bafed17d4ca89aeb7a1",
+      "sha256": "4765788925f92abef9694ecb1c0fb11643738887ff8195315c6f594a374a8ffd",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
