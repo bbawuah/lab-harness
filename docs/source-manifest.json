@@ -460,7 +460,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "1ad36b5f5dc516fe045e6a3c305e5a225ad68a144d92e1d8ac7dafddd1398055",
+      "sha256": "ee1d215fe7ea773285b61d31eebec15b7ac24307133a73be4a5b5d75af6e26fb",
       "status": "added"
     },
     "bun.lock": {
