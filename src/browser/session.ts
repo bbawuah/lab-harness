@@ -8,7 +8,7 @@ import { envelope, insist, project } from './projection.ts';
 export type BrowserInput = { operation: 'snapshot'|'navigate'|'fill'|'click'|'read'; url?: string; ref?: string; text?: string };
 export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown };
 export class BrowserSession {
-  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Set<string>(); private closed = false;
+  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Set<string>(); private closed = false; private failedInMemory = false;
   constructor(descriptor: BrowserDescriptor) {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
@@ -22,15 +22,16 @@ export class BrowserSession {
     writeFileSync(join(root,'config.json'),JSON.stringify({executablePath:browser,allowedDomains:[u.hostname],contentBoundaries:true,maxOutput:12000,noWebmcp:true,idleTimeout:'15m'}),{mode:0o600});
     const b=new BrowserSession({root,session,origin:u.origin});
     try { const raw=await b.call('agent_browser_open',{url:u.href},signal); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(signal); return b; }
-    catch(e) { await b.close();throw e; }
+    catch(e) { await b.close().catch(()=>{});throw e; }
   }
   static rebind(path: string) { const s=lstatSync(path);insist(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0,'LAB_BROWSER_STATE'); return new BrowserSession(JSON.parse(readFileSync(path,'utf8'))); }
   save(path: string) {writeFileSync(path,JSON.stringify(this.descriptor),{flag:'wx',mode:0o600});}
   // A failure marker inside the owned root survives /reload rebinding. Once
   // written, model operations are refused; only cleanup (close) may retry.
   private get failedMarker() {return join(this.descriptor.root,'failed');}
-  private failed() {return !!lstatSync(this.failedMarker,{throwIfNoEntry:false});}
-  private markFailed() {try{writeFileSync(this.failedMarker,'',{mode:0o600});}catch{}}
+  private failed() {return this.failedInMemory || !!lstatSync(this.failedMarker,{throwIfNoEntry:false});}
+  // In-memory flag first so a marker write failure cannot leave this session usable.
+  private markFailed() {this.failedInMemory=true;try{writeFileSync(this.failedMarker,'',{mode:0o600});}catch{}}
   status() {if(this.closed || !lstatSync(this.descriptor.root,{throwIfNoEntry:false}))return 'Browser closed. Start a new LAB run with --browser URL.';
     return this.failed() ? 'Browser stopped after a failure; actions disabled. Owned state retained; run /lab-browser close to retry cleanup.' : `Owned browser · ${this.descriptor.origin} · fresh snapshot required before actions.`;}
   private environment() {const r=this.descriptor.root;return {PATH:'/usr/bin:/bin:/usr/sbin:/sbin',HOME:join(r,'home'),TMPDIR:join(r,'t'),XDG_CACHE_HOME:join(r,'cache'),AGENT_BROWSER_SOCKET_DIR:join(r,'s'),AGENT_BROWSER_CONFIG:join(r,'config.json'),AGENT_BROWSER_SESSION:this.descriptor.session,NO_COLOR:'1'};}

@@ -1471,7 +1471,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "9e6961c2b8bf687339be0b37d361e71550368c26f813203fa6726f8db91a5672",
+      "sha256": "02e37f5dde986a0530fb769638d3c0cff0251ac8b5c81a2780b70d609399592a",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1547,7 +1547,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "5f238accf8b1eb61d86ce663bab1e933af0b7464f97ff181a20f5663996c1d1a",
+      "sha256": "ddfb8d4b79155ffe35bd1dd7240b1bae9478a1d2756ee3c79f6a3eb061373ee1",
       "status": "added"
     },
     "src/pi/commands.ts": {
@@ -1643,7 +1643,7 @@
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "7ecbb750c174c7718b436482f7aa44bc4ac580781b07b06f246eb0b24b95a1a7",
+      "sha256": "c3b5c65607f5afa5439c14dad2fd0efb1d00c86eb7da4f3e62be76850098a1ce",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {

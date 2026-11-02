@@ -7,7 +7,8 @@ import { guardBrowserLifecycle } from '../src/browser/lifecycle.ts';
 import { mkdirSync, mkdtempSync, existsSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-const cols=(row:string)=>[...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(row)].reduce((n,{segment})=>n+(/^\p{M}+$/u.test(segment)?0:/[\u1100-\u115f\u2e80-\ua4cf\uac00-\ud7a3\uf900-\ufaff\uff00-\uff60]|\p{Extended_Pictographic}/u.test(segment)?2:1),0);
+// Independent oracle: Bun's terminal width, not the production table.
+const cols=(row:string)=>Bun.stringWidth(row);
 // Builds a session object without the pinned binary; only private transport is faked.
 function fakeSession(run:(args:string[])=>Promise<string>) {
  const root=mkdtempSync(join(tmpdir(),'lab-browser-test-'));for(const n of ['s','t'])mkdirSync(join(root,n),{mode:0o700});
@@ -62,12 +63,13 @@ test('renderer wraps by terminal columns and escapes hostile controls in calls, 
  const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({status(){return'';},close:async()=>{},execute:async()=>({})});
  try{
   installBrowserExtension({on(){},registerCommand(){},registerTool(t:any){tools.push(t);},sendMessage(){}} as any);const tool=tools[0];
-  const hostile='\"'+'界'.repeat(7)+'\u202e\u2066x\u001b[31m\u0007e\u0301👍🏽\ud800';
+  const hostile='\"✅⭐⌚🀄🇳🇱1️⃣❤️👨‍👩‍👧'+'界'.repeat(7)+'\u202e\u2066x\u001b[31m\u0007e\u0301👍🏽\ud800';
   for(const width of [1,2,3,8,13,40]){
    const rows=[...tool.renderCall({operation:hostile}).render(width),...tool.renderResult({details:{text:hostile}},{expanded:true}).render(width),...tool.renderResult({content:[{type:'text',text:hostile}],details:{}},{},undefined,{isError:true}).render(width)];
-   for(const row of rows){expect(cols(row)).toBeLessThanOrEqual(width);expect(row).not.toMatch(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/);}
+   for(const row of rows){expect(cols(row)).toBeLessThanOrEqual(width);expect(Bun.stringWidth(row)).toBeLessThanOrEqual(width);expect(row).not.toMatch(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/);}
   }
   expect(wrapColumns('a\u001bb',10)).toEqual(['a\\u{1b}b']); // escape kept whole on one row
+  expect(wrapColumns('✅'.repeat(10),10)).toEqual(['✅'.repeat(5),'✅'.repeat(5)]); // emoji presentation = 2 columns
   const err=tool.renderResult({content:[{type:'text',text:'Validation failed: operation'}],details:{}},{expanded:true},undefined,{isError:true}).render(80).join('');
   expect(err).toContain('Browser refused');expect(err).toContain('Validation failed');expect(err).not.toContain('completed');
   expect(tool.renderResult({details:{verifiedOrigin:'x'}},{}).render(80).join('')).toContain('completed');
