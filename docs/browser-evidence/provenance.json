@@ -2,13 +2,13 @@
   "date": "2026-11-02",
   "kind": "native browser pixels and native Herdr pane.read text; not a mockup",
   "captureSource": {
-    "commit": "04328b6fb844fa72058b11a3d0793562dde5fad4",
+    "commit": "9ef79f17d77963b02cdf7c1e4a9111e7dfe40912",
     "tree": "clean (git status empty before and during capture)",
     "scripts": [
       "scripts/browser-native-smoke.ts (in a 40x120 pseudo-terminal)",
       "scripts/browser-smoke.ts"
     ],
-    "capturedAt": "2026-11-02T08:07+01:00, macOS arm64"
+    "capturedAt": "2026-11-02, macOS arm64 (after review round 2 fixes)"
   },
   "files": {
     "native-browser.png": {
@@ -29,15 +29,17 @@
     },
     "tui-tools.txt": {
       "sha256": "c4859204de1c02bab7c8554d4af99f4988159654b5a8475696c9611086b3757f",
-      "source": "browser-native-smoke.ts Herdr pane.read after the tool calls, sanitized"
+      "source": "browser-native-smoke.ts Herdr pane.read after the tool calls, sanitized",
+      "reproduced": "text identical to the 04328b6 capture after sanitization"
     },
     "tui-reload.txt": {
       "sha256": "d6f8911065f9c0511e79171a483bc39bf9eea02fb152b9c7d09600c2bf051c52",
-      "source": "browser-native-smoke.ts Herdr pane.read after /reload and /lab-browser status, sanitized"
+      "source": "browser-native-smoke.ts Herdr pane.read after /reload and /lab-browser status, sanitized",
+      "reproduced": "text identical to the 04328b6 capture after sanitization"
     }
   },
   "textSanitization": "pane.read text only; /private-prefixed owned project footer -> <OWNED_PROJECT>; loopback fixture port -> <FIXTURE_PORT>; ephemeral Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION>; trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
-  "history": "The first published set (commit a893e0d) was captured 2026-11-02 07:47-07:53 from the uncommitted working tree that was committed as a893e0d at 07:54. It was not a clean-commit capture. The image and both result files are reproduced byte-for-byte here from a clean commit. The TUI text was re-captured at a different terminal width, so its wrapping differs.",
+  "history": "The first published set (commit a893e0d) was captured 2026-11-02 07:47-07:53 from the uncommitted working tree that was committed as a893e0d at 07:54. It was not a clean-commit capture. The image and both result files are reproduced byte-for-byte here from a clean commit. The TUI text was re-captured at a different terminal width, so its wrapping differs. The same files were reproduced again from clean 04328b6 and from clean 9ef79f1 (this capture).",
   "agentBrowser": "0.41.0",
   "chrome": "156.0.8078.74",
   "pi": "1.4.0",

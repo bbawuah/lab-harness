@@ -10,7 +10,7 @@ remains immutable historical evidence, not evidence for this implementation.
 - **Required CI** (`check (ubuntu-24.04)`, `check (macos-15)`): run by GitHub on
   each pushed head. Their results are reported in the PR, not here.
 - **Local normal gate** (`bun run check`: tests, typecheck, publication). This is
-  a non-actual gate: 256 pass, 34 skip at this head. The skipped tests are gated by
+  a non-actual gate: 256 pass, 34 skip at `9ef79f1`. The skipped tests are gated by
   `LAB_HERDR_ACTUAL` or `LAB_PI_FULLSCREEN_ACTUAL`. It does not launch a browser.
 - **Actual browser scripts** (below): explicit, operator-run, need the pinned tool
   and an approved browser. They are not part of `check` or `check:actual`.
@@ -18,7 +18,7 @@ remains immutable historical evidence, not evidence for this implementation.
 
 ## Actual local acceptance (2026-11-02)
 
-Captured from clean commit `04328b6` after the review fixes. The screenshot and
+Captured from clean commit `9ef79f1` after both review rounds. The screenshot and
 both result files reproduced byte-for-byte from the earlier capture, which had
 been taken from the uncommitted tree before `a893e0d`. See
 [provenance](browser-evidence/provenance.json) for the per-file hash mapping.

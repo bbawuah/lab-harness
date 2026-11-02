@@ -517,7 +517,7 @@
       "status": "added"
     },
     "docs/browser-evidence/provenance.json": {
-      "sha256": "f4ae30a9b4b2f4d48100e1b5116b683e96960ccc538340cab309b1abba233fe3",
+      "sha256": "149c449a83658a1899c37b652182b062dcba10263d2db13bf7d5167942a81f4c",
       "status": "added"
     },
     "docs/browser-evidence/session-result.json": {
@@ -537,7 +537,7 @@
       "status": "added"
     },
     "docs/browser-workspace-evidence.md": {
-      "sha256": "e6bcbea0981a7efa821871e74aedb08c80b101d88a52443517edd67a882845dc",
+      "sha256": "86dc92a19eb4fb17eaeb273acc5b7bdc34f31e425c6972a8b08303716efba06b",
       "status": "added"
     },
     "docs/build-plan.md": {
