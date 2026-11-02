@@ -42,7 +42,7 @@ test('failed action with failed cleanup disables further actions, survives rebin
   await expect(s.execute({operation:'snapshot'})).rejects.toThrow('LAB_BROWSER_FAILED');
   expect(calls.length).toBe(before); // refused before any browser command
   expect(s.status()).toContain('actions disabled');
-  const {s:rebound}=fakeSession(async()=>{throw new Error('unexpected');});rebound.descriptor=s.descriptor; // same owned root after /reload
+  const {s:rebound,root:unused}=fakeSession(async()=>{throw new Error('unexpected');});rmSync(unused,{recursive:true});rebound.descriptor=s.descriptor; // same owned root after /reload
   await expect(rebound.execute({operation:'snapshot'})).rejects.toThrow('LAB_BROWSER_FAILED');
   await expect(s.close()).rejects.toThrow();expect(existsSync(root)).toBe(true);
   closeWorks=true;await s.close();expect(existsSync(root)).toBe(false);expect(s.status()).toContain('closed');

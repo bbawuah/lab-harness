@@ -1643,7 +1643,7 @@
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "c205565683c853588d69425ca797cb7ab7a59b573cb19d17ff6f8326eb6150bb",
+      "sha256": "7ecbb750c174c7718b436482f7aa44bc4ac580781b07b06f246eb0b24b95a1a7",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
