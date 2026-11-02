@@ -54,6 +54,24 @@ browser pixels and native terminal text, not mockups. Protocol responses are
 scripted, so they do not establish model quality. The byte-based production output
 limits are not token guarantees. No zero-network-egress claim is made.
 
+## Hosted install (2026-11-02)
+
+`bootstrap.sh` at `53d26e8` pins runtime `05b0d36` (codeload archive SHA-256
+`b889d53a1c3ea232a82bbd28e70a0d5fbc6d95854a96524b6f5c88ab0c69c58b`). Required CI
+passed on `05b0d36` before the pin was pushed. On macOS arm64, with an empty HOME
+and system-only PATH, the raw `bootstrap.sh` from `53d26e8` with `--install-only`:
+
+- downloaded and verified the archive, Bun 1.4.2, Herdr, ripgrep, fd and Pi; it
+  passed the publication check and the owned Herdr smoke, and exited 0;
+- did not acquire agent-browser (ordinary install has no browser dependency).
+
+`lab --setup-browser` then acquired agent-browser 0.41.0 whose SHA-256 and size
+match the contract. Both actual browser scripts, run from the installed release
+with its own Bun, passed, and their result files and screenshot were
+byte-identical to the published evidence. A second bootstrap run re-verified the
+installed source and exited 0. No browser processes or owned temp state remained.
+Interactive first-run model setup was not exercised (no model calls).
+
 ## Pins and limits
 
 [Official release](https://github.com/vercel-labs/agent-browser/releases/tag/v0.41.0),
