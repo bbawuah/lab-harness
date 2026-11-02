@@ -14,19 +14,25 @@ export class BrowserSession {
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
     insist(/^lab-[a-f0-9]{24}$/.test(descriptor.session),'LAB_BROWSER_STATE'); browserURL(descriptor.origin);
   }
-  static async create(url: string, executable?: string) {
+  static async create(url: string, executable?: string, signal?: AbortSignal) {
     const u=browserURL(url);verifyBrowserRuntime(); const browser=selectBrowser(executable);
     // Short absolute owned socket root avoids Unix socket path-length limits.
     const root=mkdtempSync(join(tmpdir(),'lab-browser-')); const session='lab-'+randomUUID().replaceAll('-','').slice(0,24);
     for (const n of ['s','t','home','cache']) mkdirSync(join(root,n),{mode:0o700});
     writeFileSync(join(root,'config.json'),JSON.stringify({executablePath:browser,allowedDomains:[u.hostname],contentBoundaries:true,maxOutput:12000,noWebmcp:true,idleTimeout:'15m'}),{mode:0o600});
     const b=new BrowserSession({root,session,origin:u.origin});
-    try { const raw=await b.call('agent_browser_open',{url:u.href}); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(); return b; }
+    try { const raw=await b.call('agent_browser_open',{url:u.href},signal); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(signal); return b; }
     catch(e) { await b.close();throw e; }
   }
   static rebind(path: string) { const s=lstatSync(path);insist(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0,'LAB_BROWSER_STATE'); return new BrowserSession(JSON.parse(readFileSync(path,'utf8'))); }
   save(path: string) {writeFileSync(path,JSON.stringify(this.descriptor),{flag:'wx',mode:0o600});}
-  status() {return this.closed || !lstatSync(this.descriptor.root,{throwIfNoEntry:false}) ? 'Browser closed. Start a new LAB run with --browser URL.' : `Owned browser · ${this.descriptor.origin} · fresh snapshot required before actions.`;}
+  // A failure marker inside the owned root survives /reload rebinding. Once
+  // written, model operations are refused; only cleanup (close) may retry.
+  private get failedMarker() {return join(this.descriptor.root,'failed');}
+  private failed() {return !!lstatSync(this.failedMarker,{throwIfNoEntry:false});}
+  private markFailed() {try{writeFileSync(this.failedMarker,'',{mode:0o600});}catch{}}
+  status() {if(this.closed || !lstatSync(this.descriptor.root,{throwIfNoEntry:false}))return 'Browser closed. Start a new LAB run with --browser URL.';
+    return this.failed() ? 'Browser stopped after a failure; actions disabled. Owned state retained; run /lab-browser close to retry cleanup.' : `Owned browser · ${this.descriptor.origin} · fresh snapshot required before actions.`;}
   private environment() {const r=this.descriptor.root;return {PATH:'/usr/bin:/bin:/usr/sbin:/sbin',HOME:join(r,'home'),TMPDIR:join(r,'t'),XDG_CACHE_HOME:join(r,'cache'),AGENT_BROWSER_SOCKET_DIR:join(r,'s'),AGENT_BROWSER_CONFIG:join(r,'config.json'),AGENT_BROWSER_SESSION:this.descriptor.session,NO_COLOR:'1'};}
   private run(args: string[], signal?: AbortSignal): Promise<string> {
     if(signal?.aborted) return Promise.reject(new Error('LAB_BROWSER_CANCELLED'));
@@ -49,6 +55,7 @@ export class BrowserSession {
   execute(input:BrowserInput,signal?:AbortSignal):Promise<unknown> {
     const task=this.queue.then(async()=>{
       insist(!this.closed && !!lstatSync(this.descriptor.root,{throwIfNoEntry:false}),'LAB_BROWSER_CLOSED');
+      insist(!this.failed(),'LAB_BROWSER_FAILED: browser stopped after an earlier failure; actions disabled until a new LAB run.');
       insist(input && typeof input==='object' && Object.keys(input).every(k=>['operation','url','ref','text'].includes(k)),'LAB_BROWSER_INPUT');
       let tool:string,args:object;
       const op=input.operation;
@@ -64,12 +71,13 @@ export class BrowserSession {
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
         if(op==='snapshot')this.refs=new Set(Object.keys(result.result.refs).map(r=>'@'+r));
         return {...result,verifiedOrigin:this.descriptor.origin};
-      } catch(e) {this.refs.clear();await this.closeNow();throw e;}
+      } catch(e) {this.refs.clear();this.markFailed();await this.closeNow().catch(()=>{});throw e;}
     });this.queue=task.catch(()=>{});return task;
   }
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}
+    this.markFailed();
     const pidfile=join(r,'s',this.descriptor.session+'.pid');let pid:number|undefined;try{pid=Number(readFileSync(pidfile,'utf8'));}catch{}
     const raw=await this.run(['--json','close']); const response=JSON.parse(raw);insist(response.success===true,'LAB_BROWSER_CLEANUP_FAILED');
     for(let n=0;n<40;n++){let alive=false;if(pid&&Number.isInteger(pid)){try{process.kill(pid,0);alive=true;}catch{}}if(!alive&&readdirSync(join(r,'t')).every(n=>!n.startsWith('agent-browser-chrome-'))){this.closed=true;rmSync(r,{recursive:true});return;}await new Promise(r=>setTimeout(r,50));}

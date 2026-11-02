@@ -59,8 +59,13 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
   if (appearance.warning) process.stdout.write("LAB appearance: " + appearance.warning + "\n");
   writePrivate(join(agent, "settings.json"), JSON.stringify({ ...appearance.settings, defaultProvider: "lab-workspace", defaultModel: route.model, packages: [], quietStartup: false }) + "\n");
   const relayRunRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot, projectBinding: project, runRoot: run, groupId: options.relayGroup });
-  const browser = options.browser ? await (await import("../browser/session.ts")).BrowserSession.create(options.browser, options.browserExecutable) : undefined;
+  const guard = options.browser ? (await import("../browser/lifecycle.ts")).guardBrowserLifecycle() : undefined;
+  let browser: import("../browser/session.ts").BrowserSession | undefined;
+  try { browser = options.browser ? await (await import("../browser/session.ts")).BrowserSession.create(options.browser, options.browserExecutable, guard!.signal) : undefined; }
+  catch (error) { guard?.release(); throw error; }
+  if (guard?.state.signalled) { guard.state.phase = "cleanup"; try { await browser?.close(); } finally { guard.release(); } return 128 + guard.state.signalled; }
   try {
+  if (guard) guard.state.phase = "herdr";
   const browserRef = join(run, "browser-ref.json");
   if (browser) browser.save(browserRef);
   const exitFile = join(run, "pi-exit");
@@ -85,5 +90,5 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
       LAB_RELAY_RUN_REF: relayRunRef,
       ...(browser ? { LAB_BROWSER_REF: browserRef } : {}),
     },
-  }); } finally { await browser?.close(); }
+  }); } finally { if (guard) guard.state.phase = "cleanup"; try { await browser?.close(); } finally { guard?.release(); } }
 }

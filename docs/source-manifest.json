@@ -302,6 +302,7 @@
     "scripts/start.ts",
     "src/admission.ts",
     "src/bound-worker.ts",
+    "src/browser/lifecycle.ts",
     "src/browser/projection.ts",
     "src/browser/runtime.ts",
     "src/browser/session.ts",
@@ -1457,6 +1458,10 @@
       "status": "unchanged",
       "originalSHA256": "b085014d6ef2e456cdd736ef846935cbd0f92be0bd10ce6a11907598c89798d3"
     },
+    "src/browser/lifecycle.ts": {
+      "sha256": "63a789315df26fdc06b6b50a4d51258e41ff6fb71cea898544b294f48e42cd0c",
+      "status": "added"
+    },
     "src/browser/projection.ts": {
       "sha256": "9b763968c43ce503be42635cb8d51f03af4f1fc8d5b5ff028978ac4158e2b539",
       "status": "added"
@@ -1466,7 +1471,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "2667c3b0076d60de036c284c31958b1a9a0caea0c3067cc2b49f5b3a79f92c2b",
+      "sha256": "9e6961c2b8bf687339be0b37d361e71550368c26f813203fa6726f8db91a5672",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1542,7 +1547,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "ed12a8ac8f942b6415eb79f116229db22e6ee154aae46df0e06d410e34057b5d",
+      "sha256": "5f238accf8b1eb61d86ce663bab1e933af0b7464f97ff181a20f5663996c1d1a",
       "status": "added"
     },
     "src/pi/commands.ts": {
@@ -1582,7 +1587,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "549cb57ba7b0e7bc2976b68f9e999aa12f03384f02d5a972dbc1c944c845ba27",
+      "sha256": "3ffd0bff9e4164fd869da8b8ff972069a1bc6d9ae637156895eb0cb59dce4d71",
       "status": "added"
     },
     "src/project.ts": {
@@ -1638,7 +1643,7 @@
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "2c6e334d8985a9dcbea8e2281119633c9e0f9106b1cebba076881a1528da94eb",
+      "sha256": "c205565683c853588d69425ca797cb7ab7a59b573cb19d17ff6f8326eb6150bb",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
