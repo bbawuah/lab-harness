@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-02",
+  "kind": "native browser pixels and native Herdr pane.read text; not a mockup",
+  "captureSource": {
+    "commit": "9ef79f17d77963b02cdf7c1e4a9111e7dfe40912",
+    "tree": "clean (git status empty before and during capture)",
+    "scripts": [
+      "scripts/browser-native-smoke.ts (in a 40x120 pseudo-terminal)",
+      "scripts/browser-smoke.ts"
+    ],
+    "capturedAt": "2026-11-02, macOS arm64 (after review round 2 fixes)"
+  },
+  "files": {
+    "native-browser.png": {
+      "sha256": "233a1d82d7e2e6149e095822a8badd0fad98cc73f64275b19a29f395cb145f1a",
+      "source": "browser-native-smoke.ts owned-browser screenshot after the fixture run",
+      "reproduced": "byte-identical to the earlier capture"
+    },
+    "native-result.json": {
+      "sha256": "aceb9c6f086dc4f83d354944229c37c5a74cfc57cd1b8c4a2dae9e95a706586a",
+      "source": "browser-native-smoke.ts result.json, unmodified",
+      "reproduced": "byte-identical to the earlier capture"
+    },
+    "session-result.json": {
+      "sha256": "b74cee7eb7241071462b7683a1c2a1a45dcc0983fd439b5f6194f40e316c3936",
+      "source": "browser-smoke.ts result.json, unmodified",
+      "reproduced": "byte-identical to the earlier capture",
+      "note": "Its screenshotSHA256 (1fee05a3...) identifies browser-smoke.ts's own fixture screenshot, which is not published. It is a different image from native-browser.png."
+    },
+    "tui-tools.txt": {
+      "sha256": "c4859204de1c02bab7c8554d4af99f4988159654b5a8475696c9611086b3757f",
+      "source": "browser-native-smoke.ts Herdr pane.read after the tool calls, sanitized",
+      "reproduced": "text identical to the 04328b6 capture after sanitization"
+    },
+    "tui-reload.txt": {
+      "sha256": "d6f8911065f9c0511e79171a483bc39bf9eea02fb152b9c7d09600c2bf051c52",
+      "source": "browser-native-smoke.ts Herdr pane.read after /reload and /lab-browser status, sanitized",
+      "reproduced": "text identical to the 04328b6 capture after sanitization"
+    }
+  },
+  "textSanitization": "pane.read text only; /private-prefixed owned project footer -> <OWNED_PROJECT>; loopback fixture port -> <FIXTURE_PORT>; ephemeral Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION>; trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
+  "history": "The first published set (commit a893e0d) was captured 2026-11-02 07:47-07:53 from the uncommitted working tree that was committed as a893e0d at 07:54. It was not a clean-commit capture. The image and both result files are reproduced byte-for-byte here from a clean commit. The TUI text was re-captured at a different terminal width, so its wrapping differs. The same files were reproduced again from clean 04328b6 and from clean 9ef79f1 (this capture).",
+  "agentBrowser": "0.41.0",
+  "chrome": "156.0.8078.74",
+  "pi": "1.4.0",
+  "herdr": "0.9.5",
+  "inferenceCalls": 0,
+  "protocolFixtureRequests": 6
+}

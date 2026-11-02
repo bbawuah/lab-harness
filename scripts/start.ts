@@ -7,17 +7,22 @@ const root = resolve(import.meta.dir, "..");
 const args = process.argv.slice(2);
 let project: string | undefined;
 let relayGroup: string | undefined;
+let browser: string | undefined, browserExecutable: string | undefined;
 const caller = process.env.LAB_CALLER_CWD;
 for (let index = 0; index < args.length; index++) {
   if (args[index] === "--project") {
     if (project || !args[index + 1] || args[index + 1]!.startsWith("--")) { console.error("LAB: use --project DIR once."); process.exit(2); }
     const value = args[++index]!;
     project = isAbsolute(value) ? resolve(value) : resolve(caller ?? process.cwd(), value);
+  } else if (args[index] === "--browser" || args[index] === "--browser-executable") {
+    const option=args[index], value=args[++index];
+    if (!value || value.startsWith("--") || (option === "--browser" ? browser : browserExecutable)) throw new Error("LAB_BROWSER_OPTION: use each browser option once with a value.");
+    if(option === "--browser") browser=value; else browserExecutable=value;
   } else if (args[index] === "--relay-group") {
     const value = args[++index];
     if (relayGroup || !value || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(value)) { console.error("LAB: use --relay-group ID once; configure its private project allowlist first."); process.exit(2); }
     relayGroup = value;
-  } else if (!["--help", "--configure", "--offline", "--single-pane"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
+  } else if (!["--help", "--configure", "--offline", "--single-pane", "--setup-browser"].includes(args[index]!)) { console.error("LAB: unknown option. Run lab --help."); process.exit(2); }
 }
 if (args.includes("--help")) {
   console.log(shellHelp());
@@ -25,6 +30,13 @@ if (args.includes("--help")) {
 }
 
 try {
+  if(args.includes("--setup-browser")) {
+    if(browser || browserExecutable || args.includes('--configure')) throw new Error('LAB_BROWSER_OPTION: use --setup-browser separately.');
+    const child=spawn(process.execPath,['--no-env-file','--no-install',join(root,'scripts/acquire-browser.ts'),...(args.includes('--offline')?['--offline']:[])],{stdio:'inherit'});
+    process.exitCode=await new Promise<number>((done,reject)=>{child.once('error',reject);child.once('exit',c=>done(c??1));});
+  } else {
+  if(browserExecutable && !browser) throw new Error("LAB_BROWSER_OPTION: --browser-executable requires --browser URL.");
+  if(browser) { const runtime=await import("../src/browser/runtime.ts");runtime.browserURL(browser);runtime.verifyBrowserRuntime();runtime.selectBrowser(browserExecutable); }
   let ready = false;
   try { verifyInstalledRuntime(); ready = true; } catch {}
   // A healthy launch only reads the release. Explicit missing/corrupt dependency
@@ -37,12 +49,13 @@ try {
     if (code !== 0) process.exit(code);
   }
   const { runInteractiveWorkspace } = await import("../src/pi/workspace.ts");
-  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup, singlePane: args.includes("--single-pane") };
+  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup, singlePane: args.includes("--single-pane"), browser, browserExecutable };
   process.exitCode = await runInteractiveWorkspace(workspaceOptions);
+  }
 } catch (error) {
   // These are local startup errors. Never dump arbitrary provider or input payloads.
   const code = error && typeof error === "object" && "code" in error && typeof error.code === "string" ? error.code : "WORKSPACE_START_FAILED";
-  const message = code === "PROJECT_SELECTION_CANCELLED" ? "Project selection cancelled; no workspace started." : error instanceof Error && /^(?:User shell|Invalid shell environment)/.test(error.message) ? `${error.message}. Use lab --single-pane to open Pi without the regular shell.` : code.startsWith("RELAY_") ? code + ". Check the selected project, private Relay state and explicit group configuration." : code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
+  const message = error instanceof Error && error.message.startsWith("LAB_BROWSER_") ? error.message : code === "PROJECT_SELECTION_CANCELLED" ? "Project selection cancelled; no workspace started." : error instanceof Error && /^(?:User shell|Invalid shell environment)/.test(error.message) ? `${error.message}. Use lab --single-pane to open Pi without the regular shell.` : code.startsWith("RELAY_") ? code + ". Check the selected project, private Relay state and explicit group configuration." : code.startsWith("PROJECT_") || code === "INVALID_PROJECT_DIRECTORY" ? `${code}. Choose an existing project with --project DIR.` : error instanceof Error && /^(?:LAB interactive workspace requires a terminal|First run requires a terminal|Private key input requires an interactive terminal|Route setup cancelled|Endpoint must be an explicit HTTP|Local route requires localhost|Invalid workspace route|Workspace state|Stable workspace state|LAB_WORKSPACE_STATE_ROOT|Pinned Pi runtime|Herdr is missing|Project ripgrep is missing)/.test(error.message)
     ? error.message : `${code}. Check installation and local route; use ./lab --configure to change it.`;
   console.error(`LAB: ${message}`);
   process.exitCode = 1;

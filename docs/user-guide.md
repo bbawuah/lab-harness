@@ -329,3 +329,34 @@ platforms are macOS arm64/Intel and Linux x86_64; WSL is a separate unverified
 target. Native coding is available, while controlled LAB ledger-task execution
 remains unqualified and unavailable. Relay messages, terminal output or model
 answers never accept a ledger task.
+
+## Optional owned browser
+
+Run `lab --setup-browser` once to acquire checksum-pinned agent-browser 0.41.0.
+This downloads the control tool, never a browser. `lab --setup-browser --offline`
+requires a verified cached tool. An approved same-OS Chrome, Chromium or Edge
+must already be installed; use `--browser-executable /absolute/path` if needed.
+
+Start `lab --browser https://your-approved-origin.example/path`. LAB creates a
+fresh private browser, separate from personal profiles. `/lab-browser status`
+shows its origin; `/lab-browser close` closes only this run. A native `/reload`
+rebinds the same browser with no retained refs. After close, start a new LAB run
+to reopen. Ordinary `lab` has no browser dependency.
+
+The model receives `lab_browser`: snapshot, navigate, fill, click, read. Use a
+fresh snapshot's `@eN` reference; mutations/navigation invalidate refs. Navigation
+is restricted to the operator's exact origin. Redirects and new tabs are checked
+after actions and cause closure if out of scope. This detects a boundary breach;
+it cannot undo site requests and is not a network sandbox. Browser subprocesses
+receive no model keys or Relay capability. Page content remains untrusted data.
+Timeout/cancellation or an uncertain action closes the owned session rather than
+retrying. After any failure the browser stays disabled for the rest of the run,
+including after `/reload`. If cleanup also fails, owned state is kept,
+`/lab-browser status` says so, and `/lab-browser close` retries cleanup only.
+Ctrl+C or SIGTERM during browser startup cancels it and closes the browser;
+signals during final cleanup wait for it to finish.
+
+Actual validation: macOS arm64 with existing Chrome. macOS Intel/Linux x64 have
+pinned tool assets but need platform acceptance; Windows/WSL-to-Windows Edge,
+existing profiles and desktop control are outside this slice. See
+[browser evidence and reproduction](browser-workspace-evidence.md).

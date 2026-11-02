@@ -1,0 +1,64 @@
+{
+  "kind": "normal lab native Pi/Herdr with local deterministic protocol fixture, no inference",
+  "ok": true,
+  "code": 0,
+  "requests": 6,
+  "events": [
+    {
+      "request": 1,
+      "toolAvailable": true,
+      "operation": {
+        "operation": "snapshot"
+      },
+      "priorToolError": false
+    },
+    {
+      "request": 2,
+      "toolAvailable": true,
+      "operation": {
+        "operation": "fill",
+        "ref": "@e3",
+        "text": "Native Fixture"
+      },
+      "priorToolError": false
+    },
+    {
+      "request": 3,
+      "toolAvailable": true,
+      "operation": {
+        "operation": "snapshot"
+      },
+      "priorToolError": false
+    },
+    {
+      "request": 4,
+      "toolAvailable": true,
+      "operation": {
+        "operation": "click",
+        "ref": "@e2"
+      },
+      "priorToolError": false
+    },
+    {
+      "request": 5,
+      "toolAvailable": true,
+      "operation": {
+        "operation": "snapshot"
+      },
+      "priorToolError": false
+    },
+    {
+      "request": 6,
+      "toolAvailable": true,
+      "operation": "final",
+      "priorToolError": false
+    }
+  ],
+  "cleanup": {
+    "serverExited": true,
+    "clientExited": true,
+    "workerStopped": true,
+    "socketsRemoved": true
+  },
+  "browserRootRemoved": true
+}
