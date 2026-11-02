@@ -5,8 +5,8 @@ umask 077
 fail() { printf 'install: %s\n' "$*" >&2; exit 1; }
 step() { printf '\ninstall: %s\n' "$*"; }
 lab_offline=0
-case "${1:-}" in '') ;; --offline) lab_offline=1; shift;; *) fail 'Usage: ./install.sh [--offline]';; esac
-[ "$#" -eq 0 ] || fail 'Usage: ./install.sh [--offline]'
+lab_browser=0
+for arg in "$@"; do case "$arg" in --offline) lab_offline=1;; --browser) lab_browser=1;; *) fail 'Usage: ./install.sh [--offline] [--browser]';; esac; done
 project_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 cd -- "$project_root"
 . "$project_root/scripts/runtime-bun.sh"
@@ -29,7 +29,11 @@ step 'Acquiring checksum-pinned Herdr, ripgrep, fd and standalone Pi'
 "$lab_bun" --no-env-file run setup:rg
 "$lab_bun" --no-env-file run setup:fd
 "$lab_bun" --no-env-file run setup:pi
-step 'Checking immutable source publication integrity'
+if [ "$lab_browser" = 1 ]; then
+  step 'Acquiring optional pinned browser control tool; no browser download'
+  "$lab_bun" --no-env-file --no-install scripts/acquire-browser.ts
+fi
+step 'Checking immutable source publication integrity' 
 "$lab_bun" --no-env-file run check:publication
 step 'Checking an actual owned Herdr worker with bounded cleanup; no model calls'
 "$lab_bun" --no-env-file run smoke:herdr

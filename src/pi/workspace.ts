@@ -23,7 +23,7 @@ export function verifyWorkspaceRg(): string {
   return executable;
 }
 /** Starts native Pi coding. No ledger task grant, ingest, or acceptance exists here. */
-export async function runInteractiveWorkspace(options: { configure?: boolean; project?: string; relayGroup?: string; singlePane?: boolean } = {}): Promise<number> {
+export async function runInteractiveWorkspace(options: { configure?: boolean; project?: string; relayGroup?: string; singlePane?: boolean; browser?: string; browserExecutable?: string } = {}): Promise<number> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error("LAB interactive workspace requires a terminal");
   const project = await selectWorkspaceProject(options.project ?? process.cwd(), installRoot);
   const runtime = verifyPiRuntime();
@@ -59,6 +59,10 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
   if (appearance.warning) process.stdout.write("LAB appearance: " + appearance.warning + "\n");
   writePrivate(join(agent, "settings.json"), JSON.stringify({ ...appearance.settings, defaultProvider: "lab-workspace", defaultModel: route.model, packages: [], quietStartup: false }) + "\n");
   const relayRunRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot, projectBinding: project, runRoot: run, groupId: options.relayGroup });
+  const browser = options.browser ? await (await import("../browser/session.ts")).BrowserSession.create(options.browser, options.browserExecutable) : undefined;
+  try {
+  const browserRef = join(run, "browser-ref.json");
+  if (browser) browser.save(browserRef);
   const exitFile = join(run, "pi-exit");
   const wrapper = join(run, "pi.sh");
   writeFileSync(wrapper, '#!/bin/sh\numask 077\nexit_file="$1"\nshift\n"$@"\nstatus=$?\nprintf "%s\\n" "$status" > "$exit_file"\nexit "$status"\n', { flag: "wx", mode: 0o700 });
@@ -71,7 +75,7 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
   ];
   verifyProjectBinding(project);
   process.stdout.write(`Starting LAB interactive workspace in ${project.root}. Controlled LAB tasks remain unavailable.\n${shell ? "Pi left; terminal right. Ctrl+B then h/l changes focus; Ctrl+B then z zooms. " : "Pi only. "}Exit Pi with /exit; native sessions persist in the configured workspace state directory.\n`);
-  return runHerdrInteractive({ executable: herdr, command, cwd: project.root, stateRoot: run, exitFile, shell,
+  return await runHerdrInteractive({ executable: herdr, command, cwd: project.root, stateRoot: run, exitFile, shell,
     environment: {
       PATH: `${join(installRoot, ".tmp/fd")}:${dirname(rg)}:${dirname(process.execPath)}:/usr/bin:/bin`, TERM: process.env.TERM ?? "xterm-256color", COLORTERM: process.env.COLORTERM,
       ...(process.env.NO_COLOR !== undefined ? { NO_COLOR: process.env.NO_COLOR } : {}),
@@ -79,6 +83,7 @@ export async function runInteractiveWorkspace(options: { configure?: boolean; pr
       LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_ROOT: project.root, LAB_WORKSPACE_BINDING: JSON.stringify(project),
       LAB_INSTALL_ROOT: installRoot, LAB_WORKSPACE_STATE_DIR: state, LAB_WORKSPACE_AGENT_DIR: agent, LAB_WORKSPACE_APPEARANCE_CAPABILITY: JSON.stringify(capability), LAB_WORKSPACE_USER_HOME: homedir(),
       LAB_RELAY_RUN_REF: relayRunRef,
+      ...(browser ? { LAB_BROWSER_REF: browserRef } : {}),
     },
-  });
+  }); } finally { await browser?.close(); }
 }

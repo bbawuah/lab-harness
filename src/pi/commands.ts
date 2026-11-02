@@ -6,6 +6,9 @@ export const shellOptions = [
   ["--single-pane", "Open only Pi, useful in a narrow terminal; no right-hand shell is started."],
   ["--offline", "Require cached runtime dependencies; model requests may still use the network."],
   ["--relay-group ID", "Use an explicitly configured cross-project Relay allowlist; default is project-only."],
+  ["--setup-browser", "Explicitly acquire the optional pinned browser control tool; --offline requires cache."],
+  ["--browser URL", "Start an owned ephemeral browser bound to this HTTP(S) origin."],
+  ["--browser-executable PATH", "Use an existing approved same-OS browser executable."],
   ["--help", "Show this help without starting Pi or a model request."],
 ] as const;
 export const workspaceCommands = [
@@ -20,6 +23,7 @@ export function workspaceHelp(): string {
     ...workspaceCommands.map(command => "/" + command.name + (command.usage ? " " + command.usage : "") + " — " + command.description),
     ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
     "/lab-appearance — Preview light/dark/terminal mode, colors and spacing; Apply/Cancel/Reset.",
+    "/lab-browser status|close — Inspect or close this run’s owned browser; start with --browser URL.",
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",

@@ -1,0 +1,23 @@
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
+
+ Browser · click
+ Browser · completed (expand for page data)
+
+
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
+ Deterministic local protocol fixture completed. This
+ is not a model response.
+
+──────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────
+<OWNED_PROJECT>
+↑600 ↓120 1.5%/8.2k (auto)             browser-fixture

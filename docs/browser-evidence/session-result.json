@@ -1,0 +1,33 @@
+{
+  "kind": "actual native browser plus extension-handler acceptance; no model calls",
+  "version": "0.41.0",
+  "events": [
+    {
+      "test": "two sessions and DOM",
+      "passed": true,
+      "result": "Saved: Builtin Alpha"
+    },
+    {
+      "test": "extension reload rebind and close",
+      "passed": true
+    },
+    {
+      "test": "redirect",
+      "passed": true
+    },
+    {
+      "test": "popup",
+      "passed": true
+    },
+    {
+      "test": "cancel",
+      "passed": true
+    },
+    {
+      "test": "network boundary limitation",
+      "foreignHits": 4,
+      "note": "Detection after mutation cannot undo site requests; not a network sandbox."
+    }
+  ],
+  "screenshotSHA256": "1fee05a3bf705dd09e1c24855491500ebdeef809bcd3ea0866596ddb89646624"
+}

@@ -346,3 +346,11 @@ reuse license; `private: true` also prevents package-registry publication. No
 private source history, vault contents, tokens, model assets or third-party skill
 bundles are committed. The current [build plan](docs/build-plan.md) is separate
 from immutable historical research inputs.
+
+### Optional owned browser
+
+`lab --setup-browser` explicitly installs the pinned control tool (no browser download).
+With an approved Chrome/Chromium/Edge installed, use `lab --browser https://example.test`.
+`/lab-browser status` and `/lab-browser close` control only that run. Ordinary LAB
+needs no browser dependency. See [browser guide and limits](docs/user-guide.md#optional-owned-browser)
+and [native evidence](docs/browser-workspace-evidence.md).

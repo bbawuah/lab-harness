@@ -1,4 +1,5 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
+import { installBrowserExtension } from "./browser-extension.ts";
 import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
 import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
@@ -15,7 +16,7 @@ type ToolResult = { content: { type: "text"; text: string }[]; details: unknown 
 export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
-  registerTool(tool: { name: string; label: string; description: string; parameters: unknown; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
+  registerTool(tool: { name: string; label: string; description: string; parameters: unknown; renderCall?: (...args: any[]) => any; renderResult?: (...args: any[]) => any; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
   registerCommand(name: string, options: { description: string; handler(args: string, ctx: WorkspaceContext): Promise<void> }): void;
   sendMessage(message: { customType: string; content: string; display: boolean; details?: unknown }, options?: { triggerTurn?: boolean; deliverAs?: "steer" | "followUp" | "nextTurn" }): void;
 };
@@ -82,6 +83,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
     } });
   }
   installRelayExtension(pi, callWorkspaceBridge);
+  installBrowserExtension(pi);
 }
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */
 export async function executeWorkspaceRequest(request: Request): Promise<unknown> {

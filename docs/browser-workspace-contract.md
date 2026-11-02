@@ -10,7 +10,7 @@ A provider-neutral `lab_browser` tool exposes snapshot, same-origin navigate, fi
 
 ## Platforms, acquisition and boundary
 
-Pin agent-browser 0.41.0 / source `1453dd37a40c730fe00f592bc32198a896ff8747` (Apache-2.0), official one-shot MCP. macOS arm64 is the actual validation platform; macOS x64 and Linux x64 artifact support is source/installation support until executed there. Native Windows and WSL-to-Windows Edge are outside this slice. An approved same-OS browser must already exist. Explicit optional browser setup acquires only the pinned tool; offline setup accepts verified cache only. Normal launch never acquires browser assets implicitly.
+Pin agent-browser 0.41.0 / source `1453dd37a40c730fe00f592bc32198a896ff8747` (Apache-2.0), official one-shot MCP. macOS arm64 is the actual validation platform; macOS x64 and Linux x64 artifact support is source/installation support until executed there. Native Windows and WSL-to-Windows Edge are outside this slice. An approved same-OS browser must already exist. `lab --setup-browser` (also `install.sh --browser`) explicitly acquires only the pinned tool; offline setup accepts verified cache only. Normal launch never acquires browser assets implicitly.
 
 Each run owns a private root, unique session, config, ephemeral browser profile and minimal credential-free subprocess environment. Explicit AGENT_BROWSER_CONFIG/SESSION propagate through MCP. Exact initial HTTP(S) origin (no URL credentials) binds model navigation; hostname allowlist is defense in depth, not a network sandbox or zero-egress guarantee. Redirects/new targets must be detected and fail closed before further model actions; this cannot undo a site-triggered request. No cookies/password extraction or personal data trials.
 

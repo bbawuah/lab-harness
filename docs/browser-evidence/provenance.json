@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-02",
+  "kind": "native browser pixels and native Herdr pane.read text; not a mockup",
+  "imageSHA256": "233a1d82d7e2e6149e095822a8badd0fad98cc73f64275b19a29f395cb145f1a",
+  "agentBrowser": "0.41.0",
+  "chrome": "156.0.8078.74",
+  "pi": "1.4.0",
+  "herdr": "0.9.5",
+  "inferenceCalls": 0,
+  "protocolFixtureRequests": 6,
+  "textSanitization": "Owned project footer and ephemeral loopback port aliased; no personal tabs or desktop capture."
+}
