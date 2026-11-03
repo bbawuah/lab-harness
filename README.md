@@ -140,10 +140,19 @@ on the same project, use /relay-peers, then
 relay_peers/send/inbox/ack tools; operator commands provide a fallback. Messages
 do not wake models or accept tasks. [Two-session workflow](docs/user-guide.md#message-another-workspace-session).
 
+**LAB asks before the model changes anything.** Every edit, write, shell command,
+browser navigate/fill/click and Relay send shows an approval prompt with the
+concrete file and diff summary, command and folder, or browser element, value
+and origin. Choose allow once, allow for this session, or deny (optionally with a
+note for the model). Pick a mode with `lab --mode ask|edits|read-only|auto` or
+`/lab-mode`; the footer shows it. The default is ask, and auto is opt-in only.
+[Approvals and permission modes](docs/user-guide.md#approvals-and-permission-modes).
+
 This is a **native Pi coding workspace**. Controlled LAB ledger-task execution
-remains unavailable; terminal output never accepts a LAB task. Native shell and
-file tools run as your user, so project binding is not an OS sandbox. Details
-and the unqualified request-admission boundary are explained below.
+remains unavailable; terminal output never accepts a LAB task. Approved native
+shell and file tools run as your user, so project binding and approvals are not
+an OS sandbox. Details and the unqualified request-admission boundary are
+explained below.
 
 [Actual current terminal/model evidence](docs/interactive-validation.md) records
 what was tested, including the small local model's tool-use limits. The terminal

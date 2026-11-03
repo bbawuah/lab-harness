@@ -64,8 +64,11 @@ Native LAB activation remains blocked until request admission covers ordinary
 calls, retry, compaction, queued input, actual model changes and resume. Ordinary
 hook exceptions are swallowed and must not be represented as an admission gate.
 The coordinator inspects the actual provider request seam and implements only a
-bounded justified adapter, with source-grounded limits and tests. Native vendor
-approvals and sandbox behavior remain in use. Existing LiteLLM is client-only.
+bounded justified adapter, with source-grounded limits and tests. Pinned Pi 1.4.0
+has no native approval gate, so LAB's explicit extension gates model tool calls
+through Pi's supported `tool_call` event
+([permission modes contract](permission-modes-contract.md)); no OS sandbox is
+claimed. Existing LiteLLM is client-only.
 
 Linux under WSL is the target; macOS is the development host. Linux CI proves
 only its Ubuntu runner. WSL, native Pi admission and backend routing remain

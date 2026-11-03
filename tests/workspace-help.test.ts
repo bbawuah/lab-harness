@@ -29,3 +29,20 @@ test("LAB help is an operator command, preserves native help and reports only av
   expect(guide).toContain("no built-in /help");
   expect(shellHelp()).not.toContain("--profile");
 });
+
+test("F17: both Usage lines come from shellOptions and name browser and mode flags; --mode is validated", () => {
+  const { shellUsage } = require("../src/pi/commands.ts");
+  const usage = shellUsage();
+  for (const option of ["--browser URL", "--browser-executable PATH", "--setup-browser", "--mode MODE"]) expect(usage).toContain("[" + option + "]");
+  expect(shellHelp().split("\n")).toContain(usage);
+  const launcher = readFileSync(resolve(import.meta.dir, "../lab"), "utf8");
+  expect(launcher).toContain("printf '" + usage + "\\n'");
+  const bad = Bun.spawnSync([resolve(import.meta.dir, "../lab"), "--not-a-flag"], { env: { PATH: "/usr/bin:/bin", HOME: "/nonexistent-lab-fixture" } });
+  expect(bad.exitCode).toBe(1); expect(bad.stderr.toString().trim()).toBe(usage);
+  const cli = resolve(import.meta.dir, "../scripts/start.ts");
+  for (const args of [["--mode"], ["--mode", "yolo"], ["--mode", "ask", "--mode", "auto"]]) {
+    const run = Bun.spawnSync([process.execPath, "--no-env-file", "--no-install", cli, ...args], { env: { PATH: "/usr/bin:/bin", HOME: "/nonexistent-lab-fixture" } });
+    expect(run.exitCode, args.join(" ")).toBe(2); expect(run.stderr.toString()).toContain("--mode once with ask, edits, read-only or auto");
+  }
+  expect(workspaceHelp()).toContain("/lab-mode");
+});

@@ -1,0 +1,286 @@
+/**
+ * LAB permission policy: pure mode decisions, path integrity, session-grant
+ * scopes and approval text. No Pi imports; the extension in
+ * permission-extension.ts owns UI and state. See docs/permission-modes-contract.md.
+ */
+import { lstatSync, realpathSync } from "node:fs";
+import { homedir } from "node:os";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { displaySafe, wrapColumns } from "./display.ts";
+
+export const permissionModes = ["ask", "edits", "read-only", "auto"] as const;
+export type PermissionMode = typeof permissionModes[number];
+export const modeDescriptions: Record<PermissionMode, string> = {
+  ask: "ask before edits, writes, shell commands, browser changes and Relay sends",
+  edits: "file edits inside the project run; shell, browser and Relay sends still ask",
+  "read-only": "reads only; every mutating tool is refused",
+  auto: "everything runs without asking (explicit opt-in)",
+};
+/**
+ * Names what auto skips, for the /lab-mode auto confirm and the `lab --mode auto`
+ * start warning. Registered families are named with what they do in auto.
+ */
+export function autoSummary(families: readonly { family: string; inAuto: "run" | "ask"; tools?: readonly string[] }[] = []): string {
+  const name = (f: { family: string }) => displaySafe(f.family.slice(0, 32));
+  const list = (items: string[]) => items.length < 2 ? items.join("") : items.slice(0, -1).join(", ") + " or " + items.at(-1);
+  // Desktop actions always ask, even in auto: registerFamily enforces alwaysAsk for the reserved
+  // desktop tool, so the line depends on the tool, never on the family's name.
+  const reserved = (f: { tools?: readonly string[] }) => (f.tools ?? []).some(tool => reservedFamilyTools.has(tool));
+  const others = families.filter(f => !reserved(f));
+  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...others.filter(f => f.inAuto === "run").map(f => name(f) + " actions")];
+  const asks = ["desktop actions", ...others.filter(f => f.inAuto !== "run").map(f => name(f) + " actions")];
+  return `auto shows no approval prompt for ${list(runs)}` + (asks.length ? `; ${list(asks)} still ask` : "") + ".";
+}
+/** Cancel comes first so a reflexive Enter keeps the current mode. */
+export const autoChoices = ["Cancel", "Switch to auto"] as const;
+/** One line printed by `lab --mode auto` before the workspace starts. */
+export const autoStartWarning = () => `LAB warning: started in auto mode; ${autoSummary()} Change it with /lab-mode.`;
+/** Keyboard-free cycle used by /lab-mode next. It never enters auto. */
+export const modeCycle: Record<PermissionMode, PermissionMode> = { ask: "edits", edits: "read-only", "read-only": "ask", auto: "ask" };
+export function parseMode(value: unknown): PermissionMode | undefined {
+  return typeof value === "string" && (permissionModes as readonly string[]).includes(value) ? value as PermissionMode : undefined;
+}
+
+export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "relay-ack" | "family" | "unregistered" | "other";
+/**
+ * Tools that must run under a registered family policy (lab_desktop: alwaysAsk).
+ * If a build ships the tool without registering it, every call is refused in
+ * every mode, never treated as "other" with a session-grant choice.
+ */
+export const reservedFamilyTools: ReadonlySet<string> = new Set(["lab_desktop"]);
+/**
+ * Another tool family (e.g. agent-desktop) registers its tools with the gate
+ * instead of adding a second prompt. Its mutating calls are refused in
+ * read-only, always asked in ask and edits (edits never auto-approves them),
+ * and `inAuto` decides auto. `sessionGrants: false` removes "Allow for this
+ * session"; `denyWithNote: false` removes "Deny with note…". `describe` returns
+ * plain text; approvalTitle escapes and wraps it. Spread `alwaysAsk` for the
+ * desktop policy: allow once / deny in every mode including auto.
+ */
+export type GatedFamily = {
+  family: string;
+  tools: readonly string[];
+  isRead?: (toolName: string, input: Record<string, unknown>) => boolean;
+  sessionGrants: boolean;
+  inAuto: "run" | "ask";
+  denyWithNote?: boolean;
+  /** Called only after the gate allows a mutating call (prompt allow, or auto with inAuto "run"); a throw denies it. */
+  onApproved?: (toolCallId: string, toolName: string, input: Record<string, unknown>) => void;
+  describe(toolName: string, input: Record<string, unknown>): { heading: string; lines: string[]; scope: string; scopeLabel: string };
+};
+/** Policy hook for families that must always ask: no session grants, asks in auto, choices Allow once / Deny. */
+export const alwaysAsk = Object.freeze({ sessionGrants: false, inAuto: "ask", denyWithNote: false } as const);
+const readTools = new Set(["read", "grep", "find", "ls", "lab_search", "lab_files", "relay_peers", "relay_inbox"]);
+export function classify(toolName: string, input: Record<string, unknown> | undefined, family?: GatedFamily): ToolClass {
+  if (!family && reservedFamilyTools.has(toolName)) return "unregistered";
+  if (family) {
+    try { return family.isRead?.(toolName, input ?? {}) === true ? "read" : "family"; } catch { return "family"; }
+  }
+  if (readTools.has(toolName)) return "read";
+  if (toolName === "edit" || toolName === "write") return "edit";
+  if (toolName === "bash") return "bash";
+  if (toolName === "relay_send") return "relay-send";
+  if (toolName === "relay_ack") return "relay-ack";
+  if (toolName === "lab_browser") return input?.operation === "snapshot" || input?.operation === "read" ? "read" : "browser";
+  return "other"; // Unknown tools are treated as mutating.
+}
+
+export type Decision = { kind: "run" } | { kind: "ask" } | { kind: "refuse"; reason: string };
+/** `insideProject` is only consulted for edit-class tools in edits mode. */
+export function decide(mode: PermissionMode, toolName: string, klass: ToolClass, insideProject: boolean, family?: GatedFamily): Decision {
+  if (klass === "unregistered") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because its approval policy is not installed. Do not retry it.` };
+  if (klass === "read") return { kind: "run" };
+  if (mode === "auto") return klass === "family" && family?.inAuto !== "run" ? { kind: "ask" } : { kind: "run" };
+  if (mode === "read-only") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because LAB is in read-only mode. Only the user can change the mode (/lab-mode).` };
+  if (klass === "relay-ack") return { kind: "run" };
+  if (mode === "edits" && klass === "edit" && insideProject) return { kind: "run" };
+  return { kind: "ask" };
+}
+export function denial(toolName: string, why: string, note?: string): string {
+  const cleanNote = note?.trim().slice(0, 500);
+  return `LAB_PERMISSION_DENIED: ${displaySafe(toolName)} was not run (${why}). Do not retry it without asking the user.` + (cleanNote ? ` User note: ${cleanNote}` : "");
+}
+
+// ---------------------------------------------------------------------------
+// Path integrity for edits mode
+// ---------------------------------------------------------------------------
+const unsafePathCharacters = /[\u0000-\u001f\u007f-\u009f\u00a0\u1680\u2000-\u200f\u2028-\u202f\u205f\u2060-\u206f\u3000\ufeff]/;
+export type PathRoots = { project: string; excluded: string[] };
+export type ResolvedPath = { absolute?: string; real?: string; inside: boolean; sensitive?: boolean; display: string };
+function within(root: string, path: string): boolean {
+  const rel = relative(root, path);
+  return rel !== "" && rel !== ".." && !rel.startsWith(".." + sep) && !isAbsolute(rel);
+}
+function withinOrEqual(root: string, path: string): boolean { return path === root || within(root, path); }
+/** Realpath of the deepest existing ancestor plus the remaining (already normalized) components. */
+function realTarget(absolute: string): string | undefined {
+  let probe = absolute; const rest: string[] = [];
+  for (;;) {
+    const entry = lstatSync(probe, { throwIfNoEntry: false });
+    if (entry) {
+      // A dangling symlink (leaf or ancestor) cannot be resolved: ask.
+      try { return join(realpathSync(probe), ...rest.reverse()); } catch { return undefined; }
+    }
+    const parent = resolve(probe, "..");
+    if (parent === probe) return undefined;
+    rest.push(probe.slice(parent.length).replace(/^[/\\]/, "")); probe = parent;
+  }
+}
+/** Mirrors pinned Pi resolveToCwd (strip @, ~ expansion, file://) but refuses ambiguous characters. */
+/**
+ * Project paths that tools later turn into code execution or agent instructions
+ * (git config/hooks, Pi settings such as shellCommandPrefix, agent and editor
+ * config, direnv). `edits` never auto-approves them; they always ask.
+ * Compared per path component, case- and normalization-insensitively (APFS).
+ */
+export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc", ".githooks", ".pre-commit-config.yaml",
+  "lefthook.yml", ".lefthook.yml", "lefthook.yaml", ".lefthook.yaml", "lefthook.toml", ".lefthook.toml", "lefthook.json", ".lefthook.json",
+  "lefthook-local.yml", "lefthook-local.yaml", "lefthook-local.toml", "lefthook-local.json", ".lefthook-local.yml", ".lefthook-local.yaml", ".lefthook-local.toml", ".lefthook-local.json", "mise.toml", ".mise.toml", ".config"];
+// NFKC folds ſ→s, K→K and ligatures as APFS case-insensitive lookup does; any other
+// non-ASCII character in a dot-leading component is treated as sensitive (fail closed).
+const isSensitive = (relativePath: string) => relativePath.split(sep).some(part => {
+  const folded = part.normalize("NFKC").toLowerCase();
+  return sensitiveComponents.includes(folded) || (folded.startsWith(".") && /[^\x20-\x7e]/.test(part));
+});
+export function resolveTargetPath(raw: unknown, cwd: string, roots: PathRoots): ResolvedPath {
+  if (typeof raw !== "string" || raw.length === 0 || raw.length > 4096) return { inside: false, display: "(invalid path)" };
+  if (unsafePathCharacters.test(raw)) return { inside: false, display: displaySafe(raw) + "  (unusual characters)" };
+  let path = raw.startsWith("@") ? raw.slice(1) : raw;
+  if (path === "~") path = homedir(); else if (path.startsWith("~/")) path = join(homedir(), path.slice(2));
+  if (path.startsWith("file://")) { try { path = fileURLToPath(path); } catch { return { inside: false, display: displaySafe(raw) }; } }
+  const absolute = isAbsolute(path) ? resolve(path) : resolve(cwd, path);
+  let project: string;
+  try { project = realpathSync(roots.project); } catch { return { absolute, inside: false, display: displaySafe(absolute) }; }
+  const real = realTarget(absolute);
+  const lexicalInside = within(resolve(roots.project), absolute) || within(project, absolute);
+  const display = displaySafe(lexicalInside ? relative(within(project, absolute) ? project : resolve(roots.project), absolute) : absolute);
+  if (!real) return { absolute, inside: false, display: display + "  (unresolvable)" };
+  const excluded = roots.excluded.flatMap(path => { try { return [realpathSync(path)]; } catch { return [resolve(path)]; } });
+  const inProject = within(project, real), labState = excluded.some(root => withinOrEqual(root, real));
+  // Check the lexical path too: a not-yet-existing `.PI/x` keeps its typed case in `real`.
+  const sensitive = inProject && (isSensitive(relative(project, real)) || (lexicalInside && isSensitive(relative(within(project, absolute) ? project : resolve(roots.project), absolute))));
+  const inside = inProject && !labState && !sensitive;
+  if (inside) return { absolute, real, inside, display: displaySafe(relative(project, real)) };
+  const why = labState ? "LAB state" : sensitive ? "agent/VCS config — can run code" : "outside project";
+  return { absolute, real, inside, sensitive, display: (inProject ? displaySafe(relative(project, real)) : display + (real !== absolute ? `  → ${displaySafe(real)}` : "")) + `  (${why})` };
+}
+
+// ---------------------------------------------------------------------------
+// Secret masking (prompts and browser rows)
+// ---------------------------------------------------------------------------
+const secretField = /pass(word|code|phrase)?|secret|token|api[\s_-]?key|\bkey\b|\bpin\b|otp|one[\s-]?time|2fa|mfa|cvv|cvc|security code|card(\s|-)?(number|no)|credit card|\bssn\b|social security|credential|private/i;
+export function looksSecretValue(value: string): boolean {
+  if (/^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\./.test(value)) return true; // JWT
+  if (/^(sk-|sk_|pk_|rk_|ghp_|gho_|ghs_|github_pat_|xox[abposr]-|AKIA|ASIA|AIza|glpat-)/.test(value)) return true;
+  if (/^\d{13,19}$/.test(value.replace(/[ -]/g, "")) && /^[\d -]+$/.test(value)) return true; // card-like digits
+  if (value.length >= 20 && !/\s/.test(value)) {
+    const classes = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter(pattern => pattern.test(value)).length;
+    if (classes >= 3) return true;
+  }
+  return false;
+}
+export function isSecretField(name: string | undefined, role: string | undefined): boolean {
+  return secretField.test(name ?? "") || /password/i.test(role ?? "");
+}
+export function valuePreview(value: string, secret: boolean, max = 48): string {
+  const chars = Array.from(value);
+  if (secret || looksSecretValue(value)) return `•••• (masked, ${chars.length} chars)`;
+  const shown = chars.length > max ? chars.slice(0, max).join("") + `… (${chars.length} chars)` : value;
+  return '"' + displaySafe(shown) + '"';
+}
+
+// ---------------------------------------------------------------------------
+// Approval descriptions and session-grant scopes
+// ---------------------------------------------------------------------------
+export type BrowserElement = { role: string; name: string };
+export type BrowserFacts = { origin: string; element?: BrowserElement };
+export type ApprovalFacts = { cwd: string; roots: PathRoots; browser?: (input: Record<string, unknown>) => BrowserFacts | undefined; fileSize?: (absolute: string) => number | undefined };
+export type Approval = { heading: string; lines: string[]; scope: string; scopeLabel: string; sessionGrants?: boolean; denyWithNote?: boolean };
+const previewLines = (text: string, prefix: string, limit: number) => {
+  const lines = text.split("\n"); const shown = lines.slice(0, limit).map(line => prefix + line);
+  if (lines.length > limit) shown.push(`${prefix}… ${lines.length - limit} more line(s)`);
+  return shown;
+};
+const countLines = (text: string) => text === "" ? 0 : text.split("\n").length;
+export function elementLabel(ref: unknown, element: BrowserElement | undefined): string {
+  const safeRef = typeof ref === "string" ? displaySafe(ref.slice(0, 16)) : "@e?";
+  return element ? `${safeRef} ${displaySafe(element.role.slice(0, 32))} "${displaySafe(element.name.slice(0, 80))}"` : safeRef;
+}
+export function describeApproval(toolName: string, input: Record<string, unknown>, facts: ApprovalFacts): Approval {
+  const tool = displaySafe(toolName.slice(0, 64));
+  if (toolName === "bash") {
+    const command = typeof input.command === "string" ? input.command : "";
+    const max = 4000, chars = Array.from(command);
+    const shown = chars.length > max ? chars.slice(0, max).join("") : command;
+    const lines = ["$ " + shown.split("\n").join("\n  ")];
+    if (chars.length > max) lines.push(`… ${chars.length - max} more character(s) not shown`);
+    lines.push("cwd: " + facts.cwd + (typeof input.timeout === "number" ? `   timeout: ${input.timeout}s` : ""));
+    return { heading: "Run shell command?", lines, scope: `bash\0${facts.cwd}\0${command}`, scopeLabel: "this exact command in this folder" };
+  }
+  if (toolName === "edit" || toolName === "write") {
+    const target = resolveTargetPath(input.path, facts.cwd, facts.roots);
+    const scope = `${toolName}\0${target.real ?? target.absolute ?? String(input.path)}`;
+    if (toolName === "write") {
+      const content = typeof input.content === "string" ? input.content : "";
+      // Pi's write follows symlinks, so size the file the link points to.
+      const size = target.real ?? target.absolute ? facts.fileSize?.((target.real ?? target.absolute)!) : undefined;
+      return { heading: "Write file?", scope, scopeLabel: "writes to this file",
+        lines: [target.display, `${size === undefined ? "new file" : `overwrites ${size} bytes`} · ${countLines(content)} line(s), ${Buffer.byteLength(content)} bytes`, ...previewLines(content, "+ ", 8)] };
+    }
+    const edits = Array.isArray(input.edits) ? input.edits.filter((edit): edit is { oldText: string; newText: string } => !!edit && typeof edit.oldText === "string" && typeof edit.newText === "string") : [];
+    const removed = edits.reduce((sum, edit) => sum + countLines(edit.oldText), 0), added = edits.reduce((sum, edit) => sum + countLines(edit.newText), 0);
+    const lines = [target.display, `${edits.length} replacement(s) · −${removed} +${added} line(s)`];
+    for (const edit of edits.slice(0, 2)) lines.push(...previewLines(edit.oldText, "- ", 4), ...previewLines(edit.newText, "+ ", 4));
+    if (edits.length > 2) lines.push(`… ${edits.length - 2} more replacement(s)`);
+    return { heading: "Edit file?", lines, scope, scopeLabel: "edits to this file" };
+  }
+  if (toolName === "lab_browser") {
+    const operation = typeof input.operation === "string" ? input.operation : "action";
+    const browser = facts.browser?.(input);
+    const origin = browser?.origin ?? "(unknown origin)";
+    const element = browser?.element;
+    const lines = ["origin: " + displaySafe(origin)];
+    if (operation === "navigate") {
+      lines.push("navigate to: " + displaySafe(String(input.url ?? "").slice(0, 4096)));
+      return { heading: "Browser: navigate?", lines, scope: `lab_browser\0${origin}\0navigate\0${String(input.url)}`, scopeLabel: "navigation to this URL" };
+    }
+    lines.push(`${displaySafe(operation.slice(0, 16))} ${elementLabel(input.ref, element)}`);
+    if (operation === "fill") lines.push("value: " + valuePreview(typeof input.text === "string" ? input.text : "", element ? isSecretField(element.name, element.role) : true));
+    const what = element ? `${element.role}\0${element.name}` : `ref\0${String(input.ref)}`;
+    if (!element) lines.push("this ref is not in the latest snapshot; it will be refused as stale");
+    // No session grant for a ref without an element: the grant would match whatever the ref names later.
+    return { heading: `Browser: ${displaySafe(operation.slice(0, 16))}?`, lines, scope: `lab_browser\0${origin}\0${operation}\0${what}`, scopeLabel: `${displaySafe(operation.slice(0, 16))} on this element`, ...(element ? {} : { sessionGrants: false }) };
+  }
+  if (toolName === "relay_send") {
+    const to = typeof input.to === "string" ? input.to : "";
+    const body = typeof input.body === "string" ? input.body : "";
+    const lines = ["to: " + displaySafe(to.slice(0, 128)), "request key: " + displaySafe(String(input.requestKey ?? "").slice(0, 128))];
+    if (typeof input.replyTo === "string") lines.push("reply to: " + displaySafe(input.replyTo.slice(0, 128)));
+    lines.push(...previewLines(Array.from(body).slice(0, 1200).join(""), "> ", 8));
+    return { heading: "Send Relay message to another session?", lines, scope: `relay_send\0${to}`, scopeLabel: "messages to this peer" };
+  }
+  let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
+  return { heading: `Run tool ${tool}?`, lines: previewLines(Array.from(json).slice(0, 1200).join(""), "", 8), scope: `${toolName}\0${json}`, scopeLabel: "this exact call" };
+}
+export const approvalChoices = (approval: Approval): string[] => [
+  "Allow once", ...(approval.sessionGrants === false ? [] : [`Allow for this session (${displaySafe(approval.scopeLabel)})`]),
+  "Deny", ...(approval.denyWithNote === false ? [] : ["Deny with note…"])];
+/** Approval text for a registered family; any throw or bad shape becomes a generic, escaped description. */
+export function describeFamilyApproval(family: GatedFamily, toolName: string, input: Record<string, unknown>): Approval {
+  let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
+  const fallback = { heading: `${family.family}: run ${toolName.slice(0, 64)}?`, lines: previewLines(Array.from(json).slice(0, 1200).join(""), "", 8), scope: `${toolName}\0${json}`, scopeLabel: "this exact call" };
+  let described: Partial<Approval> | undefined;
+  try { described = family.describe(toolName, input); } catch {}
+  const ok = described && typeof described.heading === "string" && Array.isArray(described.lines) && described.lines.every(line => typeof line === "string") && typeof described.scope === "string" && typeof described.scopeLabel === "string";
+  const oneRow = (text: string, max: number) => text.slice(0, max).replace(/[\r\n]+/g, " ");
+  const base = ok ? { heading: oneRow(described!.heading!, 200), lines: described!.lines!.slice(0, 40).flatMap(line => line.slice(0, 2000).split("\n")).slice(0, 60), scope: described!.scope!, scopeLabel: oneRow(described!.scopeLabel!, 80) } : fallback;
+  // Scopes are namespaced by family and tool so one family cannot reuse another's grant.
+  return { ...base, scope: `family\0${family.family}\0${toolName}\0${base.scope}`, sessionGrants: family.sessionGrants, denyWithNote: family.denyWithNote !== false };
+}
+/** Escaped, column-wrapped prompt title. Every row is <= width columns. */
+export function approvalTitle(approval: Approval, mode: PermissionMode, width: number): string {
+  const w = Math.max(10, Math.floor(width) || 80);
+  const rows = [`LAB ${mode} mode · ${displaySafe(approval.heading)}`, ...approval.lines.map(line => line.split("\n").map(part => displaySafe(part)).join("\n"))];
+  return rows.flatMap(row => wrapColumns(row, w)).join("\n");
+}

@@ -1,0 +1,43 @@
+▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+███████████████ ████████
+███████████████ ███████▀
+███████████████ ██████▀
+ ▀█████████████ ███▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready: PROJECT/01a1a212-be7f-70e1-ac47--ec2c92bc1260
+ (pi-9230d0addc7e908ccd9ebb27be1d8ee910790ac7620e45c01a7fe367c953909a). Use /relay-peers.
+
+
+ S1 edit the notes file
+
+
+
+ edit notes.txt
+
+ -1 status: draft
+ +1 status: reviewed
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+ LAB ask mode · Edit file?
+ notes.txt
+ 1 replacement(s) · −1 +1 line(s)
+ - status: draft
+ + status: reviewed
+
+ → Allow once
+   Allow for this session (edits to this file)
+   Deny
+   Deny with note…
+
+ ↑↓ navigate  enter select  escape/ctrl+c cancel
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑100 ↓10 1.3%/8.2k (auto)                                                   permission-fixture
+● mode: ask · /lab-mode

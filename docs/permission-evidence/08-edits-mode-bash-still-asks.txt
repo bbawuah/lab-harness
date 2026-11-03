@@ -1,0 +1,43 @@
+ ask.
+
+
+ S4 approve and clean
+
+
+
+ edit notes.txt
+
+ -1 status: reviewed
+ +1 status: approved
+
+
+
+ write .pi/settings.json
+
+ {"shellCommandPrefix":"echo fixture-prefix"}
+
+ LAB_PERMISSION_DENIED: write was not run (the approval was dismissed). Do not retry it
+ without asking the user.
+
+
+
+ $ rm -rf build
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+ LAB edits mode · Run shell command?
+ $ rm -rf build
+ cwd: $PROJECT
+
+ → Allow once
+   Allow for this session (this exact command in this folder)
+   Deny
+   Deny with note…
+
+ ↑↓ navigate  enter select  escape/ctrl+c cancel
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑1.2k ↓120 1.3%/8.2k (auto)                                                 permission-fixture
+● mode: edits · /lab-mode
