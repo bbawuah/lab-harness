@@ -1,0 +1,141 @@
+# Permission modes and approval gate contract
+
+Implementation starts from main `d3076adc73ff671bcb6bde7fa94fc7d8f73b5d06` (includes PR #23–#25). It addresses UX
+findings F01 (edit, write, bash and `git commit` run with no approval and no mode) and F30 (`lab_browser` fill/click
+run without asking, and rows hide field, value and origin). The known F17 gap (the Usage line omits browser flags) is
+fixed in the same change. No model, provider, cloud or auth calls are authorized for this validation.
+
+## Seam (Phase 0, source-grounded)
+
+Pinned Pi 1.4.0 (release commit `4a080252f06caf63a525d7873c5d94d3c23887e0`) has **no native approval gate or
+permission mode** that LAB disabled. Its only permission code is example extensions that LAB never loads. It does
+provide a supported extension event that can block a tool call:
+
+- `packages/coding-agent/src/core/extensions/types.ts:1250–1265, 1454–1464`: `tool_call` fires before a tool
+  executes. It returns `{ block, reason }`.
+- `core/extensions/runner.ts:1249–1266`: the first `block` wins, and handler exceptions are not swallowed.
+- `core/agent-session.ts:658–680, 752`: every model tool call goes through it, nested (codemode) calls included.
+- `packages/agent/src/agent-loop.ts:718–785`: a block becomes an error **tool result** whose text is `reason`. A
+  thrown error also becomes an error tool result, and so does an abort. The model always receives a result, so
+  nothing hangs. Calls are prepared one at a time, even in parallel tool mode (`:606–614`).
+- `ctx.ui.select/input` (`types.ts:151–157`) resolve to `undefined` on Esc or abort
+  (`modes/interactive/interactive-mode.ts:2720–2749`). `ctx.hasUI` is false in json and print modes.
+
+LAB adds a `tool_call` handler to its existing, explicitly loaded extension (`-e src/pi/workspace-extension.ts`;
+explicit `-e` still loads under `--no-extensions`, `resource-loader.ts:578`). There is no Pi fork, patch, pin bump or
+new Pi flag.
+
+## Modes
+
+| Mode | Reads (`read`, `grep`, `find`, `ls`, `lab_search`, `lab_files`, `relay_peers`, `relay_inbox`, `lab_browser` snapshot/read) | `edit`, `write` | `bash` | `lab_browser` navigate/fill/click | `relay_send` | `relay_ack` | Any other tool |
+|---|---|---|---|---|---|---|---|
+| `ask` (default) | run | ask | ask | ask | ask | run | ask |
+| `edits` | run | run if inside the project (see Integrity), else ask | ask | ask | ask | run | ask |
+| `read-only` | run | refused | refused | refused | refused | refused | refused |
+| `auto` | run | run | run | run | run | run | run |
+
+- `auto` is today's behaviour. It is an explicit opt-in only: `lab --mode auto` or a typed `/lab-mode auto`. The
+  launch default is always `ask`.
+- An unknown tool name counts as mutating, so it asks (or is refused in `read-only`).
+- `relay_send` asks because it shares text outside this session and is a prompt-injection path to other sessions.
+  Rendering Relay prompts and peers more fully (board 8) is a follow-up. `relay_ack` changes only this session's own
+  inbox state, so it is not prompted, but `read-only` refuses it.
+- Shell commands the user types (`!cmd`, Pi `user_bash`) are the user's own actions and are not gated.
+
+## No-UI rule (fail closed)
+
+If an approval cannot be shown, the action is **denied**. This covers `ctx.hasUI === false` (json/print/RPC without
+dialogs), a non-TUI mode, a render or dialog error, an abort or signal, Esc, and an invalid or unreadable mode state
+(which falls back to `ask`). In every mode except `auto`, each gated tool is denied when there is no UI. The denial
+reaches the model as an error tool result:
+`LAB_PERMISSION_DENIED: <tool> was not run (<why>). Do not retry it without asking the user.`, plus the user's note
+if they gave one.
+
+## Approval prompt
+
+The prompt is a Pi selector. The title is built by LAB from escaped text (`displaySafe`) and wrapped to the terminal
+width with `wrapColumns` (#23 rules: C0/C1/bidi/format controls escaped, no row wider than the width, at 40/80/120
+columns). It shows the concrete action:
+
+- **edit**: the project-relative path (absolute if outside the project, marked `outside project`), the number of
+  replacements, `−removed +added` line counts, and a bounded preview of the first changed lines.
+- **write**: the path, `new file` or `overwrites N bytes`, line and byte counts, and a bounded preview.
+- **bash**: the full command (wrapped, never truncated up to 4,000 characters, with the excess counted) plus `cwd`
+  and timeout.
+- **lab_browser**: the verified origin, the operation, the element as `@eN role "name"` from the latest snapshot,
+  and for fill the value preview. Values are masked (`•••• (masked, N chars)`) when the field name or role looks
+  secret (password, passcode, secret, token, API key, PIN, OTP, CVV/CVC, card number, SSN, credentials) or the value
+  looks like a credential (JWT, `sk-`/`ghp_`/`xox`/`AKIA` prefixes, or a long high-entropy string without spaces).
+  Navigate shows the target URL.
+- **relay_send**: the peer, request key, reply-to and a bounded body preview.
+
+Choices:
+
+1. **Allow once**
+2. **Allow for this session**, labelled with its scope: the same tool and the same pattern. Bash: the exact command
+   and cwd. Edit/write: the same tool and the same resolved file. Browser: the same operation on the same origin and
+   the same element role/name (navigate: the same URL). Relay: the same peer.
+3. **Deny**
+4. **Deny with note…**: an input whose text is returned to the model. Cancelling the input still denies.
+
+Esc denies. Prompts are serialized, one at a time. Session grants live only in memory. They are cleared on `/new`,
+`/resume`, `/fork` and `/reload`, and when the mode changes. Nothing is written as an "always allow" this round.
+
+## Mode selection, indicator and persistence
+
+- `lab --mode ask|edits|read-only|auto` sets the mode for the launch. Without it, the mode is `ask`.
+- `/lab-mode` shows the current mode and a selector. `/lab-mode <mode>` sets it directly. `/lab-mode next` cycles
+  `ask → edits → read-only → ask` (it never enters `auto`).
+- The footer always shows `mode: <m> · /lab-mode`. `/lab-help` and `lab --help` list modes.
+- **No keyboard shortcut.** `Shift+Tab` is reserved by Pi for `app.thinking.cycle` (`core/keybindings.ts:33–35`), and
+  reserved keys cannot be overridden by extensions (`runner.ts:97–104, 697–703`). Every plain Ctrl letter is either
+  bound by Pi or is a terminal control (Ctrl+H/I/M). Option/Alt combinations reach the pty only when the terminal
+  sends Option as Meta, which Terminal.app and iTerm2 do not do by default (Option+M types `µ`). No key works out of
+  the box, so none is documented, and `/lab-mode` is the primary path.
+- The mode lives in a private (0600) file inside the per-launch LAB run directory, outside the project. It survives
+  `/reload` and in-TUI `/new`, `/resume` and `/fork`. A new `lab` launch starts from `--mode` or `ask`.
+
+## Integrity
+
+- The model cannot change its own mode. Only `lab --mode` and the operator's `/lab-mode` command change it. No tool
+  changes it. The extension's in-memory mode is authoritative. The file is read only at extension load (startup or
+  `/reload`) and is written only by LAB.
+- `edits` auto-approves `edit`/`write` only when the target's realpath is inside the project root's realpath. For a
+  file that doesn't exist yet, that is the deepest existing ancestor's realpath plus the remaining components, and
+  those must not include `..`. Symlinks and `..` escapes, unresolvable paths, and paths with control or unicode-space
+  characters ask instead. A path under the LAB run directory, the LAB state root or the install root also asks, even
+  when it sits inside the project.
+- `bash` is never auto-approved by `edits`.
+- This is an approval gate, not an OS sandbox. Approved commands run as the user.
+
+## F30 browser rows
+
+`lab_browser` call rows read `Browser · fill @e4 textbox "Email" = "ada@…" · http://127.0.0.1:PORT`. Masking matches
+the prompt. Result rows read `Browser · filled @e4 textbox "Email" · <origin>` (`clicked`, `navigated <url>`,
+`snapshot N refs`, `read N chars`). Refusals keep `Browser refused · <code>`. The element label is captured into the
+row's render state when the call row first renders, so a later snapshot doesn't change it. #23's escaping and width
+rules apply. Expanded results keep the machine details unchanged.
+
+## Acceptance
+
+- Unit tests for each mode × tool class, unknown tools, session-grant scoping, a mode change clearing grants, and
+  the path integrity cases (inside, `..`, a symlink out, a symlink in, a missing file under a symlinked directory,
+  run dir/state/install root under the project, unicode spaces).
+- Fault injection: a throwing `select`, `hasUI` false, abort, and Esc each produce a denial tool result. A corrupt
+  state file falls back to `ask`.
+- Hostile text (ESC sequences, bidi, wide or emoji text, long commands) in every prompt and row at 40/80/120
+  columns, with no row wider than the width.
+- Actual pty evidence with an owned 127.0.0.1 protocol fixture (no model or provider) and the actual pinned Pi and
+  Herdr. It shows: ask → allow (an edit happens), ask → deny (the model receives `LAB_PERMISSION_DENIED`), `edits`
+  auto-approving an in-project edit while bash still asks, a `read-only` refusal, `auto`, and a browser fill prompt
+  on a local fixture page. Sanitized captures and provenance (commit, hashes) go under `docs/permission-evidence/`.
+- The existing actual Relay model test runs Pi in json mode (no UI). It now provisions mode `auto` explicitly. That
+  test change is called out in the PR.
+- The user guide, README and `lab --help` are updated, and both Usage lines name `--browser`,
+  `--browser-executable`, `--setup-browser` and `--mode` (F17). The publication manifest is refreshed, and
+  `bun run check` passes.
+
+## Out of scope this round
+
+Persisted "always allow" rules, a plan mode (F07), `/diff` and `/undo` (F06/F08), richer Relay rendering (board 8),
+an OS sandbox, and gating user-typed `!` commands.
