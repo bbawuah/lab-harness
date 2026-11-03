@@ -108,6 +108,33 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 - `bash` is never auto-approved by `edits`.
 - This is an approval gate, not an OS sandbox. Approved commands run as the user.
 
+## Registering another tool family
+
+Other LAB tool families (first: agent-desktop) use this gate rather than adding a second prompt.
+`installPermissionExtension` returns `registerFamily(family)` (`GatedFamily` in `src/pi/permission.ts`):
+
+```ts
+gate.registerFamily({
+  family: "Desktop",                   // shown in the prompt heading
+  tools: ["desktop_act"],              // tool names this family owns
+  isRead: (tool, input) => false,      // read operations run in every mode
+  sessionGrants: false,                // false: no "Allow for this session" choice
+  inAuto: "ask",                       // "ask" keeps asking in auto; "run" lets auto run it
+  describe: (tool, input) => ({ heading, lines, scope, scopeLabel }),
+});
+```
+
+- A family's mutating calls are refused in `read-only`, always asked in `ask` and `edits` (`edits` never
+  auto-approves them), and `inAuto` decides `auto`. The no-UI rule applies: without an interactive TUI they are
+  denied unless `auto` runs them.
+- `describe` returns plain text. LAB escapes and wraps the heading and every line (#23 rules), and it caps lengths.
+  If `describe` or `isRead` throws or returns a bad shape, LAB shows a generic escaped description, or treats the
+  call as mutating.
+- Grant scopes are namespaced by family and tool. A family cannot claim a built-in tool (`read`, `edit`, `write`,
+  `bash`, `lab_browser`, `relay_*`, …) or a tool another family already registered: `registerFamily` throws
+  `LAB_PERMISSION_FAMILY`.
+- Denials and refusals use the same `LAB_PERMISSION_DENIED` / `LAB_PERMISSION_REFUSED` text.
+
 ## F30 browser rows
 
 `lab_browser` call rows read `Browser · fill @e4 textbox "Email" = "ada@…" · http://127.0.0.1:PORT`. Masking matches

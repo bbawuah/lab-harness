@@ -324,3 +324,52 @@ test("F30 browser rows name element, masked value and origin; escaped and width-
   expect(browserResultText(details({ origin, refs: { e1: {}, e2: {} }, removedRefs: [], snapshot: "" }), undefined)).toBe("Browser · snapshot 2 refs · http://127.0.0.1:4321 (expand for page data)");
   expect(browserResultText(details({ origin, text: "hello" }), '@e1 heading "Hi"')).toBe('Browser · read @e1 heading "Hi" 5 chars · http://127.0.0.1:4321 (expand for page data)');
 });
+
+test("registered tool family (agent-desktop seam): always asks, no session grants, refused read-only, escaped text, no takeover", async () => {
+  const desktop = {
+    family: "Desktop", tools: ["desktop_act", "desktop_look"], sessionGrants: false, inAuto: "ask" as const,
+    isRead: (tool: string) => tool === "desktop_look",
+    describe: (_tool: string, input: Record<string, unknown>) => ({ heading: "Desktop: click\u001b]0;pwned\u0007?", lines: ["app: " + String(input.app), "target: ‮evil"], scope: String(input.app), scopeLabel: "this app" }),
+  };
+  for (const mode of ["ask", "edits", "auto"] as PermissionMode[]) {
+    const h = harness({ mode, answers: ["Allow once", "Allow once", "Deny"] });
+    try {
+      h.gate.registerFamily(desktop);
+      expect(await h.call("desktop_look", {})).toBeUndefined(); // read operation: never asks
+      expect(await h.call("desktop_act", { app: "Finder" })).toBeUndefined();
+      expect(await h.call("desktop_act", { app: "Finder" })).toBeUndefined(); // asked again: no session grant
+      expect((await h.call("desktop_act", { app: "Finder" })).reason).toContain("LAB_PERMISSION_DENIED: desktop_act was not run (the user denied it)");
+      expect(h.prompts).toHaveLength(3);
+      expect(h.prompts[0]!.options).toEqual(["Allow once", "Deny", "Deny with note…"]);
+      expect(h.prompts[0]!.title).toContain(`LAB ${mode} mode · Desktop: click`);
+      expect(h.prompts[0]!.title).not.toMatch(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f‪-‮]/);
+      expect(h.gate.grants.size).toBe(0);
+      // No UI: denied even though the family exists.
+      expect(await h.call("desktop_act", { app: "Finder" }, { hasUI: false })).toMatchObject({ block: true });
+    } finally { h.done(); }
+  }
+  const ro = harness({ mode: "read-only" });
+  try {
+    ro.gate.registerFamily(desktop);
+    expect((await ro.call("desktop_act", { app: "Finder" })).reason).toContain("LAB_PERMISSION_REFUSED: desktop_act");
+    expect(await ro.call("desktop_look", {})).toBeUndefined(); expect(ro.prompts).toHaveLength(0);
+  } finally { ro.done(); }
+  // inAuto "run" opts into auto; a throwing describe/isRead falls back to a generic ask.
+  const auto = harness({ mode: "auto", answers: ["Allow once"] });
+  try {
+    auto.gate.registerFamily({ family: "Other", tools: ["other_act", "other_bad"], sessionGrants: true, inAuto: "run", isRead: () => { throw new Error("x"); }, describe: () => { throw new Error("x"); } });
+    expect(await auto.call("other_act", {})).toBeUndefined(); expect(auto.prompts).toHaveLength(0);
+  } finally { auto.done(); }
+  const bad = harness({ answers: ["Allow for this session (this exact call)", "Allow once"] });
+  try {
+    bad.gate.registerFamily({ family: "Other", tools: ["other_act"], sessionGrants: true, inAuto: "ask", isRead: () => { throw new Error("x"); }, describe: () => { throw new Error("x"); } });
+    expect(await bad.call("other_act", { a: 1 })).toBeUndefined();
+    expect(await bad.call("other_act", { a: 1 })).toBeUndefined(); expect(bad.prompts).toHaveLength(1); // grant reused
+    expect(bad.prompts[0]!.title).toContain("Other: run other_act?");
+    expect([...bad.gate.grants][0]).toStartWith("family\0Other\0other_act\0");
+    // Built-in or already registered tools cannot be taken over; invalid families are rejected.
+    for (const tool of ["bash", "edit", "write", "lab_browser", "relay_send", "relay_ack", "read", "other_act"]) expect(() => bad.gate.registerFamily({ ...desktop, tools: [tool] })).toThrow("LAB_PERMISSION_FAMILY");
+    expect(() => bad.gate.registerFamily({ ...desktop, tools: ["x"], inAuto: "yes" as any })).toThrow("LAB_PERMISSION_FAMILY");
+    expect(() => bad.gate.registerFamily({ ...desktop, tools: ["x"], sessionGrants: undefined as any })).toThrow("LAB_PERMISSION_FAMILY");
+  } finally { bad.done(); }
+});

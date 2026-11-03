@@ -5,7 +5,7 @@
  */
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
-import { approvalChoices, approvalTitle, classify, decide, denial, describeApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type PathRoots, type PermissionMode } from "./permission.ts";
+import { approvalChoices, approvalTitle, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
 
 export type PermissionUI = {
   select(title: string, options: string[], opts?: { signal?: AbortSignal }): Promise<string | undefined>;
@@ -59,6 +59,16 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   // In-memory mode is authoritative; the file is read only when the extension loads (startup or /reload).
   let mode = readModeFile(options.statePath);
   const grants = new Set<string>();
+  const families = new Map<string, GatedFamily>();
+  // Tools LAB already classifies; a family may not take them over.
+  const builtIn = new Set(["read", "grep", "find", "ls", "edit", "write", "bash", "lab_search", "lab_files", "lab_browser", "relay_peers", "relay_send", "relay_inbox", "relay_ack"]);
+  /** Lets another tool family (e.g. agent-desktop) use this gate. Throws on a name collision. */
+  const registerFamily = (family: GatedFamily) => {
+    if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
+    for (const tool of family.tools) if (typeof tool !== "string" || builtIn.has(tool) || families.has(tool)) throw new Error(`LAB_PERMISSION_FAMILY: ${String(tool).slice(0, 64)} is already gated`);
+    const frozen = Object.freeze({ ...family, tools: Object.freeze([...family.tools]) });
+    for (const tool of frozen.tools) families.set(tool, frozen);
+  };
   let queue: Promise<unknown> = Promise.resolve();
   const status = (ctx: PermissionContext) => { try { ctx.ui.setStatus?.("lab-mode", `mode: ${mode} · /lab-mode`); } catch {} };
   const setMode = (next: PermissionMode, ctx: PermissionContext) => {
@@ -93,32 +103,35 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   async function ask(event: ToolCallEvent, ctx: PermissionContext): Promise<{ block: true; reason: string } | undefined> {
     const cwd = ctx.cwd ?? options.projectRoot ?? process.cwd();
     const roots: PathRoots = { project: options.projectRoot ?? cwd, excluded: options.excluded ?? [] };
-    const approval = describeApproval(event.toolName, event.input, { cwd, roots, browser: options.browser, fileSize: path => { try { const s = lstatSync(path); return s.isFile() ? s.size : undefined; } catch { return undefined; } } });
-    if (grants.has(approval.scope)) return undefined;
+    const family = families.get(event.toolName);
+    const approval = family ? describeFamilyApproval(family, event.toolName, event.input)
+      : describeApproval(event.toolName, event.input, { cwd, roots, browser: options.browser, fileSize: path => { try { const s = lstatSync(path); return s.isFile() ? s.size : undefined; } catch { return undefined; } } });
+    if (approval.sessionGrants !== false && grants.has(approval.scope)) return undefined;
     if (!ctx.hasUI || ctx.mode !== "tui") return { block: true, reason: denial(event.toolName, "no interactive approval is available, so LAB denied it") };
     if (ctx.signal?.aborted) return { block: true, reason: denial(event.toolName, "the turn was cancelled") };
     const width = Math.max(20, (options.columns?.() ?? process.stdout.columns ?? 80) - 2);
     const choices = approvalChoices(approval);
     const choice = await ctx.ui.select(approvalTitle(approval, mode, width), [...choices], { signal: ctx.signal });
-    if (choice === choices[0]) return undefined;
-    if (choice === choices[1]) { grants.add(approval.scope); return undefined; }
-    if (choice === choices[3]) {
+    if (choice === "Allow once") return undefined;
+    if (approval.sessionGrants !== false && choice === choices[1]) { grants.add(approval.scope); return undefined; }
+    if (choice === "Deny with note…") {
       let note: string | undefined;
       try { note = await ctx.ui.input("Note for the model (optional)", "why it was denied, or what to do instead", { signal: ctx.signal }); } catch {}
       return { block: true, reason: denial(event.toolName, "the user denied it", note) };
     }
-    return { block: true, reason: denial(event.toolName, choice === choices[2] ? "the user denied it" : "the approval was dismissed") };
+    return { block: true, reason: denial(event.toolName, choice === "Deny" ? "the user denied it" : "the approval was dismissed") };
   }
 
   pi.on("tool_call", async (event, ctx) => {
     const toolName = typeof event?.toolName === "string" ? event.toolName : "tool";
     try {
       const input = event.input && typeof event.input === "object" ? event.input : {};
-      const klass = classify(toolName, input);
+      const family = families.get(toolName);
+      const klass = classify(toolName, input, family);
       const inside = klass === "edit" && mode === "edits"
         ? resolveTargetPath(input.path, ctx.cwd ?? options.projectRoot ?? process.cwd(), { project: options.projectRoot ?? ctx.cwd ?? process.cwd(), excluded: options.excluded ?? [] }).inside
         : false;
-      const decision = decide(mode, toolName, klass, inside);
+      const decision = decide(mode, toolName, klass, inside, family);
       if (decision.kind === "run") return undefined;
       if (decision.kind === "refuse") return { block: true, reason: decision.reason };
       // One prompt at a time; a failed prompt never blocks later ones.
@@ -129,5 +142,5 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
       return { block: true, reason: denial(toolName, "the approval prompt failed, so LAB denied it") };
     }
   });
-  return { get mode() { return mode; }, grants };
+  return { get mode() { return mode; }, grants, registerFamily };
 }

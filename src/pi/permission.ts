@@ -23,9 +23,27 @@ export function parseMode(value: unknown): PermissionMode | undefined {
   return typeof value === "string" && (permissionModes as readonly string[]).includes(value) ? value as PermissionMode : undefined;
 }
 
-export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "relay-ack" | "other";
+export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "relay-ack" | "family" | "other";
+/**
+ * Another tool family (e.g. agent-desktop) registers its tools with the gate
+ * instead of adding a second prompt. Its mutating calls are refused in
+ * read-only, always asked in ask and edits (edits never auto-approves them),
+ * and `inAuto` decides auto. `sessionGrants: false` removes "Allow for this
+ * session". `describe` returns plain text; approvalTitle escapes and wraps it.
+ */
+export type GatedFamily = {
+  family: string;
+  tools: readonly string[];
+  isRead?: (toolName: string, input: Record<string, unknown>) => boolean;
+  sessionGrants: boolean;
+  inAuto: "run" | "ask";
+  describe(toolName: string, input: Record<string, unknown>): { heading: string; lines: string[]; scope: string; scopeLabel: string };
+};
 const readTools = new Set(["read", "grep", "find", "ls", "lab_search", "lab_files", "relay_peers", "relay_inbox"]);
-export function classify(toolName: string, input: Record<string, unknown> | undefined): ToolClass {
+export function classify(toolName: string, input: Record<string, unknown> | undefined, family?: GatedFamily): ToolClass {
+  if (family) {
+    try { return family.isRead?.(toolName, input ?? {}) === true ? "read" : "family"; } catch { return "family"; }
+  }
   if (readTools.has(toolName)) return "read";
   if (toolName === "edit" || toolName === "write") return "edit";
   if (toolName === "bash") return "bash";
@@ -37,8 +55,9 @@ export function classify(toolName: string, input: Record<string, unknown> | unde
 
 export type Decision = { kind: "run" } | { kind: "ask" } | { kind: "refuse"; reason: string };
 /** `insideProject` is only consulted for edit-class tools in edits mode. */
-export function decide(mode: PermissionMode, toolName: string, klass: ToolClass, insideProject: boolean): Decision {
-  if (klass === "read" || mode === "auto") return { kind: "run" };
+export function decide(mode: PermissionMode, toolName: string, klass: ToolClass, insideProject: boolean, family?: GatedFamily): Decision {
+  if (klass === "read") return { kind: "run" };
+  if (mode === "auto") return klass === "family" && family?.inAuto !== "run" ? { kind: "ask" } : { kind: "run" };
   if (mode === "read-only") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because LAB is in read-only mode. Only the user can change the mode (/lab-mode).` };
   if (klass === "relay-ack") return { kind: "run" };
   if (mode === "edits" && klass === "edit" && insideProject) return { kind: "run" };
@@ -123,7 +142,7 @@ export function valuePreview(value: string, secret: boolean, max = 48): string {
 export type BrowserElement = { role: string; name: string };
 export type BrowserFacts = { origin: string; element?: BrowserElement };
 export type ApprovalFacts = { cwd: string; roots: PathRoots; browser?: (input: Record<string, unknown>) => BrowserFacts | undefined; fileSize?: (absolute: string) => number | undefined };
-export type Approval = { heading: string; lines: string[]; scope: string; scopeLabel: string };
+export type Approval = { heading: string; lines: string[]; scope: string; scopeLabel: string; sessionGrants?: boolean };
 const previewLines = (text: string, prefix: string, limit: number) => {
   const lines = text.split("\n"); const shown = lines.slice(0, limit).map(line => prefix + line);
   if (lines.length > limit) shown.push(`${prefix}… ${lines.length - limit} more line(s)`);
@@ -187,10 +206,23 @@ export function describeApproval(toolName: string, input: Record<string, unknown
   let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
   return { heading: `Run tool ${tool}?`, lines: previewLines(Array.from(json).slice(0, 1200).join(""), "", 8), scope: `${toolName}\0${json}`, scopeLabel: "this exact call" };
 }
-export const approvalChoices = (approval: Approval) => ["Allow once", `Allow for this session (${approval.scopeLabel})`, "Deny", "Deny with note…"] as const;
+export const approvalChoices = (approval: Approval): string[] => approval.sessionGrants === false
+  ? ["Allow once", "Deny", "Deny with note…"]
+  : ["Allow once", `Allow for this session (${displaySafe(approval.scopeLabel)})`, "Deny", "Deny with note…"];
+/** Approval text for a registered family; any throw or bad shape becomes a generic, escaped description. */
+export function describeFamilyApproval(family: GatedFamily, toolName: string, input: Record<string, unknown>): Approval {
+  let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
+  const fallback = { heading: `${family.family}: run ${toolName.slice(0, 64)}?`, lines: previewLines(Array.from(json).slice(0, 1200).join(""), "", 8), scope: `${toolName}\0${json}`, scopeLabel: "this exact call" };
+  let described: Partial<Approval> | undefined;
+  try { described = family.describe(toolName, input); } catch {}
+  const ok = described && typeof described.heading === "string" && Array.isArray(described.lines) && described.lines.every(line => typeof line === "string") && typeof described.scope === "string" && typeof described.scopeLabel === "string";
+  const base = ok ? { heading: described!.heading!.slice(0, 200), lines: described!.lines!.slice(0, 40).map(line => line.slice(0, 2000)), scope: described!.scope!, scopeLabel: described!.scopeLabel!.slice(0, 80) } : fallback;
+  // Scopes are namespaced by family and tool so one family cannot reuse another's grant.
+  return { ...base, scope: `family\0${family.family}\0${toolName}\0${base.scope}`, sessionGrants: family.sessionGrants };
+}
 /** Escaped, column-wrapped prompt title. Every row is <= width columns. */
 export function approvalTitle(approval: Approval, mode: PermissionMode, width: number): string {
   const w = Math.max(10, Math.floor(width) || 80);
-  const rows = [`LAB ${mode} mode · ${approval.heading}`, ...approval.lines.map(line => line.split("\n").map(part => displaySafe(part)).join("\n"))];
+  const rows = [`LAB ${mode} mode · ${displaySafe(approval.heading)}`, ...approval.lines.map(line => line.split("\n").map(part => displaySafe(part)).join("\n"))];
   return rows.flatMap(row => wrapColumns(row, w)).join("\n");
 }
