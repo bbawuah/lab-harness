@@ -354,3 +354,11 @@ With an approved Chrome/Chromium/Edge installed, use `lab --browser https://exam
 `/lab-browser status` and `/lab-browser close` control only that run. Ordinary LAB
 needs no browser dependency. See [browser guide and limits](docs/user-guide.md#optional-owned-browser)
 and [native evidence](docs/browser-workspace-evidence.md).
+
+### Optional desktop control (macOS)
+
+`lab --setup-desktop` installs the pinned agent-desktop tool and reports, without
+prompting, who would need Accessibility. Start `lab --desktop`, then pick one window
+with `/lab-desktop attach`. Every desktop action asks Allow once or Deny, in every
+mode. See [desktop guide](docs/user-guide.md#optional-desktop-control-macos) and the
+[contract](docs/desktop-workspace-contract.md).

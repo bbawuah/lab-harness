@@ -1,5 +1,6 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
 import { installBrowserExtension } from "./browser-extension.ts";
+import { installDesktopExtension, type DesktopAPI } from "./desktop-extension.ts";
 import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
 import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
@@ -84,6 +85,7 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   }
   installRelayExtension(pi, callWorkspaceBridge);
   installBrowserExtension(pi);
+  installDesktopExtension(pi as unknown as DesktopAPI);
 }
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */
 export async function executeWorkspaceRequest(request: Request): Promise<unknown> {
