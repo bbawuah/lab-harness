@@ -674,7 +674,7 @@
       "status": "added"
     },
     "docs/desktop-workspace-contract.md": {
-      "sha256": "6b370f404134732a251a645e9cd7dde78b7460e2a0a917c64983ec631cf7423a",
+      "sha256": "9ae093b33b3933cab9ad5656940674f8f1712ec3095b21630dc415357d9e5e8e",
       "status": "added"
     },
     "docs/evidence/appearance/phase2b.md": {
@@ -1833,7 +1833,7 @@
       "status": "added"
     },
     "src/desktop/host.ts": {
-      "sha256": "e1e509c363f256f5063eda3c770d35a2d38850765272bab89fb9adb20ca376c6",
+      "sha256": "6290294155f224d7ef4044a552e67d09d80eada51646734bc3ed9511a296458f",
       "status": "added"
     },
     "src/desktop/projection.ts": {
@@ -2055,7 +2055,7 @@
       "originalSHA256": "f8b9338efa42b304a097231d5ff69a191456bcf057266c7e521120c5f1be9f51"
     },
     "tests/desktop.test.ts": {
-      "sha256": "a14c6615f8a93bb634238b919150695ee89c8b66f612558b706f963d12494443",
+      "sha256": "72e91201b788ceb951de63ff8e44e1334b8ba72c9f973dfa1e62879c3634d280",
       "status": "added"
     },
     "tests/first-owner-crash-child.ts": {

@@ -45,6 +45,8 @@ export function hostEnvironment(descriptor: HostDescriptor): Record<string, stri
   return { PATH: "/usr/bin:/bin:/usr/sbin:/sbin", HOME: join(root, "h"), TMPDIR: join(root, "t") + "/", AGENT_DESKTOP_HOME: join(root, "h"), AGENT_DESKTOP_MACOS_HELPER_PATH: helper, NO_COLOR: "1", LANG: "en_US.UTF-8" };
 }
 
+const SETTLE_MS = 300;
+
 export class OwnedHost implements Transport {
   constructor(readonly descriptor: HostDescriptor, private readonly lsof = "/usr/sbin/lsof") { checkPrivate(descriptor.root); }
   exists() { return !!lstatSync(this.descriptor.root, { throwIfNoEntry: false }); }
@@ -71,8 +73,10 @@ export class OwnedHost implements Transport {
   /** proc_pidpath reports the resolved path; compare against the resolved pinned binary. */
   private pinned(): string { try { return realpathSync(this.descriptor.binary); } catch { return this.descriptor.binary; } }
   /**
-   * Pids of command hosts holding this root's owner lock. Every holder must run
-   * the pinned binary: an unknown holder, or an lsof that failed, is not proof
+   * Pids of command hosts holding this root's owner lock, plus any process
+   * whose working directory is this root (every spawn uses cwd: root, so a host
+   * cancelled before it took the lock is still found). Every one must run the
+   * pinned binary: an unknown process, or an lsof that failed, is not proof
    * that nothing is running, so it throws instead of returning a short list.
    */
   hostPids(): number[] {
@@ -80,12 +84,14 @@ export class OwnedHost implements Transport {
     let names: string[] = [];
     try { names = readdirSync(dir); } catch (e) { if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw new Error("LAB_DESKTOP_CLEANUP_FAILED: owned host state could not be read; state retained, no success claimed."); }
     const pids = new Set<number>();
-    for (const lock of names.filter(n => n.endsWith(".owner.lock")).map(n => join(dir, n))) {
-      const out = spawnSync(this.lsof, ["-t", "--", lock], { timeout: 5000, encoding: "utf8", maxBuffer: 65536 });
-      // lsof exits 1 with no output when nothing holds the file; anything else unexpected is unverified.
+    const holders = (args: string[]) => {
+      const out = spawnSync(this.lsof, args, { timeout: 5000, encoding: "utf8", maxBuffer: 65536 });
+      // lsof exits 1 with no output when nothing matches; anything else unexpected is unverified.
       if (out.error || out.signal || (out.status !== 0 && !(out.status === 1 && !out.stdout?.trim()))) throw new Error("LAB_DESKTOP_CLEANUP_FAILED: could not check owned hosts; state retained, no success claimed.");
       for (const line of (out.stdout ?? "").split("\n")) { if (!line.trim()) continue; const pid = Number(line.trim()); if (Number.isInteger(pid) && pid > 1 && pid !== process.pid) pids.add(pid); }
-    }
+    };
+    for (const lock of names.filter(n => n.endsWith(".owner.lock")).map(n => join(dir, n))) holders(["-t", "--", lock]);
+    if (this.exists()) holders(["-t", "-a", "-d", "cwd", "--", this.descriptor.root]);
     const pinned = this.pinned(), held = [...pids];
     const alive = (pid: number) => { try { process.kill(pid, 0); return true; } catch { return false; } };
     if (held.some(pid => executableOf(pid) !== pinned && alive(pid))) throw new Error("LAB_DESKTOP_CLEANUP_FAILED: a process LAB cannot verify holds this run's desktop lock; it was not stopped. State retained, no success claimed.");
@@ -94,12 +100,18 @@ export class OwnedHost implements Transport {
 
   async stopHosts(): Promise<void> {
     const alive = (pid: number) => { try { process.kill(pid, 0); return true; } catch { return false; } };
-    const pids = this.hostPids();
-    for (const pid of pids) { try { process.kill(pid, "SIGTERM"); } catch {} }
-    for (let n = 0; n < 40 && pids.some(alive); n++) await new Promise(r => setTimeout(r, 50));
-    for (const pid of pids.filter(alive)) { if (executableOf(pid) === this.pinned()) try { process.kill(pid, "SIGKILL"); } catch {} }
-    for (let n = 0; n < 40 && pids.some(alive); n++) await new Promise(r => setTimeout(r, 50));
-    if (pids.some(alive) || this.hostPids().length) throw new Error("LAB_DESKTOP_CLEANUP_FAILED: an owned desktop host is still running; state retained, no success claimed.");
+    const stop = async (pids: number[]) => {
+      for (const pid of pids) { try { process.kill(pid, "SIGTERM"); } catch {} }
+      for (let n = 0; n < 40 && pids.some(alive); n++) await new Promise(r => setTimeout(r, 50));
+      for (const pid of pids.filter(alive)) { if (executableOf(pid) === this.pinned()) try { process.kill(pid, "SIGKILL"); } catch {} }
+      for (let n = 0; n < 40 && pids.some(alive); n++) await new Promise(r => setTimeout(r, 50));
+      if (pids.some(alive)) throw new Error("LAB_DESKTOP_CLEANUP_FAILED: an owned desktop host is still running; state retained, no success claimed.");
+    };
+    await stop(this.hostPids());
+    // A host that was still starting when its client was cancelled: settle, look again, stop it too.
+    await new Promise(r => setTimeout(r, SETTLE_MS));
+    await stop(this.hostPids());
+    if (this.hostPids().length) throw new Error("LAB_DESKTOP_CLEANUP_FAILED: an owned desktop host is still running; state retained, no success claimed.");
   }
 
   remove(): void { rmSync(this.descriptor.root, { recursive: true }); }

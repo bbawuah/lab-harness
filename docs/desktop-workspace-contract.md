@@ -105,8 +105,9 @@ user's own agent-desktop.
 The outer LAB creates the root before Herdr starts and passes a private descriptor (`LAB_DESKTOP_REF`), as the
 browser does. The #23 signal guard covers startup and cleanup. Cleanup runs on `/lab-desktop release`, Pi
 `session_shutdown` (except reload) and the outer LAB `finally`. It finds host pids with `lsof -t` on this
-root's `owner.lock`, checks via `proc_pidpath` that each runs the (resolved) pinned binary, sends TERM then KILL
-**by pid only**, verifies the pids are gone, and then removes the root. If `lsof` fails, or a live lock holder
+root's `owner.lock` and on processes whose working directory is this root (every spawn uses `cwd: root`, so
+a host whose client was cancelled before it took the lock is found too), checks via `proc_pidpath` that each runs the (resolved) pinned binary, sends TERM then KILL
+**by pid only**, verifies the pids are gone, waits 300 ms and repeats once for a host that was still starting, and then removes the root. If `lsof` fails, or a live lock holder
 does not run the pinned binary, LAB stops nothing, keeps the root and reports failure. LAB never claims
 cleanup it did not prove. `lab --setup-desktop` runs under the same signal guard: a signal cancels the
 permission check, and its host and root are still removed before exit. The binding and the failed marker

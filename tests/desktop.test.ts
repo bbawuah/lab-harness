@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { chmodSync, existsSync, lstatSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, lstatSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { DesktopSession, type Identity } from "../src/desktop/session.ts";
@@ -9,7 +9,7 @@ import { envelope, permissions, snapshot, windows } from "../src/desktop/project
 import { createHostRoot, hostEnvironment, OwnedHost, type Transport } from "../src/desktop/host.ts";
 import { accessibilityAdvice, runDesktopSetup, setupReport } from "../src/desktop/setup.ts";
 import { guardBrowserLifecycle } from "../src/browser/lifecycle.ts";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import { grantSubject } from "../src/desktop/responsible.ts";
 import { desktopArtifact } from "../src/desktop/runtime.ts";
@@ -281,6 +281,25 @@ describe("owned host", () => {
     await expect(new OwnedHost({ root, binary: flood, helper: "/y" }).run([])).rejects.toThrow("LAB_DESKTOP_OUTPUT_LIMIT");
     const host = new OwnedHost({ root, binary: sleeper, helper: "/y" });
     expect(host.hostPids()).toEqual([]); await host.stopHosts(); host.remove();
+    expect(existsSync(root)).toBe(false);
+  });
+  test("round 2 P3-a: a host started by a cancelled client before it took the lock is still stopped", async () => {
+    const root = createHostRoot(privateRoot());
+    // The pinned binary resolves to bash, so the orphan runs the pinned executable like a real host.
+    const bin = join(root, "pinned-bash"); symlinkSync("/bin/bash", bin);
+    const fifo = join(root, "fifo"); spawnSync("/usr/bin/mkfifo", [fifo]);
+    const pidFile = join(root, "orphan.pid");
+    const host = new OwnedHost({ root, binary: bin, helper: "/y" });
+    const abort = new AbortController();
+    // The client starts a host in its own process group (set -m), which never takes the owner lock, then waits.
+    const client = host.run(["-c", `set -m; "${bin}" -c 'exec 3<>"${fifo}"; read x <&3' </dev/null >/dev/null 2>&1 & echo $! > "${pidFile}"; exec 4<>"${fifo}"; read y <&4`], { signal: abort.signal });
+    for (let n = 0; n < 100 && !existsSync(pidFile); n++) await new Promise(r => setTimeout(r, 20));
+    const orphan = Number(readFileSync(pidFile, "utf8").trim());
+    abort.abort(); await expect(client).rejects.toThrow("LAB_DESKTOP_CANCELLED");
+    expect(() => process.kill(orphan, 0)).not.toThrow();
+    expect(host.hostPids()).toContain(orphan);
+    await host.stopHosts(); host.remove();
+    expect(() => process.kill(orphan, 0)).toThrow();
     expect(existsSync(root)).toBe(false);
   });
 });
