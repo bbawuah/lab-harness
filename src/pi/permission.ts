@@ -27,7 +27,8 @@ export function autoSummary(families: readonly { family: string; inAuto: "run" |
   const asks = families.filter(f => f.inAuto !== "run").map(f => displaySafe(f.family.slice(0, 32)) + " actions");
   return `auto shows no approval prompt for ${list(runs)}` + (asks.length ? `; ${list(asks)} still ask` : "") + ".";
 }
-export const autoChoices = ["Switch to auto", "Cancel"] as const;
+/** Cancel comes first so a reflexive Enter keeps the current mode. */
+export const autoChoices = ["Cancel", "Switch to auto"] as const;
 /** One line printed by `lab --mode auto` before the workspace starts. */
 export const autoStartWarning = () => `LAB warning: started in auto mode; ${autoSummary()} Change it with /lab-mode.`;
 /** Keyboard-free cycle used by /lab-mode next. It never enters auto. */

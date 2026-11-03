@@ -92,7 +92,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     const title = [`LAB: switch from ${mode} to auto?`, autoSummary([...new Set(families.values())]), "Approved actions run as you; this is not a sandbox."].flatMap(row => wrapColumns(row, width)).join("\n");
     let choice: string | undefined;
     try { choice = await ctx.ui.select(title, [...autoChoices], { signal: ctx.signal }); } catch { choice = undefined; }
-    if (choice === autoChoices[0]) return true;
+    if (choice === "Switch to auto") return true;
     ctx.ui.notify(`LAB mode not changed: still ${mode}.`, "info"); return false;
   }
 

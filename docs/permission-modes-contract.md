@@ -90,7 +90,7 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 - Entering `auto` from `/lab-mode auto` or the selector asks one confirm, "LAB: switch from <m> to auto?". It names
   what auto skips: "auto shows no approval prompt for edits, shell commands, browser actions or Relay sends", plus
   registered families with what they do in auto (e.g. "Desktop actions still ask"), and "not a sandbox". The
-  choices are `Switch to auto` / `Cancel`. Cancel, Esc or a failed prompt keeps the mode. Without the interactive
+  choices are `Cancel` (first, the default) / `Switch to auto`. Cancel, Esc or a failed prompt keeps the mode. Without the interactive
   UI, `/lab-mode auto` never switches. Already in auto, there is no new confirm.
 - `lab --mode auto` prints one warning line before the workspace starts: "LAB warning: started in auto mode; auto
   shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode."

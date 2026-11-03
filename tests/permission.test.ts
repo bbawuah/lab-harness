@@ -272,7 +272,7 @@ test("/lab-mode changes mode, persists privately, clears grants, shows the foote
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("read-only");
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("ask");
     await h.commands.get("lab-mode").handler("yolo", h.ctx); expect(h.gate.mode).toBe("ask"); expect(h.notices.at(-1)).toContain("Unknown mode");
-    h.ctx.ui.select = async (_t, o) => o[0]; // confirm "Switch to auto"
+    h.ctx.ui.select = async () => "Switch to auto";
     await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("auto");
     // The selector form, as the operator would use it.
     const h2 = harness({ answers: [] });
@@ -386,7 +386,7 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     expect(h.statuses.at(-1)).toBe("mode: auto · /lab-mode"); // footer stays visible in auto
     expect(h.prompts).toHaveLength(4);
     const title = h.prompts[0]!.title;
-    expect(h.prompts[0]!.options).toEqual(["Switch to auto", "Cancel"]);
+    expect(h.prompts[0]!.options).toEqual(["Cancel", "Switch to auto"]); // safe default first
     for (const part of ["switch from ask to auto?", "edits", "shell commands", "browser actions", "Relay sends", "Desktop actions still ask", "not a sandbox"]) expect(title.replace(/\n/g, "")).toContain(part); // rows wrap by column, not by word
     for (const row of title.split("\n")) expect(columns(row)).toBeLessThanOrEqual(78);
     await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.prompts).toHaveLength(4); // already auto: no new confirm
