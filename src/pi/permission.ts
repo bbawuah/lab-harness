@@ -40,7 +40,13 @@ export function parseMode(value: unknown): PermissionMode | undefined {
   return typeof value === "string" && (permissionModes as readonly string[]).includes(value) ? value as PermissionMode : undefined;
 }
 
-export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "relay-ack" | "family" | "other";
+export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "relay-ack" | "family" | "unregistered" | "other";
+/**
+ * Tools that must run under a registered family policy (lab_desktop: alwaysAsk).
+ * If a build ships the tool without registering it, every call is refused in
+ * every mode, never treated as "other" with a session-grant choice.
+ */
+export const reservedFamilyTools: ReadonlySet<string> = new Set(["lab_desktop"]);
 /**
  * Another tool family (e.g. agent-desktop) registers its tools with the gate
  * instead of adding a second prompt. Its mutating calls are refused in
@@ -65,6 +71,7 @@ export type GatedFamily = {
 export const alwaysAsk = Object.freeze({ sessionGrants: false, inAuto: "ask", denyWithNote: false } as const);
 const readTools = new Set(["read", "grep", "find", "ls", "lab_search", "lab_files", "relay_peers", "relay_inbox"]);
 export function classify(toolName: string, input: Record<string, unknown> | undefined, family?: GatedFamily): ToolClass {
+  if (!family && reservedFamilyTools.has(toolName)) return "unregistered";
   if (family) {
     try { return family.isRead?.(toolName, input ?? {}) === true ? "read" : "family"; } catch { return "family"; }
   }
@@ -80,6 +87,7 @@ export function classify(toolName: string, input: Record<string, unknown> | unde
 export type Decision = { kind: "run" } | { kind: "ask" } | { kind: "refuse"; reason: string };
 /** `insideProject` is only consulted for edit-class tools in edits mode. */
 export function decide(mode: PermissionMode, toolName: string, klass: ToolClass, insideProject: boolean, family?: GatedFamily): Decision {
+  if (klass === "unregistered") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because its approval policy is not installed. Do not retry it.` };
   if (klass === "read") return { kind: "run" };
   if (mode === "auto") return klass === "family" && family?.inAuto !== "run" ? { kind: "ask" } : { kind: "run" };
   if (mode === "read-only") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because LAB is in read-only mode. Only the user can change the mode (/lab-mode).` };

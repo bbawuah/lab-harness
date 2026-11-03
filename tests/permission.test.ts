@@ -531,3 +531,20 @@ test("family onApproved binds only allowed mutations; a throwing hook denies", a
   const ro = harness({ mode: "read-only" });
   try { ro.gate.registerFamily(desktop); await ro.call("lab_desktop", { operation: "click" }); expect(seen).toHaveLength(1); } finally { ro.done(); }
 });
+
+test("an unregistered lab_desktop is refused in every mode, never 'other' with a session choice", async () => {
+  for (const mode of permissionModes) {
+    const h = harness({ mode, answers: ["once"] });
+    try {
+      for (const operation of ["click", "type", "snapshot", "read"]) {
+        const r = await h.call("lab_desktop", { operation });
+        expect(r).toEqual({ block: true, reason: "LAB_PERMISSION_REFUSED: lab_desktop was not run because its approval policy is not installed. Do not retry it." });
+      }
+      expect(h.prompts).toHaveLength(0); expect(h.gate.grants.size).toBe(0);
+      // Registering the family is what makes it usable (and it is not a built-in, so registration is allowed).
+      h.gate.registerFamily({ ...alwaysAsk, family: "Desktop", tools: ["lab_desktop"], isRead: (_t: string, i: Record<string, unknown>) => i.operation === "snapshot", describe: () => ({ heading: "Desktop?", lines: [], scope: "-", scopeLabel: "-" }) });
+      expect(await h.call("lab_desktop", { operation: "snapshot" })).toBeUndefined();
+    } finally { h.done(); }
+  }
+  expect(classify("lab_desktop", { operation: "snapshot" })).toBe("unregistered");
+});

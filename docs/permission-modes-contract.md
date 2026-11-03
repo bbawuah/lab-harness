@@ -159,6 +159,9 @@ queue.
 and `auto` still asks. Without the preset, a family sets the fields itself: `sessionGrants` (false removes "Allow for
 this session"), `inAuto` (`"ask"` or `"run"`) and `denyWithNote` (false removes "Deny with note…"; default true).
 
+- `lab_desktop` is a reserved family tool. If a build ships it without registering the family, LAB refuses
+  every `lab_desktop` call in every mode (`LAB_PERMISSION_REFUSED: lab_desktop was not run because its approval
+  policy is not installed`). It is never treated as an unknown tool with an "Allow for this session" choice.
 - A family's mutating calls are refused in `read-only`, always asked in `ask` and `edits` (`edits` never
   auto-approves them), and `inAuto` decides `auto`. The no-UI rule applies: without an interactive TUI they are
   denied unless `auto` runs them.
