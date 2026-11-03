@@ -92,9 +92,14 @@ These files replace the PR #23 set in `browser-evidence/`; per-file hashes are i
   ([normal-launch result](browser-evidence/native-result.json)).
 - `lab --setup-browser` ends with the next command
   ([setup output](browser-evidence/setup-browser.txt)).
-- Not exercised: approval prompts and modes (PR #26), a live model, Linux or WSL,
-  footer colour pixels, and the combined `mode` + `web` footer in a live Pi (the
-  key order is checked against Pi 1.4.0's footer rule in a unit test only).
+- Combined footer after merging #26 (clean `e31427a`, ask mode, live Pi in Herdr):
+  at 120 columns `● mode: ask · /lab-mode ● web 127.0.0.1:<FIXTURE_PORT>`
+  ([120](browser-evidence/tui-footer-120.txt)); at 40 columns the mode stays whole
+  and only the web chip truncates: `● mode: ask · /lab-mode ● web 127.0.0...`
+  ([40](browser-evidence/tui-footer-40.txt)).
+- Not exercised: a live model, Linux or WSL, and footer colour pixels. The other
+  files in this set predate the #26 merge (approval prompts are covered by #26's
+  own evidence).
   `check:actual` was not run for this slice.
 
 ## Hosted install (2026-11-02)

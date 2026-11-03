@@ -47,6 +47,14 @@
     "setup-browser.txt": {
       "sha256": "d3e77120b92d2b597fe8745be41d73eb45e0f8e33a52f46a338748fc32f1a8dd",
       "source": "./lab --setup-browser --offline stdout (verified cache, nothing downloaded); home directory -> ~"
+    },
+    "tui-footer-40.txt": {
+      "sha256": "1da83db2d087ea5051ab12efe797d00cb8086a786aae1ca14689ece988bbe735",
+      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x66 pty = 40-column Pi pane, from clean e31427a (merge of #26 + this slice): mode chip whole, web chip truncated by Pi"
+    },
+    "tui-footer-120.txt": {
+      "sha256": "f3f31e94cb840951b4e947e24cc76cf32301add7325b2080c68e810e5dfacc72",
+      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x146 pty = 120-column Pi pane, from clean e31427a"
     }
   },
   "textSanitization": "pane.read text only; /private-prefixed owned project -> <OWNED_PROJECT>; loopback fixture ports -> <FIXTURE_PORT>/<OTHER_PORT> (wrap-aware); Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION> (none were visible in these captures); trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
@@ -56,5 +64,10 @@
   "pi": "1.4.0",
   "herdr": "0.9.5",
   "inferenceCalls": 0,
-  "protocolFixtureRequests": 10
+  "protocolFixtureRequests": 10,
+  "footerCapture": {
+    "commit": "e31427a4cfccec1956760da47aa90788c8b98b7f",
+    "note": "Herdr's sidebar takes 26 columns, so terminal widths 66/146 give 40/120-column Pi panes. No protocol requests in footer-only runs.",
+    "textSanitization": "also replaces a truncated /private/var/folders project path with <OWNED_PROJECT>"
+  }
 }

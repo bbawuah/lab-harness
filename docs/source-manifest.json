@@ -70,6 +70,8 @@
     "docs/browser-evidence/session-result.json",
     "docs/browser-evidence/setup-browser.txt",
     "docs/browser-evidence/tui-breach.txt",
+    "docs/browser-evidence/tui-footer-120.txt",
+    "docs/browser-evidence/tui-footer-40.txt",
     "docs/browser-evidence/tui-reload.txt",
     "docs/browser-evidence/tui-status.txt",
     "docs/browser-evidence/tui-tools.txt",
@@ -603,7 +605,7 @@
       "status": "added"
     },
     "docs/browser-evidence/provenance.json": {
-      "sha256": "7e9cba1d3059a2d010e264c80f829bf6f6d3471af310bdab750246dda8847cbe",
+      "sha256": "6c36f6f69b529e13c85203505f490468bfbf8da1fc25c2b1da5ec4945becd8fe",
       "status": "added"
     },
     "docs/browser-evidence/session-result.json": {
@@ -616,6 +618,14 @@
     },
     "docs/browser-evidence/tui-breach.txt": {
       "sha256": "30942cb384e1d3bdb9f0d1b2a93ecc7ad50a9dba482a2caa5afbe8a8f51190e8",
+      "status": "added"
+    },
+    "docs/browser-evidence/tui-footer-120.txt": {
+      "sha256": "f3f31e94cb840951b4e947e24cc76cf32301add7325b2080c68e810e5dfacc72",
+      "status": "added"
+    },
+    "docs/browser-evidence/tui-footer-40.txt": {
+      "sha256": "1da83db2d087ea5051ab12efe797d00cb8086a786aae1ca14689ece988bbe735",
       "status": "added"
     },
     "docs/browser-evidence/tui-reload.txt": {
@@ -643,7 +653,7 @@
       "status": "added"
     },
     "docs/browser-workspace-evidence.md": {
-      "sha256": "22b053269f8c237e54df2fa46f3ba81c88baf9b2d628e9f9c7f2c4a2ecd039f7",
+      "sha256": "aa0b86c843453fd328d645647308ffafbb08b43583a8a9002a277f42b1592dae",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1791,7 +1801,7 @@
       "status": "added"
     },
     "scripts/browser-native-smoke.ts": {
-      "sha256": "b4c12930ffd6467cd9598816474ffbf0b5e6dcb50844aba4bd5365ba875f71b2",
+      "sha256": "f63a0984a5a12530a3a73f69cf11c9e4ec5c9e2426ff2a7f2090e1c714d1923a",
       "status": "added"
     },
     "scripts/browser-smoke.ts": {
