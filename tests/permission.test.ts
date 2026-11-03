@@ -329,7 +329,7 @@ test("F30 browser rows name element, masked value and origin; escaped and width-
 
 test("registered tool family (agent-desktop seam): always asks, no session grants, refused read-only, escaped text, no takeover", async () => {
   const desktop = {
-    family: "Desktop", tools: ["desktop_act", "desktop_look"], sessionGrants: false, inAuto: "ask" as const,
+    family: "Robot", tools: ["desktop_act", "desktop_look"], sessionGrants: false, inAuto: "ask" as const,
     isRead: (tool: string) => tool === "desktop_look",
     describe: (_tool: string, input: Record<string, unknown>) => ({ heading: "Desktop: click\u001b]0;pwned\u0007?", lines: ["app: " + String(input.app), "target: ‮evil"], scope: String(input.app), scopeLabel: "this app" }),
   };
@@ -402,7 +402,6 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     await sel.commands.get("lab-mode").handler("", sel.ctx); expect(sel.gate.mode).toBe("ask"); expect(titles[1]).toContain("switch from ask to auto?");
   } finally { sel.done(); }
   expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends; desktop actions still ask. Change it with /lab-mode.");
-  expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions; desktop actions still ask."); // a name alone is not the reserved tool
 });
 
 test("review r1 P1: edits never auto-approves git, Pi, agent or direnv config (case/normalization-insensitive)", async () => {
@@ -585,6 +584,8 @@ test("review r3: reserved lab_desktop must use alwaysAsk; the auto confirm wordi
     for (const bad of [{ sessionGrants: true, inAuto: "ask", denyWithNote: false }, { sessionGrants: false, inAuto: "run", denyWithNote: false }, { sessionGrants: false, inAuto: "ask" }])
       expect(() => h.gate.registerFamily({ ...d, ...bad } as any)).toThrow("LAB_PERMISSION_FAMILY");
     h.gate.registerFamily({ ...alwaysAsk, ...d });
+    // The name Desktop is reserved for the family that holds lab_desktop.
+    expect(() => h.gate.registerFamily({ ...alwaysAsk, family: "desktop", tools: ["desktop_act"], describe: d.describe })).toThrow("LAB_PERMISSION_FAMILY");
   } finally { h.done(); }
   const text = autoSummary([{ family: "Desktop control", inAuto: "ask", tools: ["lab_desktop"] }, { family: "Robot", inAuto: "run", tools: ["robot_act"] }]);
   expect(text).toBe("auto shows no approval prompt for edits, shell commands, browser actions, Relay sends or Robot actions; desktop actions still ask.");
@@ -599,7 +600,7 @@ test("review r3 P2-B: a FIFO planted at the mode-file path fails instead of free
     expect(Date.now() - started).toBeLessThan(1000);
     expect(h.gate.mode).toBe("read-only");
     expect(h.notices.some(text => text.includes("could not be written"))).toBe(true);
-    expect(readModeFile(h.statePath)).toBe("ask"); // reading a FIFO never blocks either (lstat rejects it first)
+    expect(readModeFile(h.statePath)).toBe("ask"); // reading opens non-blocking and checks the same fd, so a FIFO swapped in never blocks
   } finally { h.done(); }
 });
 

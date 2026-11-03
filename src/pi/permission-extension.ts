@@ -33,11 +33,14 @@ export const modeIndicator = (mode: PermissionMode): IndicatorState => ({ glyph:
 /** Reads the private LAB mode file. Anything unexpected falls back to ask. */
 export function readModeFile(path: string | undefined): PermissionMode {
   if (!path) return "ask";
+  // Check and read the same fd: O_NONBLOCK so a FIFO swapped in after any check cannot freeze Pi.
+  let fd: number | undefined;
   try {
-    const entry = lstatSync(path);
-    if (!entry.isFile() || entry.isSymbolicLink() || entry.uid !== process.getuid?.() || (entry.mode & 0o077) !== 0 || entry.size > 256) return "ask";
-    return parseMode(JSON.parse(readFileSync(path, "utf8"))?.mode) ?? "ask";
-  } catch { return "ask"; }
+    fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK);
+    const entry = fstatSync(fd);
+    if (!entry.isFile() || entry.uid !== process.getuid?.() || (entry.mode & 0o077) !== 0 || entry.size > 256) return "ask";
+    return parseMode(JSON.parse(readFileSync(fd, "utf8"))?.mode) ?? "ask";
+  } catch { return "ask"; } finally { if (fd !== undefined) try { closeSync(fd); } catch {} }
 }
 /** Writes the mode without following symlinks; mode 0600. */
 export function writeModeFile(path: string, mode: PermissionMode): void {
@@ -81,6 +84,8 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   /** Lets another tool family (e.g. agent-desktop) use this gate. Throws on a name collision. */
   const registerFamily = (family: GatedFamily) => {
     if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask") || (family.denyWithNote !== undefined && typeof family.denyWithNote !== "boolean") || (family.onApproved !== undefined && typeof family.onApproved !== "function")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
+    // "Desktop" names only the family holding the reserved tool, so the auto confirm can't read two ways.
+    if (family.family.normalize("NFKC").toLowerCase().trim() === "desktop" && !family.tools.some(tool => reservedFamilyTools.has(tool))) throw new Error("LAB_PERMISSION_FAMILY: the name Desktop is reserved for lab_desktop");
     // The reserved desktop tool must use the alwaysAsk policy (lead: "Desktop policy: alwaysAsk + onApproved").
     if (family.tools.some(tool => reservedFamilyTools.has(tool)) && (family.sessionGrants !== false || family.inAuto !== "ask" || family.denyWithNote !== false)) throw new Error("LAB_PERMISSION_FAMILY: lab_desktop must use the alwaysAsk policy");
     for (const tool of family.tools) if (typeof tool !== "string" || builtIn.has(tool) || families.has(tool)) throw new Error(`LAB_PERMISSION_FAMILY: ${String(tool).slice(0, 64)} is already gated`);

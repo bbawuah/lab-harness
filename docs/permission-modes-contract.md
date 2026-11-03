@@ -135,7 +135,8 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
   `edits` may have changed without a prompt.
 - The in-memory mode is authoritative. The model's shell can see `LAB_PERMISSION_STATE`. If it breaks the mode file,
   `/lab-mode` still changes the mode for the session and warns that the file could not be written. The file is opened
-  non-blocking, so a FIFO planted there fails instead of freezing Pi.
+  non-blocking for both reading and writing, and checked on the same descriptor it is read from, so a FIFO planted or
+  swapped in there fails instead of freezing Pi.
 - `bash` is never auto-approved by `edits`.
 - A browser `fill`/`click`/`read` runs only if its ref still names the role and name shown in the approval, from
   the same snapshot. A snapshot queued earlier in the same parallel batch makes it fail with `LAB_BROWSER_STALE_REF`.
@@ -169,7 +170,8 @@ queue.
 
 **Desktop policy: alwaysAsk + onApproved.** LAB shows the one desktop prompt; `onApproved` mints #28's single-use
 token. There is no pass-through policy. `registerFamily` throws if `lab_desktop` is registered with anything other
-than the `alwaysAsk` fields. The auto confirm's "desktop actions still ask" follows the tool, not the family name. Pi
+than the `alwaysAsk` fields. The auto confirm's "desktop actions still ask" follows the tool, not the family name, and only the family holding
+`lab_desktop` may be named Desktop. Pi
 can abort a turn after the gate allowed a call but before it runs, so a token must bind a snapshot or hash of the
 input it was minted for and expire at `tool_execution_end` or `turn_end`.
 

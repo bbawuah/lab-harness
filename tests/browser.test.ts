@@ -95,3 +95,16 @@ test('review r3: unknown-at-approval (null) and a newer snapshot generation are 
   expect(calls).toBe(0);
  } finally {rmSync(root,{recursive:true,force:true});}
 });
+
+test('review r4: the extension binds each run to the element read at execute start (null when unknown)',async()=>{
+ const saved=process.env.LAB_BROWSER_REF;const tools:any[]=[];const root=mkdtempSync(join(tmpdir(),'lab-browser-ref-'));
+ const ref=join(root,'ref.json');writeFileSync(ref,JSON.stringify({root,session:'lab-'+'c'.repeat(24),origin:'http://example.test'}),{mode:0o600});process.env.LAB_BROWSER_REF=ref;
+ const seen:any[]=[];const known={role:'button',name:'Save',generation:1};
+ const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({descriptor:{origin:'http://example.test'},element:(r:string)=>r==='@e1'?known:undefined,status(){return'';},close:async()=>{},execute:async(_i:any,_s:any,expected:any)=>{seen.push(expected);return {};}});
+ try{
+  installBrowserExtension({on(){},registerCommand(){},registerTool(t:any){tools.push(t);},sendMessage(){}} as any);
+  await tools[0].execute('c1',{operation:'click',ref:'@e1'});
+  await tools[0].execute('c2',{operation:'click',ref:'@e9'});
+  expect(seen).toEqual([known,null]);
+ }finally{(BrowserSession as any).rebind=orig;if(saved===undefined)delete process.env.LAB_BROWSER_REF;else process.env.LAB_BROWSER_REF=saved;rmSync(root,{recursive:true,force:true});}
+});
