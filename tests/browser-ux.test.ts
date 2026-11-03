@@ -207,13 +207,14 @@ test('footer: mode sorts first and is never cut; web chip is cut next, desktop f
     { state: 'closed', origin: ORIGIN, failure: { code: 'LAB_BROWSER_SESSION_LOST', operation: 'snapshot', phase: 'action', cleanup: 'done' } },
     { state: 'cleanup-failed', origin: ORIGIN }];
   // Longest mode text #26 sets (mode: <name> · /lab-mode); any mode text up to the width survives intact.
-  for (const mode of ['mode: ask · /lab-mode', 'mode: read-only · /lab-mode']) for (const v of webStates) for (const width of widths) {
+  for (const mode of ['mode: ask · /lab-mode', 'mode: read-only · /lab-mode']) for (const v of webStates) for (const width of [...widths, ...[0, 1, 2, 3, 4].map(n => Bun.stringWidth(mode) + n)]) {
     const statuses = new Map<string, string>();
     const ui = { setStatus: (k: string, t: string | undefined) => { if (t === undefined) statuses.delete(k); else statuses.set(k, t); } };
     ui.setStatus(indicatorSlots.mode, mode); setIndicator(ui, indicatorSlots.web, chip(v)); setIndicator(ui, indicatorSlots.desktop, { glyph: '●', label: 'desktop', detail: 'Finder' });
     const line = piFooter(statuses, width);
     expect(Bun.stringWidth(line)).toBeLessThanOrEqual(width); expect(line).not.toMatch(controls);
-    expect(line.startsWith(mode + ' ')).toBe(true); // mode is first and whole
+    if (width >= Bun.stringWidth(mode) + 3) expect(line.startsWith(mode)).toBe(true); // mode first and whole at mode + 3 columns or more
+    else expect(line.startsWith(mode.slice(0, width - 3))).toBe(true); // narrower: Pi cuts the mode too (documented limit)
     const web = indicatorText(chip(v));
     const full = [mode, web, indicatorText({ glyph: '●', label: 'desktop', detail: 'Finder' })].join(' ');
     if (Bun.stringWidth(full) <= width || Bun.stringWidth(mode + ' ' + web) <= width - 3) expect(line).toContain(web); // web whole until it no longer fits beside mode + '...'
@@ -309,6 +310,46 @@ test('outside the TUI, rows are also notified (escaped); after a failed reattach
     await command.handler('status', ctx); expect(entries[0].lines[0]).toContain('could not be reattached'); expect(notes[0]).toBe(entries[0].lines[0]);
     ctx.mode = 'tui'; await command.handler('status', ctx); expect(notes).toHaveLength(1); // TUI draws the entry; no duplicate toast
   } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('retained cleanup, then a successful /lab-browser close: no retry instruction, chip keeps the reason (also after reload)', async () => {
+  const plan: Plan = { fail: { agent_browser_click: 'LAB_BROWSER_TIMEOUT' }, closeFails: true };
+  const { s, done } = scripted(plan);
+  const dir = mkdtempSync(join(tmpdir(), 'lab-browser-ux-retry-')); const ref = join(dir, 'browser-ref.json');
+  try {
+    await s.execute({ operation: 'snapshot' });
+    const info = await failureOf(s.execute({ operation: 'click', ref: '@e2' }));
+    expect(info.cleanup).toBe('retained'); expect(s.view().state).toBe('cleanup-failed');
+    plan.closeFails = false; await s.close();
+    const v = s.view(); expect(v.state).toBe('closed');
+    expect(indicatorText(chip(v))).toBe('○ web closed · result unknown');
+    expect(statusLines(v)[0]).not.toContain('retry cleanup'); expect(statusLines(v)[0]).toContain('Start a new run');
+    // after /reload: persisted 'retained' record, root gone
+    writeFileSync(ref, JSON.stringify({ root: join(dir, 'gone'), session: 'lab-' + 'f'.repeat(24), origin: ORIGIN }), { mode: 0o600 });
+    writeFileSync(join(dir, 'browser-ref.closed.json'), JSON.stringify(info), { mode: 0o600 });
+    const saved = process.env.LAB_BROWSER_REF; process.env.LAB_BROWSER_REF = ref; const status: any[] = [], entries: any[] = []; let start: any, command: any;
+    try {
+      installBrowserExtension({ on: (n: string, f: any) => { if (n === 'session_start') start = f; }, registerTool() {}, registerCommand: (_n: string, c: any) => { command = c; }, sendMessage() {}, appendEntry: (_t: string, d: any) => entries.push(d) } as any);
+      const ctx = { mode: 'tui', ui: { notify() {}, setStatus: (_k: string, t: any) => status.push(t) } };
+      start({}, ctx); expect(status).toEqual(['○ web closed · result unknown']);
+      await command.handler('status', ctx); expect(entries[0].lines[0]).not.toContain('retry cleanup');
+    } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; }
+  } finally { rmSync(dir, { recursive: true, force: true }); done(); }
+});
+
+test('close: a pidfile naming a dead pid gets no command; an unreadable pidfile with daemon state left asks the daemon to close', async () => {
+  const session = 'lab-' + 'c'.repeat(24);
+  { const { s, sent, root, done } = scripted({ daemonDead: true });
+    try { writeFileSync(join(root, 's', session + '.pid'), '999999'); writeFileSync(join(root, 's', session + '.sock'), ''); await s.close(); expect(sent).toEqual([]); expect(existsSync(root)).toBe(false); } finally { done(); } }
+  { const { s, sent, root, done } = scripted({ daemonDead: true });
+    try { writeFileSync(join(root, 's', session + '.sock'), ''); await s.close(); expect(sent).toEqual(['close']); expect(existsSync(root)).toBe(false); } finally { done(); } }
+  { const { s, sent, root, done } = scripted({ daemonDead: true });
+    try { await s.close(); expect(sent).toEqual([]); expect(existsSync(root)).toBe(false); } finally { done(); } } // never started: nothing to ask
+});
+
+test('a spawn failure is not described as a daemon exit', () => {
+  const text = recoveryText({ code: 'LAB_BROWSER_SPAWN', operation: 'click', ref: '@e1', phase: 'action', cleanup: 'done', dispatched: true }, ORIGIN);
+  expect(text).toStartWith('Browser stopped: the browser tool could not start; page state is unknown.'); expect(text).not.toContain('daemon');
 });
 
 test('orphan reap signals only a live process proven to use the owned profile', async () => {

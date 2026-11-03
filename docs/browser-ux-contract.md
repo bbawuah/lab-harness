@@ -21,7 +21,7 @@ slice gives those rows the data they need (`details.operation`, `details.ref`; r
   depends on colour. Label and detail are escaped and limited to 48 columns. Permission modes and agent-desktop can reuse them.
 - Footer slots (`indicatorSlots`): `lab-mode` (#26), `lab-web` (this slice), `lab-x-desktop` (reserved). Pi 1.4.0 renders all
   statuses on one footer line, sorted by key with `localeCompare`, joined with a space and cut from the right with `...`. Key order
-  is therefore keep order: the mode sorts first and stays whole whenever the terminal is at least as wide as the mode text; the
+  is therefore keep order: the mode sorts first and stays whole whenever the terminal is at least the mode text + 3 columns wide (Pi keeps width-3 columns before `...`); the
   web chip is cut next and desktop first. `setIndicator` accepts only these keys. A test replays Pi's footer rule at 40/80/120.
   At 40 columns with the longest mode (`mode: read-only · /lab-mode`) the footer is `mode: read-only · /lab-mode ○ web clo...`:
   the mode and the chip's glyph and label stay; the reason is then read from `/lab-browser status` or the failure row.
@@ -58,8 +58,11 @@ Rules:
 - Every action-phase failure records whether the command was dispatched. If the daemon was already gone or the page had
   already left the origin before the action was sent, the recovery text says the action was not sent (still closed for the
   run) instead of blaming it; the verdict reason is `not sent` and the chip `check failed` / `left origin` / `connection lost`.
-- Cleanup never sends a command to a dead daemon (the CLI could start a replacement whose pid was never read). It goes straight
-  to the verified profile reap; ownership is re-proved immediately before each signal.
+- Cleanup never sends a command to a daemon proven dead (its pidfile names a dead pid): the CLI could start a replacement whose
+  pid was never read. It goes straight to the verified profile reap; ownership is re-proved immediately before each signal. With
+  no readable pidfile but daemon state left in the socket dir, the daemon may still run, so it is asked to close first.
+- A `closed` view always means cleanup finished: a failure recorded as `retained` before a successful `/lab-browser close` (or
+  persisted before `/reload`) is shown as done, so the row never repeats the retry instruction and the chip keeps its reason.
 - If `/reload` cannot reattach the browser while owned state still exists, the chip is `! web not reattached · /exit cleans up`
   (the launcher closes the browser on exit); it never claims `closed` while state is live.
 

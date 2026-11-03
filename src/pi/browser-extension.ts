@@ -1,4 +1,4 @@
-import { lstatSync, readFileSync, writeFileSync } from 'node:fs';
+import { lstatSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { BrowserFailure, BrowserSession, type BrowserInput } from '../browser/session.ts';
 import { browserURL } from '../browser/runtime.ts';
 import { chip, classify, failureRecord, recoveryText, statusLines, verdict, type LifecycleView, type ToolOutcome } from '../browser/states.ts';
@@ -30,7 +30,8 @@ export function installBrowserExtension(pi:WorkspaceExtensionAPI) {
   if(ref) { try { browser=BrowserSession.rebind(ref); } catch { /* Closed/missing browser must not disable source/Relay tools on reload. */ stale=closedState(ref); } }
   const reason=ref?readReason(ref):undefined;
   const view=():LifecycleView|undefined=>{if(stale)return stale.root&&lstatSync(stale.root,{throwIfNoEntry:false})?{state:'cleanup-failed',origin:stale.origin,detached:true}:{state:'closed',origin:stale.origin,...(reason?{failure:reason}:{})};if(!browser)return;const v=browser.view();return v.state!=='active'&&!v.failure&&reason?{...v,failure:reason}:v;};
-  const remember=(info:any)=>{const r=failureRecord(info);if(ref&&r)try{writeFileSync(reasonPath(ref),JSON.stringify(r),{mode:0o600});}catch{/* display only */}};
+  // Temp file then rename, so a planted link at the reason path is replaced, never followed.
+  const remember=(info:any)=>{const r=failureRecord(info);if(!ref||!r)return;const p=reasonPath(ref),t=p+'.'+process.pid+'.tmp';try{writeFileSync(t,JSON.stringify(r),{flag:'wx',mode:0o600});renameSync(t,p);}catch{try{rmSync(t,{force:true});}catch{}}};
   const refresh=(ctx?:WorkspaceContext)=>{const v=view();if(v)try{setIndicator(ctx?.ui,chipKey,chip(v));}catch{/* status UI is best effort */}};
   // Transcript row outside model context; notify fallback for UIs without custom entries.
   // Outside the TUI (print/json/rpc) entries are not drawn, so the operator also gets an escaped notification.

@@ -105,9 +105,12 @@ export class BrowserSession {
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}
     this.markFailed();
-    const pidfile=join(r,'s',this.descriptor.session+'.pid');let pid:number|undefined;try{pid=Number(readFileSync(pidfile,'utf8'));}catch{}
-    // Ask a live daemon to close. A dead daemon gets no command at all: the CLI could start a fresh daemon whose pid we never read.
-    if(this.daemonAlive()){const raw=await this.run(['--json','close']); const response=JSON.parse(raw);insist(response.success===true,'LAB_BROWSER_CLEANUP_FAILED');}
+    const pidfile=join(r,'s',this.descriptor.session+'.pid');const readPid=()=>{try{const n=Number(readFileSync(pidfile,'utf8'));return Number.isInteger(n)&&n>1?n:undefined;}catch{return undefined;}};
+    let pid=readPid();
+    // A daemon proven dead (its pidfile names a dead pid) gets no command: the CLI could start a fresh daemon.
+    // Unknown (no readable pidfile but daemon state left in s/) is treated as possibly alive: ask it to close, then re-read the pid.
+    const leftovers=()=>{try{return readdirSync(join(r,'s')).some(n=>n.startsWith(this.descriptor.session));}catch{return false;}};
+    if(this.daemonAlive()||(pid===undefined&&leftovers())){const raw=await this.run(['--json','close']); const response=JSON.parse(raw);insist(response.success===true,'LAB_BROWSER_CLEANUP_FAILED');pid??=readPid();}
     const alive=()=>{if(pid&&Number.isInteger(pid)){try{process.kill(pid,0);return true;}catch{}}return false;};
     const profiles=()=>readdirSync(join(r,'t')).filter(n=>n.startsWith('agent-browser-chrome-'));
     for(let n=0;n<40;n++){if(!alive()&&!profiles().length){this.closed=true;rmSync(r,{recursive:true});return;}await new Promise(r=>setTimeout(r,50));}
