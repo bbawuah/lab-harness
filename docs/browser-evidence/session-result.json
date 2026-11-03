@@ -24,10 +24,109 @@
       "passed": true
     },
     {
+      "test": "ux states",
+      "passed": true,
+      "states": [
+        "stale",
+        "stale",
+        "refused",
+        "read back after change",
+        "breach",
+        "lost",
+        "uncertain"
+      ]
+    },
+    {
       "test": "network boundary limitation",
-      "foreignHits": 4,
+      "foreignHits": 6,
       "note": "Detection after mutation cannot undo site requests; not a network sandbox."
     }
   ],
-  "screenshotSHA256": "1fee05a3bf705dd09e1c24855491500ebdeef809bcd3ea0866596ddb89646624"
+  "ux": [
+    {
+      "scenario": "stale ref",
+      "state": "stale",
+      "code": "LAB_BROWSER_STALE_REF",
+      "operation": "click",
+      "ref": "@e2",
+      "phase": "pre",
+      "cleanup": "none",
+      "recovery": "@e2 is stale: refs reset after fill/click/navigate. Nothing was sent to the page. Take a new snapshot.",
+      "view": "active",
+      "chip": "● web 127.0.0.1:<FIXTURE_PORT>",
+      "rootRemoved": false
+    },
+    {
+      "scenario": "unknown ref",
+      "state": "stale",
+      "code": "LAB_BROWSER_STALE_REF",
+      "operation": "read",
+      "ref": "@e999",
+      "phase": "pre",
+      "cleanup": "none",
+      "recovery": "@e999 was never issued. Nothing was sent to the page. Take a new snapshot and use its @eN refs.",
+      "view": "active",
+      "chip": "● web 127.0.0.1:<FIXTURE_PORT>",
+      "rootRemoved": false
+    },
+    {
+      "scenario": "cross-origin input",
+      "state": "refused",
+      "code": "LAB_BROWSER_ORIGIN",
+      "operation": "navigate",
+      "phase": "pre",
+      "cleanup": "none",
+      "recovery": "Refused before anything was sent to the page; stay on http://127.0.0.1:<FIXTURE_PORT>.",
+      "view": "active",
+      "chip": "● web 127.0.0.1:<FIXTURE_PORT>",
+      "rootRemoved": false
+    },
+    {
+      "scenario": "read back after change",
+      "verifies": true,
+      "view": "active"
+    },
+    {
+      "scenario": "breach (post-click other port)",
+      "state": "breach",
+      "code": "LAB_BROWSER_ORIGIN",
+      "operation": "click",
+      "ref": "@e3",
+      "phase": "action",
+      "cleanup": "done",
+      "recovery": "Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab after click @e3. Browser actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/",
+      "view": "closed",
+      "chip": "○ web closed · left origin",
+      "rootRemoved": true
+    },
+    {
+      "scenario": "daemon exit (lost)",
+      "state": "lost",
+      "code": "LAB_BROWSER_SESSION_LOST",
+      "operation": "snapshot",
+      "phase": "action",
+      "cleanup": "done",
+      "recovery": "Browser disconnected: the browser daemon exited or was replaced before snapshot was sent; page state is unknown. Browser actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/",
+      "view": "closed",
+      "chip": "○ web closed · connection lost",
+      "rootRemoved": true,
+      "orphanBrowserAliveBefore": true,
+      "orphanBrowserAliveAfter": false
+    },
+    {
+      "scenario": "busy page click (timeout)",
+      "state": "uncertain",
+      "code": "LAB_BROWSER_TIMEOUT",
+      "operation": "click",
+      "ref": "@e5",
+      "phase": "action",
+      "cleanup": "done",
+      "recovery": "Browser closed: click @e5 timed out, result unknown. Check the page yourself before trying again. Browser actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/",
+      "view": "closed",
+      "chip": "○ web closed · result unknown",
+      "rootRemoved": true,
+      "elapsedMs": 30218
+    }
+  ],
+  "screenshotSHA256": "131ab91e0eecfd5a25ec32e1c93d193a114a33e54fe635a08facbb8609f4f483"
 }

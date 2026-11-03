@@ -3,7 +3,7 @@ import { lstatSync, readFileSync, renameSync, rmSync, writeFileSync } from "node
 import { randomUUID } from "node:crypto";
 import { dirname, join } from "node:path";
 import { ownedState } from "../src/ledger.ts";
-import { browserBinary, digest, verifyBrowserRuntime } from "../src/browser/runtime.ts";
+import { browserBinary, digest, selectBrowser, setupSummary, verifyBrowserRuntime } from "../src/browser/runtime.ts";
 import source from "../contracts/agent-browser-source.json";
 const args = process.argv.slice(2);
 if (args.some(a => a !== '--offline')) throw new Error('Usage: acquire-browser.ts [--offline]');
@@ -22,4 +22,6 @@ if (!cached) {
   const temporary = join(root, '.download-'+randomUUID());
   try { writeFileSync(temporary,bytes,{flag:'wx',mode:0o700}); renameSync(temporary,browserBinary); } finally { rmSync(temporary,{force:true}); }
 }
-verifyBrowserRuntime(); console.log(`Verified agent-browser ${source.version}; existing approved browser required. Cached: ${cached}.`);
+verifyBrowserRuntime();
+let found: string | undefined; try { found = selectBrowser(); } catch {}
+console.log(setupSummary(source.version, cached, found));

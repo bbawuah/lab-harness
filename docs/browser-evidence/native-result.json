@@ -2,58 +2,93 @@
   "kind": "normal lab native Pi/Herdr with local deterministic protocol fixture, no inference",
   "ok": true,
   "code": 0,
-  "requests": 6,
+  "requests": 10,
   "events": [
     {
       "request": 1,
+      "prompt": "fixture run",
       "toolAvailable": true,
       "operation": {
         "operation": "snapshot"
-      },
-      "priorToolError": false
+      }
     },
     {
       "request": 2,
+      "prompt": "fixture run",
       "toolAvailable": true,
       "operation": {
         "operation": "fill",
-        "ref": "@e3",
+        "ref": "@e4",
         "text": "Native Fixture"
-      },
-      "priorToolError": false
+      }
     },
     {
       "request": 3,
-      "toolAvailable": true,
-      "operation": {
-        "operation": "snapshot"
-      },
-      "priorToolError": false
-    },
-    {
-      "request": 4,
+      "prompt": "fixture run",
       "toolAvailable": true,
       "operation": {
         "operation": "click",
         "ref": "@e2"
-      },
-      "priorToolError": false
+      }
     },
     {
-      "request": 5,
+      "request": 4,
+      "prompt": "fixture run",
       "toolAvailable": true,
       "operation": {
         "operation": "snapshot"
       },
-      "priorToolError": false
+      "lastToolError": "LAB_BROWSER_STALE_REF"
+    },
+    {
+      "request": 5,
+      "prompt": "fixture run",
+      "toolAvailable": true,
+      "operation": {
+        "operation": "click",
+        "ref": "@e2"
+      }
     },
     {
       "request": 6,
+      "prompt": "fixture run",
+      "toolAvailable": true,
+      "operation": {
+        "operation": "snapshot"
+      }
+    },
+    {
+      "request": 7,
+      "prompt": "fixture run",
+      "toolAvailable": true,
+      "operation": "final"
+    },
+    {
+      "request": 8,
+      "prompt": "fixture leave",
+      "toolAvailable": true,
+      "operation": {
+        "operation": "snapshot"
+      }
+    },
+    {
+      "request": 9,
+      "prompt": "fixture leave",
+      "toolAvailable": true,
+      "operation": {
+        "operation": "click",
+        "ref": "@e3"
+      }
+    },
+    {
+      "request": 10,
+      "prompt": "fixture leave",
       "toolAvailable": true,
       "operation": "final",
-      "priorToolError": false
+      "lastToolError": "LAB_BROWSER_ORIGIN"
     }
   ],
+  "foreignHits": 2,
   "cleanup": {
     "serverExited": true,
     "clientExited": true,

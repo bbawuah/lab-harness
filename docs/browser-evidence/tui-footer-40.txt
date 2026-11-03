@@ -1,0 +1,37 @@
+
+[LB] (text fallback)
+LAB-HARNESS
+Powered by Pi
+Interactive coding workspace
+Controlled LAB tasks: unavailable
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready:
+ lab-browser-project-<ID>/<RELAY_SESSION>
+ (<RELAY_PEER>). Use
+ /relay-peers.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────
+
+────────────────────────────────────────
+<OWNED_PROJECT>
+0.0%/8.2k (auto)         browser-fixture
+● mode: ask · /lab-mode ● web 127.0.0...

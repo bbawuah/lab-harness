@@ -421,6 +421,64 @@ including after `/reload`. If cleanup also fails, owned state is kept,
 Ctrl+C or SIGTERM during browser startup cancels it and closes the browser;
 signals during final cleanup wait for it to finish.
 
+### What you see
+
+`lab --setup-browser` ends with the next command to run, for example
+`Next:  lab --browser http://localhost:3000/` (the URL is an example).
+
+While a browser is attached, Pi's footer shows a chip:
+
+| Chip | Meaning |
+|---|---|
+| `● web 127.0.0.1:3000` | Attached and bound to that origin. |
+| `○ web closed · result unknown` | A fill, click or navigate failed partway. Look at the page yourself before trying again. |
+| `○ web closed · connection lost` | The browser daemon exited or was replaced. Page state is unknown. |
+| `○ web closed · left origin` | The page left your origin or opened another tab, so LAB closed the browser. |
+| `○ web closed` | Closed for this run (for example by `/lab-browser close`). `/lab-browser status` gives the restart command `lab --browser <origin>/`. |
+| `! web cleanup · /lab-browser close` | Stopped, but owned state could not be cleaned up yet. Run `/lab-browser close` to retry. |
+
+The chip sits to the right of the permission mode. On a narrow terminal the chip
+is shortened (ending in `...`) and the mode is never cut; `/lab-browser status`
+always shows the full state.
+
+`/lab-browser status` and `/lab-browser close` add a row to the transcript (it
+is not sent to the model), for example:
+
+```
+● browser http://127.0.0.1:3000 only · private profile
+  5 actions · last: snapshot · /lab-browser close
+```
+
+The failed tool rows say what happened and what to do:
+
+- `! … @e2 is stale … Nothing was sent to the page. Take a new snapshot.` The
+  ref came from an older snapshot. Nothing reached the page and the browser stays
+  attached.
+- `! Refused before anything was sent to the page …` Input was refused, for
+  example a navigation to another origin. The browser stays attached.
+- `○ Browser closed: click @e5 timed out, result unknown. Check the page yourself
+  before trying again.` LAB never retries an uncertain action. Look at the page
+  before you ask for it again in a new run.
+- `○ Browser closed: the page left <origin> or opened another tab …` A boundary
+  breach. The browser is closed for this run.
+- `○ Browser disconnected: the browser daemon exited or was replaced …` LAB
+  checks that its own daemon is still alive before every action, and never lets a
+  replacement daemon continue the session. On close it also stops a browser that
+  the dead daemon left behind, but only one whose command line uses this run's
+  private profile.
+
+After an agent run that used the browser, one verdict row summarises the
+`lab_browser` tool results. It is never based on the model's own text:
+
+- `✓ browser: … read back after change` means every change was followed by a
+  snapshot or read;
+- `! browser: page changed, not read back` means the last change was not checked;
+- `✗ browser: 1 failed (result unknown|left origin|disconnected) …`.
+
+Refusals are counted (`1 refused`). The model is also told to verify with a
+snapshot or read after changes, and to report a failed action as unknown instead
+of retrying it.
+
 Actual validation: macOS arm64 with existing Chrome. macOS Intel/Linux x64 have
 pinned tool assets but need platform acceptance; Windows/WSL-to-Windows Edge,
 existing profiles and desktop control are outside this slice. See

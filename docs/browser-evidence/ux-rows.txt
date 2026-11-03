@@ -1,0 +1,189 @@
+[active · footer] ● web 127.0.0.1:<FIXTURE_PORT>
+[stale ref · 40 columns]
+! Browser · click @e2
+  @e2 is stale: refs reset after fill/cl
+ick/navigate. Nothing was sent to the pa
+ge. Take a new snapshot.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · 
+private profile
+  2 actions · last: fill @e6 · /lab-brow
+ser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[stale ref · 80 columns]
+! Browser · click @e2
+  @e2 is stale: refs reset after fill/click/navigate. Nothing was sent to the pa
+ge. Take a new snapshot.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[stale ref · 120 columns]
+! Browser · click @e2
+  @e2 is stale: refs reset after fill/click/navigate. Nothing was sent to the page. Take a new snapshot.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[unknown ref · 40 columns]
+! Browser · read @e999
+  @e999 was never issued. Nothing was se
+nt to the page. Take a new snapshot and 
+use its @eN refs.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · 
+private profile
+  2 actions · last: fill @e6 · /lab-brow
+ser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[unknown ref · 80 columns]
+! Browser · read @e999
+  @e999 was never issued. Nothing was sent to the page. Take a new snapshot and 
+use its @eN refs.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[unknown ref · 120 columns]
+! Browser · read @e999
+  @e999 was never issued. Nothing was sent to the page. Take a new snapshot and use its @eN refs.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[cross-origin input · 40 columns]
+! Browser · navigate
+  Refused before anything was sent to th
+e page; stay on http://127.0.0.1:<FIXTURE_PORT>.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · 
+private profile
+  2 actions · last: fill @e6 · /lab-brow
+ser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[cross-origin input · 80 columns]
+! Browser · navigate
+  Refused before anything was sent to the page; stay on http://127.0.0.1:<FIXTURE_PORT>.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[cross-origin input · 120 columns]
+! Browser · navigate
+  Refused before anything was sent to the page; stay on http://127.0.0.1:<FIXTURE_PORT>.
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  2 actions · last: fill @e6 · /lab-browser close
+footer: ● web 127.0.0.1:<FIXTURE_PORT>
+
+[status · 40 columns]
+● browser http://127.0.0.1:<FIXTURE_PORT> only · 
+private profile
+  3 actions · last: snapshot · /lab-brow
+ser close
+
+[status · 80 columns]
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  3 actions · last: snapshot · /lab-browser close
+
+[status · 120 columns]
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  3 actions · last: snapshot · /lab-browser close
+
+[breach (post-click other port) · 40 columns]
+○ Browser · click @e3
+  Browser closed: the page left http://1
+27.0.0.1:<FIXTURE_PORT> or opened another tab aft
+er click @e3. Browser actions are off fo
+r this run. Start a new run: lab --brows
+er http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: the page left http://1
+27.0.0.1:<FIXTURE_PORT> or opened another tab aft
+er click @e3. Browser actions are off fo
+r this run. Start a new run: lab --brows
+er http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · left origin
+
+[breach (post-click other port) · 80 columns]
+○ Browser · click @e3
+  Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab aft
+er click @e3. Browser actions are off for this run. Start a new run: lab --brows
+er http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab aft
+er click @e3. Browser actions are off for this run. Start a new run: lab --brows
+er http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · left origin
+
+[breach (post-click other port) · 120 columns]
+○ Browser · click @e3
+  Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab after click @e3. Browser actions are off fo
+r this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab after click @e3. Browser actions are off fo
+r this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · left origin
+
+[daemon exit (lost) · 40 columns]
+○ Browser · snapshot
+  Browser disconnected: the browser daem
+on exited or was replaced before snapsho
+t was sent; page state is unknown. Brows
+er actions are off for this run. Start a
+ new run: lab --browser http://127.0.0.1
+:<FIXTURE_PORT>/
+○ Browser disconnected: the browser daem
+on exited or was replaced before snapsho
+t was sent; page state is unknown. Brows
+er actions are off for this run. Start a
+ new run: lab --browser http://127.0.0.1
+:<FIXTURE_PORT>/
+footer: ○ web closed · connection lost
+
+[daemon exit (lost) · 80 columns]
+○ Browser · snapshot
+  Browser disconnected: the browser daemon exited or was replaced before snapsho
+t was sent; page state is unknown. Browser actions are off for this run. Start a
+ new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser disconnected: the browser daemon exited or was replaced before snapsho
+t was sent; page state is unknown. Browser actions are off for this run. Start a
+ new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · connection lost
+
+[daemon exit (lost) · 120 columns]
+○ Browser · snapshot
+  Browser disconnected: the browser daemon exited or was replaced before snapshot was sent; page state is unknown. Brows
+er actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser disconnected: the browser daemon exited or was replaced before snapshot was sent; page state is unknown. Brows
+er actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · connection lost
+
+[busy page click (timeout) · 40 columns]
+○ Browser · click @e5
+  Browser closed: click @e5 timed out, r
+esult unknown. Check the page yourself b
+efore trying again. Browser actions are 
+off for this run. Start a new run: lab -
+-browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: click @e5 timed out, r
+esult unknown. Check the page yourself b
+efore trying again. Browser actions are 
+off for this run. Start a new run: lab -
+-browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · result unknown
+
+[busy page click (timeout) · 80 columns]
+○ Browser · click @e5
+  Browser closed: click @e5 timed out, result unknown. Check the page yourself b
+efore trying again. Browser actions are off for this run. Start a new run: lab -
+-browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: click @e5 timed out, result unknown. Check the page yourself b
+efore trying again. Browser actions are off for this run. Start a new run: lab -
+-browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · result unknown
+
+[busy page click (timeout) · 120 columns]
+○ Browser · click @e5
+  Browser closed: click @e5 timed out, result unknown. Check the page yourself before trying again. Browser actions are 
+off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+○ Browser closed: click @e5 timed out, result unknown. Check the page yourself before trying again. Browser actions are 
+off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+footer: ○ web closed · result unknown
+
