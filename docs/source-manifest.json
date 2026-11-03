@@ -401,7 +401,9 @@
     "src/pi/desktop-extension.ts",
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
+    "src/pi/status-indicator.ts",
     "src/pi/terminal-mark.json",
+    "src/pi/terminal-text.ts",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
     "src/pi/workspace-config.ts",
@@ -672,7 +674,7 @@
       "status": "added"
     },
     "docs/desktop-workspace-contract.md": {
-      "sha256": "5274773fbbd76321ab0580a5da4b68d7993eee9f632a7b3ca300031f386b34b5",
+      "sha256": "3c8248f49c70167946a2c5aa807a2d225fec1315f42083cce333124e6031dd49",
       "status": "added"
     },
     "docs/evidence/appearance/phase2b.md": {
@@ -1922,7 +1924,7 @@
       "status": "added"
     },
     "src/pi/desktop-extension.ts": {
-      "sha256": "4d9baa1bbd31b4a8b26d6f55736d9a49948a867b4d978a7d6830e57aa9ed4a9d",
+      "sha256": "5b7992f0e887dac110e9f40ebb8315267506fb8b541129eb214952a773340473",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -1933,8 +1935,16 @@
       "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
       "status": "added"
     },
+    "src/pi/status-indicator.ts": {
+      "sha256": "8733615a1e6f3d43e6f20e03bd6523786afe4591c865aa0a7164adc7cd2362b1",
+      "status": "added"
+    },
     "src/pi/terminal-mark.json": {
       "sha256": "6d4f694a1bb26ee27be3c2209a35be4133214c375e98393b0470bd22822eee2d",
+      "status": "added"
+    },
+    "src/pi/terminal-text.ts": {
+      "sha256": "d60f6a3127597c89dbb4ef17f188a1640cf415c3766795ef5ddb75fc8a472f24",
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
@@ -2045,7 +2055,7 @@
       "originalSHA256": "f8b9338efa42b304a097231d5ff69a191456bcf057266c7e521120c5f1be9f51"
     },
     "tests/desktop.test.ts": {
-      "sha256": "34153650f83778edcc2fc1b98a7c31ace86b0e471cce73aaf7c601ba9c99a7a4",
+      "sha256": "f9d2cadad0668b05c6fa66a4708415d5adbbeaf5f301f124905ce68aac6864ab",
       "status": "added"
     },
     "tests/first-owner-crash-child.ts": {

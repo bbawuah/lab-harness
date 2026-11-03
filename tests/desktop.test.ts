@@ -11,7 +11,7 @@ import { accessibilityAdvice, setupReport } from "../src/desktop/setup.ts";
 import { grantSubject } from "../src/desktop/responsible.ts";
 import { desktopArtifact } from "../src/desktop/runtime.ts";
 import { installDesktopExtension, type DesktopContext } from "../src/pi/desktop-extension.ts";
-import { columns } from "../src/pi/browser-extension.ts";
+import { columns } from "../src/pi/terminal-text.ts";
 
 const ok = (command: string, data: unknown) => JSON.stringify({ version: "2.5", ok: true, command, data });
 const err = (command: string, code: string, delivery?: string, retry?: string) =>
@@ -309,7 +309,7 @@ describe("desktop Pi extension", () => {
     const seen: { titles: string[]; notes: string[]; status?: string } = { titles: [], notes: [] };
     return { seen, ctx: { hasUI: true, mode: "tui", ui: {
       async select(title: string) { seen.titles.push(title); if (answer instanceof Error) throw answer; return answer; },
-      notify(m: string) { seen.notes.push(m); }, setStatus(_k: string, t?: string) { seen.status = t; },
+      notify(m: string) { seen.notes.push(m); }, setStatus(k: string, t?: string) { if (k !== "lab-x-desktop") throw new Error("slot " + k); seen.status = t; },
     } } as DesktopContext };
   };
   async function harness(mode?: string, replies: Record<string, Reply[]> = {}) {
@@ -372,6 +372,25 @@ describe("desktop Pi extension", () => {
     const { ctx, seen } = ui("Deny"); await h.gate(click, ctx, "c2");
     expect(seen.titles[0]).toContain("delivery is unknown");
   });
+  test("footer chip uses the fixed lab-x-desktop slot, is bounded, and status keeps the full window", async () => {
+    const long = "A very long document title that will not fit in the footer chip at all " + "x".repeat(40);
+    const h = await harness("ask");
+    h.transport.replies["list-windows"] = [ok("list-windows", [{ ...window, title: long }])];
+    await h.session.bind(windows([{ ...window, title: long }])[0]!);
+    const { ctx, seen } = ui();
+    await h.pi.commands["lab-desktop"].handler("status", ctx);
+    expect(seen.notes[0]).toContain(long);
+    expect(Array.from(seen.status!).length).toBeLessThanOrEqual(48);
+    expect(seen.status!.startsWith("● desk Fixture · ")).toBe(true);
+    const failing = await harness("ask", { click: [new Error("LAB_DESKTOP_TIMEOUT")] });
+    await failing.gate(click, ui("Allow once").ctx);
+    const f = ui(); await failing.tool.execute("c1", click, undefined, undefined, f.ctx);
+    expect(f.seen.status).toBe("! desk failed");
+    const unsure = await harness("ask", { click: [err("click", "X", "delivery_uncertain", "unsafe")] });
+    await unsure.gate(click, ui("Allow once").ctx);
+    const u = ui(); await unsure.tool.execute("c1", click, undefined, undefined, u.ctx);
+    expect(u.seen.status).toBe("! desk Fixture · Doc");
+  });
   test("hostile AX text is escaped and wrapped at widths 1–120 in rows and prompts", async () => {
     const hostile = "Save\u001b]8;;http://x\u0007‮evil​\u0085 \u{1F600}界".repeat(3);
     const h = await harness("ask", { snapshot: [snap(), snap("s0002", "Fixture", "w-1", hostile)] });
@@ -409,7 +428,7 @@ describe("desktop Pi extension", () => {
     expect(session.binding()?.windowId).toBe("w-1");
     expect(seen.status).toBe("● desk Fixture · Doc");
     await pi.commands["lab-desktop"].handler("release", ctx);
-    expect(seen.status).toBe("desk off");
+    expect(seen.status).toBe("○ desk off");
     await pi.handlers.session_shutdown![0]!({ reason: "quit" });
     expect(existsSync(root)).toBe(false);
   });

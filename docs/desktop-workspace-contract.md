@@ -20,8 +20,10 @@ explicit steps:
 2. `lab --desktop` opts one run in. Inside Pi, `/lab-desktop attach` re-checks permissions. When Accessibility
    is denied it shows the same named-grantee message and stops. Otherwise it lists windows and the user picks
    **one** (`App · title · pid`); the model cannot attach, list windows or pick. `/lab-desktop status` shows
-   the binding and `/lab-desktop release` unbinds. A persistent status item shows `● desk <App · title>`, or
-   `desk off` when nothing is bound.
+   the binding and `/lab-desktop release` unbinds. A persistent footer chip in the fixed `lab-x-desktop` slot
+   (shared `status-indicator.ts` from #27) shows `● desk <App · title>`, `○ desk off`, or `!` when the last
+   delivery is unknown or control has failed. Pi sorts footer chips by key and cuts from the right, so the
+   desktop chip is cut first at narrow widths; `/lab-desktop status` always shows the full bound window.
 
 *Deviation from board 10 (approved by the lead):* the board shows only in-session attach. This release adds
 the per-run `--desktop` opt-in, mirroring `--browser`, so the tool is absent unless the operator asked for it

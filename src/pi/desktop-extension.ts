@@ -8,7 +8,8 @@
  * `tool_call` event and mints a single-use token; DesktopSession refuses any
  * action without one. Prompts it cannot show are denied.
  */
-import { displaySafe, wrapColumns } from "./browser-extension.ts";
+import { displaySafe, wrapColumns } from "./terminal-text.ts";
+import { indicatorSlots, setIndicator, type IndicatorState } from "./status-indicator.ts";
 import { DesktopSession, pressKeys } from "../desktop/session.ts";
 import { canonicalInput, DesktopApprovals, describeDesktopApproval, desktopChoices, isAction, type DesktopApprovalText, type DesktopInput } from "../desktop/approval.ts";
 import { callRow, type RowFacts } from "../desktop/display.ts";
@@ -49,11 +50,17 @@ export function installDesktopExtension(pi: DesktopAPI, options: DesktopOptions 
   if (!session && options.ref) { try { session = DesktopSession.rebind(options.ref); } catch { /* A closed or missing desktop root must not disable other tools on reload. */ } }
   const width = () => Math.max(20, (options.columns?.() ?? process.stdout.columns ?? 80) - 2);
   const advice = () => accessibilityAdvice((options.responsible ?? (() => responsibleApp()))());
+  /** Footer chip in the fixed desktop slot (#27); Pi cuts it first when narrow. /lab-desktop status keeps the full window. */
   const indicator = (ctx: DesktopContext) => {
     if (!session) return;
-    let text = "desk off";
-    try { const b = session.binding(); text = session.failed() ? "desk failed" : b ? `● desk ${b.app} · ${Array.from(b.title || "(untitled)").slice(0, 40).join("")}` : "desk off"; } catch { text = "desk failed"; }
-    try { ctx.ui.setStatus?.("lab-desktop", displaySafe(text)); } catch {}
+    let state: IndicatorState;
+    try {
+      const b = session.binding();
+      state = session.failed() ? { glyph: "!", label: "desk", detail: "failed" }
+        : !b ? { glyph: "○", label: "desk", detail: "off" }
+        : { glyph: session.uncertain() ? "!" : "●", label: "desk", detail: `${b.app} · ${b.title || "(untitled)"}` };
+    } catch { state = { glyph: "!", label: "desk", detail: "failed" }; }
+    try { setIndicator(ctx.ui, indicatorSlots.desktop, state); } catch {}
   };
 
   pi.registerCommand("lab-desktop", { description: "Desktop control: status, attach one window, or release it", async handler(args, ctx) {
