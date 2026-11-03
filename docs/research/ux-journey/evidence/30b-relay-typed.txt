@@ -1,0 +1,40 @@
+ spaces                  │  LAB workspace    +
+                         │███████ ████████████████   LAB-HARNESS
+ ○ LAB-HARNESS           │███████ ████████████████   Powered by Pi
+   main                  │███████ ███████████████▀   Interactive coding workspace
+                         │███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+                         │███████ ███████ ▀▀▀▀
+                         │███████ ███████ ███▄▄
+                         │████████ ▀▀████ ██████▄
+                         │███████▀    ▀██ ███████▄
+                         │▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+                         │███████████████ ████████
+                         │███████████████ ███████▀
+                         │███████████████ ██████▀
+                         │ ▀█████████████ ███▀▀
+                         │
+                         │[Extensions]
+                         │  workspace-extension.ts
+                         │
+                         │
+ new                 menu│ Relay ready: demo-app/01a1a0b4-803d-71a9-a449--215a6fdfaa83
+─────────────────────────│ (pi-93faf2469f9ebec38301a80596bb3023adeb169ef7509a34cba4e0a2508ed8b5). Use /relay-peers.
+ agents           grouped│
+                         │
+ ○ LAB-HARNE… · LAB work…│ /relay-relay-peers
+   pi                    │
+                         │
+                         │ Error: Connection error.
+                         │
+                         │ Error: Connection error.
+                         │
+                         │ Error: Connection error.
+                         │
+                         │ Error: Retry failed after 3 attempts: Retry cancelled
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │/relay-peers
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │→ relay-peers  [t] Discover readable Relay peers in this project bus. Self is marked; presen
+                         │$SCRATCH/…
+                        «│28.6%/8.2k (auto)                                                          offline-placeholder

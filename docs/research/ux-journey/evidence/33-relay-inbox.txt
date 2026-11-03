@@ -1,0 +1,40 @@
+ spaces                  │  LAB workspace Z    +
+                         │┌ Pi interactive ────────────────────────────────────────────────────────────────────────────┐
+ ○ LAB-HARNESS           ││███████████████ ██████▀                                                                     │
+   main                  ││ ▀█████████████ ███▀▀                                                                       │
+                         ││                                                                                            │
+                         ││[Extensions]                                                                                │
+                         ││  workspace-extension.ts                                                                    │
+                         ││                                                                                            │
+                         ││                                                                                            │
+                         ││ Relay ready: demo-app/01a1a0b3-807c-7102-8469--5eba6805f5fb                                │
+                         ││ (pi-ff0103db8f652b9082e030e1a0a2f88af785c20e7d885ad053108ad318ba4a59). Use /relay-peers.   │
+                         ││                                                                                            │
+                         ││                                                                                            │
+                         ││ [relay-inbox]                                                                              │
+                         ││                                                                                            │
+                         ││ {                                                                                          │
+                         ││   "messages": [                                                                            │
+                         ││     {                                                                                      │
+                         ││       "version": 2,                                                                        │
+ new                 menu││       "id": "24820524-086c-432c-b9ba-024910d69e6d",                                        │
+─────────────────────────││       "namespace":                                                                         │
+ agents           grouped││ "lab-project-v1-28ac96f4955b3e360fdedd98b175184106e4b2106889dc58c5a3aaedd32d8200",         │
+                         ││       "from": "pi-93faf2469f9ebec38301a80596bb3023adeb169ef7509a34cba4e0a2508ed8b5",       │
+ ○ LAB-HARNE… · LAB work…││       "to": "pi-ff0103db8f652b9082e030e1a0a2f88af785c20e7d885ad053108ad318ba4a59",         │
+   pi                    ││       "body": "Hi from B: I am taking the retry refactor, please hold off on client.py",   │
+                         ││       "conversationId": "171dd139-65e3-4a55-a1f9-a583b8baa792",                            │
+                         ││       "createdAt": 1793697611711                                                           │
+                         ││     }                                                                                      │
+                         ││   ],                                                                                       │
+                         ││   "unread": 1,                                                                             │
+                         ││   "timedOut": false                                                                        │
+                         ││ }                                                                                          │
+                         ││                                                                                            │
+                         ││                                                                                            │
+                         ││────────────────────────────────────────────────────────────────────────────────────────────│
+                         ││                                                                                            │
+                         ││────────────────────────────────────────────────────────────────────────────────────────────│
+                         ││$SCRATCH/…│
+                         ││1.8%/8.2k (auto)                                                         offline-placeholder│
+                        «│└────────────────────────────────────────────────────────────────────────────────────────────┘

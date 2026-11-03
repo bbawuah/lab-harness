@@ -1,0 +1,40 @@
+ spaces                  │  LAB workspace    +
+                         │ {
+ ○ LAB-HARNESS           │   "id": "43166588-b11d-4251-99ec-11668d57be15",
+   main                  │   "state": "stored",
+                         │   "duplicate": false,
+                         │   "createdAt": 1793697698794,
+                         │   "expiresAt": 1796289698794,
+                         │   "requestKey": "after-exit-1"
+                         │ }
+                         │
+                         │
+                         │
+                         │ [relay-peers]
+                         │
+                         │ {
+                         │   "peers": [
+                         │     {
+                         │       "id": "pi-ff0103db8f652b9082e030e1a0a2f88af785c20e7d885ad053108ad318ba4a59",
+                         │       "name": "demo-app/01a1a0b3-807c-7102-8469--5eba6805f5fb",
+ new                 menu│       "presence": "offline",
+─────────────────────────│       "lastSeenAt": 1793697691823,
+ agents           grouped│       "self": false
+                         │     },
+ ○ LAB-HARNE… · LAB work…│     {
+   pi                    │       "id": "pi-93faf2469f9ebec38301a80596bb3023adeb169ef7509a34cba4e0a2508ed8b5",
+                         │       "name": "demo-app/01a1a0b4-803d-71a9-a449--215a6fdfaa83",
+                         │       "presence": "online",
+                         │       "lastSeenAt": 1793697696591,
+                         │       "self": true
+                         │     }
+                         │   ],
+                         │   "total": 2
+                         │ }
+                         │
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │$SCRATCH/…
+                        «│34.8%/8.2k (auto)                                                          offline-placeholder

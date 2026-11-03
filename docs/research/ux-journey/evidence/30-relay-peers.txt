@@ -1,0 +1,40 @@
+ spaces                  │  LAB workspace    +
+                         │
+ ○ LAB-HARNESS           │███████ ███████████▄▄
+   main                  │███████ ██████████████▄
+                         │███████ ███████████████▄
+                         │███████ ████████████████   LAB-HARNESS
+                         │███████ ████████████████   Powered by Pi
+                         │███████ ███████████████▀   Interactive coding workspace
+                         │███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+                         │███████ ███████ ▀▀▀▀
+                         │███████ ███████ ███▄▄
+                         │████████ ▀▀████ ██████▄
+                         │███████▀    ▀██ ███████▄
+                         │▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+                         │███████████████ ████████
+                         │███████████████ ███████▀
+                         │███████████████ ██████▀
+                         │ ▀█████████████ ███▀▀
+                         │
+ new                 menu│[Extensions]
+─────────────────────────│  workspace-extension.ts
+ agents           grouped│
+                         │
+ ○ LAB-HARNE… · LAB work…│ Relay ready: demo-app/01a1a0b4-803d-71a9-a449--215a6fdfaa83
+   pi                    │ (pi-93faf2469f9ebec38301a80596bb3023adeb169ef7509a34cba4e0a2508ed8b5). Use /relay-peers.
+                         │
+                         │
+                         │ /relay-relay-peers
+                         │
+                         │
+                         │ Error: Connection error.
+                         │
+                         │ Error: Connection error.
+                         │
+                         │
+                         │── ⠙ Retrying (2/3) in 4s... (escape to cancel) ──────────────────────────────────────────────
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │$SCRATCH/…
+                        «│28.6%/8.2k (auto)                                                          offline-placeholder

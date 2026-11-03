@@ -1,0 +1,40 @@
+ spaces                  │  LAB workspace    +
+                         │   "duplicate": false,
+ ○ LAB-HARNESS           │   "createdAt": 1793697611711,
+   main                  │   "expiresAt": 1796289611711,
+                         │   "requestKey": "intro-1"
+                         │ }
+                         │
+                         │
+                         │
+                         │ [relay-inbox]
+                         │
+                         │ {
+                         │   "messages": [
+                         │     {
+                         │       "version": 2,
+                         │       "id": "64e5b4e6-0538-423f-8d10-e968b6228cde",
+                         │       "namespace":
+                         │ "lab-project-v1-28ac96f4955b3e360fdedd98b175184106e4b2106889dc58c5a3aaedd32d8200",
+                         │       "from": "pi-ff0103db8f652b9082e030e1a0a2f88af785c20e7d885ad053108ad318ba4a59",
+ new                 menu│       "to": "pi-93faf2469f9ebec38301a80596bb3023adeb169ef7509a34cba4e0a2508ed8b5",
+─────────────────────────│       "body": "OK, I will stay on the docs",
+ agents           grouped│       "conversationId": "171dd139-65e3-4a55-a1f9-a583b8baa792",
+                         │       "createdAt": 1793697650502,
+ ○ LAB-HARNE… · LAB work…│       "replyTo": "24820524-086c-432c-b9ba-024910d69e6d"
+   pi                    │     }
+                         │   ],
+                         │   "unread": 1,
+                         │   "timedOut": false
+                         │ }
+                         │
+                         │
+                         │ Error: RELAY_UNKNOWN_PEER
+                         │
+                         │ Error: RELAY_CONFLICT
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │
+                         │──────────────────────────────────────────────────────────────────────────────────────────────
+                         │$SCRATCH/…
+                        «│32.7%/8.2k (auto)                                                          offline-placeholder

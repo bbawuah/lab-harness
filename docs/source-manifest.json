@@ -279,6 +279,16 @@
     "docs/research/ux-journey/evidence/27b-browser-transcript.txt",
     "docs/research/ux-journey/evidence/28-rerun-update.txt",
     "docs/research/ux-journey/evidence/29-manual-uninstall.txt",
+    "docs/research/ux-journey/evidence/30-relay-peers.txt",
+    "docs/research/ux-journey/evidence/30a-relay-autocomplete-misfire.txt",
+    "docs/research/ux-journey/evidence/30b-relay-typed.txt",
+    "docs/research/ux-journey/evidence/30c-relay-peers-enter.txt",
+    "docs/research/ux-journey/evidence/31-relay-send.txt",
+    "docs/research/ux-journey/evidence/32-recipient-idle.txt",
+    "docs/research/ux-journey/evidence/33-relay-inbox.txt",
+    "docs/research/ux-journey/evidence/34-relay-ack-reply.txt",
+    "docs/research/ux-journey/evidence/35-relay-reply-errors.txt",
+    "docs/research/ux-journey/evidence/36-relay-offline.txt",
     "docs/research/ux-journey/evidence/README.md",
     "docs/research/ux-journey/evidence/fixture-page.html.txt",
     "docs/research/ux-journey/evidence/fixture-requests.jsonl.txt",
@@ -1257,7 +1267,7 @@
       "status": "added"
     },
     "docs/research/ux-journey/JOURNEY.md": {
-      "sha256": "0d88dc2d9023475e94d1963962e3a0d61f64484b592e8c493f17b36e9c94fd91",
+      "sha256": "c3934563c803dc1b235beda2c0ef1d169ea887d9c3f347549e692bc63a3cdbed",
       "status": "added"
     },
     "docs/research/ux-journey/PERSONAS-AND-SESSIONS.md": {
@@ -1269,11 +1279,11 @@
       "status": "added"
     },
     "docs/research/ux-journey/SUMMARY.md": {
-      "sha256": "84127e64314a32dbc76f645214380533652ae4f18b0544bc7bada8a1c10b2c62",
+      "sha256": "8ab6d614a52057cf2e4cdeb848b231c1d72d647a9839d45edc1e8c928db72944",
       "status": "added"
     },
     "docs/research/ux-journey/WIREFRAMES.md": {
-      "sha256": "f4b07b3f00bc5f79a2a60c68c0888698e21dd3c8c61f067c96595d986de0ba8b",
+      "sha256": "dd8298ed67e4d7f091d7a8cb8c8caa5f59fc752e661ebf75f2280ce4de3f959d",
       "status": "added"
     },
     "docs/research/ux-journey/evidence/01-install-progress.txt": {
@@ -1412,8 +1422,48 @@
       "sha256": "d7e88c5470470d20a300a55f69abf07d12b9aa5bd9939f2524cc7fe71da02643",
       "status": "added"
     },
+    "docs/research/ux-journey/evidence/30-relay-peers.txt": {
+      "sha256": "7d4e3238295175cb36a85178cb9eadab59eb41abd74ac2993fcbe1eda8ad7420",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/30a-relay-autocomplete-misfire.txt": {
+      "sha256": "e66f33473edc01853d37fcef45566637887b4a9e9a1c89f360a0334ad777d019",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/30b-relay-typed.txt": {
+      "sha256": "af034be7fd01e47373dd28a995f771ab2a8bb7d6afac9d01ac9099a74f7068ae",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/30c-relay-peers-enter.txt": {
+      "sha256": "c38f2d3be0aaf04ec662b109e9a67c6f2078e58ad145d2283d23465a15f2932e",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/31-relay-send.txt": {
+      "sha256": "e46495ada9d17247912b25a365657541a00f554e81dab41237aaecdbd283aa8d",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/32-recipient-idle.txt": {
+      "sha256": "17942a8ccfdd434f2fc3c028147f301066bd1d9e5ba33612830462a00291f28b",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/33-relay-inbox.txt": {
+      "sha256": "10a42f1af32f0ead96c4268b901e4b64f4e3aeee3b27acad1ad904dcc379e9f2",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/34-relay-ack-reply.txt": {
+      "sha256": "bd640b8b2732cc3e41e2056baf6bf72295de77ac33cecff48f50ac79e265e11e",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/35-relay-reply-errors.txt": {
+      "sha256": "84afd8c39b22e9eead7582e95ee46664a9359a6be0c3b16f13c24444fef8f4ad",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/36-relay-offline.txt": {
+      "sha256": "594e93ab7787d85f9580d894b021815c899347fe2b9548d1b50b8bfe0f61aa7b",
+      "status": "added"
+    },
     "docs/research/ux-journey/evidence/README.md": {
-      "sha256": "34055959a0b4ad8d1a8980325f3c1c637cbbb1971a01b59fe41e675335ac5ee7",
+      "sha256": "3afffc800e19b6af4c3f22294e4b08f12cb19310b6b6bf6e9c0ca8c45048f5af",
       "status": "added"
     },
     "docs/research/ux-journey/evidence/fixture-page.html.txt": {
