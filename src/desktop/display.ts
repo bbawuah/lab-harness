@@ -19,22 +19,27 @@ export function looksSecretValue(value: string): boolean {
   return false;
 }
 
+const graphemes = (value: string) => Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(value), s => s.segment);
+/** Typed value for rows and prompts; secret-looking values are masked. The count shows only when the value was cut. */
 export function maskedValue(value: string, element?: Element, max = 48): string {
-  const chars = Array.from(value);
-  if (isSecretElement(element) || looksSecretValue(value)) return `•••• (masked, ${chars.length} chars)`;
-  return '"' + oneLine(value, max) + '"' + (chars.length > max ? ` (${chars.length} chars)` : "");
+  const count = graphemes(value).length;
+  if (isSecretElement(element) || looksSecretValue(value)) return `•••• (masked, ${count} chars)`;
+  return '"' + oneLine(value, max) + '"' + (count > max ? ` (${count} chars)` : "");
 }
+/** Number of line breaks (each typed as Return) in a value. */
+export const lineBreaks = (value: string) => (value.match(/\r\n|[\r\n\u2028\u2029\u0085\u000b\u000c]/g) ?? []).length;
 
 /**
  * One display line from untrusted text: line breaks become a visible ⏎ (so a
  * window title or AX label cannot forge extra prompt lines, and typed newlines
- * are visible as Return), capped at `max` graphemes. Escaping of other
- * controls happens in the renderer.
+ * are visible as Return), capped at `max` graphemes, each grapheme capped at 8
+ * code points (stacked combining marks cannot paint over neighbouring lines).
+ * Escaping of other controls happens in the renderer.
  */
 export function oneLine(text: unknown, max = 60): string {
-  const value = typeof text === "string" ? text.replace(/\r\n|[\r\n\u2028\u2029\u0085\u000b\u000c]/g, "⏎") : String(text);
-  const parts = Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(value), s => s.segment);
-  return parts.length > max ? parts.slice(0, max).join("") + "…" : value;
+  const value = (typeof text === "string" ? text : String(text)).replace(/\r\n|[\r\n\u2028\u2029\u0085\u000b\u000c]/g, "⏎");
+  const parts = graphemes(value).map(g => { const c = Array.from(g); return c.length > 8 ? c.slice(0, 8).join("") : g; });
+  return parts.length > max ? parts.slice(0, max).join("") + "…" : parts.join("");
 }
 
 export type RowFacts = { app?: string; title?: string; element?: Element };

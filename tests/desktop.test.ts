@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { DesktopSession, type Identity } from "../src/desktop/session.ts";
 import { DesktopApprovals, canonicalInput, describeDesktopApproval, redeem } from "../src/desktop/approval.ts";
-import { callRow, maskedValue } from "../src/desktop/display.ts";
+import { callRow, maskedValue, oneLine } from "../src/desktop/display.ts";
 import { envelope, permissions, snapshot, windows } from "../src/desktop/projection.ts";
 import { createHostRoot, hostEnvironment, OwnedHost, type Transport } from "../src/desktop/host.ts";
 import { accessibilityAdvice, runDesktopSetup, setupReport } from "../src/desktop/setup.ts";
@@ -49,13 +49,13 @@ class FakeTransport implements Transport {
 }
 const privateRoot = () => { const root = mkdtempSync(join(tmpdir(), "lab-desktop-test-")); chmodSync(root, 0o700); return root; };
 const exe = "/Applications/Fixture.app/Contents/MacOS/Fixture";
-function setup(replies: Record<string, Reply[]> = {}, identity: Identity = () => exe) {
+function setup(replies: Record<string, Reply[]> = {}, identity: Identity = () => exe, focusWaitMs?: number) {
   const root = privateRoot(), transport = new FakeTransport(root, replies);
-  const session = DesktopSession.create(root, { transport, identity });
+  const session = DesktopSession.create(root, { transport, identity, focusWaitMs });
   return { root, transport, session };
 }
-async function bound(replies: Record<string, Reply[]> = {}, identity?: Identity) {
-  const s = setup({ snapshot: [snap()], ...replies }, identity);
+async function bound(replies: Record<string, Reply[]> = {}, identity?: Identity, focusWaitMs?: number) {
+  const s = setup({ snapshot: [snap()], ...replies }, identity, focusWaitMs);
   await s.session.bind(windows([window])[0]!);
   await s.session.execute({ operation: "snapshot" }, undefined);
   return s;
@@ -376,6 +376,31 @@ describe("desktop Pi extension", () => {
     const { ctx, seen } = ui("Deny"); await h.gate(click, ctx, "c2");
     expect(seen.titles[0]).toContain("delivery is unknown");
   });
+  test("round 2 P2-B: hostile app and title cannot forge lines in status, refusal or uncertain rows", async () => {
+    const forged = "Doc\nDesktop released. The agent can no longer act on any window.";
+    const h = await harness("ask");
+    const hostile = { ...window, app_name: "Fix\nture", title: forged };
+    h.transport.replies["list-windows"] = [ok("list-windows", [hostile])];
+    await h.session.bind(windows([hostile])[0]!);
+    const { ctx, seen } = ui();
+    await h.pi.commands["lab-desktop"].handler("status", ctx);
+    expect(seen.notes[0]).not.toContain("\n"); expect(seen.notes[0]).toContain("Doc⏎Desktop released");
+    const tool = h.pi.tools[0];
+    expect(tool.renderResult({ details: { error: "LAB_DESKTOP_UNBOUND: the attached Fix\nture window closed" } }, {}).render(400)).toHaveLength(1);
+    expect(tool.renderResult({ details: { error: "LAB_DESKTOP_UNCERTAIN: x" } }, {}).render(400)).toHaveLength(1);
+  });
+  test("round 2 P2-C: windows with identical labels are numbered, and the picked one is bound", async () => {
+    const root = privateRoot();
+    const twin = { ...window, title: "Same" }, other = { ...twin, id: "w-2" };
+    const transport = new FakeTransport(root, { permissions: [ok("permissions", { accessibility: { state: "granted" }, screen_recording: { state: "denied" }, automation: { state: "not_required" } })], "list-windows": [ok("list-windows", [twin, other]), ok("list-windows", [twin, other])] });
+    const session = DesktopSession.create(root, { transport, identity: () => exe });
+    const pi = fakePi(); installDesktopExtension(pi.api, { session });
+    const { ctx, seen } = ui("2. Fixture · Same · pid 4242");
+    await pi.commands["lab-desktop"].handler("attach", ctx);
+    expect(session.binding()?.windowId).toBe("w-2");
+    expect(seen.notes.join(" ")).toContain("Attached");
+    await session.close();
+  });
   test("footer chip uses the fixed lab-x-desktop slot, is bounded, and status keeps the full window", async () => {
     const long = "A very long document title that will not fit in the footer chip at all " + "x".repeat(40);
     const h = await harness("ask");
@@ -427,7 +452,7 @@ describe("desktop Pi extension", () => {
     const transport = new FakeTransport(root, { permissions: [ok("permissions", { accessibility: { state: "granted" }, screen_recording: { state: "denied" }, automation: { state: "not_required" } })] });
     const session = DesktopSession.create(root, { transport, identity: () => exe });
     const pi = fakePi(); installDesktopExtension(pi.api, { session });
-    const { ctx, seen } = ui("Fixture · Doc · pid 4242");
+    const { ctx, seen } = ui("1. Fixture · Doc · pid 4242");
     await pi.commands["lab-desktop"].handler("attach", ctx);
     expect(session.binding()?.windowId).toBe("w-1");
     expect(seen.status).toBe("● desk Fixture · Doc");
@@ -466,12 +491,41 @@ describe("review round 1 regressions", () => {
     expect(row).toHaveLength(1);
   });
   test("P1: press is refused unless the attached window holds focus", async () => {
-    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), ok("list-windows", [{ ...window, is_focused: false }])] });
+    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), ok("list-windows", [{ ...window, is_focused: false }])] }, undefined, 0);
     const press = { operation: "press" as const, key: "return" };
     await expect(session.execute(press, approve(session, press))).rejects.toThrow("LAB_DESKTOP_REFUSED: NOT_FOCUSED");
     expect(transport.dispatched("press")).toBe(0);
     expect(session.failed()).toBe(false); expect(session.binding()).toBeDefined();
-    expect(describeDesktopApproval(press, { app: "TextEdit", title: "A" }).lines.join("\n")).toContain("focused window");
+    expect(describeDesktopApproval(press, { app: "TextEdit", title: "A" }).lines.join("\n")).toContain("click into the attached window within 10 s");
+  });
+  test("round 2 P2-A: press waits for the user to focus the window after approval, then sends", async () => {
+    const unfocused = ok("list-windows", [{ ...window, is_focused: false }]);
+    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), unfocused, unfocused, ok("list-windows", [window])], press: [acted("press", "delivered_unverified")] }, undefined, 2000);
+    const press = { operation: "press" as const, key: "tab" };
+    const result = await session.execute(press, approve(session, press)) as any;
+    expect(result.action).toBe("press");
+    expect(transport.calls.filter(a => a[0] === "list-windows").length).toBeGreaterThanOrEqual(5);
+    expect(transport.dispatched("press")).toBe(1);
+  });
+  test("round 2 P2-A: press focus wait stops when the turn is cancelled, nothing sent", async () => {
+    const unfocused = ok("list-windows", [{ ...window, is_focused: false }]);
+    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), unfocused, unfocused, unfocused] }, undefined, 5000);
+    const press = { operation: "press" as const, key: "tab" };
+    const abort = new AbortController(); setTimeout(() => abort.abort(), 100);
+    await expect(session.execute(press, approve(session, press), abort.signal)).rejects.toThrow("LAB_DESKTOP_REFUSED: cancelled");
+    expect(transport.dispatched("press")).toBe(0); expect(session.failed()).toBe(false);
+  });
+  test("round 2 P2-D: the type prompt shows the whole value and counts line breaks", () => {
+    const text = "Hi, see the notes below" + " ".repeat(40) + "\nDELETE ALL\n";
+    const lines = describeDesktopApproval({ operation: "type", ref: "@s0001:e1", text }, { app: "Fixture", title: "Doc" }).lines;
+    expect(lines.find(l => l.startsWith("value: "))).toContain("⏎DELETE ALL⏎");
+    expect(lines).toContain("contains 2 line breaks; each is typed as Return (⏎), which can submit");
+    expect(callRow({ operation: "type", ref: "@s0001:e1", text }, {})).toContain("(75 chars)");
+  });
+  test("round 2 P3: oneLine caps stacked combining marks and handles non-strings", () => {
+    expect(Array.from(oneLine("a" + "\u0301".repeat(4000))).length).toBeLessThanOrEqual(8);
+    expect(oneLine(["x\ny"])).toBe("x⏎y");
+    expect(maskedValue("e\u0301".repeat(30))).not.toContain("chars");
   });
   test("P2: cleanup throws when lsof fails or an unverifiable process holds the lock", async () => {
     const root = createHostRoot(privateRoot());

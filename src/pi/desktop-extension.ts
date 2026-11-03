@@ -76,9 +76,11 @@ export function installDesktopExtension(pi: DesktopAPI, options: DesktopOptions 
       if (report.accessibility !== "granted") { indicator(ctx); return ctx.ui.notify(advice().join("\n"), "error"); }
       const list = (await s.listWindows(ctx.signal)).filter(w => w.accessible);
       if (!list.length) return ctx.ui.notify("No accessible windows to attach.", "info");
-      const labels = list.map(w => displaySafe(`${oneLine(w.app, 40)} · ${oneLine(w.title || "(untitled)")} · pid ${w.pid}`));
+      // Numbered labels are unique, so equal titles cannot bind a different window than the one picked.
+      const labels = list.map((w, i) => displaySafe(`${i + 1}. ${oneLine(w.app, 40)} · ${oneLine(w.title || "(untitled)")} · pid ${w.pid}`));
       const choice = await ctx.ui.select("Pick one window. LAB can act only inside it.", labels, { signal: ctx.signal });
-      const picked = choice === undefined ? undefined : list[labels.indexOf(choice)];
+      const index = choice === undefined ? -1 : labels.indexOf(choice);
+      const picked = index >= 0 && labels.lastIndexOf(choice!) === index ? list[index] : undefined;
       if (!picked) return ctx.ui.notify("Nothing attached.", "info");
       const b = await s.bind(picked, ctx.signal);
       indicator(ctx);
@@ -95,7 +97,7 @@ export function installDesktopExtension(pi: DesktopAPI, options: DesktopOptions 
   const rows = new Map<string, RowFacts>();
   // Keyed by binding too, so rows never show a previous window's app or title after re-attach.
   const facts = (input: any): RowFacts => {
-    let binding = ""; try { binding = s.bindingKey() ?? ""; } catch {}
+    let binding = ""; try { const b = s.binding(); binding = b ? `${s.bindingKey()}\0${b.app}\0${b.title}` : ""; } catch {}
     const key = binding + "\0" + canonicalInput(input);
     const cached = rows.get(key); if (cached) return cached;
     let found: RowFacts = {};
@@ -153,8 +155,8 @@ export function installDesktopExtension(pi: DesktopAPI, options: DesktopOptions 
       const failed = context?.isError === true || result?.isError === true || !!result?.details?.error;
       if (failed) {
         const error = errorText(result);
-        if (error.startsWith("LAB_DESKTOP_UNCERTAIN")) return component(`! Delivery unknown. Not retried. Look at ${s.binding()?.app ?? "the window"}, then tell the agent what happened.`);
-        return component("Desktop refused · " + error);
+        if (error.startsWith("LAB_DESKTOP_UNCERTAIN")) return component(`! Delivery unknown. Not retried. Look at ${oneLine(s.binding()?.app ?? "the window", 40)}, then tell the agent what happened.`);
+        return component("Desktop refused · " + oneLine(error, 400));
       }
       if (opts?.expanded) return component(JSON.stringify(result?.details ?? {}, null, 2));
       const d = result?.details;

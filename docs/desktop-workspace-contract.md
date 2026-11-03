@@ -40,14 +40,17 @@ A provider-neutral `lab_desktop` tool acts **only on the bound window**:
 | `click {ref}` | action | `click REF` |
 | `type {ref, text ≤ 400 chars}` | action | `type REF -- TEXT` (30 s budget; upstream waits 5 s + 30 ms per character) |
 | `scroll {ref, direction, amount 1–10}` | action | `scroll REF --direction D --amount N` |
-| `press {key}` | action | `press KEY --app=A --window-id=W`, posted to that pid; refused unless the bound window holds system focus |
+| `press {key}` | action | `press KEY --app=A --window-id=W`, posted to that pid; refused unless the bound window holds system focus within 10 s of approval |
 
 `press` accepts named keys only: `return escape tab space delete up down left right`. Modifiers are not
 accepted. Upstream posts keys to the app's process, which routes them to its focused window, so `--window-id`
 alone does not confine them to the bound window. LAB therefore refuses `press` (`NOT_FOCUSED`, nothing done)
-unless `list-windows` reports the bound window as the focused window, checked immediately before dispatch.
-A focus change in the milliseconds between that check and delivery is a residual race; the prompt says
-keys go to the app's focused window. Not exposed: `--headed`, `--force`, raw coordinates, mouse, drag, hover, `launch`, `close-app`,
+unless `list-windows` reports the bound window as the focused window. Focus is system-wide and the
+approval prompt runs in the terminal, so after Allow LAB polls for up to 10 s (every 250 ms, re-checking
+window id, pid and executable each time) for the user to click into the bound window; the last check is
+immediately before dispatch. Cancelling the turn stops the wait with nothing sent. A focus change in the
+milliseconds between that check and delivery is a residual race; the prompt says keys go to the app's
+focused window and asks the user to click into the attached window after allowing. Not exposed: `--headed`, `--force`, raw coordinates, mouse, drag, hover, `launch`, `close-app`,
 window management, clipboard, notifications, surfaces, `batch`, `find`, sessions/traces, screenshots and the
 cursor overlay. There is no arbitrary app, shell, file, eval or global keyboard parameter.
 
@@ -183,3 +186,12 @@ uncertain state, using #23's `displaySafe`/`wrapColumns` (imported, not forked) 
   and revoked afterwards. No real user app or window is listed or touched before then. Pi-level evidence uses
   the scripted 127.0.0.1 protocol fixture: no inference.
 - `bun run check` is green. An independent review closes the work, with P1s fixed.
+
+## Display of untrusted text (review round 2)
+
+- Every app name, title, role, label and error shown in the TUI (prompt, rows, chip, picker, attach notice,
+  `/lab-desktop status`, refusal and uncertain rows) goes through `oneLine`: line breaks become ⏎, each
+  grapheme keeps at most 8 code points, and the text is capped. Status keeps up to 400 graphemes of title.
+- The window picker numbers its entries, so two windows with the same label cannot bind the wrong one.
+- The `type` prompt shows the whole value (up to 400 characters, wrapped) unless it is masked, and adds
+  "contains N line breaks; each is typed as Return" when it has any. Rows still cap the value at 48.
