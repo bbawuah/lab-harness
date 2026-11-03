@@ -1,0 +1,43 @@
+███████ ███████████▄▄
+███████ ██████████████▄
+███████ ███████████████▄
+███████ ████████████████   LAB-HARNESS
+███████ ████████████████   Powered by Pi
+███████ ███████████████▀   Interactive coding workspace
+███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+███████ ███████ ▀▀▀▀
+███████ ███████ ███▄▄
+████████ ▀▀████ ██████▄
+███████▀    ▀██ ███████▄
+▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+███████████████ ████████
+███████████████ ███████▀
+███████████████ ██████▀
+ ▀█████████████ ███▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready: PROJECT/01a1a1ec-e305-7535-89ca--fae84e67419b
+ (pi-1f776b82b65b8d0b03fb7465380252e1b4b751b06e16ec3c9bfc6270576f5e51). Use /relay-peers.
+
+
+ S1 edit the notes file
+
+
+
+ edit notes.txt
+
+ -1 status: draft
+ +1 status: reviewed
+
+
+ FIXTURE S1 done; tool results seen by the fixture: #1 ok. Not a model response.
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑200 ↓20 1.3%/8.2k (auto)                                                   permission-fixture
+mode: ask · /lab-mode

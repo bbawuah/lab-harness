@@ -1,0 +1,43 @@
+
+ LAB_PERMISSION_DENIED: bash was not run (the user denied it). Do not retry it without asking
+ the user.
+
+ Took 1.1s
+
+
+ FIXTURE S2 done; tool results seen by the fixture: #1 LAB_PERMISSION_DENIED. Not a model
+ response.
+
+
+ S3 sign in on the page
+
+
+
+ Browser · snapshot · http://127.0.0.1:PORT
+ Browser · snapshot 4 refs · http://127.0.0.1:PORT (expand for page data)
+
+
+
+ Browser · fill @e4 textbox "Password" = •••• (masked, 15 chars) · http://127.0.0.1:PORT
+ Browser · filled @e4 textbox "Password" · http://127.0.0.1:PORT
+
+
+
+ Browser · snapshot · http://127.0.0.1:PORT
+ Browser · snapshot 4 refs · http://127.0.0.1:PORT (expand for page data)
+
+
+
+ Browser · fill @e3 textbox "Email" = "ada@example.test" · http://127.0.0.1:PORT
+ Browser · filled @e3 textbox "Email" · http://127.0.0.1:PORT
+
+
+ FIXTURE S3 done; tool results seen by the fixture: #1 ok #2 ok #3 ok #4 ok. Not a model
+ response.
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑900 ↓90 1.3%/8.2k (auto)                                                   permission-fixture
+mode: ask · /lab-mode
