@@ -1,0 +1,60 @@
+/**
+ * `lab --setup-desktop`: acquire/verify the pinned tool, then report the
+ * non-prompting permission status and name WHO macOS would grant. Never runs
+ * `permissions --request` or `--guide`, never opens System Settings, never
+ * lists or touches any app or window.
+ */
+import { createHostRoot, OwnedHost, type Transport } from "./host.ts";
+import { envelope, permissions, type PermissionState } from "./projection.ts";
+import { grantSubject, responsibleApp, type ResponsibleApp } from "./responsible.ts";
+import { desktopVersion, verifyDesktopRuntime } from "./runtime.ts";
+
+export type PermissionReport = { accessibility: PermissionState; screenRecording: PermissionState; automation: PermissionState };
+
+export async function checkPermissions(transport: Transport, signal?: AbortSignal): Promise<PermissionReport> {
+  const { code, stdout } = await transport.run(["permissions"], { signal, timeoutMs: 15000 });
+  const e = envelope(stdout, "permissions");
+  if (!e.ok) throw new Error("LAB_DESKTOP_PERMISSIONS: agent-desktop could not read permissions (" + e.error.code + ").");
+  if (code !== 0) throw new Error("LAB_DESKTOP_RESPONSE");
+  return permissions(e.data);
+}
+
+const settingsPath = "System Settings › Privacy & Security › Accessibility (named Device Control and Data Access on macOS 27 and later)";
+
+/** Plain-text lines shared by setup and the in-session denied path. */
+export function accessibilityAdvice(app: ResponsibleApp | undefined): string[] {
+  const { who, detail, reach } = grantSubject(app);
+  return [
+    `Accessibility is off for ${who}.`,
+    `  ${detail}`,
+    `  Turning it on lets ${reach} control other apps, not only LAB.`,
+    `  To grant it yourself: ${settingsPath} → add ${who} → turn it on.`,
+    `  LAB never changes this setting and never shows the macOS prompt.`,
+  ];
+}
+
+export function setupReport(report: PermissionReport, app: ResponsibleApp | undefined, cached: boolean): { lines: string[]; ready: boolean } {
+  const { who, reach } = grantSubject(app);
+  const lines = [`✓ agent-desktop ${desktopVersion} verified${cached ? " (cached)" : ""}`];
+  const ready = report.accessibility === "granted";
+  if (ready) lines.push(`✓ Accessibility: on for ${who}`, `  This lets ${reach} control other apps; LAB binds each session to one window you pick.`);
+  else lines.push("✗ " + accessibilityAdvice(app)[0]!, ...accessibilityAdvice(app).slice(1));
+  lines.push(report.screenRecording === "granted" ? "✓ Screen Recording: on (not used by LAB in this release)" : "– Screen Recording: off (optional; LAB does not take screenshots in this release)");
+  lines.push(ready ? "Next: lab --desktop, then /lab-desktop attach to pick one window." : "Next: grant it yourself, then run  lab --setup-desktop  again.");
+  return { lines, ready };
+}
+
+/** One owned root for the check; the host it starts is stopped and the root removed before returning. */
+export async function runDesktopSetup(cached: boolean, root = createHostRoot()): Promise<{ lines: string[]; ready: boolean; report: PermissionReport; app?: ResponsibleApp }> {
+  const { binary, helper } = verifyDesktopRuntime();
+  const host = new OwnedHost({ root, binary, helper });
+  let result: Awaited<ReturnType<typeof runDesktopSetup>> | undefined, failure: unknown;
+  try {
+    const report = await checkPermissions(host);
+    const app = responsibleApp();
+    result = { ...setupReport(report, app, cached), report, app };
+  } catch (error) { failure = error; }
+  await host.stopHosts(); host.remove();
+  if (failure) throw failure;
+  return result!;
+}
