@@ -20,8 +20,8 @@
   workspace-extension.ts
 
 
- Relay ready: lab-browser-project-aVgN/01a1a21d-3268-7241-afac--46ff57b6037c
- (pi-d294c36ee9682ea1cc96d119ff5dbbbea506d248dd1f2ea53d68d01cab6e27ef). Use /relay-peers.
+ Relay ready: lab-browser-project-<ID>/<RELAY_SESSION>
+ (<RELAY_PEER>). Use /relay-peers.
 
 
 

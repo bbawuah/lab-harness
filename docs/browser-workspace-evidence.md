@@ -92,7 +92,7 @@ These files replace the PR #23 set in `browser-evidence/`; per-file hashes are i
   ([normal-launch result](browser-evidence/native-result.json)).
 - `lab --setup-browser` ends with the next command
   ([setup output](browser-evidence/setup-browser.txt)).
-- Combined footer after merging #26 (clean `e31427a`, ask mode, live Pi in Herdr):
+- Combined footer after merging #26 (clean `e1afb41`, ask mode, live Pi in Herdr):
   at 120 columns `● mode: ask · /lab-mode ● web 127.0.0.1:<FIXTURE_PORT>`
   ([120](browser-evidence/tui-footer-120.txt)); at 40 columns the mode stays whole
   and only the web chip truncates: `● mode: ask · /lab-mode ● web 127.0.0...`

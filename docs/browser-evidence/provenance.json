@@ -49,15 +49,15 @@
       "source": "./lab --setup-browser --offline stdout (verified cache, nothing downloaded); home directory -> ~"
     },
     "tui-footer-40.txt": {
-      "sha256": "1da83db2d087ea5051ab12efe797d00cb8086a786aae1ca14689ece988bbe735",
-      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x66 pty = 40-column Pi pane, from clean e31427a (merge of #26 + this slice): mode chip whole, web chip truncated by Pi"
+      "sha256": "4d82c8dc09204a5b27d577afda84bc48244007faa4679da1135e4747e680c82a",
+      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x66 pty = 40-column Pi pane, from clean e1afb41 (merge of #26 + this slice, review round 3): mode chip whole, web chip truncated by Pi"
     },
     "tui-footer-120.txt": {
-      "sha256": "f3f31e94cb840951b4e947e24cc76cf32301add7325b2080c68e810e5dfacc72",
-      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x146 pty = 120-column Pi pane, from clean e31427a"
+      "sha256": "6a1071bfd8989212e62eadf6d587b7eddd19f8bf9f4fe8c11f1704c5481a480f",
+      "source": "Herdr pane.read, footer-only run (LAB_SMOKE_FOOTER=1, ask mode) in a 40x146 pty = 120-column Pi pane, from clean e1afb41"
     }
   },
-  "textSanitization": "pane.read text only; /private-prefixed owned project -> <OWNED_PROJECT>; loopback fixture ports -> <FIXTURE_PORT>/<OTHER_PORT> (wrap-aware); Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION> (none were visible in these captures); trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
+  "textSanitization": "pane.read text only; /private-prefixed owned project -> <OWNED_PROJECT>; loopback fixture ports -> <FIXTURE_PORT>/<OTHER_PORT> (wrap-aware); Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION> (none were visible in the pre-merge captures; see footerCapture for the footer frames); trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
   "history": "PR #23 published the first set (captured from clean 9ef79f1, Chrome 156.0.8078.74). This set replaces it for the browser UX slice; the native fixture script now runs two prompts (run, leave), so request counts and TUI text differ from #23.",
   "agentBrowser": "0.41.0",
   "chrome": "156.0.8078.80",
@@ -66,8 +66,8 @@
   "inferenceCalls": 0,
   "protocolFixtureRequests": 10,
   "footerCapture": {
-    "commit": "e31427a4cfccec1956760da47aa90788c8b98b7f",
-    "note": "Herdr's sidebar takes 26 columns, so terminal widths 66/146 give 40/120-column Pi panes. No protocol requests in footer-only runs.",
-    "textSanitization": "also replaces a truncated /private/var/folders project path with <OWNED_PROJECT>"
+    "commit": "e1afb418f091cd27dd3c381dcdc7df712e90b8eb",
+    "note": "Herdr's sidebar takes 26 columns, so terminal widths 66/146 give 40/120-column Pi panes; files are named by pane width. No protocol requests in footer-only runs.",
+    "textSanitization": "in addition to the set-wide rules: a truncated /var/folders project path -> <OWNED_PROJECT>; the fixture project suffix, Relay session id and peer id -> <ID>/<RELAY_SESSION>/<RELAY_PEER> (wrap-aware), so placeholder lines can exceed the pane width; the capture fails if any id or path fragment is left"
   }
 }

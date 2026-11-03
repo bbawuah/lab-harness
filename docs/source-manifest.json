@@ -605,7 +605,7 @@
       "status": "added"
     },
     "docs/browser-evidence/provenance.json": {
-      "sha256": "6c36f6f69b529e13c85203505f490468bfbf8da1fc25c2b1da5ec4945becd8fe",
+      "sha256": "b7bbe62350caff4b2bba846290a95634538d43d55cd5fec6354ffb9e6873da73",
       "status": "added"
     },
     "docs/browser-evidence/session-result.json": {
@@ -621,11 +621,11 @@
       "status": "added"
     },
     "docs/browser-evidence/tui-footer-120.txt": {
-      "sha256": "f3f31e94cb840951b4e947e24cc76cf32301add7325b2080c68e810e5dfacc72",
+      "sha256": "6a1071bfd8989212e62eadf6d587b7eddd19f8bf9f4fe8c11f1704c5481a480f",
       "status": "added"
     },
     "docs/browser-evidence/tui-footer-40.txt": {
-      "sha256": "1da83db2d087ea5051ab12efe797d00cb8086a786aae1ca14689ece988bbe735",
+      "sha256": "4d82c8dc09204a5b27d577afda84bc48244007faa4679da1135e4747e680c82a",
       "status": "added"
     },
     "docs/browser-evidence/tui-reload.txt": {
@@ -653,7 +653,7 @@
       "status": "added"
     },
     "docs/browser-workspace-evidence.md": {
-      "sha256": "aa0b86c843453fd328d645647308ffafbb08b43583a8a9002a277f42b1592dae",
+      "sha256": "b61372211601ea604ee2738fdcfdba0419741b40f2d1e473d10bc4fc018d5d08",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1801,7 +1801,7 @@
       "status": "added"
     },
     "scripts/browser-native-smoke.ts": {
-      "sha256": "f63a0984a5a12530a3a73f69cf11c9e4ec5c9e2426ff2a7f2090e1c714d1923a",
+      "sha256": "09570cfe477418126e25e546099598f2d2170fcd85b72db2eecc413875841509",
       "status": "added"
     },
     "scripts/browser-smoke.ts": {
@@ -1963,7 +1963,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "ed89824ad430f0423338e2baa6cb2abd4d4fb314484eac7d16a322f168bf3f38",
+      "sha256": "0ee5b90313c6da45e1bb2de234856e6f0d7f2ff59cfb7821a17ef249c6a89797",
       "status": "added"
     },
     "src/pi/commands.ts": {

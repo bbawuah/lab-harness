@@ -10,10 +10,8 @@ Controlled LAB tasks: unavailable
 
 
  Relay ready:
- lab-browser-project-kuI5/01a1a21d-24ef
- -779c-a784--c16e02a93d8c
- (pi-c24adb674b4f1fc6ea89a0e9b610a92899
- 26b1d9cd0d4564106b3b6c25ea5fd4). Use
+ lab-browser-project-<ID>/<RELAY_SESSION>
+ (<RELAY_PEER>). Use
  /relay-peers.
 
 
