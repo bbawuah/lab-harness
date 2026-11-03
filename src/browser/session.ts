@@ -11,7 +11,7 @@ export class BrowserFailure extends Error { constructor(message: string, readonl
 export type BrowserInput = { operation: 'snapshot'|'navigate'|'fill'|'click'|'read'; url?: string; ref?: string; text?: string };
 export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown };
 export class BrowserSession {
-  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Set<string>(); private closed = false; private failedInMemory = false;
+  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Map<string,{role:string;name:string}>(); private generation = 0; private closed = false; private failedInMemory = false;
   // UX state (docs/browser-ux-contract.md). issued = every ref ever returned, so a retired ref reads as stale, not unknown.
   private issued = new Set<string>(); private actions = 0; private last?: string; private pendingChange = false; private lastFailure?: BrowserFailureInfo;
   constructor(descriptor: BrowserDescriptor) {
@@ -64,7 +64,11 @@ export class BrowserSession {
     insist(Array.isArray(tabs.data.tabs)&&tabs.data.tabs.length===1,'LAB_BROWSER_NEW_TARGET');
     browserURL(tabs.data.tabs[0].url,this.descriptor.origin);
   }
-  execute(input:BrowserInput,signal?:AbortSignal):Promise<unknown> {
+  /**
+   * `expected`: the element shown at approval (role, name, snapshot generation). A mismatch at run time,
+   * or null (the ref was unknown at approval), is a stale ref. undefined skips the binding (direct callers).
+   */
+  execute(input:BrowserInput,signal?:AbortSignal,expected?:{role:string;name:string;generation?:number}|null):Promise<unknown> {
     const op=input?.operation;const ref=typeof input?.ref==='string'?input.ref:undefined;
     let dispatched=false;
     const fail=(e:unknown,phase:'pre'|'action',cleanup:BrowserFailureInfo['cleanup'],staleKind?:'stale'|'unknown')=>{const message=e instanceof Error?e.message:String(e);
@@ -80,7 +84,10 @@ export class BrowserSession {
       else if(op==='navigate'){insist(Object.keys(input).length===2&&typeof input.url==='string','LAB_BROWSER_INPUT');tool='agent_browser_open';args={url:browserURL(input.url,this.descriptor.origin).href};}
       else {insist(['fill','click','read'].includes(op)&&typeof input.ref==='string'&&/^@e\d+$/.test(input.ref),'LAB_BROWSER_INPUT');
         insist(Object.keys(input).length===(op==='fill'?3:2),'LAB_BROWSER_INPUT');
-        if(!this.refs.has(input.ref)){const kind=this.issued.has(input.ref)?'stale':'unknown';throw fail(new Error('LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.'),'pre','none',kind);}tool=op==='read'?'agent_browser_get_text':'agent_browser_'+op;args={selector:input.ref};
+        const current=this.refs.get(input.ref);
+        // Not in the latest snapshot: stale if ever issued, else unknown. Present but not the element approved (#26 binding): stale.
+        const bound=expected===undefined||(expected!==null&&!!current&&current.role===expected.role&&current.name===expected.name&&(expected.generation===undefined||expected.generation===this.generation));
+        if(!current||!bound){const kind=current||this.issued.has(input.ref)?'stale':'unknown';throw fail(new Error('LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.'),'pre','none',kind);}tool=op==='read'?'agent_browser_get_text':'agent_browser_'+op;args={selector:input.ref};
         if(op==='fill'){insist(typeof input.text==='string'&&Buffer.byteLength(input.text)<=4000&&!input.text.includes('\0'),'LAB_BROWSER_INPUT');args={...args,text:input.text};}
       }
      }catch(e){throw e instanceof BrowserFailure?e:fail(e,'pre',this.failed()?(this.closed?'done':'retained'):'none');}
@@ -90,7 +97,7 @@ export class BrowserSession {
         await this.scope(signal);if(op!=='snapshot'&&op!=='read')this.refs.clear();
         dispatched=true;const raw=await this.call(tool,args,signal);const {result,lifecycle}=project(raw,op);this.identity({lifecycle});
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
-        if(op==='snapshot'){const refs=result.result.refs as Record<string,{role:string;name:string}>;this.refs=new Set(Object.keys(refs).map(r=>'@'+r));for(const r of this.refs)this.issued.add(r);}
+        if(op==='snapshot'){this.generation++;this.refs=new Map(Object.entries(result.result.refs as Record<string,{role:string;name:string}>).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));for(const r of this.refs.keys())this.issued.add(r);}
         this.actions++;this.last=op+(input.ref?' '+input.ref:'');this.saveActivity();
         let verifies=false;if(mutating(op))this.pendingChange=true;else if(this.pendingChange){this.pendingChange=false;verifies=true;}
         return {...result,verifiedOrigin:this.descriptor.origin,operation:op,...(input.ref?{ref:input.ref}:{}),...(verifies?{verifies:true}:{})};
@@ -99,6 +106,8 @@ export class BrowserSession {
   }
   /** Display-only counter; written to a fresh temp file then renamed, so a planted link is replaced, never followed. */
   private saveActivity(){const p=join(this.descriptor.root,'activity.json'),t=p+'.'+process.pid+'.tmp';try{writeFileSync(t,JSON.stringify({actions:this.actions,last:this.last}),{flag:'wx',mode:0o600});renameSync(t,p);}catch{try{rmSync(t,{force:true});}catch{}}}
+  /** Role/name of a ref from the latest snapshot (display only; page text is untrusted). */
+  element(ref:unknown):{role:string;name:string;generation:number}|undefined {const e=typeof ref==='string'?this.refs.get(ref):undefined;return e?{...e,generation:this.generation}:undefined;}
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
   /** Owned daemon liveness from its pidfile in the private socket dir (signal 0 only). */
   private daemonAlive() {try{const pid=Number(readFileSync(join(this.descriptor.root,'s',this.descriptor.session+'.pid'),'utf8'));if(!Number.isInteger(pid)||pid<=1)return false;process.kill(pid,0);return true;}catch{return false;}}

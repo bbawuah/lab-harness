@@ -301,6 +301,10 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       const runRef = provisionWorkspaceRelayRun({ stateRoot: state, installRoot: source, projectBinding: bindProjectRoot(project), runRoot });
       writeFileSync(join(runAgent, "models.json"), JSON.stringify({ providers: { "lab-fixture": { baseUrl: endpoint, api: "openai-completions", apiKey: "fixture-public-token", models: [{ id: "fixture-relay", reasoning: false, input: ["text"], contextWindow: 131072, maxTokens: 1024, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }] } } }), { mode: 0o600 });
       writeFileSync(join(runAgent, "settings.json"), JSON.stringify({ compaction: { enabled: false }, cacheWarming: "off", retry: { enabled: false } }), { mode: 0o600 });
+      // json mode has no approval UI, so the LAB gate would deny relay_send (fail closed).
+      // This run opts into auto explicitly, the equivalent of `lab --mode auto`.
+      const permissionState = join(runRoot, "permission-mode.json");
+      writeFileSync(permissionState, JSON.stringify({ mode: "auto" }) + "\n", { mode: 0o600 });
       // Invoke the actual registered operator handler from a native streaming
       // event. Pi must defer its custom result rather than queue a steering
       // message and generate another provider request. The proxy forwards every
@@ -309,7 +313,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       streamingProbeMarker = slashDuringStream ? join(runRoot, "slash-complete") : "";
       writeFileSync(streamingProbe, `import workspace from ${JSON.stringify(join(source, "src/pi/workspace-extension.ts"))};\nimport { writeFileSync } from "node:fs";\nexport default function(pi) {\n let peers, fired = false;\n const proxy = new Proxy(pi, { get(target, key) {\n  if (key === "registerCommand") return (name, command) => { if (name === "relay-peers") peers = command; return target.registerCommand(name, command); };\n  const value = target[key]; return typeof value === "function" ? value.bind(target) : value;\n } });\n workspace(proxy);\n pi.on("message_update", async (_event, ctx) => { if (!fired) { fired = true; await peers.handler("", ctx); writeFileSync(${JSON.stringify(streamingProbeMarker)}, "complete"); } });\n}\n`, { mode: 0o600 });
       const pi = Bun.spawn([...verifyPiRuntime().command, "--offline", "--no-extensions", "--no-mcp", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-context-files", "--mode", "json", "--provider", "lab-fixture", "--model", "fixture-relay", "--session-dir", sessionDir, ...(sessionFile ? ["--session", sessionFile] : []), "-e", slashDuringStream ? streamingProbe : join(source, "src/pi/workspace-extension.ts"), "-p", "Send the explicit fixture message once."], {
-        cwd: project, env: { ...env, HOME: join(runRoot, "home"), PI_CODING_AGENT_DIR: runAgent, PI_OFFLINE: "1", LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_USER_HOME: home, LAB_WORKSPACE_ROOT: project, LAB_WORKSPACE_BINDING: JSON.stringify(bindProjectRoot(project)), LAB_INSTALL_ROOT: source, LAB_RELAY_RUN_REF: runRef }, stdout: "pipe", stderr: "pipe",
+        cwd: project, env: { ...env, HOME: join(runRoot, "home"), PI_CODING_AGENT_DIR: runAgent, PI_OFFLINE: "1", LAB_WORKSPACE_BUN: process.execPath, LAB_WORKSPACE_USER_HOME: home, LAB_WORKSPACE_ROOT: project, LAB_WORKSPACE_BINDING: JSON.stringify(bindProjectRoot(project)), LAB_INSTALL_ROOT: source, LAB_RELAY_RUN_REF: runRef, LAB_PERMISSION_STATE: permissionState }, stdout: "pipe", stderr: "pipe",
       });
       const timer = setTimeout(() => pi.kill("SIGTERM"), 20000);
       const [output, errors, code] = await Promise.all([new Response(pi.stdout).text(), new Response(pi.stderr).text(), pi.exited]);

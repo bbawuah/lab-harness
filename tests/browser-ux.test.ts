@@ -9,7 +9,7 @@ import { setupSummary } from '../src/browser/runtime.ts';
 import { installBrowserExtension } from '../src/pi/browser-extension.ts';
 import { indicatorSlots, indicatorText, setIndicator } from '../src/pi/status-indicator.ts';
 import { fitColumns } from '../src/pi/display.ts';
-import { shellOptions, shellUsage, shellHelp } from '../src/pi/commands.ts';
+import { modeIndicator } from '../src/pi/permission-extension.ts';
 
 const widths = [40, 80, 120];
 const hostile = '\u001b[31m‮⁦界👨‍👩‍👧\u0007\ud800é';
@@ -28,7 +28,7 @@ function scripted(plan: Plan = {}) {
   const root = mkdtempSync(join(tmpdir(), 'lab-browser-ux-')); for (const n of ['s', 't']) mkdirSync(join(root, n), { mode: 0o700 });
   const sent: string[] = [];
   const s: any = Object.create(BrowserSession.prototype);
-  Object.assign(s, { descriptor: { root, session: 'lab-' + 'c'.repeat(24), origin: ORIGIN, launchHash: 'h' }, queue: Promise.resolve(), refs: new Set(), issued: new Set(), actions: 0, pendingChange: false, closed: false, binary: '/nonexistent' });
+  Object.assign(s, { descriptor: { root, session: 'lab-' + 'c'.repeat(24), origin: ORIGIN, launchHash: 'h' }, queue: Promise.resolve(), refs: new Map(), generation: 0, issued: new Set(), actions: 0, pendingChange: false, closed: false, binary: '/nonexistent' });
   s.daemonAlive = () => !plan.daemonDead;
   s.run = async (args: string[]) => {
     if (args[1] === 'close') { sent.push('close'); if (plan.closeFails) throw new Error('LAB_BROWSER_TIMEOUT'); return JSON.stringify({ success: true }); }
@@ -207,7 +207,7 @@ test('footer: mode sorts first and is never cut; web chip is cut next, desktop f
     { state: 'closed', origin: ORIGIN, failure: { code: 'LAB_BROWSER_SESSION_LOST', operation: 'snapshot', phase: 'action', cleanup: 'done' } },
     { state: 'cleanup-failed', origin: ORIGIN }];
   // Longest mode text #26 sets (mode: <name> · /lab-mode); any mode text up to the width survives intact.
-  for (const mode of ['mode: ask · /lab-mode', 'mode: read-only · /lab-mode']) for (const v of webStates) for (const width of [...widths, ...[0, 1, 2, 3, 4].map(n => Bun.stringWidth(mode) + n)]) {
+  for (const mode of (['ask', 'edits', 'read-only', 'auto'] as const).map(m => indicatorText(modeIndicator(m)))) for (const v of webStates) for (const width of [...widths, ...[0, 1, 2, 3, 4].map(n => Bun.stringWidth(mode) + n)]) {
     const statuses = new Map<string, string>();
     const ui = { setStatus: (k: string, t: string | undefined) => { if (t === undefined) statuses.delete(k); else statuses.set(k, t); } };
     ui.setStatus(indicatorSlots.mode, mode); setIndicator(ui, indicatorSlots.web, chip(v)); setIndicator(ui, indicatorSlots.desktop, { glyph: '●', label: 'desktop', detail: 'Finder' });
@@ -221,8 +221,8 @@ test('footer: mode sorts first and is never cut; web chip is cut next, desktop f
     else expect(line).not.toContain('desktop'); // web cut means desktop already gone
   }
   // 40 columns, the documented worst case: mode whole, chip glyph + label still visible.
-  const at40 = piFooter(new Map([[indicatorSlots.mode, 'mode: read-only · /lab-mode'], [indicatorSlots.web, indicatorText(chip(webStates[2]))]]), 40);
-  expect(at40).toBe('mode: read-only · /lab-mode ○ web clo...');
+  const at40 = piFooter(new Map([[indicatorSlots.mode, indicatorText(modeIndicator('read-only'))], [indicatorSlots.web, indicatorText(chip(webStates[2]))]]), 40);
+  expect(at40).toBe('● mode: read-only · /lab-mode ○ web c...');
 });
 
 test('after reload the closed chip and status still say why the browser closed', async () => {
@@ -241,13 +241,8 @@ test('after reload the closed chip and status still say why the browser closed',
   } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('help Usage lists every option, the shell launcher matches it, and setup ends with Next', () => {
-  const usage = shellUsage();
-  for (const [option] of shellOptions) expect(usage).toContain('[' + option + ']');
-  expect(shellHelp().split('\n')[1]).toBe(usage);
-  expect(readFileSync(resolve(import.meta.dir, '../lab'), 'utf8')).toContain(`printf '${usage}\\n'`);
-  const r = spawnSync('/bin/sh', [resolve(import.meta.dir, '../lab'), '--not-an-option'], { env: { PATH: '/usr/bin:/bin', HOME: tmpdir() }, encoding: 'utf8' });
-  expect(r.status).toBe(1); expect(r.stderr.trim()).toBe(usage);
+// Usage/F17 is owned and tested by #26 (tests/workspace-help.test.ts).
+test('setup ends with the next command', () => {
   for (const found of ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', undefined]) {
     const lines = setupSummary('0.41.0', false, found).split('\n');
     expect(lines[0]).toBe('✓ agent-browser 0.41.0 verified · no browser downloaded'); expect(lines.at(-1)).toStartWith('Next:  lab --browser ');
@@ -350,6 +345,24 @@ test('close: a pidfile naming a dead pid gets no command; an unreadable pidfile 
 test('a spawn failure is not described as a daemon exit', () => {
   const text = recoveryText({ code: 'LAB_BROWSER_SPAWN', operation: 'click', ref: '@e1', phase: 'action', cleanup: 'done', dispatched: true }, ORIGIN);
   expect(text).toStartWith('Browser stopped: the browser tool could not start; page state is unknown.'); expect(text).not.toContain('daemon');
+});
+
+test('a ref re-pointed after approval (#26 binding) is stale, never sent; unknown at approval and never issued is unknown', async () => {
+  const { s, sent, done } = scripted();
+  try {
+    await s.execute({ operation: 'snapshot' });
+    const approved = s.element('@e2')!; expect(approved).toMatchObject({ role: 'button', name: 'Save' });
+    await s.execute({ operation: 'snapshot' }); // a snapshot queued earlier in the same batch: new generation
+    const before = sent.length;
+    const moved = await failureOf(s.execute({ operation: 'click', ref: '@e2' }, undefined, approved));
+    expect(moved).toMatchObject({ code: 'LAB_BROWSER_STALE_REF', phase: 'pre', staleKind: 'stale' }); expect(sent.length).toBe(before);
+    expect(recoveryText(moved, ORIGIN)).toContain('Nothing was sent');
+    expect(await failureOf(s.execute({ operation: 'click', ref: '@e9' }, undefined, null))).toMatchObject({ code: 'LAB_BROWSER_STALE_REF', staleKind: 'unknown' });
+    expect(await failureOf(s.execute({ operation: 'click', ref: '@e1' }, undefined, null))).toMatchObject({ code: 'LAB_BROWSER_STALE_REF', staleKind: 'stale' });
+    expect(sent.length).toBe(before); expect(s.view().state).toBe('active');
+    await s.execute({ operation: 'click', ref: '@e2' }, undefined, s.element('@e2')); // current element: runs
+    expect(sent).toContain('agent_browser_click');
+  } finally { done(); }
 });
 
 test('orphan reap signals only a live process proven to use the owned profile', async () => {

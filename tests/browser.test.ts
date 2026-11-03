@@ -12,7 +12,7 @@ const cols=(row:string)=>Bun.stringWidth(row);
 // Builds a session object without the pinned binary; only private transport is faked.
 function fakeSession(run:(args:string[])=>Promise<string>) {
  const root=mkdtempSync(join(tmpdir(),'lab-browser-test-'));for(const n of ['s','t'])mkdirSync(join(root,n),{mode:0o700});
- const s:any=Object.create(BrowserSession.prototype);Object.assign(s,{descriptor:{root,session:'lab-'+'a'.repeat(24),origin:'http://example.test',launchHash:'h'},queue:Promise.resolve(),refs:new Set(),issued:new Set(),actions:0,pendingChange:false,closed:false,binary:'/nonexistent'});
+ const s:any=Object.create(BrowserSession.prototype);Object.assign(s,{descriptor:{root,session:'lab-'+'a'.repeat(24),origin:'http://example.test',launchHash:'h'},queue:Promise.resolve(),refs:new Map(),generation:0,issued:new Set(),actions:0,pendingChange:false,closed:false,binary:'/nonexistent'});
  s.run=run;s.daemonAlive=()=>true;return {s,root};
 }
 function response(data:any,content?:string) {const r={_boundary:{nonce:'a'.repeat(32),origin:'http://example.test/'},data:{...data,lifecycle:{reused:true}},error:null,success:true};return JSON.stringify({_meta:{agentBrowserVersion:'0.41.0'},content:[{type:'text',text:content??JSON.stringify(r)}],isError:false,structuredContent:{exitCode:0,response:r,stdout:JSON.stringify(r),stderr:''}});}
@@ -60,7 +60,7 @@ test('lifecycle guard absorbs startup/cleanup signals, defers to Herdr, and rele
 test('renderer wraps by terminal columns and escapes hostile controls in calls, results and errors',()=>{
  const saved=process.env.LAB_BROWSER_REF;const tools:any[]=[];const root=mkdtempSync(join(tmpdir(),'lab-browser-ref-'));
  const ref=join(root,'ref.json');writeFileSync(ref,JSON.stringify({root,session:'lab-'+'b'.repeat(24),origin:'http://example.test'}),{mode:0o600});process.env.LAB_BROWSER_REF=ref;
- const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({status(){return'';},close:async()=>{},execute:async()=>({})});
+ const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({descriptor:{origin:'http://example.test'},element:()=>undefined,status(){return'';},close:async()=>{},execute:async()=>({})});
  try{
   installBrowserExtension({on(){},registerCommand(){},registerTool(t:any){tools.push(t);},sendMessage(){}} as any);const tool=tools[0];
   const hostile='\"✅⭐⌚🀄🇳🇱1️⃣❤️👨‍👩‍👧'+'界'.repeat(7)+'\u202e\u2066x\u001b[31m\u0007e\u0301👍🏽\ud800';
@@ -74,4 +74,37 @@ test('renderer wraps by terminal columns and escapes hostile controls in calls, 
   expect(err).toContain('Browser refused');expect(err).toContain('Validation failed');expect(err).not.toContain('completed');
   expect(tool.renderResult({details:{verifiedOrigin:'x'}},{}).render(80).join('')).toContain('completed');
  }finally{(BrowserSession as any).rebind=orig;if(saved)process.env.LAB_BROWSER_REF=saved;else delete process.env.LAB_BROWSER_REF;rmSync(root,{recursive:true,force:true});}
+});
+
+test('review r2 P2-3: a run is bound to the element approved for its ref; a newer snapshot makes it stale',async()=>{
+ let calls=0;const {s,root}=fakeSession(async()=>{calls++;return '';});
+ try {
+  s.refs=new Map([['@e4',{role:'textbox',name:'Search'}]]);
+  await expect(s.execute({operation:'fill',ref:'@e4',text:'x'},undefined,{role:'textbox',name:'Email'})).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  expect(calls).toBe(0);
+ } finally {rmSync(root,{recursive:true,force:true});}
+});
+
+test('review r3: unknown-at-approval (null) and a newer snapshot generation are stale even with the same role/name',async()=>{
+ let calls=0;const {s,root}=fakeSession(async()=>{calls++;return '';});
+ try {
+  s.refs=new Map([['@e3',{role:'button',name:'Archive'}]]);s.generation=2;
+  await expect(s.execute({operation:'click',ref:'@e3'},undefined,null)).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  await expect(s.execute({operation:'click',ref:'@e3'},undefined,{role:'button',name:'Archive',generation:1})).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  expect(s.element('@e3')).toEqual({role:'button',name:'Archive',generation:2});
+  expect(calls).toBe(0);
+ } finally {rmSync(root,{recursive:true,force:true});}
+});
+
+test('review r4: the extension binds each run to the element read at execute start (null when unknown)',async()=>{
+ const saved=process.env.LAB_BROWSER_REF;const tools:any[]=[];const root=mkdtempSync(join(tmpdir(),'lab-browser-ref-'));
+ const ref=join(root,'ref.json');writeFileSync(ref,JSON.stringify({root,session:'lab-'+'c'.repeat(24),origin:'http://example.test'}),{mode:0o600});process.env.LAB_BROWSER_REF=ref;
+ const seen:any[]=[];const known={role:'button',name:'Save',generation:1};
+ const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({descriptor:{origin:'http://example.test'},element:(r:string)=>r==='@e1'?known:undefined,status(){return'';},close:async()=>{},execute:async(_i:any,_s:any,expected:any)=>{seen.push(expected);return {};}});
+ try{
+  installBrowserExtension({on(){},registerCommand(){},registerTool(t:any){tools.push(t);},sendMessage(){}} as any);
+  await tools[0].execute('c1',{operation:'click',ref:'@e1'});
+  await tools[0].execute('c2',{operation:'click',ref:'@e9'});
+  expect(seen).toEqual([known,null]);
+ }finally{(BrowserSession as any).rebind=orig;if(saved===undefined)delete process.env.LAB_BROWSER_REF;else process.env.LAB_BROWSER_REF=saved;rmSync(root,{recursive:true,force:true});}
 });

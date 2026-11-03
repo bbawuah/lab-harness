@@ -9,6 +9,7 @@ export const shellOptions = [
   ["--setup-browser", "Explicitly acquire the optional pinned browser control tool; --offline requires cache."],
   ["--browser URL", "Start an owned ephemeral browser bound to this HTTP(S) origin."],
   ["--browser-executable PATH", "Use an existing approved same-OS browser executable."],
+  ["--mode MODE", "Permission mode: ask (default), edits, read-only or auto. Change it in Pi with /lab-mode."],
   ["--help", "Show this help without starting Pi or a model request."],
 ] as const;
 export const workspaceCommands = [
@@ -24,6 +25,7 @@ export function workspaceHelp(): string {
     ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
     "/lab-appearance — Preview light/dark/terminal mode, colors and spacing; Apply/Cancel/Reset.",
     "/lab-browser status|close — Inspect or close this run’s owned browser; start with --browser URL.",
+    "/lab-mode [ask|edits|read-only|auto|next] — Show or change the permission mode (footer shows it).",
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",
@@ -41,6 +43,8 @@ export function shellHelp(): string {
     "Run lab from a project; from home, choose an existing project folder.",
     "Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.",
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),
+    "Permission modes: ask confirms every edit, write, shell command, browser change and Relay send; edits",
+    "auto-approves file edits inside the project; read-only refuses changes; auto asks nothing (explicit opt-in).",
     "Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.",
     "You provide the model server or service. Setup sends no model prompt and installs no weights.",
     "In Pi: /lab-help for LAB search/skills/Relay commands; /exit to leave.",

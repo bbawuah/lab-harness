@@ -1,0 +1,29 @@
+
+
+ S6 do it all
+
+
+
+ edit notes.txt
+
+ -1 status: approved
+ +1 status: auto
+
+
+
+ $ echo auto > auto.txt
+
+ (no output)
+
+ Took 0.0s
+
+
+ FIXTURE S6 done; tool results seen by the fixture:
+ #1 ok #2 ok. Not a model response.
+
+──────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────
+$PROJECT
+↑300 ↓30 1.3%/8.2k (auto)           permission-fixture
+! mode: auto · /lab-mode

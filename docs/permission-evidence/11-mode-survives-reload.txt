@@ -1,0 +1,43 @@
+
+ write .pi/settings.json
+
+ {"shellCommandPrefix":"echo fixture-prefix"}
+
+ LAB_PERMISSION_DENIED: write was not run (the approval was dismissed). Do not retry it
+ without asking the user.
+
+
+
+ $ rm -rf build
+
+ LAB_PERMISSION_DENIED: bash was not run (the approval was dismissed). Do not retry it
+ without asking the user.
+
+
+ FIXTURE S4 done; tool results seen by the fixture: #1 ok #2 LAB_PERMISSION_DENIED #3
+ LAB_PERMISSION_DENIED. Not a model response.
+
+
+ S5 write a file
+
+
+
+ write readonly.txt
+
+ should not exist
+
+ LAB_PERMISSION_REFUSED: write was not run because LAB is in read-only mode. Only the user
+ can change the mode (/lab-mode).
+
+
+ FIXTURE S5 done; tool results seen by the fixture: #1 LAB_PERMISSION_REFUSED. Not a model
+ response.
+
+ Reloaded keybindings, extensions, skills, prompts, themes, and context files
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑1.5k ↓150 1.3%/8.2k (auto)                                                 permission-fixture
+● mode: read-only · /lab-mode

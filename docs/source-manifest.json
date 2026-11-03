@@ -172,6 +172,25 @@
     "docs/media/terminal-lifecycle.txt",
     "docs/media/terminal-output.json",
     "docs/media/test-operator-accept.json",
+    "docs/permission-evidence/01-ask-edit-prompt.txt",
+    "docs/permission-evidence/02-ask-edit-allowed.txt",
+    "docs/permission-evidence/03-ask-bash-prompt.txt",
+    "docs/permission-evidence/04-ask-bash-denied.txt",
+    "docs/permission-evidence/05-browser-fill-password-prompt.txt",
+    "docs/permission-evidence/06-browser-fill-email-prompt.txt",
+    "docs/permission-evidence/07-browser-rows.txt",
+    "docs/permission-evidence/08-edits-mode-bash-still-asks.txt",
+    "docs/permission-evidence/08a-edits-mode-pi-settings-asks.txt",
+    "docs/permission-evidence/09-edits-mode-result.txt",
+    "docs/permission-evidence/10-read-only-refusal.txt",
+    "docs/permission-evidence/11-mode-survives-reload.txt",
+    "docs/permission-evidence/11b-auto-confirm.txt",
+    "docs/permission-evidence/12-auto-mode.txt",
+    "docs/permission-evidence/13-narrow-hostile-bash-prompt.txt",
+    "docs/permission-evidence/14-narrow-deny-with-note.txt",
+    "docs/permission-evidence/provenance.json",
+    "docs/permission-evidence/result.json",
+    "docs/permission-modes-contract.md",
     "docs/pi-header.md",
     "docs/pi-runtime.md",
     "docs/pi-seam.md",
@@ -351,6 +370,7 @@
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
     "scripts/inventory-skills.ts",
+    "scripts/permission-actual.ts",
     "scripts/pi/acquire.ts",
     "scripts/pi/derive-terminal-mark.ts",
     "scripts/pi/render-header.ts",
@@ -387,6 +407,8 @@
     "src/pi/commands.ts",
     "src/pi/display.ts",
     "src/pi/header.ts",
+    "src/pi/permission-extension.ts",
+    "src/pi/permission.ts",
     "src/pi/relay-extension.ts",
     "src/pi/status-indicator.ts",
     "src/pi/terminal-mark.json",
@@ -425,6 +447,7 @@
     "tests/herdr.test.ts",
     "tests/install.test.ts",
     "tests/ledger.test.ts",
+    "tests/permission.test.ts",
     "tests/pi-acquire.test.ts",
     "tests/pi-advisory.test.ts",
     "tests/pi-appearance-actual.test.ts",
@@ -483,7 +506,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "b4328a9a569a99404b0758263871614f8c8d97b99ab53c7fa38b7fe3dc49591c",
+      "sha256": "5371ee72b79c861167525aa6ba4c6b6a5032d666593e7c81d17dfa3a7857207e",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -564,7 +587,7 @@
       "status": "added"
     },
     "docs/architecture.md": {
-      "sha256": "c70ef88afaadc2f607729dcd10a2704ce47911eacfe11fa7e1e57c366ee86dfb",
+      "sha256": "5723c47ae4531a8b692c8de3edabf827168e1b03ee10d104723ccdbda58584b3",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -1003,6 +1026,82 @@
       "sha256": "22418208aaff9a25c437a23b9a1972797af9e55e6242aae2fc00685492c77964",
       "status": "added"
     },
+    "docs/permission-evidence/01-ask-edit-prompt.txt": {
+      "sha256": "89f91e523eb92958b6a92b7b3586c29af9d256ff229df8a1391797dd3440e8be",
+      "status": "added"
+    },
+    "docs/permission-evidence/02-ask-edit-allowed.txt": {
+      "sha256": "7d632a541249623a3edc88ddbeb027af801916bfcd066da6dc45fbcc47c8fda6",
+      "status": "added"
+    },
+    "docs/permission-evidence/03-ask-bash-prompt.txt": {
+      "sha256": "6d154122c2957b968730271380330ec6961b500cf90f56ae6a0729f53b31dd50",
+      "status": "added"
+    },
+    "docs/permission-evidence/04-ask-bash-denied.txt": {
+      "sha256": "34830552e9e981b1508cadd2eafd65044431b463a9304c018df1b62981234c0b",
+      "status": "added"
+    },
+    "docs/permission-evidence/05-browser-fill-password-prompt.txt": {
+      "sha256": "6ab379e2dcf86f19a1d5bcaed3af4edfabbc883f6c68d9f84fc7c88b95ebda9f",
+      "status": "added"
+    },
+    "docs/permission-evidence/06-browser-fill-email-prompt.txt": {
+      "sha256": "82497d68e5c32e41185768401780ce95e3619d4da63ce1c2e655e2ba940acfa4",
+      "status": "added"
+    },
+    "docs/permission-evidence/07-browser-rows.txt": {
+      "sha256": "ecdde2d70db1286ea5223bfd832f93d4358c66806cf257d0997e86e175cce829",
+      "status": "added"
+    },
+    "docs/permission-evidence/08-edits-mode-bash-still-asks.txt": {
+      "sha256": "8cfb43058169213844ca15532b7e9227e3d1ab59653f06351a47e26ac9be57bb",
+      "status": "added"
+    },
+    "docs/permission-evidence/08a-edits-mode-pi-settings-asks.txt": {
+      "sha256": "2909a3a9ec1a79ea5b1b9d70fdcbae172bbaaad338d969a4747dd256320804e0",
+      "status": "added"
+    },
+    "docs/permission-evidence/09-edits-mode-result.txt": {
+      "sha256": "869a9646dd0ebf02fa595acc556a44ca704f0e942bb0d800d405671e1bb81262",
+      "status": "added"
+    },
+    "docs/permission-evidence/10-read-only-refusal.txt": {
+      "sha256": "5cb434cc879ebbb24a5a8de61f9e5fb89d373686add7bd22808d38832a777b17",
+      "status": "added"
+    },
+    "docs/permission-evidence/11-mode-survives-reload.txt": {
+      "sha256": "52180f4f5ac43c77f067a252d0499ecd7816880b8a883c256efe23c129b54d6b",
+      "status": "added"
+    },
+    "docs/permission-evidence/11b-auto-confirm.txt": {
+      "sha256": "36589d27d97ece7399ddb41f2afd4914ebee8a269ad6dab0fbafd7f1d499582d",
+      "status": "added"
+    },
+    "docs/permission-evidence/12-auto-mode.txt": {
+      "sha256": "fb84c52b9fdac0ff1806845dba6c001ceda352a9b0e275ad5bd2a6add40f46fe",
+      "status": "added"
+    },
+    "docs/permission-evidence/13-narrow-hostile-bash-prompt.txt": {
+      "sha256": "c1a4488379b618843a6b5c60d45b66703e7dd017a8a7d7fc4e6f789bb5f02990",
+      "status": "added"
+    },
+    "docs/permission-evidence/14-narrow-deny-with-note.txt": {
+      "sha256": "2bb393fc6a2a6ee764f86feb964ff786885e5fc758b389d6442d28add15db742",
+      "status": "added"
+    },
+    "docs/permission-evidence/provenance.json": {
+      "sha256": "6cc136e67b559ae328bc9e93e37e72193391c0c50baa3a0dcf8a0fd731fb4722",
+      "status": "added"
+    },
+    "docs/permission-evidence/result.json": {
+      "sha256": "3785dff206d1efcedbfef58f78f5d883dac6dc681bf626fc81cc89f1692f5192",
+      "status": "added"
+    },
+    "docs/permission-modes-contract.md": {
+      "sha256": "96fdf48e460b48224996182057caf6cc2b99bbe1cc33daa5df717fa162f5ee95",
+      "status": "added"
+    },
     "docs/pi-header.md": {
       "sha256": "5248deb66fd59a2792016ae62e7b7f66a6e56706db009a520141d3c7652cb9c1",
       "status": "added"
@@ -1012,11 +1111,11 @@
       "status": "added"
     },
     "docs/pi-seam.md": {
-      "sha256": "05b6fef2fd951f698f70b3994e0b6d1ad7897702df6c27b6ea2168500bdcfddb",
+      "sha256": "47d9f809db7c4e5f36f28122c33715e14bda53cf41926b04f01c99181189dc8e",
       "status": "added"
     },
     "docs/pi-workspace.md": {
-      "sha256": "b8ef35af5175aa5b8d5b817f8563d6537949a9c81167f7b2c963ca877cdb69e5",
+      "sha256": "df67bca7b57e5abf3e14834d6c153cb8db54f873e63d5b28ccc938bfcf1711dd",
       "status": "added"
     },
     "docs/publication-plan.md": {
@@ -1532,7 +1631,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "b2680e90a96c2808d4fcb31fef5a0eac81ad1b3f3929cc965206ea3e991fb721",
+      "sha256": "a0fedcd5d965a0e93140de0e1b59a1e2fb7b7c2956716f6cf6661de6401f1839",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1668,11 +1767,11 @@
       "status": "added"
     },
     "lab": {
-      "sha256": "42ef1653ed97225fef0564b401d8e69c300e45264a0e9192f09386782cb0a427",
+      "sha256": "ba9dc83adaa3a185be331e85a5febb96dedd412e523a70a2d9e1479dcfe20190",
       "status": "added"
     },
     "package.json": {
-      "sha256": "3a962726d9893c551d66f259a48f31f3e6cfe5f7ea3fb470b2b4b6e90e256efb",
+      "sha256": "fae0434832d5b034f1a36e1e3cc1e61d90c38ea43b89ba2a62ed509bd21a9cf7",
       "status": "added"
     },
     "scripts/acquire-browser.ts": {
@@ -1715,6 +1814,10 @@
       "sha256": "ef5406983c0c2941d8e3fffb93e778e90a25fe23b27c4d9322a50621ea5e4f02",
       "status": "added"
     },
+    "scripts/permission-actual.ts": {
+      "sha256": "896b46cb3491c7e4f1f52bb18f13c15cfa29daa05a89603ad0c8127f02c8d92e",
+      "status": "added"
+    },
     "scripts/pi/acquire.ts": {
       "sha256": "a816121729f025a61c50c899b1a21dad46ab5007c234ab6c896d6067c93e185c",
       "status": "added"
@@ -1744,7 +1847,7 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "8b98b5621bebd669e8267ead3a5adac78780563d68412a7094441f8ba3096d02",
+      "sha256": "0374f7c456e95ff2c89392e7d9df9fb145dea6f7bf999c3e841a9aea49ef5e34",
       "status": "added"
     },
     "src/admission.ts": {
@@ -1770,7 +1873,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "9341cb27590bde738698435ecadfbac7a0eb1fc66d4ddc4ef11571c9b1955877",
+      "sha256": "89edddb831c7affe31614fee92d611e4684edd992f1171f12fbb86ed9ecfa327",
       "status": "added"
     },
     "src/browser/states.ts": {
@@ -1850,11 +1953,11 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "11d602e3e47491eefaf85c69d6e284068b20c2b9137d44e8977638ba86909367",
+      "sha256": "ed89824ad430f0423338e2baa6cb2abd4d4fb314484eac7d16a322f168bf3f38",
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "a2056914a079f94e66f987fbac502913b02513eb066c8c6dc1efb878ad656ec2",
+      "sha256": "dfd95db53c6352de7da93aedbb6bf56001f0ba5ea0362ba67f74bea7767eaba3",
       "status": "added"
     },
     "src/pi/display.ts": {
@@ -1863,6 +1966,14 @@
     },
     "src/pi/header.ts": {
       "sha256": "60ae08c41314761de5eadd9a37a984c05429a0845596a9b99bddc1fc6a5dd256",
+      "status": "added"
+    },
+    "src/pi/permission-extension.ts": {
+      "sha256": "fb29ac0e9252c2dae8406c1cff359d087ddfc169455bc8bbb0fb687a659e5265",
+      "status": "added"
+    },
+    "src/pi/permission.ts": {
+      "sha256": "ce9aeb951decf348460f0c204aa08bba8cd3436c5e9914913b38683dd33a8b2e",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
@@ -1890,7 +2001,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "50035c5b88984e0aa954e59e283f1edb0c6977c3cfbb3cbb82d1deba85a7c2a8",
+      "sha256": "6756d07d1ec54a1bf5abae7b3a209dae3bc85a78a464c82f3b00286e1944dd3b",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -1898,7 +2009,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "3ffd0bff9e4164fd869da8b8ff972069a1bc6d9ae637156895eb0cb59dce4d71",
+      "sha256": "79b4036e4a8c06ad307a3a968d8c09250132efd0c3b9118d0a8f262a0eea5b1f",
       "status": "added"
     },
     "src/project.ts": {
@@ -1954,11 +2065,11 @@
       "status": "added"
     },
     "tests/browser-ux.test.ts": {
-      "sha256": "121e81252a2f00baaa1f138a7534f02bc5c1bd49bbf4971b5772c059935e3c26",
+      "sha256": "9bdd9eadb2af276ac0546fc5bf8ac625154ed01a9e3fe92cea30b0c0d0e67e0b",
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "4527c670af9ab61d4e74c60e53255cd79cc85f94c8a50b2dfe97b08ac05c4340",
+      "sha256": "3a10142460e55b6f2f3f9ea42af34a186945865b8f503aeb27f99b678412d82a",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
@@ -2027,6 +2138,10 @@
       "status": "unchanged",
       "originalSHA256": "c71f22e648d011f782dac8c216fffbcb1ceaba87ce83a683d1a2a70e3493698c"
     },
+    "tests/permission.test.ts": {
+      "sha256": "10c722b1ba4538783aee87c79dbabe463eee3176b6c178628b22a3055860cde4",
+      "status": "added"
+    },
     "tests/pi-acquire.test.ts": {
       "sha256": "61e2e71921d6f3c429606197c3992a6f3bb273ef01cd48d184f7f4f4cfa5f1b9",
       "status": "added"
@@ -2064,11 +2179,11 @@
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
-      "sha256": "852ed3e00dc1bee1fdbbb929ac1742fae97713f1c87e99260555d72e2ce07111",
+      "sha256": "13249827774954103c6e1293fe5d09e564f9c2448ca09786762dc9eb54c67176",
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "c9c7f4bd8e3aafba06bd761812355edcdd2989db8a59c8968fc54381f42628b4",
+      "sha256": "2abbf1b0ce67b7b0c397e6a73db13958337446f27674d1604ccb84694d0ade04",
       "status": "added"
     },
     "tests/process-crash.test.ts": {
@@ -2077,7 +2192,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "8d5e654aa3ee5dbc5e5c7cf093cdde7866c867f91d9623a4ec3f5abe2b8aa59e",
+      "sha256": "c64ae62fc70b83d44ed2e0195e6259e54ca7e396d4c7f851772fea685ef3abff",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -2105,7 +2220,7 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "4c6eeb775dcbf421bfe0d326c4907e0f7328d6c8f3ec57c5b6bd3eed4a455be8",
+      "sha256": "c4804f1e6a722d68f58cdbb6a7399d2c7c71f59a0c6055718720c22d3bf54e6b",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
@@ -2135,7 +2250,7 @@
       "status": "added"
     },
     "tests/workspace-help.test.ts": {
-      "sha256": "80791b7f5c07e7424346f00637c9b62114bf3740eecebfa642bc8a4d733b0afb",
+      "sha256": "b3ee0f7478254cb1cfb744d316de51296a88c79d558be0b17613451108f73afa",
       "status": "added"
     },
     "tests/workspace.test.ts": {
