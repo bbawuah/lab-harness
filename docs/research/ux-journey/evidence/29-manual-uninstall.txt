@@ -1,0 +1,3 @@
+$SCRATCH_HOME…01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin:
+$SCRATCH_HOME…01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share:
+~/Projects/demo-app %

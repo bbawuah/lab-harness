@@ -1,0 +1,14 @@
+1.0; existing approved browser required. Cached: false.
+
+r; lab --browser http://127.0.0.1:53508/
+  LAB workspace    +
+┌ Pi interactive ──────────────────────────────────────┐
+│[LB] (text fallback)                                  │
+│LAB-HARNESS                                           │
+--
+│  workspace-extension.ts                              │
+│ Browser closed. Start a new LAB run with --browser   │
+│ URL.                                                 │
+│──────────────────────────────────────────────────────│
+│──────────────────────────────────────────────────────│
+│$SCRATCH_HOME…│

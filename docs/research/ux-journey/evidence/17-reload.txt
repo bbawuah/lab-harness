@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││ MESSAGE — Send explicit message text to a peer.      ││user@host demo-app  │
+   main                  ││ Reuse requestKey with exactly the same payload after ││user@host demo-app  │
+                         ││ an unknown outcome; receipt is durable, not          ││% git --no-pager diff; sh test.sh   │
+                         ││ delivery/ack/task completion.                        ││diff --git a/greet.sh b/greet.sh    │
+                         ││ /relay-inbox [WAIT_MS] — Read this session's         ││index 1cfcbc0..ba86050 100644       │
+                         ││ unacknowledged mail. Reading never acknowledges.     ││--- a/greet.sh                      │
+                         ││ Wait is bounded; no automatic model wakeup.          ││+++ b/greet.sh                      │
+                         ││ /relay-ack MESSAGE_ID [MESSAGE_ID ...] — Explicitly  ││@@ -1,3 +1,3 @@                     │
+                         ││ acknowledge handled messages in this session's own   ││ #!/bin/sh                          │
+                         ││ inbox. Foreign inbox IDs are refused. This never     ││ # Usage: greet.sh NAME             │
+                         ││ accepts a LAB task.                                  ││-printf 'Hello, %s\n' "$1"          │
+                         ││ /lab-appearance — Preview light/dark/terminal mode,  ││+printf 'Hello, %s!\n' "$1"         │
+                         ││ colors and spacing; Apply/Cancel/Reset.              ││PASS: greet                         │
+                         ││ /lab-browser status|close — Inspect or close this    ││user@host demo-app  │
+                         ││ run’s owned browser; start with --browser URL.       ││%                                   │
+                         ││ /lab-help — Show these LAB commands.                 ││                                    │
+                         ││ /exit — Leave the workspace; native Pi /quit also    ││                                    │
+ new                 menu││ works.                                               ││                                    │
+─────────────────────────││ Workspace panes: Ctrl+B then h/l changes focus; Tab  ││                                    │
+ agents           grouped││ cycles; z zooms; ? shows Herdr shortcuts.            ││                                    │
+                         ││ Tool-capable models receive lab_search, lab_files    ││                                    │
+ ○ LAB-HARNE… · LAB work…││ and relay_peers/send/inbox/ack automatically. Skills ││                                    │
+   pi                    ││ load only through your explicit command.             ││                                    │
+                         ││ Use native Pi /hotkeys for shortcuts; type / to      ││                                    │
+                         ││ browse native commands. Controlled LAB tasks remain  ││                                    │
+                         ││ unavailable.                                         ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Reloaded keybindings, extensions, skills, prompts,   ││                                    │
+                         ││ themes, and context files                            ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑6 ↓6 4.9%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

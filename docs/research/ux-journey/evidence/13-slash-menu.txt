@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││                                                      ││user@host demo-app  │
+   main                  ││ [SCRIPTED FIXTURE] greet.sh now ends the greeting    ││user@host demo-app  │
+                         ││ with '!'. sh test.sh passes. Nothing committed yet — ││% git --no-pager diff; sh test.sh   │
+                         ││ review with git diff.                                ││diff --git a/greet.sh b/greet.sh    │
+                         ││                                                      ││index 1cfcbc0..ba86050 100644       │
+                         ││                                                      ││--- a/greet.sh                      │
+                         ││ Looks good, commit it.                               ││+++ b/greet.sh                      │
+                         ││                                                      ││@@ -1,3 +1,3 @@                     │
+                         ││                                                      ││ #!/bin/sh                          │
+                         ││                                                      ││ # Usage: greet.sh NAME             │
+                         ││ $ git add greet.sh && git -c user.name=ux-fixture -c ││-printf 'Hello, %s\n' "$1"          │
+                         ││ user.email=ux@example.invalid commit -m 'greet: end  ││+printf 'Hello, %s!\n' "$1"         │
+                         ││ greeting with !' && git log --oneline -2             ││PASS: greet                         │
+                         ││                                                      ││user@host demo-app  │
+                         ││ [main 1e487da] greet: end greeting with !            ││%                                   │
+                         ││  1 file changed, 1 insertion(+), 1 deletion(-)       ││                                    │
+                         ││ 1e487da greet: end greeting with !                   ││                                    │
+ new                 menu││ 813c59d fixture: initial                             ││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││ Took 0.2s                                            ││                                    │
+                         ││                                                      ││                                    │
+ ○ LAB-HARNE… · LAB work…││                                                      ││                                    │
+   pi                    ││ [SCRIPTED FIXTURE] Committed. (Scripted response; no ││                                    │
+                         ││ model.)                                              ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││/                                                     ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││→ settings        Open settings menu                  ││                                    │
+                         ││  model           <provider/model> — Select model (o  ││                                    │
+                         ││  tree            Navigate session tree (switch bran  ││                                    │
+                         ││  thinking        <level> — Set thinking level        ││                                    │
+                         ││  scoped-models   Enable/disable models for Ctrl+P c  ││                                    │
+                         ││  (1/36)                                              ││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑6 ↓6 0.0%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

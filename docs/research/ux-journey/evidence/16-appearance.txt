@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││ │                  │ assistant message             │ ││user@host demo-app  │
+   main                  ││ ├──────────────────┼───────────────────────────────┤ ││user@host demo-app  │
+                         ││ │ Option+Enter     │ Queue follow-up message       │ ││% git --no-pager diff; sh test.sh   │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││diff --git a/greet.sh b/greet.sh    │
+                         ││ │ Option+Up        │ Restore queued messages       │ ││index 1cfcbc0..ba86050 100644       │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││--- a/greet.sh                      │
+                         ││ │ Ctrl+V           │ Paste files on macOS, images, │ ││+++ b/greet.sh                      │
+                         ││ │                  │ or text from clipboard        │ ││@@ -1,3 +1,3 @@                     │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││ #!/bin/sh                          │
+                         ││ │ /                │ Slash commands                │ ││ # Usage: greet.sh NAME             │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││-printf 'Hello, %s\n' "$1"          │
+                         ││ │ !                │ Run bash command              │ ││+printf 'Hello, %s!\n' "$1"         │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││PASS: greet                         │
+                         ││ │ !!               │ Run bash command (excluded    │ ││user@host demo-app  │
+                         ││ │                  │ from context)                 │ ││%                                   │
+                         ││ └──────────────────┴───────────────────────────────┘ ││                                    │
+                         ││                                                      ││                                    │
+ new                 menu││──────────────────────────────────────────────────────││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││LAB Appearance - staged sample                        ││                                    │
+                         ││> 1. Scope: user                                      ││                                    │
+ ○ LAB-HARNE… · LAB work…││  2. Mode: dark                                       ││                                    │
+   pi                    ││  3. Palette: Standard                                ││                                    │
+                         ││  4. Editor padding: 1                                ││                                    │
+                         ││  5. Transcript padding: 1                            ││                                    │
+                         ││  6. Reset this scope: inherited/default              ││                                    │
+                         ││  7. Apply: save and reload Pi resources              ││                                    │
+                         ││  8. Cancel: discard this draft                       ││                                    │
+                         ││                                                      ││                                    │
+                         ││> Focused control                                     ││                                    │
+                         ││Text / Success: saved / Warning: check                ││                                    │
+                         ││Error: retry (labels do not rely on color)            ││                                    │
+                         ││Up/Down or j/k; Enter. Esc cancels.                   ││                                    │
+                         ││Fonts/size/line height: terminal settings.            ││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑6 ↓6 4.9%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

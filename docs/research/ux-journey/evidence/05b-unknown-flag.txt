@@ -1,0 +1,72 @@
+-lab-harness-research-ux-install-to-terminal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-ha
+rness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af864/.tmp/h-2wxAGM/cfg/herdr/sessions/lab-c02214b9ffff/herdr-server.l
+og\ndid you mean to open the Herdr TUI? run `herdr`; you do not need `herdr server`.\n"
+}
+
+Installation complete. Start the interactive LAB workspace:
+  $SCRATCH_HOME…ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af864/lab
+First start asks for your endpoint/model. No model weights or paid requests were selected.
+Controlled LAB task execution remains unavailable; native Pi workspace is separate.
+LAB command installed at $SCRATCH_HOME…nal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin/lab. To enable it in this shell, run:
+  export PATH='$SCRATCH_HOME…2b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin':"$PATH"
+Then verify: command -v lab
+For future terminals, add that PATH line to your own zsh/bash startup file. No profiles were edited.
+
+LAB is installed. Launcher: $SCRATCH_HOME…rminal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/lab
+Choose a project folder before LAB starts. Your home folder and folders containing LAB's installation or private state c
+annot be the project.
+Use an existing code/project folder, for example ~/Projects/my-app. LAB will not search your home folder.
+Enter a path without shell quotes; spaces are supported. Relative paths start from your original folder. Blank, Ctrl-C o
+r Ctrl-D cancels.
+Project directory: ~/Projects/demo-app
+Choose an existing project directory outside LAB's release/state folders. Home, filesystem roots, missing directories an
+d symlink directories are refused.
+Project directory: ~/Projects/demo-app
+LAB interactive coding workspace. Controlled LAB tasks remain unavailable.
+Choose an existing endpoint; setup makes no model request.
+local = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpo
+int.
+Route (local or litellm): ollama
+Explicit OpenAI-compatible base URL (including /v1 where required): localhost:11434
+Exact local model ID or existing LiteLLM alias: llama3.2
+LAB: Invalid workspace route; run ./lab --configure
+( curl -fsSL  | sh; )  0.20s user 0.14s system 0% cpu 1:17.73 total
+~ % clear; lab --help
+zsh: command not found: lab
+~ % export PATH="$HOME/.local/bin:$PATH"; command -v lab; lab --help
+$SCRATCH_HOME…01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin/lab
+LAB-HARNESS — interactive AI coding in your project
+Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]
+Run lab from a project; from home, choose an existing project folder.
+Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.
+  --project DIR  Open another existing project (paths with spaces work).
+  --configure  Change the saved endpoint, model and private key.
+  --single-pane  Open only Pi, useful in a narrow terminal; no right-hand shell is started.
+  --offline  Require cached runtime dependencies; model requests may still use the network.
+  --relay-group ID  Use an explicitly configured cross-project Relay allowlist; default is project-only.
+  --setup-browser  Explicitly acquire the optional pinned browser control tool; --offline requires cache.
+  --browser URL  Start an owned ephemeral browser bound to this HTTP(S) origin.
+  --browser-executable PATH  Use an existing approved same-OS browser executable.
+  --help  Show this help without starting Pi or a model request.
+Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.
+You provide the model server or service. Setup sends no model prompt and installs no weights.
+In Pi: /lab-help for LAB search/skills/Relay commands; /exit to leave.
+Guide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md
+Controlled LAB task execution remains unavailable.
+~ % lab --bogus; echo rc=$?
+Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]
+rc=1
+~ %
+
+
+
+
+
+
+
+
+
+
+
+
+

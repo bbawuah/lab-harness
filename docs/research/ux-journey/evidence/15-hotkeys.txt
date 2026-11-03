@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││ ├──────────────────┼───────────────────────────────┤ ││user@host demo-app  │
+   main                  ││ │ Ctrl+L           │ Open model selector           │ ││user@host demo-app  │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││% git --no-pager diff; sh test.sh   │
+                         ││ │ Ctrl+O           │ Toggle tool output expansion  │ ││diff --git a/greet.sh b/greet.sh    │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││index 1cfcbc0..ba86050 100644       │
+                         ││ │ Ctrl+T           │ Toggle thinking block         │ ││--- a/greet.sh                      │
+                         ││ │                  │ visibility                    │ ││+++ b/greet.sh                      │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││@@ -1,3 +1,3 @@                     │
+                         ││ │ Ctrl+G           │ Edit message in external      │ ││ #!/bin/sh                          │
+                         ││ │                  │ editor                        │ ││ # Usage: greet.sh NAME             │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││-printf 'Hello, %s\n' "$1"          │
+                         ││ │ Ctrl+X           │ Copy selection or last        │ ││+printf 'Hello, %s!\n' "$1"         │
+                         ││ │                  │ assistant message             │ ││PASS: greet                         │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││user@host demo-app  │
+                         ││ │ Option+Enter     │ Queue follow-up message       │ ││%                                   │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││                                    │
+                         ││ │ Option+Up        │ Restore queued messages       │ ││                                    │
+ new                 menu││ ├──────────────────┼───────────────────────────────┤ ││                                    │
+─────────────────────────││ │ Ctrl+V           │ Paste files on macOS, images, │ ││                                    │
+ agents           grouped││ │                  │ or text from clipboard        │ ││                                    │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││                                    │
+ ○ LAB-HARNE… · LAB work…││ │ /                │ Slash commands                │ ││                                    │
+   pi                    ││ ├──────────────────┼───────────────────────────────┤ ││                                    │
+                         ││ │ !                │ Run bash command              │ ││                                    │
+                         ││ ├──────────────────┼───────────────────────────────┤ ││                                    │
+                         ││ │ !!               │ Run bash command (excluded    │ ││                                    │
+                         ││ │                  │ from context)                 │ ││                                    │
+                         ││ └──────────────────┴───────────────────────────────┘ ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑6 ↓6 4.9%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

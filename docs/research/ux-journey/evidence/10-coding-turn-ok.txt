@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││                                                      ││user@host demo-app  │
+   main                  ││                                                      ││user@host demo-app  │
+                         ││ sh test.sh fails. Make greet end with an exclamation ││%                                   │
+                         ││ mark so the test passes.                             ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ read greet.sh                                        ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ edit greet.sh                                        ││                                    │
+                         ││                                                      ││                                    │
+                         ││  1 #!/bin/sh                                         ││                                    │
+                         ││  2 # Usage: greet.sh NAME                            ││                                    │
+                         ││ -3 printf 'Hello, %s\n' "$1"                         ││                                    │
+                         ││ +3 printf 'Hello, %s!\n' "$1"                        ││                                    │
+ new                 menu││                                                      ││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││                                                      ││                                    │
+                         ││ $ sh test.sh                                         ││                                    │
+ ○ LAB-HARNE… · LAB work…││                                                      ││                                    │
+   pi                    ││ PASS: greet                                          ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Took 0.0s                                            ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ [SCRIPTED FIXTURE] greet.sh now ends the greeting    ││                                    │
+                         ││ with '!'. sh test.sh passes. Nothing committed yet — ││                                    │
+                         ││ review with git diff.                                ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑4 ↓4 0.0%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

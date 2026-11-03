@@ -1,0 +1,67 @@
+zsh: command not found: lab
+~ % export PATH="$HOME/.local/bin:$PATH"; command -v lab; lab --help
+$SCRATCH_HOME…01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin/lab
+LAB-HARNESS — interactive AI coding in your project
+Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]
+Run lab from a project; from home, choose an existing project folder.
+Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.
+  --project DIR  Open another existing project (paths with spaces work).
+  --configure  Change the saved endpoint, model and private key.
+  --single-pane  Open only Pi, useful in a narrow terminal; no right-hand shell is started.
+  --offline  Require cached runtime dependencies; model requests may still use the network.
+  --relay-group ID  Use an explicitly configured cross-project Relay allowlist; default is project-only.
+  --setup-browser  Explicitly acquire the optional pinned browser control tool; --offline requires cache.
+  --browser URL  Start an owned ephemeral browser bound to this HTTP(S) origin.
+  --browser-executable PATH  Use an existing approved same-OS browser executable.
+  --help  Show this help without starting Pi or a model request.
+Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.
+You provide the model server or service. Setup sends no model prompt and installs no weights.
+In Pi: /lab-help for LAB search/skills/Relay commands; /exit to leave.
+Guide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md
+Controlled LAB task execution remains unavailable.
+~ % lab --bogus; echo rc=$?
+Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]
+rc=1
+~ % lab --version; echo rc=$?
+Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]
+rc=1
+~ % clear; cd ~/Projects/demo-app && lab
+LAB interactive coding workspace. Controlled LAB tasks remain unavailable.
+Choose an existing endpoint; setup makes no model request.
+local = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpo
+int.
+Route (local or litellm): local
+Explicit OpenAI-compatible base URL (including /v1 where required): http://127.0.0.1:52977/v1
+Exact local model ID or existing LiteLLM alias: fixture-coder
+API key (private; blank for unauthenticated local server):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
