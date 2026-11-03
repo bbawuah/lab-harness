@@ -8,7 +8,7 @@ import { envelope, insist, project } from './projection.ts';
 export type BrowserInput = { operation: 'snapshot'|'navigate'|'fill'|'click'|'read'; url?: string; ref?: string; text?: string };
 export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown };
 export class BrowserSession {
-  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Map<string,{role:string;name:string}>(); private closed = false; private failedInMemory = false;
+  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Map<string,{role:string;name:string}>(); private generation = 0; private closed = false; private failedInMemory = false;
   constructor(descriptor: BrowserDescriptor) {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
@@ -53,8 +53,11 @@ export class BrowserSession {
     insist(Array.isArray(tabs.data.tabs)&&tabs.data.tabs.length===1,'LAB_BROWSER_NEW_TARGET');
     browserURL(tabs.data.tabs[0].url,this.descriptor.origin);
   }
-  /** `expected`: the role/name the operator approved for `ref`; a mismatch at run time is a stale ref. */
-  execute(input:BrowserInput,signal?:AbortSignal,expected?:{role:string;name:string}):Promise<unknown> {
+  /**
+   * `expected`: the element shown at approval (role, name, snapshot generation). A mismatch at run time,
+   * or null (the ref was unknown at approval), is a stale ref. undefined skips the binding (direct callers).
+   */
+  execute(input:BrowserInput,signal?:AbortSignal,expected?:{role:string;name:string;generation?:number}|null):Promise<unknown> {
     const task=this.queue.then(async()=>{
       insist(!this.closed && !!lstatSync(this.descriptor.root,{throwIfNoEntry:false}),'LAB_BROWSER_CLOSED');
       insist(!this.failed(),'LAB_BROWSER_FAILED: browser stopped after an earlier failure; actions disabled until a new LAB run.');
@@ -63,7 +66,7 @@ export class BrowserSession {
       const op=input.operation;
       if(op==='snapshot'){insist(Object.keys(input).length===1);tool='agent_browser_snapshot';args={interactive:true};}
       else if(op==='navigate'){insist(Object.keys(input).length===2&&typeof input.url==='string');tool='agent_browser_open';args={url:browserURL(input.url,this.descriptor.origin).href};}
-      else {insist(['fill','click','read'].includes(op)&&typeof input.ref==='string'&&/^@e\d+$/.test(input.ref)&&this.refs.has(input.ref)&&(!expected||(this.refs.get(input.ref)!.role===expected.role&&this.refs.get(input.ref)!.name===expected.name)),'LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.');
+      else {insist(['fill','click','read'].includes(op)&&typeof input.ref==='string'&&/^@e\d+$/.test(input.ref)&&this.refs.has(input.ref)&&(expected===undefined||(expected!==null&&this.refs.get(input.ref)!.role===expected.role&&this.refs.get(input.ref)!.name===expected.name&&(expected.generation===undefined||expected.generation===this.generation))),'LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.');
         insist(Object.keys(input).length===(op==='fill'?3:2));tool=op==='read'?'agent_browser_get_text':'agent_browser_'+op;args={selector:input.ref};
         if(op==='fill'){insist(typeof input.text==='string'&&Buffer.byteLength(input.text)<=4000&&!input.text.includes('\0'),'LAB_BROWSER_INPUT');args={...args,text:input.text};}
       }
@@ -71,13 +74,13 @@ export class BrowserSession {
         await this.scope(signal);if(op!=='snapshot'&&op!=='read')this.refs.clear();
         const raw=await this.call(tool,args,signal);const {result,lifecycle}=project(raw,op);this.identity({lifecycle});
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
-        if(op==='snapshot')this.refs=new Map(Object.entries(result.result.refs as Record<string,{role:string;name:string}>).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));
+        if(op==='snapshot'){this.generation++;}if(op==='snapshot')this.refs=new Map(Object.entries(result.result.refs as Record<string,{role:string;name:string}>).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));
         return {...result,verifiedOrigin:this.descriptor.origin};
       } catch(e) {this.refs.clear();this.markFailed();await this.closeNow().catch(()=>{});throw e;}
     });this.queue=task.catch(()=>{});return task;
   }
   /** Role/name of a ref from the latest snapshot (display only; page text is untrusted). */
-  element(ref:unknown):{role:string;name:string}|undefined {return typeof ref==='string'?this.refs.get(ref):undefined;}
+  element(ref:unknown):{role:string;name:string;generation:number}|undefined {const e=typeof ref==='string'?this.refs.get(ref):undefined;return e?{...e,generation:this.generation}:undefined;}
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}

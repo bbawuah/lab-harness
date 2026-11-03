@@ -379,7 +379,7 @@ test("registered tool family (agent-desktop seam): always asks, no session grant
 test("switching to auto needs one confirm that names what auto skips; the start warning names it too", async () => {
   const h = harness({ mode: "ask", answers: [undefined, "Cancel", new Error("render failed"), "Switch to auto"] });
   try {
-    h.gate.registerFamily({ family: "Desktop", tools: ["desktop_act"], sessionGrants: false, inAuto: "ask", describe: () => ({ heading: "x", lines: [], scope: "x", scopeLabel: "x" }) });
+    h.gate.registerFamily({ ...alwaysAsk, family: "Desktop", tools: ["lab_desktop"], describe: () => ({ heading: "x", lines: [], scope: "x", scopeLabel: "x" }) });
     for (let n = 0; n < 3; n++) { await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("ask"); } // Esc, Cancel, throw
     expect(h.notices.at(-1)).toBe("LAB mode not changed: still ask.");
     expect(JSON.parse(readFileSync(h.statePath, "utf8"))).toEqual({ mode: "ask" });
@@ -402,7 +402,7 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     await sel.commands.get("lab-mode").handler("", sel.ctx); expect(sel.gate.mode).toBe("ask"); expect(titles[1]).toContain("switch from ask to auto?");
   } finally { sel.done(); }
   expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends; desktop actions still ask. Change it with /lab-mode.");
-  expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions.");
+  expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions; desktop actions still ask."); // a name alone is not the reserved tool
 });
 
 test("review r1 P1: edits never auto-approves git, Pi, agent or direnv config (case/normalization-insensitive)", async () => {
@@ -576,4 +576,39 @@ test("review r2 P3: family heading/scope newlines cannot forge prompt rows; auto
     a.handlers.get("session_start")!({ reason: "startup" }, a.ctx);
     expect(a.notices.includes(autoStartWarning())).toBe(true);
   } finally { a.done(); }
+});
+
+test("review r3: reserved lab_desktop must use alwaysAsk; the auto confirm wording follows the tool, not the family name", () => {
+  const h = harness({ mode: "ask" });
+  try {
+    const d = { family: "Desktop control", tools: ["lab_desktop"], describe: () => ({ heading: "", lines: [], scope: "", scopeLabel: "" }) };
+    for (const bad of [{ sessionGrants: true, inAuto: "ask", denyWithNote: false }, { sessionGrants: false, inAuto: "run", denyWithNote: false }, { sessionGrants: false, inAuto: "ask" }])
+      expect(() => h.gate.registerFamily({ ...d, ...bad } as any)).toThrow("LAB_PERMISSION_FAMILY");
+    h.gate.registerFamily({ ...alwaysAsk, ...d });
+  } finally { h.done(); }
+  const text = autoSummary([{ family: "Desktop control", inAuto: "ask", tools: ["lab_desktop"] }, { family: "Robot", inAuto: "run", tools: ["robot_act"] }]);
+  expect(text).toBe("auto shows no approval prompt for edits, shell commands, browser actions, Relay sends or Robot actions; desktop actions still ask.");
+});
+
+test("review r3 P2-B: a FIFO planted at the mode-file path fails instead of freezing Pi", async () => {
+  const h = harness({ mode: "auto" });
+  try {
+    rmSync(h.statePath); Bun.spawnSync(["mkfifo", "-m", "600", h.statePath]);
+    const started = Date.now();
+    await h.commands.get("lab-mode")!.handler("read-only", h.ctx);
+    expect(Date.now() - started).toBeLessThan(1000);
+    expect(h.gate.mode).toBe("read-only");
+    expect(h.notices.some(text => text.includes("could not be written"))).toBe(true);
+    expect(readModeFile(h.statePath)).toBe("ask"); // reading a FIFO never blocks either (lstat rejects it first)
+  } finally { h.done(); }
+});
+
+test("review r3 P2-A: a browser ref unknown at approval gets no session grant", () => {
+  const facts = { cwd: "/p", roots: { project: "/p", excluded: [] }, browser: () => ({ origin: "http://127.0.0.1:1" }) };
+  const unknown = describeApproval("lab_browser", { operation: "click", ref: "@e9" }, facts);
+  expect(unknown.sessionGrants).toBe(false);
+  expect(approvalChoices(unknown)).toEqual(["Allow once", "Deny", "Deny with note…"]);
+  expect(unknown.lines.join("\n")).toContain("refused as stale");
+  const known = describeApproval("lab_browser", { operation: "click", ref: "@e9" }, { ...facts, browser: () => ({ origin: "http://127.0.0.1:1", element: { role: "button", name: "Save" } }) });
+  expect(known.sessionGrants).toBeUndefined();
 });

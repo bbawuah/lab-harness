@@ -126,18 +126,20 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
   when it sits inside the project.
 - `edits` never auto-approves project paths that tools later turn into code execution or agent instructions. Any
   path component (case- and NFKC-insensitive, so APFS folds such as `ſ`→`s` match) of `.git`, `.pi`, `.agents`,
-  `.claude`, `.codex`, `.husky`, `.vscode`, `.envrc`, `.githooks`, `.pre-commit-config.yaml`, `lefthook.yml` or
-  `.lefthook.yml` asks, as does any dot-leading component with a non-ASCII character, and the prompt marks it "(agent/VCS config — can run code)". Examples: git config and hooks
+  `.claude`, `.codex`, `.husky`, `.vscode`, `.envrc`, `.githooks`, `.pre-commit-config.yaml`, `.config`, `mise.toml`,
+  `.mise.toml` or a lefthook config (`[.]lefthook[-local].{yml,yaml,toml,json}`) asks, as does any dot-leading component with a non-ASCII character, and the prompt marks it "(agent/VCS config — can run code)". Examples: git config and hooks
   (fsmonitor, pager, hooks run on later git commands); Pi's `.pi/settings.json` (`shellCommandPrefix`/`shellPath`
   would silently prefix every approved bash after `/reload`); `.pi/SYSTEM.md`; direnv. `ask` mode is unchanged.
   The list is a heuristic, not a guarantee. A custom `core.hooksPath`, `package.json` scripts, test files and CI
   workflows are ordinary project files. Approving `git commit`, `npm test` or `git push` runs project code that
   `edits` may have changed without a prompt.
 - The in-memory mode is authoritative. The model's shell can see `LAB_PERMISSION_STATE`. If it breaks the mode file,
-  `/lab-mode` still changes the mode for the session and warns that the file could not be written.
+  `/lab-mode` still changes the mode for the session and warns that the file could not be written. The file is opened
+  non-blocking, so a FIFO planted there fails instead of freezing Pi.
 - `bash` is never auto-approved by `edits`.
-- A browser `fill`/`click`/`read` runs only if its ref still names the role and name shown in the approval. A
-  snapshot queued earlier in the same parallel batch makes it fail with `LAB_BROWSER_STALE_REF`.
+- A browser `fill`/`click`/`read` runs only if its ref still names the role and name shown in the approval, from
+  the same snapshot. A snapshot queued earlier in the same parallel batch makes it fail with `LAB_BROWSER_STALE_REF`.
+  So does a ref that wasn't in the latest snapshot at approval. Such a ref gets no "Allow for this session" choice.
 - This is an approval gate, not an OS sandbox. Approved commands run as the user. Paths are resolved when a call is
   gated. Pi gates a whole parallel tool batch before running it, so an approved command in the same batch can swap a
   directory for a symlink before an auto-approved edit runs. Hard links already in the project are followed. The
@@ -166,7 +168,10 @@ throws, the call is denied. A family must not add its own `tool_call` handler or
 queue.
 
 **Desktop policy: alwaysAsk + onApproved.** LAB shows the one desktop prompt; `onApproved` mints #28's single-use
-token. There is no pass-through policy.
+token. There is no pass-through policy. `registerFamily` throws if `lab_desktop` is registered with anything other
+than the `alwaysAsk` fields. The auto confirm's "desktop actions still ask" follows the tool, not the family name. Pi
+can abort a turn after the gate allowed a call but before it runs, so a token must bind a snapshot or hash of the
+input it was minted for and expire at `tool_execution_end` or `turn_end`.
 
 `alwaysAsk` is the desktop policy: choices are exactly `Allow once` / `Deny`, nothing is granted for the session,
 and `auto` still asks. Without the preset, a family sets the fields itself: `sessionGrants` (false removes "Allow for

@@ -84,3 +84,14 @@ test('review r2 P2-3: a run is bound to the element approved for its ref; a newe
   expect(calls).toBe(0);
  } finally {rmSync(root,{recursive:true,force:true});}
 });
+
+test('review r3: unknown-at-approval (null) and a newer snapshot generation are stale even with the same role/name',async()=>{
+ let calls=0;const {s,root}=fakeSession(async()=>{calls++;return '';});
+ try {
+  s.refs=new Map([['@e3',{role:'button',name:'Archive'}]]);s.generation=2;
+  await expect(s.execute({operation:'click',ref:'@e3'},undefined,null)).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  await expect(s.execute({operation:'click',ref:'@e3'},undefined,{role:'button',name:'Archive',generation:1})).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  expect(s.element('@e3')).toEqual({role:'button',name:'Archive',generation:2});
+  expect(calls).toBe(0);
+ } finally {rmSync(root,{recursive:true,force:true});}
+});

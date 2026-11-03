@@ -21,13 +21,15 @@ export const modeDescriptions: Record<PermissionMode, string> = {
  * Names what auto skips, for the /lab-mode auto confirm and the `lab --mode auto`
  * start warning. Registered families are named with what they do in auto.
  */
-export function autoSummary(families: readonly { family: string; inAuto: "run" | "ask" }[] = []): string {
+export function autoSummary(families: readonly { family: string; inAuto: "run" | "ask"; tools?: readonly string[] }[] = []): string {
   const name = (f: { family: string }) => displaySafe(f.family.slice(0, 32));
   const list = (items: string[]) => items.length < 2 ? items.join("") : items.slice(0, -1).join(", ") + " or " + items.at(-1);
-  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...families.filter(f => f.inAuto === "run").map(f => name(f) + " actions")];
-  // Desktop actions always ask, even in auto (lead policy; agent-desktop registers with alwaysAsk).
-  const desktopRuns = families.some(f => f.inAuto === "run" && f.family.toLowerCase() === "desktop");
-  const asks = [...(desktopRuns ? [] : ["desktop actions"]), ...families.filter(f => f.inAuto !== "run" && f.family.toLowerCase() !== "desktop").map(f => name(f) + " actions")];
+  // Desktop actions always ask, even in auto: registerFamily enforces alwaysAsk for the reserved
+  // desktop tool, so the line depends on the tool, never on the family's name.
+  const reserved = (f: { tools?: readonly string[] }) => (f.tools ?? []).some(tool => reservedFamilyTools.has(tool));
+  const others = families.filter(f => !reserved(f));
+  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...others.filter(f => f.inAuto === "run").map(f => name(f) + " actions")];
+  const asks = ["desktop actions", ...others.filter(f => f.inAuto !== "run").map(f => name(f) + " actions")];
   return `auto shows no approval prompt for ${list(runs)}` + (asks.length ? `; ${list(asks)} still ask` : "") + ".";
 }
 /** Cancel comes first so a reflexive Enter keeps the current mode. */
@@ -132,7 +134,9 @@ function realTarget(absolute: string): string | undefined {
  * config, direnv). `edits` never auto-approves them; they always ask.
  * Compared per path component, case- and normalization-insensitively (APFS).
  */
-export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc", ".githooks", ".pre-commit-config.yaml", "lefthook.yml", ".lefthook.yml"];
+export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc", ".githooks", ".pre-commit-config.yaml",
+  "lefthook.yml", ".lefthook.yml", "lefthook.yaml", ".lefthook.yaml", "lefthook.toml", ".lefthook.toml", "lefthook.json", ".lefthook.json",
+  "lefthook-local.yml", "lefthook-local.yaml", "lefthook-local.toml", "lefthook-local.json", ".lefthook-local.yml", ".lefthook-local.yaml", ".lefthook-local.toml", ".lefthook-local.json", "mise.toml", ".mise.toml", ".config"];
 // NFKC folds ſ→s, K→K and ligatures as APFS case-insensitive lookup does; any other
 // non-ASCII character in a dot-leading component is treated as sensitive (fail closed).
 const isSensitive = (relativePath: string) => relativePath.split(sep).some(part => {
@@ -244,7 +248,9 @@ export function describeApproval(toolName: string, input: Record<string, unknown
     lines.push(`${displaySafe(operation.slice(0, 16))} ${elementLabel(input.ref, element)}`);
     if (operation === "fill") lines.push("value: " + valuePreview(typeof input.text === "string" ? input.text : "", element ? isSecretField(element.name, element.role) : true));
     const what = element ? `${element.role}\0${element.name}` : `ref\0${String(input.ref)}`;
-    return { heading: `Browser: ${displaySafe(operation.slice(0, 16))}?`, lines, scope: `lab_browser\0${origin}\0${operation}\0${what}`, scopeLabel: `${displaySafe(operation.slice(0, 16))} on this element` };
+    if (!element) lines.push("this ref is not in the latest snapshot; it will be refused as stale");
+    // No session grant for a ref without an element: the grant would match whatever the ref names later.
+    return { heading: `Browser: ${displaySafe(operation.slice(0, 16))}?`, lines, scope: `lab_browser\0${origin}\0${operation}\0${what}`, scopeLabel: `${displaySafe(operation.slice(0, 16))} on this element`, ...(element ? {} : { sessionGrants: false }) };
   }
   if (toolName === "relay_send") {
     const to = typeof input.to === "string" ? input.to : "";

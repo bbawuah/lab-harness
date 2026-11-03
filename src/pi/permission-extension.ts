@@ -7,7 +7,7 @@ import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, sta
 import { dirname } from "node:path";
 import { wrapColumns } from "./display.ts";
 import { indicatorSlots, setIndicator, type IndicatorState } from "./status-indicator.ts";
-import { approvalChoices, approvalTitle, autoChoices, autoStartWarning, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
+import { reservedFamilyTools, approvalChoices, approvalTitle, autoChoices, autoStartWarning, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
 
 export type PermissionUI = {
   select(title: string, options: string[], opts?: { signal?: AbortSignal }): Promise<string | undefined>;
@@ -41,7 +41,8 @@ export function readModeFile(path: string | undefined): PermissionMode {
 }
 /** Writes the mode without following symlinks; mode 0600. */
 export function writeModeFile(path: string, mode: PermissionMode): void {
-  const fd = openSync(path, constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | constants.O_NOFOLLOW, 0o600);
+  // O_NONBLOCK: a FIFO planted at the path fails (ENXIO) instead of freezing Pi's event loop.
+  const fd = openSync(path, constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | constants.O_NOFOLLOW | constants.O_NONBLOCK, 0o600);
   try {
     const entry = fstatSync(fd);
     if (!entry.isFile() || entry.uid !== process.getuid?.() || (entry.mode & 0o077) !== 0) throw new Error("LAB_PERMISSION_STATE");
@@ -80,6 +81,8 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   /** Lets another tool family (e.g. agent-desktop) use this gate. Throws on a name collision. */
   const registerFamily = (family: GatedFamily) => {
     if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask") || (family.denyWithNote !== undefined && typeof family.denyWithNote !== "boolean") || (family.onApproved !== undefined && typeof family.onApproved !== "function")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
+    // The reserved desktop tool must use the alwaysAsk policy (lead: "Desktop policy: alwaysAsk + onApproved").
+    if (family.tools.some(tool => reservedFamilyTools.has(tool)) && (family.sessionGrants !== false || family.inAuto !== "ask" || family.denyWithNote !== false)) throw new Error("LAB_PERMISSION_FAMILY: lab_desktop must use the alwaysAsk policy");
     for (const tool of family.tools) if (typeof tool !== "string" || builtIn.has(tool) || families.has(tool)) throw new Error(`LAB_PERMISSION_FAMILY: ${String(tool).slice(0, 64)} is already gated`);
     const frozen = Object.freeze({ ...family, tools: Object.freeze([...family.tools]) });
     for (const tool of frozen.tools) families.set(tool, frozen);
