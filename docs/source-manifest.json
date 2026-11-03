@@ -1697,7 +1697,7 @@
       "status": "added"
     },
     "scripts/permission-actual.ts": {
-      "sha256": "f66c80723757c98c76f52d402c7b497fef89ec2abec026e98c5d9b8fa45ccc56",
+      "sha256": "0453d8bc7acd75096e8c315e5b9b12e207cde27af41f588d4787569ecc48b250",
       "status": "added"
     },
     "scripts/pi/acquire.ts": {

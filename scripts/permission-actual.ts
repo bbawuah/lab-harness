@@ -69,7 +69,7 @@ const projectName = basename(project), projectShort = project.replace(/^\/privat
 const sanitize = (text: string) => text.replaceAll(project, "$PROJECT").replaceAll(projectShort, "$PROJECT").replaceAll(state, "$STATE").replaceAll(homedir(), "$HOME").replaceAll(projectName, "PROJECT").replaceAll(String(server.port), "PORT");
 // Any absolute host path left after sanitizing fails the run instead of being published.
 const leaks = (text: string) => /\/private\/|\/var\/folders|\/Users\/|\/tmp\//.test(text);
-const captures: Record<string, string> = {};
+const captures: Record<string, string> = {}, rawStreams: Record<string, string> = {};
 const checks: Record<string, boolean> = {};
 
 async function launch(label: string, args: string[], cols: number, rows: number, drive: (io: { send(text: string): Promise<void>; type(text: string): Promise<void>; key(k: string): Promise<void>; wait(text: string, ms?: number): Promise<string>; screen(): Promise<string>; capture(name: string): Promise<string> }) => Promise<void>) {
@@ -102,7 +102,9 @@ async function launch(label: string, args: string[], cols: number, rows: number,
     const code = await child.exited; checks[label + ":exit0"] = code === 0;
     const permissionFile = join(run, "permission-mode.json");
     checks[label + ":modeFileOutsideProject"] = !permissionFile.startsWith(project + "/");
-  } finally { clearTimeout(killTimer); if (child.exitCode === null) { child.kill("SIGTERM"); await child.exited; } child.terminal?.close(); writeFileSync(join(out, label + ".ansi"), sanitize(raw)); }
+  } finally { clearTimeout(killTimer); if (child.exitCode === null) { child.kill("SIGTERM"); await child.exited; } child.terminal?.close(); rawStreams[label] = raw;
+    // Raw streams are local debugging aids only: redraw escapes can split a path, so they are never published.
+    mkdirSync(join(out, "raw-local"), { recursive: true }); writeFileSync(join(out, "raw-local", label + ".ansi"), sanitize(raw)); }
 }
 
 let failure: unknown;
@@ -160,15 +162,19 @@ try {
     checks.noteReachedModel = modelLog.some(m => m.scenario === "S7" && m.toolResults.some(r => r.includes("User note: use the test script instead")));
   });
 } catch (error) { failure = error; } finally { server.stop(true); }
-checks.noHostPathsInCaptures = readdirSync(out).filter(f => /\.(txt|ansi)$/.test(f)).every(f => !leaks(readFileSync(join(out, f), "utf8")));
+checks.noHostPathsInCaptures = readdirSync(out).filter(f => f.endsWith(".txt")).every(f => !leaks(readFileSync(join(out, f), "utf8")));
+// What Pi actually wrote to the 40-column terminal: LAB's prompt and Pi's own bash row must not emit the hostile controls.
+checks.narrowRawStreamHasNoHostileControls = !!rawStreams.narrow && !rawStreams.narrow.includes("\x1b]0;pwned") && !rawStreams.narrow.includes("\u202e");
 
-const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 17;
+const sanitizedLog = modelLog.map(m => ({ ...m, toolResults: m.toolResults.map(sanitize) }));
+checks.noHostPathsInModelLog = !leaks(JSON.stringify(sanitizedLog));
+const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 19;
 const git = (args: string[]) => Bun.spawnSync(["git", ...args], { cwd: source }).stdout.toString().trim();
 const files = Object.fromEntries(readdirSync(out).filter(f => f.endsWith(".txt")).sort().map(f => [f, createHash("sha256").update(readFileSync(join(out, f))).digest("hex")]));
 writeFileSync(join(out, "result.json"), JSON.stringify({
   kind: "actual ./lab (pinned Pi 1.4.0 + Herdr) in owned pseudo-terminals; owned 127.0.0.1 scripted protocol fixture; no model inference, provider or auth",
   ok, failure: failure ? sanitize(String(failure)).slice(0, 4000) : undefined, captureCommit: git(["rev-parse", "HEAD"]), dirty: !!git(["status", "--porcelain"]),
-  platform: `${process.platform}-${process.arch}`, fixtureRequests: requests, checks, modelLog: modelLog.map(m => ({ ...m, toolResults: m.toolResults.map(sanitize) })), files,
+  platform: `${process.platform}-${process.arch}`, fixtureRequests: requests, checks, modelLog: sanitizedLog, files,
 }, null, 2) + "\n");
 console.log(JSON.stringify({ ok, out: out.replace(source, "<WORKTREE>"), checks, failure: failure ? String(failure).slice(0, 600) : undefined }, null, 2));
 if (ok) { rmSync(state, { recursive: true, force: true }); rmSync(project, { recursive: true, force: true }); }
