@@ -13,9 +13,13 @@ import { installRelayExtension, type RelayBridgeRequest } from "./relay-extensio
 type SourceRequest = { action: "search" | "files" | "skills" | "load"; query?: string };
 type Request = SourceRequest | RelayBridgeRequest | AppearanceRequest;
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
-export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void } };
+export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void; setStatus?(key: string, text: string | undefined): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
+  // Pi 1.4.0 events used by LAB extensions beyond session lifecycle; payloads are untrusted shapes and are validated by handlers.
+  on(name: "agent_start" | "agent_end" | "tool_execution_end", handler: (event: any, ctx: WorkspaceContext) => void | Promise<void>): unknown;
+  appendEntry?(customType: string, data: unknown): void;
+  registerEntryRenderer?(customType: string, renderer: (entry: { data?: unknown }, options: { expanded?: boolean }, theme?: unknown) => { render(width: number): string[]; invalidate(): void }): void;
   registerTool(tool: { name: string; label: string; description: string; parameters: unknown; renderCall?: (...args: any[]) => any; renderResult?: (...args: any[]) => any; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
   registerCommand(name: string, options: { description: string; handler(args: string, ctx: WorkspaceContext): Promise<void> }): void;
   sendMessage(message: { customType: string; content: string; display: boolean; details?: unknown }, options?: { triggerTurn?: boolean; deliverAs?: "steer" | "followUp" | "nextTurn" }): void;

@@ -31,9 +31,13 @@ export function workspaceHelp(): string {
     "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }
+/** One-line Usage generated from shellOptions (F17); the `lab` shell launcher repeats it verbatim (tested). */
+export function shellUsage(): string {
+  return "Usage: lab " + shellOptions.map(([option]) => "[" + option + "]").join(" ");
+}
 export function shellHelp(): string {
   return ["LAB-HARNESS — interactive AI coding in your project",
-    "Usage: lab [--project DIR] [--configure] [--single-pane] [--offline] [--relay-group ID] [--help]",
+    shellUsage(),
     "Run lab from a project; from home, choose an existing project folder.",
     "Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.",
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),

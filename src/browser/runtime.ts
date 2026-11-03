@@ -24,3 +24,9 @@ export function browserURL(value: string, origin?: string): URL {
   if (!['http:', 'https:'].includes(u.protocol) || u.username || u.password || value.length > 4096 || (origin && u.origin !== origin)) throw new Error("LAB_BROWSER_ORIGIN: URL must use the operator-selected HTTP(S) origin without credentials.");
   return u;
 }
+/** `lab --setup-browser` summary; ends with the next command (board 5). The URL is an example, labelled as such. */
+export function setupSummary(version: string, cached: boolean, browser?: string): string {
+  return [`✓ agent-browser ${version} verified${cached ? " (already cached)" : ""} · no browser downloaded`,
+    browser ? `✓ browser found: ${browser}` : "! no approved browser found: install Chrome, Chromium or Edge, or pass --browser-executable PATH",
+    "Next:  lab --browser http://localhost:3000/   (example; use your app's URL)"].join("\n");
+}
