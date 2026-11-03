@@ -33,7 +33,8 @@ export function installBrowserExtension(pi:WorkspaceExtensionAPI) {
     if(args.trim()==='close'&&browser){try{await browser.close();}catch{/* view() reports retained state */}refresh(ctx);const v=browser.view();post(statusLines(v),ctx,v.state==='cleanup-failed'?'error':'info');return;}
     const v=view();refresh(ctx);if(!v){ctx.ui.notify('Browser inactive. Start LAB with --browser URL.','info');return;}post(statusLines(v),ctx);
   }});
-  pi.on('session_start',(_event,ctx)=>{refresh(ctx);});
+  // Ordinary lab (no --browser) registers no browser handlers and sets no chip.
+  if(browser||staleOrigin)pi.on('session_start',(_event,ctx)=>{refresh(ctx);});
   if(!browser)return;
   // Browser turn verdict: from lab_browser tool results only, never model text.
   let outcomes:ToolOutcome[]=[];

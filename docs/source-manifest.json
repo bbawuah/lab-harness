@@ -70,6 +70,7 @@
     "docs/browser-evidence/session-result.json",
     "docs/browser-evidence/tui-reload.txt",
     "docs/browser-evidence/tui-tools.txt",
+    "docs/browser-ux-contract.md",
     "docs/browser-workspace-contract.md",
     "docs/browser-workspace-evidence.md",
     "docs/build-plan.md",
@@ -360,6 +361,7 @@
     "src/browser/projection.ts",
     "src/browser/runtime.ts",
     "src/browser/session.ts",
+    "src/browser/states.ts",
     "src/candidate.ts",
     "src/cli.ts",
     "src/context.ts",
@@ -381,7 +383,9 @@
     "src/pi/commands.ts",
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
+    "src/pi/status-indicator.ts",
     "src/pi/terminal-mark.json",
+    "src/pi/terminal-text.ts",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
     "src/pi/workspace-config.ts",
@@ -400,6 +404,7 @@
     "src/util.ts",
     "src/workspace.ts",
     "tests/bootstrap.test.ts",
+    "tests/browser-ux.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
     "tests/cleanup-child.ts",
@@ -584,6 +589,10 @@
     },
     "docs/browser-evidence/tui-tools.txt": {
       "sha256": "c4859204de1c02bab7c8554d4af99f4988159654b5a8475696c9611086b3757f",
+      "status": "added"
+    },
+    "docs/browser-ux-contract.md": {
+      "sha256": "bfb3e1341143554035b315df2da7e4931c6a4b1fe40aa30060ad39871b876a51",
       "status": "added"
     },
     "docs/browser-workspace-contract.md": {
@@ -1639,7 +1648,7 @@
       "status": "added"
     },
     "lab": {
-      "sha256": "151d22f9ee6ae8ae66bc40948f448d213af4b298f0134a430be429f0af668773",
+      "sha256": "42ef1653ed97225fef0564b401d8e69c300e45264a0e9192f09386782cb0a427",
       "status": "added"
     },
     "package.json": {
@@ -1647,7 +1656,7 @@
       "status": "added"
     },
     "scripts/acquire-browser.ts": {
-      "sha256": "e2cb055e2985ed77c9a104d3d82df2dcb0ba27776dded307a10fa0cddad686cc",
+      "sha256": "40a2dead388ac3df7807c8d4f9f599a59f3fda599fc6a73c191648e1853fa411",
       "status": "added"
     },
     "scripts/acquire-fd.ts": {
@@ -1737,11 +1746,15 @@
       "status": "added"
     },
     "src/browser/runtime.ts": {
-      "sha256": "19ff2e38314a60047573a41a3ea02519d3ae6d7ab98feab23ae579401d6f4ead",
+      "sha256": "2ac6b976a1f11f815cc352c783c311a4be310c41e35b87aa0d43172c3b08e752",
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "02e37f5dde986a0530fb769638d3c0cff0251ac8b5c81a2780b70d609399592a",
+      "sha256": "b2d37ce5298777ce14702889ed01b5fc4a7c25d61f4a8ab3c397d0bfcaabe49e",
+      "status": "added"
+    },
+    "src/browser/states.ts": {
+      "sha256": "a3867bf85637d4df80b8e01e917ad6c5c4a7148b9dbda472484c774ae1516f5d",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1817,11 +1830,11 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "ddfb8d4b79155ffe35bd1dd7240b1bae9478a1d2756ee3c79f6a3eb061373ee1",
+      "sha256": "64132cad7a9413476d53733144c76fc3ed8789b2349e09e188404872a66cbf41",
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "e5f94a19e1906f5c1258f1fd0085290a51da474916ad71f5fe94e0ab03881039",
+      "sha256": "60b60213bf5949560f7051217e8a257846e834eff9297b9337ddaf0202e272d0",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -1832,8 +1845,16 @@
       "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
       "status": "added"
     },
+    "src/pi/status-indicator.ts": {
+      "sha256": "f27a507d7bdb72b17fe8255af66d41bceab9182cc7f9948222cdab2ad5d9e2b8",
+      "status": "added"
+    },
     "src/pi/terminal-mark.json": {
       "sha256": "6d4f694a1bb26ee27be3c2209a35be4133214c375e98393b0470bd22822eee2d",
+      "status": "added"
+    },
+    "src/pi/terminal-text.ts": {
+      "sha256": "d60f6a3127597c89dbb4ef17f188a1640cf415c3766795ef5ddb75fc8a472f24",
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
@@ -1849,7 +1870,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "d5dd0d76f2390b40a3aed37dbb9bd66d326a692b09b6e54155afa1f9762ae87a",
+      "sha256": "50035c5b88984e0aa954e59e283f1edb0c6977c3cfbb3cbb82d1deba85a7c2a8",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -1912,8 +1933,12 @@
       "sha256": "031f1aaaf7db11575c72131e5c9f72872d87bc52b767cdd8b63a5f73c214db05",
       "status": "added"
     },
+    "tests/browser-ux.test.ts": {
+      "sha256": "18ef9447b22a037d6adabf7f8649a2ed6056cc554c22aa2518ee2a778c389142",
+      "status": "added"
+    },
     "tests/browser.test.ts": {
-      "sha256": "c3b5c65607f5afa5439c14dad2fd0efb1d00c86eb7da4f3e62be76850098a1ce",
+      "sha256": "52fdf87c3640ccb19dc3fe06b17b9d0465763ed50cb74414c9559d94244d8b47",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
