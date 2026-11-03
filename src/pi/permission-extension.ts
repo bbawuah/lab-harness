@@ -3,7 +3,7 @@
  * 1.4.0 types.ts:1250–1265). A block becomes an error tool result for the model
  * (agent-loop.ts:718–785). Every failure path denies. See docs/permission-modes-contract.md.
  */
-import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, writeSync } from "node:fs";
+import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, statSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
 import { wrapColumns } from "./display.ts";
 import { approvalChoices, approvalTitle, autoChoices, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
@@ -57,8 +57,19 @@ export function permissionOptionsFromEnvironment(env: NodeJS.ProcessEnv = proces
 }
 
 export function installPermissionExtension(pi: PermissionAPI, options: PermissionOptions = permissionOptionsFromEnvironment()) {
-  // In-memory mode is authoritative; the file is read only when the extension loads (startup or /reload).
+  // In-memory mode is authoritative. /reload re-imports this module in the same Pi
+  // process, so the mode is kept in a process-global slot keyed by the state file;
+  // the file is trusted only on the first load of a launch. A file changed by
+  // anything else (an approved command, another process) is ignored and restored.
+  const memory: Map<string, PermissionMode> = ((globalThis as any)[Symbol.for("lab.permission.modes")] ??= new Map());
   let mode = readModeFile(options.statePath);
+  let ignoredFileChange = false;
+  if (options.statePath) {
+    const kept = memory.get(options.statePath);
+    if (kept && kept !== mode) { ignoredFileChange = true; mode = kept; try { writeModeFile(options.statePath, kept); } catch {} }
+    else if (kept) mode = kept;
+    memory.set(options.statePath, mode);
+  }
   const grants = new Set<string>();
   const families = new Map<string, GatedFamily>();
   // Tools LAB already classifies; a family may not take them over.
@@ -73,7 +84,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   let queue: Promise<unknown> = Promise.resolve();
   const status = (ctx: PermissionContext) => { try { ctx.ui.setStatus?.("lab-mode", `mode: ${mode} · /lab-mode`); } catch {} };
   const setMode = (next: PermissionMode, ctx: PermissionContext) => {
-    if (options.statePath) writeModeFile(options.statePath, next);
+    if (options.statePath) { writeModeFile(options.statePath, next); memory.set(options.statePath, next); }
     mode = next; grants.clear(); status(ctx);
     ctx.ui.notify(`LAB mode: ${next} — ${modeDescriptions[next]}.`, next === "auto" ? "warning" : "info");
   };
@@ -82,6 +93,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     // Grants never cross sessions; /reload re-creates this extension and starts empty too.
     if (event?.reason !== "startup") grants.clear();
     status(ctx);
+    if (ignoredFileChange) { ignoredFileChange = false; try { ctx.ui.notify(`LAB ignored a change to its mode file made outside /lab-mode; the mode stays ${mode}.`, "warning"); } catch {} }
   });
 
   /** Entering auto needs one explicit confirm that names what auto skips. Anything else keeps the mode. */
@@ -119,7 +131,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     const roots: PathRoots = { project: options.projectRoot ?? cwd, excluded: options.excluded ?? [] };
     const family = families.get(event.toolName);
     const approval = family ? describeFamilyApproval(family, event.toolName, event.input)
-      : describeApproval(event.toolName, event.input, { cwd, roots, browser: options.browser, fileSize: path => { try { const s = lstatSync(path); return s.isFile() ? s.size : undefined; } catch { return undefined; } } });
+      : describeApproval(event.toolName, event.input, { cwd, roots, browser: options.browser, fileSize: path => { try { const s = statSync(path); return s.isFile() ? s.size : undefined; } catch { return undefined; } } });
     if (approval.sessionGrants !== false && grants.has(approval.scope)) return undefined;
     if (!ctx.hasUI || ctx.mode !== "tui") return { block: true, reason: denial(event.toolName, "no interactive approval is available, so LAB denied it") };
     if (ctx.signal?.aborted) return { block: true, reason: denial(event.toolName, "the turn was cancelled") };

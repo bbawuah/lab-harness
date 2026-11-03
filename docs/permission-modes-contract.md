@@ -105,15 +105,25 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 ## Integrity
 
 - The model cannot change its own mode. Only `lab --mode` and the operator's `/lab-mode` command change it. No tool
-  changes it. The extension's in-memory mode is authoritative. The file is read only at extension load (startup or
-  `/reload`) and is written only by LAB.
+  changes it. The in-memory mode is authoritative and survives `/reload` in a process-global slot keyed by the state
+  file. The file is trusted only on the first load of a launch. If anything else changed it (an approved command,
+  another process), LAB ignores the change, rewrites the file and warns once: "LAB ignored a change to its mode file
+  made outside /lab-mode".
 - `edits` auto-approves `edit`/`write` only when the target's realpath is inside the project root's realpath. For a
   file that doesn't exist yet, that is the deepest existing ancestor's realpath plus the remaining components, and
   those must not include `..`. Symlinks and `..` escapes, unresolvable paths, and paths with control or unicode-space
   characters ask instead. A path under the LAB run directory, the LAB state root or the install root also asks, even
   when it sits inside the project.
+- `edits` never auto-approves project paths that tools later turn into code execution or agent instructions. Any
+  path component (case- and NFC-insensitive) of `.git`, `.pi`, `.agents`, `.claude`, `.codex`, `.husky`, `.vscode`
+  or `.envrc` asks, and the prompt marks it "(agent/VCS config — can run code)". Examples: git config and hooks
+  (fsmonitor, pager, hooks run on later git commands); Pi's `.pi/settings.json` (`shellCommandPrefix`/`shellPath`
+  would silently prefix every approved bash after `/reload`); `.pi/SYSTEM.md`; direnv. `ask` mode is unchanged.
 - `bash` is never auto-approved by `edits`.
-- This is an approval gate, not an OS sandbox. Approved commands run as the user.
+- This is an approval gate, not an OS sandbox. Approved commands run as the user. Paths are resolved when a call is
+  gated. Pi gates a whole parallel tool batch before running it, so an approved command in the same batch can swap a
+  directory for a symlink before an auto-approved edit runs. Hard links already in the project are followed. The
+  OS sandbox follow-up is listed as out of scope.
 
 ## Registering another tool family
 
@@ -146,8 +156,10 @@ gate.registerFamily({
 
 `lab_browser` call rows read `Browser · fill @e4 textbox "Email" = "ada@…" · http://127.0.0.1:PORT`. Masking matches
 the prompt. Result rows read `Browser · filled @e4 textbox "Email" · <origin>` (`clicked`, `navigated <url>`,
-`snapshot N refs`, `read N chars`). Refusals keep `Browser refused · <code>`. The element label is captured into the
-row's render state when the call row first renders, so a later snapshot doesn't change it. #23's escaping and width
+`snapshot N refs`, `read N chars`). Refusals keep `Browser refused · <code>`. The element label comes only from a
+record made when that call's `execute` starts (complete args, refs from the snapshot the model used), keyed by Pi's
+`toolCallId`. While args stream, and for rows re-rendered after `/reload` or `/resume`, the row shows the ref without
+a label and masks the value. #23's escaping and width
 rules apply. Expanded results keep the machine details unchanged.
 
 ## Acceptance

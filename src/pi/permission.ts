@@ -87,7 +87,7 @@ export function denial(toolName: string, why: string, note?: string): string {
 // ---------------------------------------------------------------------------
 const unsafePathCharacters = /[\u0000-\u001f\u007f-\u009f\u00a0\u1680\u2000-\u200f\u2028-\u202f\u205f\u2060-\u206f\u3000\ufeff]/;
 export type PathRoots = { project: string; excluded: string[] };
-export type ResolvedPath = { absolute?: string; real?: string; inside: boolean; display: string };
+export type ResolvedPath = { absolute?: string; real?: string; inside: boolean; sensitive?: boolean; display: string };
 function within(root: string, path: string): boolean {
   const rel = relative(root, path);
   return rel !== "" && rel !== ".." && !rel.startsWith(".." + sep) && !isAbsolute(rel);
@@ -108,6 +108,14 @@ function realTarget(absolute: string): string | undefined {
   }
 }
 /** Mirrors pinned Pi resolveToCwd (strip @, ~ expansion, file://) but refuses ambiguous characters. */
+/**
+ * Project paths that tools later turn into code execution or agent instructions
+ * (git config/hooks, Pi settings such as shellCommandPrefix, agent and editor
+ * config, direnv). `edits` never auto-approves them; they always ask.
+ * Compared per path component, case- and normalization-insensitively (APFS).
+ */
+export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc"];
+const isSensitive = (relativePath: string) => relativePath.split(sep).some(part => sensitiveComponents.includes(part.normalize("NFC").toLowerCase()));
 export function resolveTargetPath(raw: unknown, cwd: string, roots: PathRoots): ResolvedPath {
   if (typeof raw !== "string" || raw.length === 0 || raw.length > 4096) return { inside: false, display: "(invalid path)" };
   if (unsafePathCharacters.test(raw)) return { inside: false, display: displaySafe(raw) + "  (unusual characters)" };
@@ -122,8 +130,13 @@ export function resolveTargetPath(raw: unknown, cwd: string, roots: PathRoots): 
   const display = displaySafe(lexicalInside ? relative(within(project, absolute) ? project : resolve(roots.project), absolute) : absolute);
   if (!real) return { absolute, inside: false, display: display + "  (unresolvable)" };
   const excluded = roots.excluded.flatMap(path => { try { return [realpathSync(path)]; } catch { return [resolve(path)]; } });
-  const inside = within(project, real) && !excluded.some(root => withinOrEqual(root, real));
-  return { absolute, real, inside, display: inside ? displaySafe(relative(project, real)) : display + (real !== absolute ? `  → ${displaySafe(real)}` : "") + "  (outside project)" };
+  const inProject = within(project, real), labState = excluded.some(root => withinOrEqual(root, real));
+  // Check the lexical path too: a not-yet-existing `.PI/x` keeps its typed case in `real`.
+  const sensitive = inProject && (isSensitive(relative(project, real)) || (lexicalInside && isSensitive(relative(within(project, absolute) ? project : resolve(roots.project), absolute))));
+  const inside = inProject && !labState && !sensitive;
+  if (inside) return { absolute, real, inside, display: displaySafe(relative(project, real)) };
+  const why = labState ? "LAB state" : sensitive ? "agent/VCS config — can run code" : "outside project";
+  return { absolute, real, inside, sensitive, display: (inProject ? displaySafe(relative(project, real)) : display + (real !== absolute ? `  → ${displaySafe(real)}` : "")) + `  (${why})` };
 }
 
 // ---------------------------------------------------------------------------
@@ -183,7 +196,8 @@ export function describeApproval(toolName: string, input: Record<string, unknown
     const scope = `${toolName}\0${target.real ?? target.absolute ?? String(input.path)}`;
     if (toolName === "write") {
       const content = typeof input.content === "string" ? input.content : "";
-      const size = target.absolute ? facts.fileSize?.(target.absolute) : undefined;
+      // Pi's write follows symlinks, so size the file the link points to.
+      const size = target.real ?? target.absolute ? facts.fileSize?.((target.real ?? target.absolute)!) : undefined;
       return { heading: "Write file?", scope, scopeLabel: "writes to this file",
         lines: [target.display, `${size === undefined ? "new file" : `overwrites ${size} bytes`} · ${countLines(content)} line(s), ${Buffer.byteLength(content)} bytes`, ...previewLines(content, "+ ", 8)] };
     }
@@ -205,7 +219,7 @@ export function describeApproval(toolName: string, input: Record<string, unknown
       return { heading: "Browser: navigate?", lines, scope: `lab_browser\0${origin}\0navigate\0${String(input.url)}`, scopeLabel: "navigation to this URL" };
     }
     lines.push(`${displaySafe(operation.slice(0, 16))} ${elementLabel(input.ref, element)}`);
-    if (operation === "fill") lines.push("value: " + valuePreview(typeof input.text === "string" ? input.text : "", isSecretField(element?.name, element?.role)));
+    if (operation === "fill") lines.push("value: " + valuePreview(typeof input.text === "string" ? input.text : "", element ? isSecretField(element.name, element.role) : true));
     const what = element ? `${element.role}\0${element.name}` : `ref\0${String(input.ref)}`;
     return { heading: `Browser: ${displaySafe(operation.slice(0, 16))}?`, lines, scope: `lab_browser\0${origin}\0${operation}\0${what}`, scopeLabel: `${displaySafe(operation.slice(0, 16))} on this element` };
   }

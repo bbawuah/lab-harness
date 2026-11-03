@@ -3,8 +3,8 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, s
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
-import { installPermissionExtension, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
-import { browserCallText, browserResultText } from "../src/pi/browser-extension.ts";
+import { installPermissionExtension, permissionOptionsFromEnvironment, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
+import { browserCallText, browserResultText, recordBrowserCall, renderBrowserSuccess } from "../src/pi/browser-extension.ts";
 import { columns } from "../src/pi/display.ts";
 import extension from "../src/pi/workspace-extension.ts";
 
@@ -402,4 +402,71 @@ test("switching to auto needs one confirm that names what auto skips; the start 
   } finally { sel.done(); }
   expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode.");
   expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions.");
+});
+
+test("review r1 P1: edits never auto-approves git, Pi, agent or direnv config (case/normalization-insensitive)", async () => {
+  const h = harness({ mode: "edits", answers: Array(40).fill("deny") });
+  try {
+    const p = h.project;
+    mkdirSync(join(p, ".git", "hooks"), { recursive: true }); writeFileSync(join(p, ".git", "config"), "[core]\n");
+    mkdirSync(join(p, "sub", ".git"), { recursive: true }); mkdirSync(join(p, ".Pi"), { recursive: true });
+    const sensitive = [".git/config", ".git/hooks/pre-commit", ".GIT/config", ".pi/settings.json", ".PI/settings.json", ".pi/APPEND_SYSTEM.md", "sub/.git/config",
+      ".agents/x.md", ".claude/settings.json", ".codex/config.toml", ".husky/pre-commit", ".vscode/tasks.json", ".envrc", "./.git", "sub/../.pi/settings.json"];
+    for (const path of sensitive) {
+      const r = resolveTargetPath(path, p, { project: p, excluded: [] });
+      expect([path, r.inside, r.sensitive]).toEqual([path, false, true]);
+      expect(r.display).toContain("agent/VCS config");
+      expect(await h.call("write", { path, content: "x" })).toMatchObject({ block: true });
+      expect(await h.call("edit", { path, edits: [{ oldText: "a", newText: "b" }] })).toMatchObject({ block: true });
+    }
+    expect(h.prompts).toHaveLength(sensitive.length * 2); // asked, not refused or run
+    expect(h.prompts[0]!.title).toContain("(agent/VCS config — can run code)");
+    // Ordinary project files and look-alike names still run in edits.
+    for (const path of ["src/a.ts", ".github/workflows/ci.yml", ".gitignore", "notes.git", "pi/settings.json", ".pinned"]) expect(await h.call("write", { path, content: "x" })).toBeUndefined();
+    expect(h.prompts).toHaveLength(sensitive.length * 2);
+  } finally { h.done(); }
+});
+
+test("review r1 P2: /reload keeps the in-memory mode; a mode file changed outside /lab-mode is ignored, restored and reported", async () => {
+  const h = harness({ mode: "edits" });
+  try {
+    writeModeFile(h.statePath, "auto"); // e.g. an approved command writing $LAB_PERMISSION_STATE
+    const handlers = new Map<string, Function>(), notices: string[] = [];
+    const reloaded = installPermissionExtension({ on(n: string, f: Function) { handlers.set(n, f); }, registerCommand() {} } as any, { statePath: h.statePath, projectRoot: h.project, excluded: [] });
+    expect(reloaded.mode).toBe("edits");
+    expect(JSON.parse(readFileSync(h.statePath, "utf8"))).toEqual({ mode: "edits" });
+    handlers.get("session_start")!({ reason: "reload" }, { ...h.ctx, ui: { ...h.ctx.ui, notify: (m: string) => notices.push(m) } });
+    expect(notices).toEqual(["LAB ignored a change to its mode file made outside /lab-mode; the mode stays edits."]);
+    // /lab-mode changes are kept across a later reload.
+    await h.commands.get("lab-mode").handler("read-only", h.ctx);
+    expect(installPermissionExtension({ on() {}, registerCommand() {} } as any, { statePath: h.statePath, projectRoot: h.project, excluded: [] }).mode).toBe("read-only");
+  } finally { h.done(); }
+});
+
+test("review r1 P2: browser rows label only from the executed call record, never from partial args or a newer snapshot", () => {
+  const origin = "http://127.0.0.1:4321";
+  // Streaming partial args (no record yet): no label, value masked even if it looks harmless.
+  expect(browserCallText({ operation: "fill", ref: "@e", text: "hunter2" }, undefined, origin)).toBe("Browser · fill @e = •••• (masked, 7 chars) · " + origin);
+  recordBrowserCall("call-1", "@e12", { role: "textbox", name: "Email" });
+  const ok = { details: { result: { filled: "@e12" }, verifiedOrigin: origin } };
+  expect(renderBrowserSuccess(ok, {}, { toolCallId: "call-1" }).render(200).join("")).toBe(`Browser · filled @e12 textbox "Email" · ${origin}`);
+  // Another call id (e.g. a row re-rendered after /reload) or a different ref gets no label.
+  expect(renderBrowserSuccess(ok, {}, { toolCallId: "call-2" }).render(200).join("")).toBe(`Browser · filled @e12 · ${origin}`);
+  expect(renderBrowserSuccess({ details: { result: { filled: "@e1" }, verifiedOrigin: origin } }, {}, { toolCallId: "call-1" }).render(200).join("")).toBe(`Browser · filled @e1 · ${origin}`);
+  // The approval prompt masks a fill whose element is unknown.
+  expect(describeApproval("lab_browser", { operation: "fill", ref: "@e9", text: "plain" }, { cwd: "/p", roots: { project: "/p", excluded: [] }, browser: () => ({ origin }) }).lines.join("\n")).toContain("•••• (masked, 5 chars)");
+});
+
+test("review r1 P2/P3: environment wiring excludes the run dir, state and install roots; write sizes follow symlinks", async () => {
+  expect(permissionOptionsFromEnvironment({ LAB_PERMISSION_STATE: "/s/runs/h-1/permission-mode.json", LAB_WORKSPACE_ROOT: "/proj", LAB_WORKSPACE_AGENT_DIR: "/s/runs/h-1/agent", LAB_WORKSPACE_STATE_DIR: "/s", LAB_INSTALL_ROOT: "/lab" }))
+    .toEqual({ statePath: "/s/runs/h-1/permission-mode.json", projectRoot: "/proj", excluded: ["/s/runs/h-1", "/s", "/lab"] });
+  expect(permissionOptionsFromEnvironment({}).excluded).toEqual([]);
+  const root = realpathSync(mkdtempSync(join(tmpdir(), "lab-permission-size-")));
+  try {
+    writeFileSync(join(root, "real.txt"), "12345"); symlinkSync(join(root, "real.txt"), join(root, "link.txt"));
+    const h = harness({ project: root, answers: [undefined] });
+    try {
+      await h.call("write", { path: "link.txt", content: "x" }); expect(h.prompts[0]!.title).toContain("overwrites 5 bytes");
+    } finally { h.done(); }
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });

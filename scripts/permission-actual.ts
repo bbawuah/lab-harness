@@ -35,7 +35,8 @@ const scenarios: Record<string, (refs: Record<string, { name: string; role: stri
     return [{ name: "lab_browser", args: { operation: "snapshot" } }, { name: "lab_browser", args: { operation: "fill", ref: ref("Password"), text: "hunter2-fixture" } },
       { name: "lab_browser", args: { operation: "snapshot" } }, { name: "lab_browser", args: { operation: "fill", ref: ref("Email"), text: "ada@example.test" } }];
   },
-  S4: () => [{ name: "edit", args: { path: "notes.txt", edits: [{ oldText: "status: reviewed", newText: "status: approved" }] } }, { name: "bash", args: { command: "rm -rf build" } }],
+  S4: () => [{ name: "edit", args: { path: "notes.txt", edits: [{ oldText: "status: reviewed", newText: "status: approved" }] } },
+    { name: "write", args: { path: ".pi/settings.json", content: JSON.stringify({ shellCommandPrefix: "echo fixture-prefix" }) } }, { name: "bash", args: { command: "rm -rf build" } }],
   S5: () => [{ name: "write", args: { path: "readonly.txt", content: "should not exist\n" } }],
   S6: () => [{ name: "edit", args: { path: "notes.txt", edits: [{ oldText: "status: approved", newText: "status: auto" }] } }, { name: "bash", args: { command: "echo auto > auto.txt" } }],
   S7: () => [{ name: "bash", args: { command: "printf '\x1b[2J\x1b]0;pwned\x07' # ‮exe.txt 日本語🙂 " + "x".repeat(90) } }],
@@ -133,10 +134,14 @@ try {
     checks.browserFillsSucceeded = modelLog.filter(m => m.scenario === "S3").every(m => m.toolResults.every(r => !r.includes("LAB_BROWSER")));
     await io.send("/lab-mode edits"); await io.wait("mode: edits");
     await io.send("S4 approve and clean");
-    await io.wait("Allow once"); await io.capture("08-edits-mode-bash-still-asks");
+    // Config that can run code later (.pi/settings.json shellCommandPrefix) still asks in edits.
+    await io.wait("agent/VCS config"); await io.capture("08a-edits-mode-pi-settings-asks");
+    await io.key("escape");
+    await io.wait("Run shell command?"); await io.capture("08-edits-mode-bash-still-asks");
     await io.key("escape"); // Esc denies
     await io.wait("FIXTURE S4 done"); await io.capture("09-edits-mode-result");
     checks.editsAutoApprovedInProjectEdit = readFileSync(join(project, "notes.txt"), "utf8") === "status: approved\n";
+    checks.editsAskedForPiSettings = !existsSync(join(project, ".pi")) && modelLog.some(m => m.scenario === "S4" && m.toolResults.some(r => r.includes("LAB_PERMISSION_DENIED: write was not run (the approval was dismissed)")));
     checks.escDenied = modelLog.some(m => m.scenario === "S4" && m.toolResults.some(r => r.includes("LAB_PERMISSION_DENIED: bash was not run (the approval was dismissed)")));
     await io.send("/lab-mode read-only"); await io.wait("mode: read-only");
     await io.send("S5 write a file");
@@ -173,7 +178,7 @@ checks.narrowRawStreamHasNoHostileControls = !!rawStreams.narrow && !rawStreams.
 
 const sanitizedLog = modelLog.map(m => ({ ...m, toolResults: m.toolResults.map(sanitize) }));
 checks.noHostPathsInModelLog = !leaks(JSON.stringify(sanitizedLog));
-const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 21;
+const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 22;
 const git = (args: string[]) => Bun.spawnSync(["git", ...args], { cwd: source }).stdout.toString().trim();
 const files = Object.fromEntries(readdirSync(out).filter(f => f.endsWith(".txt")).sort().map(f => [f, createHash("sha256").update(readFileSync(join(out, f))).digest("hex")]));
 writeFileSync(join(out, "result.json"), JSON.stringify({

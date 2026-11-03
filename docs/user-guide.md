@@ -232,8 +232,10 @@ The mode survives `/reload`, `/new` and `/resume` within one launch. Each new
 grants live only in memory; they end on `/new`, `/resume`, `/reload` and any mode
 change, and nothing is saved as "always allow". The model cannot change the mode
 itself: the mode is stored in LAB's private run folder, and edits mode never
-auto-approves files outside the project (including through symlinks or `..`) or
-inside LAB's own state. If no prompt can be shown, for example in Pi's json or
+auto-approves files outside the project (including through symlinks or `..`),
+inside LAB's own state, or config that can run code later (`.git`, `.pi`,
+`.agents`, `.claude`, `.codex`, `.husky`, `.vscode`, `.envrc`); those still ask.
+If no prompt can be shown, for example in Pi's json or
 print modes, every gated action is denied unless the mode is auto. Shell commands
 you type yourself with `!` are your own actions and are not gated.
 
