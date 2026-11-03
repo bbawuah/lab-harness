@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { alwaysAsk, delegated, approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
+import { alwaysAsk, approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
 import { installPermissionExtension, modeIndicator, permissionOptionsFromEnvironment, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
 import { browserCallText, browserResultText, recordBrowserCall, renderBrowserSuccess } from "../src/pi/browser-extension.ts";
 import { columns } from "../src/pi/display.ts";
@@ -575,30 +575,5 @@ test("review r2 P3: family heading/scope newlines cannot forge prompt rows; auto
   try {
     a.handlers.get("session_start")!({ reason: "startup" }, a.ctx);
     expect(a.notices.includes(autoStartWarning())).toBe(true);
-  } finally { a.done(); }
-});
-
-test("delegated desktop policy (pass-through): exactly one prompt (the family's), refused in read-only, auto confirm says desktop still asks", async () => {
-  for (const mode of permissionModes) {
-    const h = harness({ mode, answers: ["once"] });
-    try {
-      h.gate.registerFamily({ ...delegated, family: "Desktop", tools: ["lab_desktop"], isRead: (_t: string, i: Record<string, unknown>) => i.operation === "snapshot", describe: () => ({ heading: "Desktop?", lines: [], scope: "-", scopeLabel: "-" }) });
-      const r = await h.call("lab_desktop", { operation: "click" });
-      if (mode === "read-only") expect(r).toMatchObject({ block: true, reason: expect.stringContaining("LAB_PERMISSION_REFUSED") });
-      else expect(r).toBeUndefined();
-      expect(h.prompts).toHaveLength(0); // LAB never prompts: #28's own gate shows the one prompt
-      expect(h.gate.grants.size).toBe(0);
-      // Pass-through does not depend on LAB's UI: the family's gate handles no-UI itself.
-      if (mode !== "read-only") expect(await h.call("lab_desktop", { operation: "click" }, { hasUI: false })).toBeUndefined();
-      expect(await h.call("lab_desktop", { operation: "snapshot" })).toBeUndefined();
-    } finally { h.done(); }
-  }
-  const a = harness({ mode: "ask", answers: ["Cancel"] });
-  try {
-    a.gate.registerFamily({ ...delegated, family: "Desktop", tools: ["lab_desktop"], describe: () => ({ heading: "", lines: [], scope: "", scopeLabel: "" }) });
-    await a.commands.get("lab-mode")!.handler("auto", a.ctx);
-    expect(a.prompts[0]!.title.replace(/\n/g, " ")).toContain("desktop actions still ask");
-    // A delegated family cannot also ask LAB for grants or approval hooks.
-    expect(() => a.gate.registerFamily({ ...delegated, family: "X", tools: ["x_tool"], onApproved() {}, describe: () => ({ heading: "", lines: [], scope: "", scopeLabel: "" }) } as any)).toThrow("LAB_PERMISSION_FAMILY");
   } finally { a.done(); }
 });

@@ -165,12 +165,8 @@ uses it to mint a single-use token bound to that call, so a missing or bypassed 
 throws, the call is denied. A family must not add its own `tool_call` handler or mode check: one gate, one prompt
 queue.
 
-**Two desktop policies, one prompt either way.** With `...delegated` (`prompts: "self"`) the family's own gate
-shows the single Allow once / Deny prompt (agent-desktop: with its bound single-use token). LAB never prompts for
-it: it refuses the family's mutations in `read-only` and otherwise passes them through in every mode, including
-`auto`. LAB grants nothing for the session and does not call `onApproved`; a delegated family may not set either.
-Without an interactive UI, the family's own gate must deny. Reads (`isRead`) run as usual. The auto confirm still
-says desktop actions still ask. An unregistered `lab_desktop` is refused either way.
+**Desktop policy: alwaysAsk + onApproved.** LAB shows the one desktop prompt; `onApproved` mints #28's single-use
+token. There is no pass-through policy.
 
 `alwaysAsk` is the desktop policy: choices are exactly `Allow once` / `Deny`, nothing is granted for the session,
 and `auto` still asks. Without the preset, a family sets the fields itself: `sessionGrants` (false removes "Allow for

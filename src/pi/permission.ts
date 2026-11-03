@@ -63,20 +63,12 @@ export type GatedFamily = {
   sessionGrants: boolean;
   inAuto: "run" | "ask";
   denyWithNote?: boolean;
-  /**
-   * "lab" (default): LAB shows the approval prompt. "self": the family's own gate shows the single prompt;
-   * LAB refuses its mutations in read-only and otherwise passes them through (no LAB prompt, no grants,
-   * no onApproved). The family must then deny on its own when there is no interactive UI.
-   */
-  prompts?: "lab" | "self";
   /** Called only after the gate allows a mutating call (prompt allow, or auto with inAuto "run"); a throw denies it. */
   onApproved?: (toolCallId: string, toolName: string, input: Record<string, unknown>) => void;
   describe(toolName: string, input: Record<string, unknown>): { heading: string; lines: string[]; scope: string; scopeLabel: string };
 };
 /** Policy hook for families that must always ask: no session grants, asks in auto, choices Allow once / Deny. */
 export const alwaysAsk = Object.freeze({ sessionGrants: false, inAuto: "ask", denyWithNote: false } as const);
-/** Pass-through policy: the family prompts itself (one prompt); LAB only refuses its mutations in read-only. */
-export const delegated = Object.freeze({ sessionGrants: false, inAuto: "ask", denyWithNote: false, prompts: "self" } as const);
 const readTools = new Set(["read", "grep", "find", "ls", "lab_search", "lab_files", "relay_peers", "relay_inbox"]);
 export function classify(toolName: string, input: Record<string, unknown> | undefined, family?: GatedFamily): ToolClass {
   if (!family && reservedFamilyTools.has(toolName)) return "unregistered";
@@ -97,7 +89,6 @@ export type Decision = { kind: "run" } | { kind: "ask" } | { kind: "refuse"; rea
 export function decide(mode: PermissionMode, toolName: string, klass: ToolClass, insideProject: boolean, family?: GatedFamily): Decision {
   if (klass === "unregistered") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because its approval policy is not installed. Do not retry it.` };
   if (klass === "read") return { kind: "run" };
-  if (klass === "family" && family?.prompts === "self") return mode === "read-only" ? decide(mode, toolName, "other", false) : { kind: "run" };
   if (mode === "auto") return klass === "family" && family?.inAuto !== "run" ? { kind: "ask" } : { kind: "run" };
   if (mode === "read-only") return { kind: "refuse", reason: `LAB_PERMISSION_REFUSED: ${displaySafe(toolName)} was not run because LAB is in read-only mode. Only the user can change the mode (/lab-mode).` };
   if (klass === "relay-ack") return { kind: "run" };
