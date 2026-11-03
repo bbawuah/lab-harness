@@ -60,7 +60,7 @@ the scratch HOME was removed. No `/tmp/lab-s-*` sockets or LAB processes remaine
 | Coding loop UI (read / edit diff / bash test / bash commit) and endpoint-down errors | **Exercised against a scripted fixture**. Pi rendering is real; model reasoning is not. |
 | Any real model, provider, auth or login | **Not exercised** (hard limit) |
 | `lab_browser` model tool (snapshot/fill/click) | **Not exercised** here; see PR #23 evidence `docs/browser-evidence/tui-tools.txt` |
-| Esc interrupt during streaming, queued follow-up (Option+Enter), large paste, image paste, mouse, Relay between two sessions, `Ctrl+B q` detach | **Not exercised** (the fixture replies instantly; time-boxed) |
+| Esc interrupt during streaming, queued follow-up (Option+Enter), large paste, image paste, mouse, `Ctrl+B q` detach (Relay between two sessions: see [Tool flows](#tool-flows-second-walk-2026-11-03)) | **Not exercised** (the fixture replies instantly; time-boxed) |
 | Real terminal emulators (iTerm2, Ghostty, Apple Terminal), SSH, WSL, Linux | **Not exercised**. tmux on macOS only. |
 | Pi trust prompt | **Not observed.** No prompt appeared, and the trigger conditions were not read in Pi source. |
 
@@ -109,3 +109,59 @@ No P0 was found: every step had a workaround.
 - **Narrow terminals.** `--single-pane` is a good narrow-terminal answer, once you know about it.
 - **Browser.** The flow is honest: setup is explicit, status reports the bound origin, and close is real and
   leaves no processes.
+
+## Tool flows (second walk, 2026-11-03)
+
+Brian asked for wireframes of the flows that use Relay, agent-browser and agent-desktop (boards 8–10 in
+[WIREFRAMES.md](WIREFRAMES.md)). Each tool has a different evidence base:
+
+| Tool | Evidence | Model involved? |
+|---|---|---|
+| **Relay** | **Walked for real** with two `lab` sessions (A in the default layout, B with `--single-pane`) on one fixture project in a fresh scratch HOME. Runtime pin `05b0d36`. Only operator slash commands were used: `/relay-peers`, `/relay-send`, `/relay-inbox`, `/relay-ack`, `/exit`. | **No.** The route pointed at a closed loopback port (`127.0.0.1:9`) as a backstop. One accidental prompt (F28) hit that port and failed. No request left the machine. |
+| **agent-browser** (`lab_browser`) | Not walked again. Current state comes from the PR #23 fixture capture `docs/browser-evidence/tui-tools.txt` and from my steps 22–24. The real model run is in `docs/research/agent-tools/LIVE-SUCCESS.md` (experimental launcher, 2026-10-31). | Not in this round. |
+| **agent-desktop** | Not part of LAB. The only evidence is the agent-tools experiment's permission preflight in `docs/research/agent-tools/evidence/desktop-trial.json`. That run stopped at "Accessibility denied", with no app snapshot or action. Board 10 is a **concept**, not a comparison. | No. |
+
+### Relay steps
+
+| # | Step | What happened | Evidence |
+|---|------|---------------|----------|
+| R1 | Both sessions start | Each shows `Relay ready: demo-app/<uuid> (pi-<64 hex>). Use /relay-peers.` | `32-recipient-idle.txt` |
+| R2 | B types `/relay-peers` and Enter, quickly | The input became `/relay-relay-peers`. That is not a command, so it went to the model as a prompt (and failed against the dead port). Context rose to 28.6%. | `30-relay-peers.txt`, `30a-…` |
+| R3 | B types `/relay-peers`, waits, then Enter | Raw JSON: two peers with 67-char IDs, UUID names, epoch-ms `lastSeenAt`. Context rose 28.6% → 30.2%. | `30b-…`, `30c-relay-peers-enter.txt` |
+| R4 | B sends to A by name with key `intro-1` | `{"state": "stored", "duplicate": false, …}`. Using the name instead of the hash works. | `31-relay-send.txt` |
+| R5 | A, idle | No badge, toast, footer or sidebar change. | `32-recipient-idle.txt` |
+| R6 | A runs `/relay-inbox` | JSON message. `from` is the sender's hash, not its name. `unread: 1`. | `33-relay-inbox.txt` |
+| R7 | A acks, then replies with `--reply-to` | `"acknowledged": 1`, then `"state": "stored"`. A's inbox shows `unread: 0`. Both commands need the 36-char message ID typed again. | `34-relay-ack-reply.txt` |
+| R8 | B reads the reply, then makes two mistakes | The reply shows `replyTo`. A one-character name typo gives `Error: RELAY_UNKNOWN_PEER`. Reusing `intro-1` with new text gives `Error: RELAY_CONFLICT`. Neither says what to do. | `35-relay-reply-errors.txt` |
+| R9 | A runs `/exit`. B sends to A and lists peers. | The send still returns `"state": "stored"` with no offline note. `/relay-peers` shows A as `"presence": "offline"`. | `36-relay-offline.txt` |
+
+### Tool-flow friction
+
+| ID | Step | Friction | Evidence | Sev | Comparable behaviour |
+|----|------|----------|----------|-----|-----|
+| F24 | R1, R3, R6, R7 | **Relay output is raw JSON with machine IDs.** Peers are 67-char hashes with UUID names. The inbox shows the sender's hash, not its name. Ack and reply need the 36-char message ID typed back in. | `30c-…`, `33-…`, `34-…` | P2 | Claude Code agent teams (experimental): the lead names each teammate, and any teammate can message another by name [S-T1]. |
+| F25 | R5 | **No signal when mail arrives.** The recipient sees nothing until they run `/relay-inbox`. By design, mail does not wake the model (user guide), but the human gets no sign either. | `32-recipient-idle.txt` | P2 | Claude Code agent teams: messages are delivered to recipients automatically, so the lead doesn't poll [S-T1]. |
+| F26 | R8 | **Relay errors are bare codes** (`RELAY_UNKNOWN_PEER`, `RELAY_CONFLICT`) with no cause or next step. The user guide explains the conflict rule, but the TUI doesn't. | `35-relay-reply-errors.txt` | P2 | Same pattern as F05. |
+| F27 | R9 | **Sending to an offline peer looks the same as sending to an online one.** It returns `"stored"` with no hint that nobody is reading. | `36-relay-offline.txt` | P3 | — |
+| F28 | R2 | **Enter before the slash menu updates can mangle a command, and an unknown slash command becomes a model prompt.** Seen with tmux `send-keys`, which types at paste speed. A fast typist or a paste may hit the same race. Not reproduced by hand. | `30-…`, `30a-…` | P2 | Not researched. |
+| F29 | R3 | **Operator Relay output appears to use model context** (+1.6% for two peers, +0.6% per send). This is inferred from the footer meter, the same as F21. | `30c-…`, `31-…` | P3 | Not researched. |
+| F30 | — | **`lab_browser` rows name only the operation** ("Browser · fill", "completed (expand for page data)"). The ref, field label, typed value and origin are hidden. Fill and click run without asking (same root as F01). | `docs/browser-evidence/tui-tools.txt` | P2 | Claude in Chrome: in Manual mode each action asks Allow/Deny, and new sites ask "once" or "always for this site". Downloads, sensitive input and authorizations always ask [S-T2]. |
+
+Agent-desktop has no friction ID because nothing ships. Board 10 lists design rules for the day it does. The most
+important rule: the macOS Accessibility grant goes to the **launching app** (Terminal, iTerm), not to LAB, so the
+setup must say that every program started from that terminal gets it too.
+
+### Relay: keep
+
+- Sending by peer **name** works, so a short alias is a small step from today.
+- Delivery semantics are honest and robust: idempotent request keys, explicit ack, `replyTo` threading, and
+  presence that turns `offline` on exit.
+- Only the explicit message body is shared, never the transcript.
+
+Sources for the comparisons above (read 2026-11-03 through a search summary; not quoted verbatim):
+
+- [S-T1] Claude Code docs, "Orchestrate teams of Claude Code sessions": https://code.claude.com/docs/en/agent-teams
+- [S-T2] Claude Help Center, "Claude in Chrome permissions guide":
+  https://support.claude.com/en/articles/12902446-claude-in-chrome-permissions-guide, and Claude Code docs
+  "Use Claude Code with Chrome": https://code.claude.com/docs/en/chrome
+

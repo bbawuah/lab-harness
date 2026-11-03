@@ -1,7 +1,8 @@
 # Evidence: sanitized terminal captures (2026-11-03)
 
 Plain text from `tmux capture-pane` during the [JOURNEY.md](../JOURNEY.md) walkthrough. File numbers match the
-journey steps.
+journey steps. Files 30–36 come from the second walk (Relay between two sessions, steps R1–R9 in the
+Tool flows section). They use only slash commands, with the route pointed at a closed loopback port.
 
 Sanitizing:
 

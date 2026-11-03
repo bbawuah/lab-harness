@@ -50,6 +50,18 @@ walkthrough, but F01 is a blocker for regulated users.
 | 12 | F17 | **The Usage line in `lab --help` and in the shell launcher omits the browser flags** (the known finding) | P3 | Generate both Usage lines from `shellOptions`. |
 | 13 | F12 F19–F23 | Generic project error, boilerplate first screen, banner hidden behind the alternate screen, long `/lab-help`, no `--continue`, Ctrl+L = model selector | P3 | See JOURNEY.md. These are cheap polish once the P1s are done. |
 
+## Tool flows (added 2026-11-03)
+
+A second pass covered Relay, agent-browser and agent-desktop ([JOURNEY.md · Tool flows](JOURNEY.md#tool-flows-second-walk-2026-11-03),
+boards 8–10).
+- **Relay** was walked for real between two sessions, using slash commands only and no model. Its delivery rules
+  are sound, but the UI is raw JSON with 67-char IDs (F24). There is no signal when mail arrives (F25), and errors
+  are bare codes (F26). All three are P2. A fast Enter can turn a slash command into a model prompt (F28, P2).
+- **agent-browser** tool rows hide the field, value and origin, and page changes don't ask first (F30, P2, the same
+  root as F01).
+- **agent-desktop** isn't in LAB. Board 10 is a concept that sets rules for a future version: say who gets the macOS
+  grant, bind to one window, and approve every action.
+
 ## Keep (don't regress)
 
 - The pinned, verified supply chain and the refusal to overwrite a foreign `lab` or edit profiles. This is what

@@ -22,11 +22,16 @@ wireframe). The proposals are directions to test, not specifications. Friction I
 | 5 · Browser | Toast-only status vs a persistent `● web <origin>` chip, browser action rows in the transcript, and a closed or breach state with the restart command | F14 F17 | The origin binding is LAB's safety story, so make it visible all the time. Setup ends with the next command. |
 | 6 · Errors and recovery | "Error: Connection error." ×3 vs a message that names the host, cause and fix (`/lab-doctor`, `lab --configure`) while keeping the prompt; a `/lab-doctor` checklist; and a `lab --uninstall` that lists what it removes and keeps | F05 F15 F18 F22 | Mirrors `claude doctor` and `codex doctor --network-only`, and the Claude uninstall docs. |
 | 7 · Narrow widths | 80 and 40 columns captured vs auto-fold to one pane below 100 columns (shell as a tab, `Ctrl+B l`) and frameless layout below 60 | F13 | `--single-pane` already works, so make it automatic and reversible. Claude shortens hints on narrow terminals (changelog v2.1.316). |
+| 8 · Relay between sessions | Captured two-session walk (raw JSON, hashes, no arrival signal, bare error codes) vs named peers (`@A`), a rendered peer list, Tab completion, auto request keys, receipts that say online/offline, an `✉ 1 from @B` status chip with an inline reply/ack row, and an approval step when the **model** wants to send | F24–F29, F01 | Relay's delivery rules are sound. The friction is all in presentation. A model-initiated send shares text outside the session, so it gets the same ask-first gate as edits. |
+| 9 · Agent-browser: model loop | PR #23 fixture rows ("Browser · fill / completed") vs rows naming ref, label, value and origin; one batched approval for page changes; verification read from the page; stale-ref and uncertain-action states | F30, F01, F14, F16 | Reads run freely, changes ask, and the turn verdict comes from tool results, as in board 4. The uncertain-action message keeps LAB's "never retry" rule and tells the user to look first. |
+| 10 · Agent-desktop (concept) | The experiment's permission JSON vs a concept: `lab --setup-desktop` that names **who** gets the Accessibility grant, a picker that binds to one window, and per-action approval with no "always" | concept | Nothing ships today, so this board is a design rule set, not a fix. Desktop actions can reach anything the user can, so they get the strictest gate. |
+
+Boards 8–10 were added on 2026-11-03 in a second pass. See [JOURNEY.md · Tool flows](JOURNEY.md#tool-flows-second-walk-2026-11-03).
 
 **Not designed in this round:**
 
 - multi-session or worktree management (P5);
 - an offline transfer bundle (P4);
-- the Relay UI;
+- Relay groups across projects (`--relay-group`);
 - large-paste chips;
 - mouse behaviour.
