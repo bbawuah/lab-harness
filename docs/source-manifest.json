@@ -1911,7 +1911,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "1b33ff9cb3457768815462f793e2327ddd9f00cb1022a152225273327a6cfb1c",
+      "sha256": "0d9254df0a52ec5fa1ea1a32b3d24da2c92b4e30029a217c36339313adda6ee6",
       "status": "added"
     },
     "src/pi/commands.ts": {

@@ -5,6 +5,11 @@ import { elementLabel, isSecretField, valuePreview, type BrowserElement, type Br
 export { columns, displaySafe, wrapColumns } from './display.ts';
 const component=(text:string)=>({render:(width:number)=>wrapColumns(text,width),invalidate(){}});
 const errorText=(result:any)=>{const d=result?.details?.error;if(typeof d==='string')return d;const t=result?.content?.find?.((c:any)=>c?.type==='text')?.text;return typeof t==='string'&&t?t.slice(0,400):'error';};
+/** Failed lab_browser result row (owned by browser UX: error states and recovery text). */
+export function renderBrowserFailure(result:any){return component('Browser refused · '+errorText(result));}
+/** Successful lab_browser result row (owned by permission modes: F30 rows). Expanded keeps machine details. */
+export function renderBrowserSuccess(result:any,options:any,context?:any){
+  if(options?.expanded)return component(JSON.stringify(result?.details??{},null,2));return component(browserResultText(result?.details,context?.state?.labBrowserLabel));}
 /** F30 call row: operation, element (ref, role, name), masked value preview and origin. */
 export function browserCallText(args:any,element:BrowserElement|undefined,origin:string|undefined):string{
   const op=typeof args?.operation==='string'?args.operation.slice(0,32):'action';const parts=['Browser · '+displaySafe(op)];
@@ -40,8 +45,7 @@ export function installBrowserExtension(pi:WorkspaceExtensionAPI):((input:Record
       if(state.labBrowserLabel===undefined&&args?.ref)state.labBrowserLabel=elementLabel(args.ref,state.labBrowserElement??undefined);return component(browserCallText(args,state.labBrowserElement??undefined,browser?.descriptor?.origin));},
     // Pinned Pi reports validation/blocked/cancelled errors via context.isError with details {}.
     renderResult(result:any,options:any,_theme?:any,context?:any){const failed=context?.isError===true||result?.isError===true||!!result?.details?.error;
-      if(failed)return component('Browser refused · '+errorText(result));
-      if(options?.expanded)return component(JSON.stringify(result?.details??{},null,2));return component(browserResultText(result?.details,context?.state?.labBrowserLabel));},
+      return failed?renderBrowserFailure(result):renderBrowserSuccess(result,options,context);},
     async execute(_id,params,signal){try{const result=await browser!.execute(params as BrowserInput,signal);return {content:[{type:'text',text:JSON.stringify(result)}],details:result};}catch(e){const error=e instanceof Error&&e.message.startsWith('LAB_BROWSER_')?e.message:'LAB_BROWSER_REFUSED';return {content:[{type:'text',text:error}],details:{error},isError:true};}}
   });
   return facts;
