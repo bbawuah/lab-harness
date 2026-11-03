@@ -8,7 +8,7 @@ import { envelope, insist, project } from './projection.ts';
 export type BrowserInput = { operation: 'snapshot'|'navigate'|'fill'|'click'|'read'; url?: string; ref?: string; text?: string };
 export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown };
 export class BrowserSession {
-  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Set<string>(); private closed = false; private failedInMemory = false;
+  readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Map<string,{role:string;name:string}>(); private closed = false; private failedInMemory = false;
   constructor(descriptor: BrowserDescriptor) {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
@@ -70,11 +70,13 @@ export class BrowserSession {
         await this.scope(signal);if(op!=='snapshot'&&op!=='read')this.refs.clear();
         const raw=await this.call(tool,args,signal);const {result,lifecycle}=project(raw,op);this.identity({lifecycle});
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
-        if(op==='snapshot')this.refs=new Set(Object.keys(result.result.refs).map(r=>'@'+r));
+        if(op==='snapshot')this.refs=new Map(Object.entries(result.result.refs as Record<string,{role:string;name:string}>).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));
         return {...result,verifiedOrigin:this.descriptor.origin};
       } catch(e) {this.refs.clear();this.markFailed();await this.closeNow().catch(()=>{});throw e;}
     });this.queue=task.catch(()=>{});return task;
   }
+  /** Role/name of a ref from the latest snapshot (display only; page text is untrusted). */
+  element(ref:unknown):{role:string;name:string}|undefined {return typeof ref==='string'?this.refs.get(ref):undefined;}
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}

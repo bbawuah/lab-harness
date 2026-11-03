@@ -1,0 +1,133 @@
+/**
+ * LAB approval gate on Pi's supported `tool_call` extension event (pinned Pi
+ * 1.4.0 types.ts:1250–1265). A block becomes an error tool result for the model
+ * (agent-loop.ts:718–785). Every failure path denies. See docs/permission-modes-contract.md.
+ */
+import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, writeSync } from "node:fs";
+import { dirname } from "node:path";
+import { approvalChoices, approvalTitle, classify, decide, denial, describeApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type PathRoots, type PermissionMode } from "./permission.ts";
+
+export type PermissionUI = {
+  select(title: string, options: string[], opts?: { signal?: AbortSignal }): Promise<string | undefined>;
+  input(title: string, placeholder?: string, opts?: { signal?: AbortSignal }): Promise<string | undefined>;
+  notify(message: string, kind?: "info" | "warning" | "error"): void;
+  setStatus?(key: string, text: string | undefined): void;
+};
+export type PermissionContext = { hasUI?: boolean; mode?: string; cwd?: string; signal?: AbortSignal; ui: PermissionUI };
+export type ToolCallEvent = { type: "tool_call"; toolName: string; toolCallId: string; input: Record<string, unknown> };
+export type PermissionAPI = {
+  on(name: "tool_call", handler: (event: ToolCallEvent, ctx: PermissionContext) => Promise<{ block: true; reason: string } | undefined>): unknown;
+  on(name: "session_start", handler: (event: { reason?: string }, ctx: PermissionContext) => void): unknown;
+  registerCommand(name: string, options: { description: string; handler(args: string, ctx: PermissionContext): Promise<void> }): void;
+};
+export type PermissionOptions = {
+  statePath?: string; projectRoot?: string; excluded?: string[];
+  browser?: (input: Record<string, unknown>) => BrowserFacts | undefined;
+  columns?: () => number;
+};
+
+/** Reads the private LAB mode file. Anything unexpected falls back to ask. */
+export function readModeFile(path: string | undefined): PermissionMode {
+  if (!path) return "ask";
+  try {
+    const entry = lstatSync(path);
+    if (!entry.isFile() || entry.isSymbolicLink() || entry.uid !== process.getuid?.() || (entry.mode & 0o077) !== 0 || entry.size > 256) return "ask";
+    return parseMode(JSON.parse(readFileSync(path, "utf8"))?.mode) ?? "ask";
+  } catch { return "ask"; }
+}
+/** Writes the mode without following symlinks; mode 0600. */
+export function writeModeFile(path: string, mode: PermissionMode): void {
+  const fd = openSync(path, constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | constants.O_NOFOLLOW, 0o600);
+  try {
+    const entry = fstatSync(fd);
+    if (!entry.isFile() || entry.uid !== process.getuid?.() || (entry.mode & 0o077) !== 0) throw new Error("LAB_PERMISSION_STATE");
+    writeSync(fd, JSON.stringify({ mode }) + "\n");
+  } finally { closeSync(fd); }
+}
+
+export function permissionOptionsFromEnvironment(env: NodeJS.ProcessEnv = process.env): PermissionOptions {
+  const agent = env.LAB_WORKSPACE_AGENT_DIR;
+  return {
+    statePath: env.LAB_PERMISSION_STATE,
+    projectRoot: env.LAB_WORKSPACE_ROOT,
+    // Never auto-approve writes into LAB's own run/state/install roots, even under the project.
+    excluded: [agent ? dirname(agent) : undefined, env.LAB_WORKSPACE_STATE_DIR, env.LAB_INSTALL_ROOT].filter((path): path is string => !!path),
+  };
+}
+
+export function installPermissionExtension(pi: PermissionAPI, options: PermissionOptions = permissionOptionsFromEnvironment()) {
+  // In-memory mode is authoritative; the file is read only when the extension loads (startup or /reload).
+  let mode = readModeFile(options.statePath);
+  const grants = new Set<string>();
+  let queue: Promise<unknown> = Promise.resolve();
+  const status = (ctx: PermissionContext) => { try { ctx.ui.setStatus?.("lab-mode", `mode: ${mode} · /lab-mode`); } catch {} };
+  const setMode = (next: PermissionMode, ctx: PermissionContext) => {
+    if (options.statePath) writeModeFile(options.statePath, next);
+    mode = next; grants.clear(); status(ctx);
+    ctx.ui.notify(`LAB mode: ${next} — ${modeDescriptions[next]}.`, next === "auto" ? "warning" : "info");
+  };
+
+  pi.on("session_start", (event, ctx) => {
+    // Grants never cross sessions; /reload re-creates this extension and starts empty too.
+    if (event?.reason !== "startup") grants.clear();
+    status(ctx);
+  });
+
+  pi.registerCommand("lab-mode", { description: "Show or change the LAB permission mode (ask, edits, read-only, auto)", async handler(args, ctx) {
+    const value = args.trim();
+    try {
+      if (value === "next") return setMode(modeCycle[mode], ctx);
+      if (value) {
+        const next = parseMode(value);
+        if (!next) return ctx.ui.notify(`Unknown mode "${value.slice(0, 32)}". Use ask, edits, read-only or auto.`, "error");
+        return setMode(next, ctx);
+      }
+      if (!ctx.hasUI) return ctx.ui.notify(`LAB mode: ${mode}`, "info");
+      const labels = permissionModes.map(m => `${m}${m === mode ? " (current)" : ""} — ${modeDescriptions[m]}`);
+      const choice = await ctx.ui.select(`LAB permission mode (current: ${mode})`, labels);
+      const picked = choice ? permissionModes[labels.indexOf(choice)] : undefined;
+      if (picked && picked !== mode) setMode(picked, ctx);
+    } catch { ctx.ui.notify("LAB mode was not changed: its private state could not be written.", "error"); }
+  } });
+
+  async function ask(event: ToolCallEvent, ctx: PermissionContext): Promise<{ block: true; reason: string } | undefined> {
+    const cwd = ctx.cwd ?? options.projectRoot ?? process.cwd();
+    const roots: PathRoots = { project: options.projectRoot ?? cwd, excluded: options.excluded ?? [] };
+    const approval = describeApproval(event.toolName, event.input, { cwd, roots, browser: options.browser, fileSize: path => { try { const s = lstatSync(path); return s.isFile() ? s.size : undefined; } catch { return undefined; } } });
+    if (grants.has(approval.scope)) return undefined;
+    if (!ctx.hasUI || ctx.mode !== "tui") return { block: true, reason: denial(event.toolName, "no interactive approval is available, so LAB denied it") };
+    if (ctx.signal?.aborted) return { block: true, reason: denial(event.toolName, "the turn was cancelled") };
+    const width = Math.max(20, (options.columns?.() ?? process.stdout.columns ?? 80) - 2);
+    const choices = approvalChoices(approval);
+    const choice = await ctx.ui.select(approvalTitle(approval, mode, width), [...choices], { signal: ctx.signal });
+    if (choice === choices[0]) return undefined;
+    if (choice === choices[1]) { grants.add(approval.scope); return undefined; }
+    if (choice === choices[3]) {
+      let note: string | undefined;
+      try { note = await ctx.ui.input("Note for the model (optional)", "why it was denied, or what to do instead", { signal: ctx.signal }); } catch {}
+      return { block: true, reason: denial(event.toolName, "the user denied it", note) };
+    }
+    return { block: true, reason: denial(event.toolName, choice === choices[2] ? "the user denied it" : "the approval was dismissed") };
+  }
+
+  pi.on("tool_call", async (event, ctx) => {
+    const toolName = typeof event?.toolName === "string" ? event.toolName : "tool";
+    try {
+      const input = event.input && typeof event.input === "object" ? event.input : {};
+      const klass = classify(toolName, input);
+      const inside = klass === "edit" && mode === "edits"
+        ? resolveTargetPath(input.path, ctx.cwd ?? options.projectRoot ?? process.cwd(), { project: options.projectRoot ?? ctx.cwd ?? process.cwd(), excluded: options.excluded ?? [] }).inside
+        : false;
+      const decision = decide(mode, toolName, klass, inside);
+      if (decision.kind === "run") return undefined;
+      if (decision.kind === "refuse") return { block: true, reason: decision.reason };
+      // One prompt at a time; a failed prompt never blocks later ones.
+      const result = queue.then(() => ask({ ...event, toolName, input }, ctx));
+      queue = result.catch(() => {});
+      return await result;
+    } catch {
+      return { block: true, reason: denial(toolName, "the approval prompt failed, so LAB denied it") };
+    }
+  });
+  return { get mode() { return mode; }, grants };
+}

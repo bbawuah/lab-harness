@@ -36,7 +36,8 @@ existing managed Pi TUI extension. Session/model selection and aborted
 settlement emit `lab:pi-observation` with explicitly advisory authority. Nested
 prompts, shutdown and unload are paired; arbitrary prompt titles are omitted.
 The bridge registers no tools, reads no credentials, launches no process and
-does not accept tasks or change Pi's native approvals/sandbox. Load explicitly
+does not accept tasks or gate tools; the separate LAB approval gate is described in
+[permission-modes-contract.md](permission-modes-contract.md). Load explicitly
 with Pi's extension option after reviewing it; it is never globally installed.
 RPC is intentionally ignored because Herdr's managed bridge is TUI-only.
 

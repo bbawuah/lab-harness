@@ -1,5 +1,6 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
 import { installBrowserExtension } from "./browser-extension.ts";
+import { installPermissionExtension, permissionOptionsFromEnvironment, type PermissionAPI } from "./permission-extension.ts";
 import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
 import { workspaceCommands, workspaceHelp } from "./commands.ts";
 import { spawn } from "node:child_process";
@@ -83,7 +84,9 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
     } });
   }
   installRelayExtension(pi, callWorkspaceBridge);
-  installBrowserExtension(pi);
+  const browser = installBrowserExtension(pi);
+  // Approval gate for every model tool call (F01/F30); fails closed.
+  installPermissionExtension(pi as unknown as PermissionAPI, { ...permissionOptionsFromEnvironment(), browser });
 }
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */
 export async function executeWorkspaceRequest(request: Request): Promise<unknown> {

@@ -60,7 +60,7 @@ test('lifecycle guard absorbs startup/cleanup signals, defers to Herdr, and rele
 test('renderer wraps by terminal columns and escapes hostile controls in calls, results and errors',()=>{
  const saved=process.env.LAB_BROWSER_REF;const tools:any[]=[];const root=mkdtempSync(join(tmpdir(),'lab-browser-ref-'));
  const ref=join(root,'ref.json');writeFileSync(ref,JSON.stringify({root,session:'lab-'+'b'.repeat(24),origin:'http://example.test'}),{mode:0o600});process.env.LAB_BROWSER_REF=ref;
- const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({status(){return'';},close:async()=>{},execute:async()=>({})});
+ const orig=(BrowserSession as any).rebind;(BrowserSession as any).rebind=()=>({descriptor:{origin:'http://example.test'},element:()=>undefined,status(){return'';},close:async()=>{},execute:async()=>({})});
  try{
   installBrowserExtension({on(){},registerCommand(){},registerTool(t:any){tools.push(t);},sendMessage(){}} as any);const tool=tools[0];
   const hostile='\"✅⭐⌚🀄🇳🇱1️⃣❤️👨‍👩‍👧'+'界'.repeat(7)+'\u202e\u2066x\u001b[31m\u0007e\u0301👍🏽\ud800';

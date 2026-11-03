@@ -47,6 +47,7 @@ lab
 lab --project "/path/to/my project"
 lab --configure
 lab --single-pane
+lab --mode edits
 lab --help
 ~~~
 
@@ -158,9 +159,15 @@ Model tools are functions the model may call, rather than commands you type.
 | Shell | lab --configure | Change explicit endpoint/model/private key |
 | Shell | lab --single-pane | Open Pi alone, useful in a narrow terminal |
 | Shell | lab --offline | Require cached runtime dependencies; inference network still possible |
+| Shell | lab --mode MODE | Start in permission mode ask (default), edits, read-only or auto; see [Approvals](#approvals-and-permission-modes) |
+| Shell | lab --setup-browser | Explicitly acquire the pinned browser control tool (no browser download) |
+| Shell | lab --browser URL | Start an owned browser bound to that HTTP(S) origin |
+| Shell | lab --browser-executable PATH | Use an existing approved Chrome/Chromium/Edge with --browser |
 | Shell | lab --relay-group ID | Select an explicitly prepared cross-project Relay allowlist; unnecessary for normal project sessions |
 | Shell | lab --help | Show current launcher help without opening Pi |
 | TUI | /lab-appearance | Stage theme/colors/spacing; Apply, Cancel or Reset; no model request |
+| TUI | /lab-mode [ask\|edits\|read-only\|auto\|next] | Show or change the permission mode; the footer shows the current mode |
+| TUI | /lab-browser status\|close | Owned browser origin/lifecycle, or close it for this run |
 | TUI | /lab-help | List LAB commands; native /hotkeys shows shortcuts and typing / opens the command menu |
 | TUI | /lab-search TEXT | Literal bounded project text search with lines/hashes |
 | TUI | /lab-files NAME | Find project filenames |
@@ -177,8 +184,56 @@ Model tools are functions the model may call, rather than commands you type.
 
 The model gets LAB search and Relay tools automatically; successful use depends
 on tool-calling support. Operator slash commands work without a model turn.
-Native Pi supplies its own file/shell coding tools. Broader provider-profile
+Native Pi supplies its own file/shell coding tools; LAB asks before they change
+anything (see below). Broader provider-profile
 menus remain separately reviewed work; they are not implied by Relay support.
+
+## Approvals and permission modes
+
+By default LAB asks before the model changes anything. Each edit, file write,
+shell command, browser navigate/fill/click and Relay send opens an approval
+prompt that shows the concrete action:
+
+- edit: the file, the number of replacements, `−removed +added` lines and the
+  first changed lines;
+- write: the file, `new file` or `overwrites N bytes`, and a preview;
+- shell: the full command, its folder (`cwd`) and timeout;
+- browser: the origin, the element (`@e4 textbox "Email"`) and the value to type.
+  Passwords, codes, tokens and other secret-looking values are masked;
+- Relay send: the recipient peer and the message.
+
+Choose **Allow once**, **Allow for this session** (only the same tool and
+pattern: the exact command in the same folder, the same file, the same browser
+element on the same origin, or the same peer), **Deny**, or **Deny with note…**.
+A note is passed to the model. Esc denies. A denied action is not run, and the
+model receives `LAB_PERMISSION_DENIED`, so the turn continues instead of
+hanging. Reads, searches, browser snapshots and inbox reads never ask.
+
+| Mode | What runs without asking |
+| --- | --- |
+| ask (default) | Reads only; everything else asks |
+| edits | Also file edits and writes inside the project; shell, browser and Relay sends still ask |
+| read-only | Reads only; every change is refused with a message to the model |
+| auto | Everything. Today's unattended behaviour; choose it explicitly |
+
+Start with `lab --mode edits` (or another mode), or change it inside Pi with
+`/lab-mode` (shows a picker), `/lab-mode read-only`, or `/lab-mode next` to
+cycle ask → edits → read-only. `next` never enters auto. The footer always shows
+`mode: … · /lab-mode`. There is no keyboard shortcut: Shift+Tab is Pi's thinking
+level, and other keys don't reach Pi reliably in default terminals.
+
+The mode survives `/reload`, `/new` and `/resume` within one launch. Each new
+`lab` launch starts in ask unless you pass `--mode`. "Allow for this session"
+grants live only in memory; they end on `/new`, `/resume`, `/reload` and any mode
+change, and nothing is saved as "always allow". The model cannot change the mode
+itself: the mode is stored in LAB's private run folder, and edits mode never
+auto-approves files outside the project (including through symlinks or `..`) or
+inside LAB's own state. If no prompt can be shown, for example in Pi's json or
+print modes, every gated action is denied unless the mode is auto. Shell commands
+you type yourself with `!` are your own actions and are not gated.
+
+Approvals are a gate, not an OS sandbox: an approved command runs with your user
+permissions. Details: [permission modes contract](permission-modes-contract.md).
 
 ## Message another workspace session
 
@@ -246,7 +301,7 @@ Search reports paths relative to the selected project, one-based line spans
 and source byte hashes. Sensitive env/key paths, generated folders, binary or
 invalid UTF-8 content, symlinks and hardlinked files are excluded. Results have
 limits; omission/truncation is explicit. Project binding is not an OS sandbox:
-native Pi file/shell tools run with your user permissions.
+native Pi file/shell tools run with your user permissions once approved.
 
 ~~~text
 /lab-search function
@@ -343,7 +398,9 @@ shows its origin; `/lab-browser close` closes only this run. A native `/reload`
 rebinds the same browser with no retained refs. After close, start a new LAB run
 to reopen. Ordinary `lab` has no browser dependency.
 
-The model receives `lab_browser`: snapshot, navigate, fill, click, read. Use a
+The model receives `lab_browser`: snapshot, navigate, fill, click, read.
+Navigate, fill and click ask first (see [Approvals](#approvals-and-permission-modes)),
+and tool rows name the element, value (masked when secret) and origin. Use a
 fresh snapshot's `@eN` reference; mutations/navigation invalidate refs. Navigation
 is restricted to the operator's exact origin. Redirects and new tabs are checked
 after actions and cause closure if out of scope. This detects a boundary breach;

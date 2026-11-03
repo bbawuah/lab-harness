@@ -129,6 +129,8 @@ rules apply. Expanded results keep the machine details unchanged.
   Herdr. It shows: ask → allow (an edit happens), ask → deny (the model receives `LAB_PERMISSION_DENIED`), `edits`
   auto-approving an in-project edit while bash still asks, a `read-only` refusal, `auto`, and a browser fill prompt
   on a local fixture page. Sanitized captures and provenance (commit, hashes) go under `docs/permission-evidence/`.
+  Reproduce with `bun run smoke:permission [OUT_DIR]` (scripts/permission-actual.ts) after `./install.sh --browser`;
+  it fails if any check fails or an absolute host path survives sanitization.
 - The existing actual Relay model test runs Pi in json mode (no UI). It now provisions mode `auto` explicitly. That
   test change is called out in the PR.
 - The user guide, README and `lab --help` are updated, and both Usage lines name `--browser`,

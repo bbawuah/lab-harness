@@ -11,8 +11,11 @@ unverified dependency. Setup makes no provider request and downloads no model.
 
 This is native Pi interactive coding with LAB source search and explicitly
 loaded skill instructions. Controlled LAB task execution remains unavailable.
-There is no grant, ingest or acceptance command in this extension. Native Pi
-file tools, shell execution, model selection, authentication and sessions retain
+There is no grant, ingest or acceptance command in this extension. Model tool
+calls pass LAB's approval gate (`src/pi/permission-extension.ts`, Pi's supported
+`tool_call` event; [contract](permission-modes-contract.md)): edits, writes, shell,
+browser changes and Relay sends ask by default, and a `--mode`/`/lab-mode`
+selection changes that. Model selection, authentication and sessions retain
 native behavior; this mode does not enforce a LAB request admission gate.
 The existing `activate-pi` refusal is unchanged. The workspace header says
 `Interactive coding workspace` and `Controlled LAB tasks: unavailable`.

@@ -8,6 +8,7 @@ const args = process.argv.slice(2);
 let project: string | undefined;
 let relayGroup: string | undefined;
 let browser: string | undefined, browserExecutable: string | undefined;
+let permissionMode: string | undefined;
 const caller = process.env.LAB_CALLER_CWD;
 for (let index = 0; index < args.length; index++) {
   if (args[index] === "--project") {
@@ -18,6 +19,10 @@ for (let index = 0; index < args.length; index++) {
     const option=args[index], value=args[++index];
     if (!value || value.startsWith("--") || (option === "--browser" ? browser : browserExecutable)) throw new Error("LAB_BROWSER_OPTION: use each browser option once with a value.");
     if(option === "--browser") browser=value; else browserExecutable=value;
+  } else if (args[index] === "--mode") {
+    const value = args[++index];
+    if (permissionMode || !value || !["ask", "edits", "read-only", "auto"].includes(value)) { console.error("LAB: use --mode once with ask, edits, read-only or auto."); process.exit(2); }
+    permissionMode = value;
   } else if (args[index] === "--relay-group") {
     const value = args[++index];
     if (relayGroup || !value || !/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(value)) { console.error("LAB: use --relay-group ID once; configure its private project allowlist first."); process.exit(2); }
@@ -31,7 +36,7 @@ if (args.includes("--help")) {
 
 try {
   if(args.includes("--setup-browser")) {
-    if(browser || browserExecutable || args.includes('--configure')) throw new Error('LAB_BROWSER_OPTION: use --setup-browser separately.');
+    if(browser || browserExecutable || permissionMode || args.includes('--configure')) throw new Error('LAB_BROWSER_OPTION: use --setup-browser separately.');
     const child=spawn(process.execPath,['--no-env-file','--no-install',join(root,'scripts/acquire-browser.ts'),...(args.includes('--offline')?['--offline']:[])],{stdio:'inherit'});
     process.exitCode=await new Promise<number>((done,reject)=>{child.once('error',reject);child.once('exit',c=>done(c??1));});
   } else {
@@ -49,7 +54,7 @@ try {
     if (code !== 0) process.exit(code);
   }
   const { runInteractiveWorkspace } = await import("../src/pi/workspace.ts");
-  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup, singlePane: args.includes("--single-pane"), browser, browserExecutable };
+  const workspaceOptions = { configure: args.includes("--configure"), project: project ?? caller ?? process.cwd(), relayGroup, singlePane: args.includes("--single-pane"), browser, browserExecutable, permissionMode: permissionMode as "ask" | "edits" | "read-only" | "auto" | undefined };
   process.exitCode = await runInteractiveWorkspace(workspaceOptions);
   }
 } catch (error) {
