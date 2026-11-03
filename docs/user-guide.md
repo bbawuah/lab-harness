@@ -366,8 +366,15 @@ While a browser is attached, Pi's footer shows a chip:
 | Chip | Meaning |
 |---|---|
 | `● web 127.0.0.1:3000` | Attached and bound to that origin. |
-| `○ web closed` | Closed for this run. The row above says why and gives the restart command `lab --browser <origin>/`. |
+| `○ web closed · result unknown` | A fill, click or navigate failed partway. Look at the page yourself before trying again. |
+| `○ web closed · connection lost` | The browser daemon exited or was replaced. Page state is unknown. |
+| `○ web closed · left origin` | The page left your origin or opened another tab, so LAB closed the browser. |
+| `○ web closed` | Closed for this run (for example by `/lab-browser close`). `/lab-browser status` gives the restart command `lab --browser <origin>/`. |
 | `! web cleanup · /lab-browser close` | Stopped, but owned state could not be cleaned up yet. Run `/lab-browser close` to retry. |
+
+The chip sits to the right of the permission mode. On a narrow terminal the chip
+is shortened (ending in `...`) and the mode is never cut; `/lab-browser status`
+always shows the full state.
 
 `/lab-browser status` and `/lab-browser close` add a row to the transcript (it
 is not sent to the model), for example:

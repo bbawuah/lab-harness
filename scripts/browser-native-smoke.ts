@@ -68,7 +68,7 @@ const automate=(async()=>{
  await send('/reload');await wait('Reloaded keybindings');await send('/lab-browser status');await wait('5 actions');await wait('● web 127.0.0.1');
  await capture('tui-reload.txt');
  const after=JSON.parse(await (b as any).run(['--json','get','text','output']));if(after.data.text!==observed.data.text)throw new Error('reload changed browser');
- await send('fixture leave');await wait('completed (leave)');await wait('○ web closed');await wait('✗ browser');
+ await send('fixture leave');await wait('completed (leave)');await wait('○ web closed · left origin');await wait('✗ browser');
  await send('/lab-browser status');await wait('Start a new run');await capture('tui-breach.txt');
  await send('/exit');
 })().catch(e=>{automationError=String(e);child.kill('SIGTERM');});

@@ -592,7 +592,7 @@
       "status": "added"
     },
     "docs/browser-ux-contract.md": {
-      "sha256": "bfb3e1341143554035b315df2da7e4931c6a4b1fe40aa30060ad39871b876a51",
+      "sha256": "03aa3c7c86a0918242213dd12bcc139a8a202760f33bc1b32b05d88e497f8d4a",
       "status": "added"
     },
     "docs/browser-workspace-contract.md": {
@@ -1512,7 +1512,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "15668781970d46ac1f5b79f98c6b91a85dbbc79a0f645b8fb961dc6b3aa0315c",
+      "sha256": "b2680e90a96c2808d4fcb31fef5a0eac81ad1b3f3929cc965206ea3e991fb721",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1672,7 +1672,7 @@
       "status": "added"
     },
     "scripts/browser-native-smoke.ts": {
-      "sha256": "e79eb1b408ef8d44697323db05501409cca999f0ae098091bcda5f6d4ef3774e",
+      "sha256": "898640d987242713401e34c9fd1b370b2f9634f8c7be167aaa873723002bb842",
       "status": "added"
     },
     "scripts/browser-smoke.ts": {
@@ -1754,7 +1754,7 @@
       "status": "added"
     },
     "src/browser/states.ts": {
-      "sha256": "7ac47b37c55ae4902a9067e88ccaf54e47e0a37ce7852a8c85a23607ea93c3bd",
+      "sha256": "a21be65a5a851b239fab60547c7394f4e2a535e844ace960e347582d5cde433b",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1830,7 +1830,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "64132cad7a9413476d53733144c76fc3ed8789b2349e09e188404872a66cbf41",
+      "sha256": "13b2e1a54ad02322fd7411d6c6cb7abbd712d3bc51f4f7e1624bc2350a63c989",
       "status": "added"
     },
     "src/pi/commands.ts": {
@@ -1846,7 +1846,7 @@
       "status": "added"
     },
     "src/pi/status-indicator.ts": {
-      "sha256": "f27a507d7bdb72b17fe8255af66d41bceab9182cc7f9948222cdab2ad5d9e2b8",
+      "sha256": "8733615a1e6f3d43e6f20e03bd6523786afe4591c865aa0a7164adc7cd2362b1",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
@@ -1934,7 +1934,7 @@
       "status": "added"
     },
     "tests/browser-ux.test.ts": {
-      "sha256": "f1affe207dc5dcf75c31777a7481a0f1de43bc1aa42284dfc428b0337f3be9d5",
+      "sha256": "da942327aae00e75494ac8182adc5822e7be952882646e3998c66d5be55711ea",
       "status": "added"
     },
     "tests/browser.test.ts": {

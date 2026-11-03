@@ -4,10 +4,10 @@ import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { BrowserFailure, BrowserSession } from '../src/browser/session.ts';
-import { chip, classify, recoveryText, statusLines, verdict, type BrowserFailureInfo, type LifecycleView } from '../src/browser/states.ts';
+import { chip, classify, closedReason, failureRecord, recoveryText, statusLines, verdict, type BrowserFailureInfo, type LifecycleView } from '../src/browser/states.ts';
 import { setupSummary } from '../src/browser/runtime.ts';
 import { installBrowserExtension } from '../src/pi/browser-extension.ts';
-import { indicatorText, setIndicator } from '../src/pi/status-indicator.ts';
+import { indicatorSlots, indicatorText, setIndicator } from '../src/pi/status-indicator.ts';
 import { fitColumns } from '../src/pi/terminal-text.ts';
 import { shellOptions, shellUsage, shellHelp } from '../src/pi/commands.ts';
 
@@ -86,7 +86,8 @@ test('uncertain mutation, breach, new tab and daemon loss close the run with the
       const recovery = recoveryText(info, ORIGIN); expect(recovery).toContain(text); expect(recovery).toMatch(tail);
       const view = s.view();
       if (state === 'cleanup-failed') { expect(view.state).toBe('cleanup-failed'); expect(existsSync(root)).toBe(true); expect(chip(view)).toEqual({ glyph: '!', label: 'web', detail: 'cleanup · /lab-browser close' }); }
-      else { expect(view.state).toBe('closed'); expect(existsSync(root)).toBe(false); expect(chip(view).glyph).toBe('○'); expect(statusLines(view)[0]).toBe('○ ' + recovery); }
+      else { expect(view.state).toBe('closed'); expect(existsSync(root)).toBe(false); expect(chip(view).glyph).toBe('○'); expect(statusLines(view)[0]).toBe('○ ' + recovery);
+        expect(indicatorText(chip(view))).toBe('○ web closed · ' + (({ breach: 'left origin', lost: 'connection lost' } as any)[state as string] ?? (/^(fill|click|navigate)$/.test(info.operation ?? '') ? 'result unknown' : 'read failed'))); }
       const after = await failureOf(s.execute({ operation: 'snapshot' })); // no further action, ever
       expect(classify(after)).toBe('closed');
     } finally { done(); }
@@ -114,7 +115,7 @@ test('chip and status rows fit 40/80/120 columns and escape hostile origins and 
   expect(statusLines({ state: 'closed', origin: ORIGIN })).toEqual(['○ browser closed. Start a new run: lab --browser http://127.0.0.1:53508/']);
   expect(statusLines({ state: 'active', origin: ORIGIN, actions: 1, last: 'click @e4' })).toEqual(['● browser http://127.0.0.1:53508 only · private profile', '  1 action · last: click @e4 · /lab-browser close']);
   const calls: [string, string | undefined][] = []; setIndicator({ setStatus: (k, t) => calls.push([k, t]) }, 'lab-mode', { glyph: '●', label: 'ask' }); setIndicator({ setStatus: (k, t) => calls.push([k, t]) }, 'lab-mode', undefined); setIndicator(undefined, 'lab-mode', { glyph: '!', label: 'x' });
-  expect(calls).toEqual([['lab-mode', '● ask'], ['lab-mode', undefined]]); expect(() => setIndicator({}, 'Bad Key', undefined)).toThrow('LAB_INDICATOR_KEY');
+  expect(calls).toEqual([['lab-mode', '● ask'], ['lab-mode', undefined]]); expect(() => setIndicator({}, 'Bad Key' as any, undefined)).toThrow('LAB_INDICATOR_KEY');
 });
 
 test('verdict comes from tool results only', () => {
@@ -148,7 +149,7 @@ test('extension: chip, failure rows, transcript entries and verdict at 40/80/120
     expect(results[2].content[0].text).toStartWith('LAB_BROWSER_STALE_REF: @e2 is stale');
     expect(results[4].details).toMatchObject({ state: 'uncertain', error: expect.stringContaining('LAB_BROWSER_TIMEOUT') });
     expect(results[4].content[0].text).toContain('Check the page yourself before trying again');
-    expect(status.at(-1)).toBe('○ web closed');
+    expect(status.at(-1)).toBe('○ web closed · result unknown');
     handlers.agent_end({}, ctx);
     expect(entries.at(-1).data.lines).toEqual(['✗ browser: 1 failed (result unknown) · 2 snapshot · 1 fill · 1 refused · browser closed']);
     await command.handler('status', ctx); expect(entries.at(-1).data.lines[0]).toContain('○ Browser closed: click @e2 timed out');
@@ -170,6 +171,72 @@ test('after reload with a closed browser the chip and status still name the rest
     const ctx = { ui: { notify() {}, setStatus: (_k: string, t: any) => status.push(t) } };
     expect(tools).toHaveLength(0); start({}, ctx); expect(status).toEqual(['○ web closed']);
     await command.handler('status', ctx); expect(entries[0].lines).toEqual(['○ browser closed. Start a new run: lab --browser http://127.0.0.1:53508/']);
+  } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('closed chip names why: result unknown, connection lost, left origin, read failed; operator close says closed', () => {
+  const at = (code: string, operation = 'click', cleanup: 'done' | 'retained' = 'done'): BrowserFailureInfo => ({ code, operation, phase: 'action', cleanup });
+  const chipOf = (failure?: BrowserFailureInfo) => indicatorText(chip({ state: 'closed', origin: ORIGIN, ...(failure ? { failure } : {}) }));
+  expect(chipOf(at('LAB_BROWSER_TIMEOUT'))).toBe('○ web closed · result unknown');
+  expect(chipOf(at('LAB_BROWSER_CANCELLED', 'navigate'))).toBe('○ web closed · result unknown');
+  expect(chipOf(at('LAB_BROWSER_TIMEOUT', 'snapshot'))).toBe('○ web closed · read failed');
+  expect(chipOf(at('LAB_BROWSER_SESSION_LOST', 'snapshot'))).toBe('○ web closed · connection lost');
+  expect(chipOf(at('LAB_BROWSER_SPAWN'))).toBe('○ web closed · connection lost');
+  expect(chipOf(at('LAB_BROWSER_ORIGIN'))).toBe('○ web closed · left origin');
+  expect(chipOf(at('LAB_BROWSER_NEW_TARGET'))).toBe('○ web closed · left origin');
+  expect(chipOf()).toBe('○ web closed');
+  expect(chipOf({ code: 'LAB_BROWSER_STALE_REF', phase: 'pre', cleanup: 'none' })).toBe('○ web closed');
+  expect(closedReason(at('LAB_BROWSER_TIMEOUT', 'click', 'retained'))).toBeUndefined(); // cleanup-failed has its own chip
+  // Persisted records are validated field by field; anything else is ignored.
+  expect(failureRecord({ ...at('LAB_BROWSER_TIMEOUT'), ref: '@e5', extra: 1 })).toEqual({ code: 'LAB_BROWSER_TIMEOUT', operation: 'click', ref: '@e5', phase: 'action', cleanup: 'done' });
+  for (const bad of [null, 'x', { ...at('LAB_BROWSER_TIMEOUT'), phase: 'pre' }, { ...at('EVIL'), }, { ...at('LAB_BROWSER_TIMEOUT'), operation: 'evil\u001b' }, { ...at('LAB_BROWSER_TIMEOUT'), ref: hostile }, { ...at('LAB_BROWSER_TIMEOUT'), cleanup: 'none' }])
+    expect(failureRecord(bad)).toBeUndefined();
+});
+
+/** Pi 1.4.0 footer status line (dist footer.js): statuses sorted by key with localeCompare, sanitized, joined with ' ', truncateToWidth(width, '...'). */
+function piFooter(statuses: Map<string, string>, width: number) {
+  const line = [...statuses].sort(([a], [b]) => a.localeCompare(b)).map(([, t]) => t.replace(/[\r\n\t]/g, ' ').replace(/ +/g, ' ').trim()).join(' ');
+  if (Bun.stringWidth(line) <= width) return line;
+  let out = ''; for (const ch of line) { if (Bun.stringWidth(out + ch) > width - 3) break; out += ch; } return out + '...';
+}
+test('footer: mode sorts first and is never cut; web chip is cut next, desktop first, at 40/80/120', () => {
+  expect(Object.values(indicatorSlots).sort((a, b) => a.localeCompare(b))).toEqual([indicatorSlots.mode, indicatorSlots.web, indicatorSlots.desktop]);
+  const longOrigin = 'http://' + 'x'.repeat(90) + hostile;
+  const webStates: LifecycleView[] = [{ state: 'active', origin: ORIGIN, actions: 0 }, { state: 'active', origin: longOrigin, actions: 0 },
+    { state: 'closed', origin: ORIGIN, failure: { code: 'LAB_BROWSER_TIMEOUT', operation: 'click', phase: 'action', cleanup: 'done' } },
+    { state: 'closed', origin: ORIGIN, failure: { code: 'LAB_BROWSER_SESSION_LOST', operation: 'snapshot', phase: 'action', cleanup: 'done' } },
+    { state: 'cleanup-failed', origin: ORIGIN }];
+  // Longest mode text #26 sets (mode: <name> · /lab-mode); any mode text up to the width survives intact.
+  for (const mode of ['mode: ask · /lab-mode', 'mode: read-only · /lab-mode']) for (const v of webStates) for (const width of widths) {
+    const statuses = new Map<string, string>();
+    const ui = { setStatus: (k: string, t: string | undefined) => { if (t === undefined) statuses.delete(k); else statuses.set(k, t); } };
+    ui.setStatus(indicatorSlots.mode, mode); setIndicator(ui, indicatorSlots.web, chip(v)); setIndicator(ui, indicatorSlots.desktop, { glyph: '●', label: 'desktop', detail: 'Finder' });
+    const line = piFooter(statuses, width);
+    expect(Bun.stringWidth(line)).toBeLessThanOrEqual(width); expect(line).not.toMatch(controls);
+    expect(line.startsWith(mode + ' ')).toBe(true); // mode is first and whole
+    const web = indicatorText(chip(v));
+    const full = [mode, web, indicatorText({ glyph: '●', label: 'desktop', detail: 'Finder' })].join(' ');
+    if (Bun.stringWidth(full) <= width || Bun.stringWidth(mode + ' ' + web) <= width - 3) expect(line).toContain(web); // web whole until it no longer fits beside mode + '...'
+    else expect(line).not.toContain('desktop'); // web cut means desktop already gone
+  }
+  // 40 columns, the documented worst case: mode whole, chip glyph + label still visible.
+  const at40 = piFooter(new Map([[indicatorSlots.mode, 'mode: read-only · /lab-mode'], [indicatorSlots.web, indicatorText(chip(webStates[2]))]]), 40);
+  expect(at40).toBe('mode: read-only · /lab-mode ○ web clo...');
+});
+
+test('after reload the closed chip and status still say why the browser closed', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'lab-browser-ux-why-')); const ref = join(dir, 'browser-ref.json');
+  writeFileSync(ref, JSON.stringify({ root: join(dir, 'gone'), session: 'lab-' + 'e'.repeat(24), origin: ORIGIN }), { mode: 0o600 });
+  writeFileSync(join(dir, 'browser-ref.closed.json'), JSON.stringify({ code: 'LAB_BROWSER_SESSION_LOST', operation: 'snapshot', phase: 'action', cleanup: 'done' }), { mode: 0o600 });
+  const saved = process.env.LAB_BROWSER_REF; process.env.LAB_BROWSER_REF = ref; const entries: any[] = [], status: any[] = []; let command: any, start: any;
+  try {
+    installBrowserExtension({ on: (n: string, f: any) => { if (n === 'session_start') start = f; }, registerTool() {}, registerCommand: (_n: string, c: any) => { command = c; }, sendMessage() {}, appendEntry: (_t: string, d: any) => entries.push(d) } as any);
+    const ctx = { ui: { notify() {}, setStatus: (_k: string, t: any) => status.push(t) } };
+    start({}, ctx); expect(status).toEqual(['○ web closed · connection lost']);
+    await command.handler('status', ctx); expect(entries[0].lines[0]).toStartWith('○ Browser disconnected: the browser daemon exited or was replaced');
+    writeFileSync(join(dir, 'browser-ref.closed.json'), '{"code":"\u001b[31m","phase":"action","cleanup":"done"}'); status.length = 0;
+    installBrowserExtension({ on: (n: string, f: any) => { if (n === 'session_start') start = f; }, registerTool() {}, registerCommand() {}, sendMessage() {} } as any);
+    start({}, ctx); expect(status).toEqual(['○ web closed']); // invalid record ignored
   } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; rmSync(dir, { recursive: true, force: true }); }
 });
 

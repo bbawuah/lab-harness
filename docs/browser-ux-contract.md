@@ -19,16 +19,22 @@ slice gives those rows the data they need (`details.operation`, `details.ref`, `
 - `src/pi/status-indicator.ts` provides `indicatorText({ glyph, label, detail })` and `setIndicator(ui, key, state | undefined)`.
   They sit on Pi's `ctx.ui.setStatus`. The glyph is one of `●` (active), `○` (off) or `!` (needs attention), so state never
   depends on colour. Label and detail are escaped and limited to 48 columns. Permission modes and agent-desktop can reuse them.
+- Footer slots (`indicatorSlots`): `lab-mode` (#26), `lab-web` (this slice), `lab-x-desktop` (reserved). Pi 1.4.0 renders all
+  statuses on one footer line, sorted by key with `localeCompare`, joined with a space and cut from the right with `...`. Key order
+  is therefore keep order: the mode sorts first and stays whole whenever the terminal is at least as wide as the mode text; the
+  web chip is cut next and desktop first. `setIndicator` accepts only these keys. A test replays Pi's footer rule at 40/80/120.
+  At 40 columns with the longest mode (`mode: read-only · /lab-mode`) the footer is `mode: read-only · /lab-mode ○ web clo...`:
+  the mode and the chip's glyph and label stay; the reason is then read from `/lab-browser status` or the failure row.
 
 ## States and what the operator sees
 
 | State | When | Footer chip | Transcript row (not sent to the model) |
 |---|---|---|---|
 | active | browser attached and usable | `● web 127.0.0.1:53508` | `/lab-browser status` → `● browser 127.0.0.1:53508 only · private profile` plus `N actions · last: click @e4 · /lab-browser close` |
-| closed | `/lab-browser close`, or a clean close after a failure | `○ web closed` | `○ browser closed …` plus the restart command `lab --browser <origin>/` |
-| breach | after an action, the page left the origin or opened a new tab or window (`ORIGIN` or `NEW_TARGET` inside the action) | `○ web closed` | `○ browser closed: page left <origin>` · actions off for this run · restart command |
-| uncertain | a fill, click or navigate timed out, was cancelled, printed diagnostics or returned an unexpected response | `○ web closed` | `○ browser closed: click @e5 timed out, result unknown.` · `Check the page yourself before trying again.` · restart command |
-| lost | the daemon exited, was replaced or the session identity changed (`SESSION_LOST`, spawn failure) | `○ web closed` | `○ browser disconnected: the browser daemon exited or was replaced.` · page state is unknown · restart command |
+| closed | `/lab-browser close`, or a clean close after a failure | `○ web closed` (operator close: no reason) | `○ browser closed …` plus the restart command `lab --browser <origin>/` |
+| breach | after an action, the page left the origin or opened a new tab or window (`ORIGIN` or `NEW_TARGET` inside the action) | `○ web closed · left origin` | `○ browser closed: page left <origin>` · actions off for this run · restart command |
+| uncertain | a fill, click or navigate timed out, was cancelled, printed diagnostics or returned an unexpected response | `○ web closed · result unknown` (`· read failed` for snapshot/read) | `○ browser closed: click @e5 timed out, result unknown.` · `Check the page yourself before trying again.` · restart command |
+| lost | the daemon exited, was replaced or the session identity changed (`SESSION_LOST`, spawn failure) | `○ web closed · connection lost` | `○ browser disconnected: the browser daemon exited or was replaced.` · page state is unknown · restart command |
 | cleanup-failed | any of the above, and owned cleanup could not be verified | `! web cleanup` | the cause, plus `Owned state kept. Run /lab-browser close to retry cleanup.` |
 | stale | the ref is not in the latest snapshot. Refused **before** anything is sent to the page, and the browser stays active. | unchanged | `! @e5 is stale: refs reset after fill/click/navigate. Nothing was sent. Take a new snapshot.` (or `unknown` if the ref was never issued) |
 | refused | input or origin refused before dispatch (for example navigating to another origin). The browser stays active. | unchanged | `! refused before anything was sent: …` |
@@ -41,6 +47,9 @@ Rules:
   `<CODE>: <recovery>`, so the model receives the same look-first instruction the operator sees.
 - The restart command uses only the operator-chosen origin from the private descriptor, never page text. It is escaped for
   display.
+- After an action failure the chip names why it closed (lead review): `result unknown`, `read failed`, `connection lost` or
+  `left origin`. The reason is written (validated, display only) beside the private browser ref, so it survives `/reload` after
+  the owned root is gone.
 - The chip is set when the session starts (including after `/reload`), after every `lab_browser` result and after
   `/lab-browser close`. Ordinary `lab` with no browser sets no chip.
 - `/lab-browser status` and `/lab-browser close` write a transcript row through `pi.appendEntry` and `registerEntryRenderer`.

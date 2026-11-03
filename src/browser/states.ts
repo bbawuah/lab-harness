@@ -62,11 +62,31 @@ export function failureHeadline(info: BrowserFailureInfo, origin: string): strin
   return '○ ' + recoveryText(info, origin);
 }
 
+/** Short reason a run's browser closed after a failed action, shown beside "closed". Undefined for an operator close. */
+export function closedReason(failure?: BrowserFailureInfo): string | undefined {
+  if (!failure || failure.phase !== 'action') return;
+  const state = classify(failure);
+  if (state === 'breach') return 'left origin';
+  if (state === 'lost') return 'connection lost';
+  if (state === 'uncertain') return mutating(failure.operation) ? 'result unknown' : 'read failed';
+  return;
+}
 export type ChipState = { glyph: '●' | '○' | '!'; label: string; detail?: string };
 export function chip(view: LifecycleView): ChipState {
   if (view.state === 'active') return { glyph: '●', label: 'web', detail: view.origin.replace(/^https?:\/\//, '') };
   if (view.state === 'cleanup-failed') return { glyph: '!', label: 'web', detail: 'cleanup · /lab-browser close' };
-  return { glyph: '○', label: 'web', detail: 'closed' };
+  const reason = closedReason(view.failure);
+  return { glyph: '○', label: 'web', detail: 'closed' + (reason ? ' · ' + reason : '') };
+}
+const codes = /^LAB_BROWSER_[A-Z_]{1,40}$/, ops = /^(snapshot|navigate|fill|click|read)$/;
+/** Persistable failure record (display only, never authorization). Returns undefined for anything not exactly this shape. */
+export function failureRecord(value: unknown): BrowserFailureInfo | undefined {
+  const v = value as any;
+  if (!v || typeof v !== 'object' || typeof v.code !== 'string' || !codes.test(v.code)) return;
+  if (v.phase !== 'action' || (v.cleanup !== 'done' && v.cleanup !== 'retained')) return;
+  if (v.operation !== undefined && (typeof v.operation !== 'string' || !ops.test(v.operation))) return;
+  if (v.ref !== undefined && (typeof v.ref !== 'string' || !/^@e\d{1,6}$/.test(v.ref))) return;
+  return { code: v.code, phase: 'action', cleanup: v.cleanup, ...(v.operation ? { operation: v.operation } : {}), ...(v.ref ? { ref: v.ref } : {}) };
 }
 
 export function statusLines(view: LifecycleView): string[] {
