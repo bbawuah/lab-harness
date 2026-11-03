@@ -50,7 +50,7 @@ export function redeem(approval: DesktopApproval | undefined, input: unknown, bi
   return approval.input === canonicalInput(input) && approval.input !== "\0invalid" && approval.binding === binding;
 }
 
-export type DesktopFacts = { app: string; title: string; element?: Element; uncertain?: boolean };
+export type DesktopFacts = { app: string; title: string; element?: Element; uncertain?: boolean; /** The session's press focus wait. */ focusWaitMs?: number };
 /** Same shape as the shared permission prompt (heading + raw lines); rendering escapes and wraps. */
 export type DesktopApprovalText = { heading: string; lines: string[] };
 /** Longest `type` value, in code points (schema, validation and prompt). */
@@ -69,10 +69,10 @@ export function describeDesktopApproval(input: DesktopInput, facts: DesktopFacts
   // Every line is built from single-line fields, so untrusted text cannot add or hide lines.
   const lines = [`in ${oneLine(facts.app, 40)} · ${oneLine(facts.title || "(untitled window)")}`];
   if (facts.uncertain) lines.push("! The previous desktop action's delivery is unknown. Look at the window before allowing another.");
-  if (op === "press") lines.push(`press ${oneLine(String(input.key), 16)} → goes to ${oneLine(facts.app, 40)}'s focused window. After Allow, click into the attached window within ${FOCUS_WAIT_MS / 1000} s; LAB sends it only while that window is focused.`);
+  if (op === "press") lines.push(`press ${oneLine(String(input.key), 16)} → goes to ${oneLine(facts.app, 40)}'s focused window. After Allow, click the attached window's title bar within ${Math.round((facts.focusWaitMs ?? FOCUS_WAIT_MS) / 1000)} s; LAB sends it only while that window is focused.`);
   else lines.push(`${op} ${elementText(facts.element, input.ref)}`);
   if (op === "type") {
-    // The prompt shows the whole value (it wraps), so nothing typed is hidden past a cap.
+    // The prompt shows the whole value (it wraps; only stacked marks beyond 8 per character are trimmed).
     const text = typeof input.text === "string" ? input.text : "";
     lines.push("value: " + maskedValue(text, facts.element, TEXT_LIMIT));
     const breaks = lineBreaks(text);

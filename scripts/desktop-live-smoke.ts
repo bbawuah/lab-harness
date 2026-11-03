@@ -9,7 +9,9 @@
  *
  * Preconditions (the operator does these, LAB never does):
  *   - run from Terminal.app, with Accessibility granted to Terminal yourself;
- *   - the pinned tool is cached (lab --setup-desktop).
+ *   - the pinned tool is cached (lab --setup-desktop);
+ *   - do not click anything while it runs, unless it prints that it is waiting
+ *     for the fixture window: then click only that window's title bar.
  * Without Accessibility it prints the named-grantee advice and exits 2 before
  * building or starting anything.
  *
@@ -41,8 +43,16 @@ const session = DesktopSession.create();
 const host = session.transport as OwnedHost;
 const fixtureRoot = mkdtempSync("/private/tmp/lab-desktop-fixture-"); chmodSync(fixtureRoot, 0o700);
 let fixturePid: number | undefined, fixtureExe: string | undefined;
+let fixtureBundle: string | undefined;
 /** Stop the fixture only if that pid still runs our fixture binary. */
 const stopFixture = () => { if (fixturePid && fixtureExe && executableOf(fixturePid) === fixtureExe) { try { process.kill(fixturePid, "SIGTERM"); } catch {} } fixturePid = undefined; };
+/** Any process running exactly this run's fixture binary (pid never confirmed, or a late launch); stopped by pid. */
+const strayFixtures = () => {
+  if (!fixtureExe) return [];
+  const out = spawnSync("/usr/bin/pgrep", ["-x", APP], { encoding: "utf8", timeout: 5000 });
+  return (out.stdout ?? "").split("\n").map(l => Number(l.trim())).filter(p => Number.isInteger(p) && p > 1 && executableOf(p) === fixtureExe);
+};
+const LSREGISTER = "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister";
 let exitCode = 0;
 try {
   const report = await session.permissions();
@@ -57,14 +67,15 @@ try {
     const build = spawnSync("/usr/bin/xcrun", ["swiftc", "-O", "-o", join(macos, APP), resolve(import.meta.dir, "desktop-fixture.swift")], { stdio: "inherit", timeout: 180000 });
     if (build.status !== 0) throw new Error("fixture build failed");
     const nonce = randomUUID().slice(0, 8), title = `LAB fixture ${nonce}`, savedFile = join(fixtureRoot, "saved.txt"), trigger = join(fixtureRoot, "unfocus"), pidFile = join(fixtureRoot, "pid");
-    fixtureExe = realpathSync(join(macos, APP));
+    fixtureExe = realpathSync(join(macos, APP)); fixtureBundle = bundle;
     // Launch through LaunchServices so the fixture may activate itself; it reports its own pid.
     const launched = spawnSync("/usr/bin/open", ["-n", bundle, "--args", title, savedFile, trigger, pidFile], { stdio: "ignore", timeout: 15000 });
     if (launched.status !== 0) throw new Error("fixture launch failed");
     for (let n = 0; n < 100 && !existsSync(pidFile); n++) await new Promise(r => setTimeout(r, 100));
-    const pid = Number(readFileSync(pidFile, "utf8").trim());
-    if (!Number.isInteger(pid) || pid <= 1 || executableOf(pid) !== fixtureExe) throw new Error("fixture pid could not be verified");
-    fixturePid = pid;
+    const pid = Number(existsSync(pidFile) ? readFileSync(pidFile, "utf8").trim() : NaN);
+    if (!Number.isInteger(pid) || pid <= 1) throw new Error("fixture did not report its pid");
+    fixturePid = pid; // stopFixture re-checks the executable before any signal
+    if (executableOf(pid) !== fixtureExe) throw new Error("fixture pid could not be verified");
     record("fixture started and its pid runs the fixture binary", true);
     // Find ONLY the fixture's own window (filtered by app, then by our pid and nonce title).
     let window;
@@ -101,6 +112,7 @@ try {
     let saved = ""; for (let n = 0; n < 50 && !saved; n++) { saved = existsSync(savedFile) ? readFileSync(savedFile, "utf8") : ""; if (!saved) await new Promise(r => setTimeout(r, 100)); }
     record("fixture independently recorded the saved value", saved === "Native Fixture", saved);
     // press goes to the app's focused window, so LAB sends it only while the bound window holds focus.
+    console.log(`… press waits up to ${session.focusWaitMs / 1000} s for the fixture window "${title}" to be in front. If it is not, click its title bar (only that window).`);
     try {
       const pressed = await act({ operation: "press", key: "tab" }) as any;
       record("press tab while the bound fixture window is focused", pressed.action === "press", pressed.delivery);
@@ -125,7 +137,10 @@ try {
 } catch (e) {
   record("unexpected failure", false, e instanceof Error ? e.message.slice(0, 200) : String(e)); exitCode = 1;
 } finally {
+  const known = fixturePid;
   stopFixture();
+  for (const p of strayFixtures().filter(p => p !== known)) { try { process.kill(p, "SIGTERM"); record("stopped a fixture whose pid was not confirmed", true, `pid ${p}`); } catch {} }
+  if (fixtureBundle) spawnSync(LSREGISTER, ["-u", fixtureBundle], { stdio: "ignore", timeout: 10000 });
   const root = session.descriptor.root;
   try { await session.close(); record("owned hosts stopped by pid and root removed", !existsSync(root)); }
   catch (e) { record("cleanup", false, e instanceof Error ? e.message : String(e)); exitCode = 1; }

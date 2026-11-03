@@ -48,7 +48,7 @@ export class DesktopSession {
   readonly transport: Transport;
   private readonly identity: Identity;
 
-  private readonly focusWaitMs: number;
+  readonly focusWaitMs: number;
   constructor(readonly descriptor: HostDescriptor, options: SessionOptions = {}) {
     checkPrivate(descriptor.root);
     this.transport = options.transport ?? new OwnedHost(descriptor);
@@ -189,13 +189,16 @@ export class DesktopSession {
    * `press` is delivered to the app's process, which routes keys to its focused
    * window, so it additionally requires the bound window to hold system focus.
    * Focus is system-wide and the approval prompt runs in the terminal, so press
-   * waits up to focusWaitMs for the user to click into the window, re-checking
+   * waits up to focusWaitMs for the user to click the window's title bar, re-checking
    * identity and focus on every poll; the last check is immediately before dispatch.
    */
   private async verifyBinding(b: Binding, signal?: AbortSignal, requireFocus = false): Promise<void> {
     const deadline = Date.now() + (requireFocus ? this.focusWaitMs : 0);
     for (;;) {
-      const e = await this.call(["list-windows", `--app=${b.app}`], "list-windows", signal);
+      let e: Envelope;
+      // list-windows only reads and nothing has been sent yet, so a cancel here is a refusal, not a fault.
+      try { e = await this.call(["list-windows", `--app=${b.app}`], "list-windows", signal); }
+      catch (error) { if (signal?.aborted || (error instanceof Error && error.message.startsWith("LAB_DESKTOP_CANCELLED"))) throw new Error(CANCELLED); throw error; }
       if (!e.ok) throw this.refusal(e.error);
       const found = windows(e.data).find(w => w.id === b.windowId);
       if (!found || found.pid !== b.pid || this.identity(b.pid) !== b.executable) {
@@ -203,7 +206,7 @@ export class DesktopSession {
         throw new Error(`LAB_DESKTOP_UNBOUND: the attached ${oneLine(b.app, 40)} window closed or its process changed. Nothing was done. Ask the user to run /lab-desktop attach.`);
       }
       if (!requireFocus || found.focused) return;
-      if (Date.now() >= deadline) throw new Error(`LAB_DESKTOP_REFUSED: NOT_FOCUSED. press goes to the app's focused window, and the attached window was not focused within ${Math.round(this.focusWaitMs / 1000)} s of approval. Nothing was done. The user can retry and click into the attached window right after allowing it.`);
+      if (Date.now() >= deadline) throw new Error(`LAB_DESKTOP_REFUSED: NOT_FOCUSED. press goes to the app's focused window, and the attached window was not focused within ${Math.round(this.focusWaitMs / 1000)} s of approval. Nothing was done. The user can retry and click the attached window's title bar right after allowing it.`);
       await delay(FOCUS_POLL_MS, signal);
     }
   }
@@ -263,9 +266,10 @@ export class DesktopSession {
   }
 }
 
+const CANCELLED = "LAB_DESKTOP_REFUSED: cancelled. Nothing was done.";
 const delay = (ms: number, signal?: AbortSignal) => new Promise<void>((resolve, reject) => {
-  if (signal?.aborted) return reject(new Error("LAB_DESKTOP_REFUSED: cancelled. Nothing was done."));
+  if (signal?.aborted) return reject(new Error(CANCELLED));
   const timer = setTimeout(() => { signal?.removeEventListener("abort", stop); resolve(); }, ms);
-  const stop = () => { clearTimeout(timer); reject(new Error("LAB_DESKTOP_REFUSED: cancelled. Nothing was done.")); };
+  const stop = () => { clearTimeout(timer); reject(new Error(CANCELLED)); };
   signal?.addEventListener("abort", stop, { once: true });
 });

@@ -674,7 +674,7 @@
       "status": "added"
     },
     "docs/desktop-workspace-contract.md": {
-      "sha256": "9ae093b33b3933cab9ad5656940674f8f1712ec3095b21630dc415357d9e5e8e",
+      "sha256": "387ee803c64a55696c7fbf594ece51709a5c5b20e6d6eaf8a5283ca9a4ca878c",
       "status": "added"
     },
     "docs/evidence/appearance/phase2b.md": {
@@ -1558,7 +1558,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "9cbc919ff050053e46805b681cb57c167402ec490d3cb4ad95c2ca6c7c4f8fe3",
+      "sha256": "51c480f54d59dd0e71de29d906e0c9fed0a6aaa42e112369c050a2742cc3d9cf",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1738,7 +1738,7 @@
       "status": "added"
     },
     "scripts/desktop-live-smoke.ts": {
-      "sha256": "60ae828c12fd77d8ce97bef9e82cb84d3e353a8c22cf491ca3f866aca84d7bed",
+      "sha256": "46437f02c81123be66c9157c6f4078e60251f54633fd62b1fb377ca79cac9d38",
       "status": "added"
     },
     "scripts/herdr/acquire.ts": {
@@ -1825,7 +1825,7 @@
       "status": "added"
     },
     "src/desktop/approval.ts": {
-      "sha256": "ce5f13d59c592ef28a771b579a4de0cc13d0e14f3d45d2bc1b60a40eca6b75bd",
+      "sha256": "53787a327eada09e449ca36353afd35f4efc292e3ca538e4ecd4bd3b35d7b0a0",
       "status": "added"
     },
     "src/desktop/display.ts": {
@@ -1849,7 +1849,7 @@
       "status": "added"
     },
     "src/desktop/session.ts": {
-      "sha256": "21c63ef33f1d45a80205d9c5b56c871690210be32ca9d7df2c197ade3ecdb3c8",
+      "sha256": "606fa87c1cf81252f1d924e72400bd49e48c89330e5370b79f3a66dc7ec4b98a",
       "status": "added"
     },
     "src/desktop/setup.ts": {
@@ -1924,7 +1924,7 @@
       "status": "added"
     },
     "src/pi/desktop-extension.ts": {
-      "sha256": "399d48ee71a024eeea545eee21fc7bdc92622e210998d35f61a5270369f2b8dc",
+      "sha256": "29fd225716c2a87f2e2cd08882af97b7b9b6a250a1c6d635c6efc4bb512da502",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -2055,7 +2055,7 @@
       "originalSHA256": "f8b9338efa42b304a097231d5ff69a191456bcf057266c7e521120c5f1be9f51"
     },
     "tests/desktop.test.ts": {
-      "sha256": "72e91201b788ceb951de63ff8e44e1334b8ba72c9f973dfa1e62879c3634d280",
+      "sha256": "a90f15bd53843b730a895c62f2883c449988676eabd9d111c8cba5a368f66387",
       "status": "added"
     },
     "tests/first-owner-crash-child.ts": {

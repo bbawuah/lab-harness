@@ -515,7 +515,7 @@ describe("review round 1 regressions", () => {
     await expect(session.execute(press, approve(session, press))).rejects.toThrow("LAB_DESKTOP_REFUSED: NOT_FOCUSED");
     expect(transport.dispatched("press")).toBe(0);
     expect(session.failed()).toBe(false); expect(session.binding()).toBeDefined();
-    expect(describeDesktopApproval(press, { app: "TextEdit", title: "A" }).lines.join("\n")).toContain("click into the attached window within 10 s");
+    expect(describeDesktopApproval(press, { app: "TextEdit", title: "A" }).lines.join("\n")).toContain("click the attached window's title bar within 10 s");
   });
   test("round 2 P2-A: press waits for the user to focus the window after approval, then sends", async () => {
     const unfocused = ok("list-windows", [{ ...window, is_focused: false }]);
@@ -525,6 +525,20 @@ describe("review round 1 regressions", () => {
     expect(result.action).toBe("press");
     expect(transport.calls.filter(a => a[0] === "list-windows").length).toBeGreaterThanOrEqual(5);
     expect(transport.dispatched("press")).toBe(1);
+  });
+  test("round 3 P2-1: a cancel while a focus poll is running is a refusal, not a fault", async () => {
+    const unfocused = ok("list-windows", [{ ...window, is_focused: false }]);
+    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), unfocused] }, undefined, 5000);
+    const press = { operation: "press" as const, key: "tab" };
+    const abort = new AbortController();
+    const pending = session.execute(press, approve(session, press), abort.signal);
+    await new Promise(r => setTimeout(r, 50)); // first poll consumed (unfocused), now sleeping
+    transport.replies["list-windows"] = ["wait-for-abort"];
+    await new Promise(r => setTimeout(r, 300)); // second poll is in flight
+    abort.abort();
+    await expect(pending).rejects.toThrow("LAB_DESKTOP_REFUSED: cancelled");
+    expect(transport.dispatched("press")).toBe(0); expect(session.failed()).toBe(false); expect(transport.stops).toBe(0);
+    expect(describeDesktopApproval(press, { app: "A", title: "B", focusWaitMs: 3000 }).lines.join(" ")).toContain("within 3 s");
   });
   test("round 2 P2-A: press focus wait stops when the turn is cancelled, nothing sent", async () => {
     const unfocused = ok("list-windows", [{ ...window, is_focused: false }]);

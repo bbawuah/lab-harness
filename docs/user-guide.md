@@ -385,8 +385,9 @@ The model receives `lab_desktop`: `snapshot`, `read`, `click`, `type`, `scroll`
 and `press` (named keys only), all limited to the attached window. It cannot
 list windows, attach, launch apps, run commands, read files or press global
 shortcuts. `press` works only while the attached window is focused, because macOS
-sends keys to an app's focused window: after you allow a press, click into the
-attached window within 10 seconds. `type` takes up to 400 characters, and its
+sends keys to an app's focused window: after you allow a press, click the
+attached window's title bar within 10 seconds (the title bar, so the click
+itself does not press a button). `type` takes up to 400 characters, and its
 prompt shows the whole text and how many line breaks (Returns) it contains.
 **Every click, type, scroll and press asks you: Allow once or Deny.**
 This holds in every permission mode, including auto; read-only refuses them.

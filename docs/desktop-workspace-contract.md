@@ -47,10 +47,10 @@ accepted. Upstream posts keys to the app's process, which routes them to its foc
 alone does not confine them to the bound window. LAB therefore refuses `press` (`NOT_FOCUSED`, nothing done)
 unless `list-windows` reports the bound window as the focused window. Focus is system-wide and the
 approval prompt runs in the terminal, so after Allow LAB polls for up to 10 s (every 250 ms, re-checking
-window id, pid and executable each time) for the user to click into the bound window; the last check is
+window id, pid and executable each time) for the user to click the bound window's title bar; the last check is
 immediately before dispatch. Cancelling the turn stops the wait with nothing sent. A focus change in the
 milliseconds between that check and delivery is a residual race; the prompt says keys go to the app's
-focused window and asks the user to click into the attached window after allowing. Not exposed: `--headed`, `--force`, raw coordinates, mouse, drag, hover, `launch`, `close-app`,
+focused window and asks the user to click the attached window's title bar after allowing. A cancel during a poll is a refusal, not a fault. Not exposed: `--headed`, `--force`, raw coordinates, mouse, drag, hover, `launch`, `close-app`,
 window management, clipboard, notifications, surfaces, `batch`, `find`, sessions/traces, screenshots and the
 cursor overlay. There is no arbitrary app, shell, file, eval or global keyboard parameter.
 

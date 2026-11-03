@@ -119,7 +119,7 @@ export function installDesktopExtension(pi: DesktopAPI, options: DesktopOptions 
     if (!ctx.hasUI || ctx.mode !== "tui") return { block: true, reason: denial("no interactive approval is available, so LAB denied it") };
     if (ctx.signal?.aborted) return { block: true, reason: denial("the turn was cancelled") };
     const row = facts(input);
-    const text = describeDesktopApproval(input, { app: b.app, title: b.title, element: row.element, uncertain: s.uncertain() });
+    const text = describeDesktopApproval(input, { app: b.app, title: b.title, element: row.element, uncertain: s.uncertain(), focusWaitMs: s.focusWaitMs });
     const choice = await ctx.ui.select(desktopTitle(text, width()), [...desktopChoices], { signal: ctx.signal });
     // The token binds the window shown in the prompt; if the binding changed meanwhile, deny.
     if (choice === desktopChoices[0]) {
