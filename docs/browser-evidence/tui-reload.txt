@@ -1,16 +1,7 @@
-
-
- fixture run
-
-
-
- Browser · snapshot
- Browser · completed (expand for page data)
-
-
-
- Browser · fill
- Browser · completed (expand for page data)
+ Browser · click
+ ! Browser · click @e2
+   @e2 is stale: refs reset after fill/click/navigate. Nothing was sent to the page. Take a n
+ ew snapshot.
 
 
 
@@ -28,12 +19,21 @@
  Browser · completed (expand for page data)
 
 
- Deterministic local protocol fixture completed. This is not a model response.
+ Deterministic local protocol fixture completed (run). This is not a model response.
 
- Owned browser · http://127.0.0.1:<FIXTURE_PORT> · fresh snapshot required before actions.
+✓ browser: 3 snapshot · 1 fill · 1 click · 1 refused · read back after change
+
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  5 actions · last: snapshot · /lab-browser close
+
+ Reloaded keybindings, extensions, skills, prompts, themes, and context files
+
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  5 actions · last: snapshot · /lab-browser close
 
 ──────────────────────────────────────────────────────────────────────────────────────────────
 
 ──────────────────────────────────────────────────────────────────────────────────────────────
 <OWNED_PROJECT>
-↑600 ↓120 1.5%/8.2k (auto)                                                     browser-fixture
+↑700 ↓140 1.5%/8.2k (auto)                                                     browser-fixture
+● web 127.0.0.1:<FIXTURE_PORT>

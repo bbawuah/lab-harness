@@ -1,0 +1,3 @@
+✓ agent-browser 0.41.0 verified (already cached) · no browser downloaded
+✓ browser found: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+Next:  lab --browser http://localhost:3000/   (example; use your app's URL)

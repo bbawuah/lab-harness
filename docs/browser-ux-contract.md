@@ -98,7 +98,7 @@ Rules:
   - the Usage line includes every option, and the shell launcher matches it;
   - the setup output ends with `Next:`.
 - Actual evidence, refreshed under `docs/browser-evidence/` with provenance:
-  - `browser-smoke.ts` adds stale-ref, breach, uncertain (cancel) and lost (daemon killed by its own pid) state rows, read from
+  - `browser-smoke.ts` adds stale-ref, breach, uncertain (busy-page click timeout) and lost (daemon killed by its own pid) state rows, read from
     real sessions;
   - `browser-native-smoke.ts` (normal `lab` with Pi, Relay, Herdr and the scripted protocol fixture) captures the `● web` chip, the
     stale row, the ✓ verdict, the status row, `/reload`, then a breach with `○ web closed` and the restart command, and a clean

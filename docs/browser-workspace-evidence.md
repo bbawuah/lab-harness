@@ -18,6 +18,9 @@ remains immutable historical evidence, not evidence for this implementation.
 
 ## Actual local acceptance (2026-11-02)
 
+Historical (PR #23). The files in `browser-evidence/` were since replaced by the
+browser UX set below; the PR #23 hashes remain in git history at `9ef79f1`.
+
 Captured from clean commit `9ef79f1` after both review rounds. The screenshot and
 both result files reproduced byte-for-byte from the earlier capture, which had
 been taken from the uncommitted tree before `a893e0d`. See
@@ -53,6 +56,46 @@ not personal projects/profiles. They save ignored evidence under `.tmp`.
 browser pixels and native terminal text, not mockups. Protocol responses are
 scripted, so they do not establish model quality. The byte-based production output
 limits are not token guarantees. No zero-network-egress claim is made.
+
+## Browser UX acceptance (2026-11-03, PR #27)
+
+Captured from clean commit `98363a7` (after independent review round 1) with pinned
+agent-browser 0.41.0, approved existing Chrome 156.0.8078.80, Pi 1.4.0 and Herdr
+0.9.5 on macOS arm64. No inference, credentials or paid calls. Only synthetic
+127.0.0.1 fixture pages. Contract: [browser UX contract](browser-ux-contract.md).
+These files replace the PR #23 set in `browser-evidence/`; per-file hashes are in
+[provenance](browser-evidence/provenance.json).
+
+- `scripts/browser-smoke.ts` now also drives every UX state on real sessions
+  ([session result](browser-evidence/session-result.json) `ux`,
+  [rows at 40/80/120](browser-evidence/ux-rows.txt)):
+  - stale and never-issued refs, and cross-origin navigate: refused before dispatch,
+    browser stays active, chip `● web 127.0.0.1:<port>`;
+  - read back after a change sets `verifies`;
+  - post-click redirect to another port: breach, root removed, chip
+    `○ web closed · left origin`;
+  - daemon killed by its own pid: the next action is `SESSION_LOST` before
+    dispatch, no command (not even `close`) is sent to the dead daemon, the orphaned
+    Chrome is proven ours by its profile and stopped (alive before, gone after),
+    chip `○ web closed · connection lost`;
+  - click on a page that busy-loops: times out after about 30 s, result unknown,
+    cleanup done, chip `○ web closed · result unknown`.
+- `scripts/browser-native-smoke.ts` (normal `lab`, 40x120 pty, 10 scripted protocol
+  requests): the real Pi footer shows `● web 127.0.0.1:<FIXTURE_PORT>`; the stale
+  row and `✓ browser: 3 snapshot · 1 fill · 1 click · 1 refused · read back after change`
+  ([tool text](browser-evidence/tui-tools.txt)); `/lab-browser status`
+  ([status](browser-evidence/tui-status.txt)); after `/reload` the same browser
+  with 5 actions and the chip kept ([reload](browser-evidence/tui-reload.txt)); a
+  second prompt clicks to another port: breach row, `✗ browser: 1 failed (left origin)`
+  and the footer `○ web closed · left origin` ([breach](browser-evidence/tui-breach.txt)).
+  Pi exit 0, browser root removed, Herdr cleanup flags true
+  ([normal-launch result](browser-evidence/native-result.json)).
+- `lab --setup-browser` ends with the next command
+  ([setup output](browser-evidence/setup-browser.txt)).
+- Not exercised: approval prompts and modes (PR #26), a live model, Linux or WSL,
+  footer colour pixels, and the combined `mode` + `web` footer in a live Pi (the
+  key order is checked against Pi 1.4.0's footer rule in a unit test only).
+  `check:actual` was not run for this slice.
 
 ## Hosted install (2026-11-02)
 

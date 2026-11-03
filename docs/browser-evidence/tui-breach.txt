@@ -1,0 +1,38 @@
+
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  5 actions · last: snapshot · /lab-browser close
+
+ Reloaded keybindings, extensions, skills, prompts, themes, and context files
+
+● browser http://127.0.0.1:<FIXTURE_PORT> only · private profile
+  5 actions · last: snapshot · /lab-browser close
+
+
+ fixture leave
+
+
+
+ Browser · snapshot
+ Browser · completed (expand for page data)
+
+
+
+ Browser · click
+ ○ Browser · click @e3
+   Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab after click @e3
+ . Browser actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+
+
+ Deterministic local protocol fixture completed (leave). This is not a model response.
+
+✗ browser: 1 failed (left origin) · 1 snapshot · browser closed
+
+○ Browser closed: the page left http://127.0.0.1:<FIXTURE_PORT> or opened another tab after click @e3.
+Browser actions are off for this run. Start a new run: lab --browser http://127.0.0.1:<FIXTURE_PORT>/
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+<OWNED_PROJECT>
+↑1.0k ↓200 1.5%/8.2k (auto)                                                    browser-fixture
+○ web closed · left origin

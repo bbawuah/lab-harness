@@ -1,49 +1,60 @@
 {
-  "date": "2026-11-02",
+  "date": "2026-11-03",
   "kind": "native browser pixels and native Herdr pane.read text; not a mockup",
   "captureSource": {
-    "commit": "9ef79f17d77963b02cdf7c1e4a9111e7dfe40912",
-    "tree": "clean (git status empty before and during capture)",
+    "commit": "98363a7d58a2c19d9b746f9988b78dbb070a9f86",
+    "tree": "clean (git status empty before capture; outputs go to ignored .tmp)",
     "scripts": [
+      "scripts/browser-smoke.ts",
       "scripts/browser-native-smoke.ts (in a 40x120 pseudo-terminal)",
-      "scripts/browser-smoke.ts"
+      "./lab --setup-browser --offline"
     ],
-    "capturedAt": "2026-11-02, macOS arm64 (after review round 2 fixes)"
+    "capturedAt": "2026-11-03, macOS arm64 (browser UX, PR #27, after review round 1 fixes)"
   },
   "files": {
     "native-browser.png": {
-      "sha256": "233a1d82d7e2e6149e095822a8badd0fad98cc73f64275b19a29f395cb145f1a",
-      "source": "browser-native-smoke.ts owned-browser screenshot after the fixture run",
-      "reproduced": "byte-identical to the earlier capture"
+      "sha256": "367e61730e16b92ed4b532d985bf755773f816cb08e2c644981db2cd025ade41",
+      "source": "browser-native-smoke.ts owned-browser screenshot after the fixture run (synthetic page only)"
     },
     "native-result.json": {
-      "sha256": "aceb9c6f086dc4f83d354944229c37c5a74cfc57cd1b8c4a2dae9e95a706586a",
-      "source": "browser-native-smoke.ts result.json, unmodified",
-      "reproduced": "byte-identical to the earlier capture"
+      "sha256": "a32ce9c593fdcc211ed2f37653987733a86dd3cbc1d7cc4a8276a83d7b2d7f7b",
+      "source": "browser-native-smoke.ts result.json, unmodified"
     },
     "session-result.json": {
-      "sha256": "b74cee7eb7241071462b7683a1c2a1a45dcc0983fd439b5f6194f40e316c3936",
-      "source": "browser-smoke.ts result.json, unmodified",
-      "reproduced": "byte-identical to the earlier capture",
-      "note": "Its screenshotSHA256 (1fee05a3...) identifies browser-smoke.ts's own fixture screenshot, which is not published. It is a different image from native-browser.png."
+      "sha256": "aee0d4417b92644f83d3ae6c68b0f3011974725786718788aa4057327f105b34",
+      "source": "browser-smoke.ts result.json, unmodified (includes the ux state matrix)"
+    },
+    "ux-rows.txt": {
+      "sha256": "724719b95ea5400b17fc1af3e29af6d2a07f9e26911d6a6ee7ac581b85c90628",
+      "source": "browser-smoke.ts renderer rows (failure row, status rows, footer chip) at 40/80/120 from real sessions; ports replaced by placeholders after rendering, so placeholder lines can exceed the width"
     },
     "tui-tools.txt": {
-      "sha256": "c4859204de1c02bab7c8554d4af99f4988159654b5a8475696c9611086b3757f",
-      "source": "browser-native-smoke.ts Herdr pane.read after the tool calls, sanitized",
-      "reproduced": "text identical to the 04328b6 capture after sanitization"
+      "sha256": "553304727e7936ba6e1c2e33370b1a096beb8d6dbf8592ce4f902f1f672c551f",
+      "source": "Herdr pane.read after the fixture run: stale row, ✓ verdict, footer chip"
+    },
+    "tui-status.txt": {
+      "sha256": "de566446c082dca6377bef480cd0da818c6b15dd5b7ae2d53434cff2e65ab6f6",
+      "source": "Herdr pane.read after /lab-browser status"
     },
     "tui-reload.txt": {
-      "sha256": "d6f8911065f9c0511e79171a483bc39bf9eea02fb152b9c7d09600c2bf051c52",
-      "source": "browser-native-smoke.ts Herdr pane.read after /reload and /lab-browser status, sanitized",
-      "reproduced": "text identical to the 04328b6 capture after sanitization"
+      "sha256": "74b119b45cc3c2cffbac9e3f830eeba38663395a6e90e26aaec30576bb713f55",
+      "source": "Herdr pane.read after /reload and /lab-browser status: same browser, 5 actions, chip kept"
+    },
+    "tui-breach.txt": {
+      "sha256": "30942cb384e1d3bdb9f0d1b2a93ecc7ad50a9dba482a2caa5afbe8a8f51190e8",
+      "source": "Herdr pane.read after the fixture leave run: breach row, ✗ verdict, status row, footer ○ web closed · left origin"
+    },
+    "setup-browser.txt": {
+      "sha256": "d3e77120b92d2b597fe8745be41d73eb45e0f8e33a52f46a338748fc32f1a8dd",
+      "source": "./lab --setup-browser --offline stdout (verified cache, nothing downloaded); home directory -> ~"
     }
   },
-  "textSanitization": "pane.read text only; /private-prefixed owned project footer -> <OWNED_PROJECT>; loopback fixture port -> <FIXTURE_PORT>; ephemeral Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION>; trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
-  "history": "The first published set (commit a893e0d) was captured 2026-11-02 07:47-07:53 from the uncommitted working tree that was committed as a893e0d at 07:54. It was not a clean-commit capture. The image and both result files are reproduced byte-for-byte here from a clean commit. The TUI text was re-captured at a different terminal width, so its wrapping differs. The same files were reproduced again from clean 04328b6 and from clean 9ef79f1 (this capture).",
+  "textSanitization": "pane.read text only; /private-prefixed owned project -> <OWNED_PROJECT>; loopback fixture ports -> <FIXTURE_PORT>/<OTHER_PORT> (wrap-aware); Relay peer/session ids -> <RELAY_PEER>/<RELAY_SESSION> (none were visible in these captures); trailing spaces removed. No other edits. No personal tabs, profiles or desktop capture.",
+  "history": "PR #23 published the first set (captured from clean 9ef79f1, Chrome 156.0.8078.74). This set replaces it for the browser UX slice; the native fixture script now runs two prompts (run, leave), so request counts and TUI text differ from #23.",
   "agentBrowser": "0.41.0",
-  "chrome": "156.0.8078.74",
+  "chrome": "156.0.8078.80",
   "pi": "1.4.0",
   "herdr": "0.9.5",
   "inferenceCalls": 0,
-  "protocolFixtureRequests": 6
+  "protocolFixtureRequests": 10
 }
