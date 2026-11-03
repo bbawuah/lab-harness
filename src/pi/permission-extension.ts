@@ -79,7 +79,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   const builtIn = new Set(["read", "grep", "find", "ls", "edit", "write", "bash", "lab_search", "lab_files", "lab_browser", "relay_peers", "relay_send", "relay_inbox", "relay_ack"]);
   /** Lets another tool family (e.g. agent-desktop) use this gate. Throws on a name collision. */
   const registerFamily = (family: GatedFamily) => {
-    if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
+    if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask") || (family.denyWithNote !== undefined && typeof family.denyWithNote !== "boolean")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
     for (const tool of family.tools) if (typeof tool !== "string" || builtIn.has(tool) || families.has(tool)) throw new Error(`LAB_PERMISSION_FAMILY: ${String(tool).slice(0, 64)} is already gated`);
     const frozen = Object.freeze({ ...family, tools: Object.freeze([...family.tools]) });
     for (const tool of frozen.tools) families.set(tool, frozen);
@@ -145,7 +145,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     const choice = await ctx.ui.select(approvalTitle(approval, mode, width), [...choices], { signal: ctx.signal });
     if (choice === "Allow once") return undefined;
     if (approval.sessionGrants !== false && choice === choices[1]) { grants.add(approval.scope); return undefined; }
-    if (choice === "Deny with note…") {
+    if (approval.denyWithNote !== false && choice === "Deny with note…") {
       let note: string | undefined;
       try { note = await ctx.ui.input("Note for the model (optional)", "why it was denied, or what to do instead", { signal: ctx.signal }); } catch {}
       return { block: true, reason: denial(event.toolName, "the user denied it", note) };

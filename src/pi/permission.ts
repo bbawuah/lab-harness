@@ -22,9 +22,12 @@ export const modeDescriptions: Record<PermissionMode, string> = {
  * start warning. Registered families are named with what they do in auto.
  */
 export function autoSummary(families: readonly { family: string; inAuto: "run" | "ask" }[] = []): string {
+  const name = (f: { family: string }) => displaySafe(f.family.slice(0, 32));
   const list = (items: string[]) => items.length < 2 ? items.join("") : items.slice(0, -1).join(", ") + " or " + items.at(-1);
-  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...families.filter(f => f.inAuto === "run").map(f => displaySafe(f.family.slice(0, 32)) + " actions")];
-  const asks = families.filter(f => f.inAuto !== "run").map(f => displaySafe(f.family.slice(0, 32)) + " actions");
+  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...families.filter(f => f.inAuto === "run").map(f => name(f) + " actions")];
+  // Desktop actions always ask, even in auto (lead policy; agent-desktop registers with alwaysAsk).
+  const desktopRuns = families.some(f => f.inAuto === "run" && f.family.toLowerCase() === "desktop");
+  const asks = [...(desktopRuns ? [] : ["desktop actions"]), ...families.filter(f => f.inAuto !== "run" && f.family.toLowerCase() !== "desktop").map(f => name(f) + " actions")];
   return `auto shows no approval prompt for ${list(runs)}` + (asks.length ? `; ${list(asks)} still ask` : "") + ".";
 }
 /** Cancel comes first so a reflexive Enter keeps the current mode. */
@@ -43,7 +46,9 @@ export type ToolClass = "read" | "edit" | "bash" | "browser" | "relay-send" | "r
  * instead of adding a second prompt. Its mutating calls are refused in
  * read-only, always asked in ask and edits (edits never auto-approves them),
  * and `inAuto` decides auto. `sessionGrants: false` removes "Allow for this
- * session". `describe` returns plain text; approvalTitle escapes and wraps it.
+ * session"; `denyWithNote: false` removes "Deny with note…". `describe` returns
+ * plain text; approvalTitle escapes and wraps it. Spread `alwaysAsk` for the
+ * desktop policy: allow once / deny in every mode including auto.
  */
 export type GatedFamily = {
   family: string;
@@ -51,8 +56,11 @@ export type GatedFamily = {
   isRead?: (toolName: string, input: Record<string, unknown>) => boolean;
   sessionGrants: boolean;
   inAuto: "run" | "ask";
+  denyWithNote?: boolean;
   describe(toolName: string, input: Record<string, unknown>): { heading: string; lines: string[]; scope: string; scopeLabel: string };
 };
+/** Policy hook for families that must always ask: no session grants, asks in auto, choices Allow once / Deny. */
+export const alwaysAsk = Object.freeze({ sessionGrants: false, inAuto: "ask", denyWithNote: false } as const);
 const readTools = new Set(["read", "grep", "find", "ls", "lab_search", "lab_files", "relay_peers", "relay_inbox"]);
 export function classify(toolName: string, input: Record<string, unknown> | undefined, family?: GatedFamily): ToolClass {
   if (family) {
@@ -169,7 +177,7 @@ export function valuePreview(value: string, secret: boolean, max = 48): string {
 export type BrowserElement = { role: string; name: string };
 export type BrowserFacts = { origin: string; element?: BrowserElement };
 export type ApprovalFacts = { cwd: string; roots: PathRoots; browser?: (input: Record<string, unknown>) => BrowserFacts | undefined; fileSize?: (absolute: string) => number | undefined };
-export type Approval = { heading: string; lines: string[]; scope: string; scopeLabel: string; sessionGrants?: boolean };
+export type Approval = { heading: string; lines: string[]; scope: string; scopeLabel: string; sessionGrants?: boolean; denyWithNote?: boolean };
 const previewLines = (text: string, prefix: string, limit: number) => {
   const lines = text.split("\n"); const shown = lines.slice(0, limit).map(line => prefix + line);
   if (lines.length > limit) shown.push(`${prefix}… ${lines.length - limit} more line(s)`);
@@ -234,9 +242,9 @@ export function describeApproval(toolName: string, input: Record<string, unknown
   let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
   return { heading: `Run tool ${tool}?`, lines: previewLines(Array.from(json).slice(0, 1200).join(""), "", 8), scope: `${toolName}\0${json}`, scopeLabel: "this exact call" };
 }
-export const approvalChoices = (approval: Approval): string[] => approval.sessionGrants === false
-  ? ["Allow once", "Deny", "Deny with note…"]
-  : ["Allow once", `Allow for this session (${displaySafe(approval.scopeLabel)})`, "Deny", "Deny with note…"];
+export const approvalChoices = (approval: Approval): string[] => [
+  "Allow once", ...(approval.sessionGrants === false ? [] : [`Allow for this session (${displaySafe(approval.scopeLabel)})`]),
+  "Deny", ...(approval.denyWithNote === false ? [] : ["Deny with note…"])];
 /** Approval text for a registered family; any throw or bad shape becomes a generic, escaped description. */
 export function describeFamilyApproval(family: GatedFamily, toolName: string, input: Record<string, unknown>): Approval {
   let json = ""; try { json = JSON.stringify(input) ?? ""; } catch { json = "(unserializable input)"; }
@@ -246,7 +254,7 @@ export function describeFamilyApproval(family: GatedFamily, toolName: string, in
   const ok = described && typeof described.heading === "string" && Array.isArray(described.lines) && described.lines.every(line => typeof line === "string") && typeof described.scope === "string" && typeof described.scopeLabel === "string";
   const base = ok ? { heading: described!.heading!.slice(0, 200), lines: described!.lines!.slice(0, 40).map(line => line.slice(0, 2000)), scope: described!.scope!, scopeLabel: described!.scopeLabel!.slice(0, 80) } : fallback;
   // Scopes are namespaced by family and tool so one family cannot reuse another's grant.
-  return { ...base, scope: `family\0${family.family}\0${toolName}\0${base.scope}`, sessionGrants: family.sessionGrants };
+  return { ...base, scope: `family\0${family.family}\0${toolName}\0${base.scope}`, sessionGrants: family.sessionGrants, denyWithNote: family.denyWithNote !== false };
 }
 /** Escaped, column-wrapped prompt title. Every row is <= width columns. */
 export function approvalTitle(approval: Approval, mode: PermissionMode, width: number): string {

@@ -1062,7 +1062,7 @@
       "status": "added"
     },
     "docs/permission-modes-contract.md": {
-      "sha256": "54f8c9131388add35dab9083c45fca4aa6413f4291e459e8fcb8a7dfc66a769b",
+      "sha256": "d742cf5819a2dd3eb29acc519c8cdda755c4f2ddf70b69caa83c77cd6c5458ce",
       "status": "added"
     },
     "docs/pi-header.md": {
@@ -1594,7 +1594,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "023cdf226e8b371b95f8f94c071f2882315d72a85b3acb539d6a78cc8337e0ce",
+      "sha256": "a688a113b349e61ec1b921649426cfc86f5b7e642b186074cf333ba0c07a0617",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1928,11 +1928,11 @@
       "status": "added"
     },
     "src/pi/permission-extension.ts": {
-      "sha256": "55256ffde772bca9277812fe286061c6d22da031e45c4ef01906a06140e53d02",
+      "sha256": "c52f91c01b878803020538d68814cd176453774176994daa55cd19a5de98cb61",
       "status": "added"
     },
     "src/pi/permission.ts": {
-      "sha256": "d5c4acecc5f8609f249ddb395b2f5d1bbd83fda710b2aa060d10bea444465237",
+      "sha256": "e8f711b121aadc5b3beeb68835efebb89d41a45ff33e3be2c0fbb1d1e90f4cbf",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
@@ -2094,7 +2094,7 @@
       "originalSHA256": "c71f22e648d011f782dac8c216fffbcb1ceaba87ce83a683d1a2a70e3493698c"
     },
     "tests/permission.test.ts": {
-      "sha256": "ef15b006b2ecc61d7895422c4be02165282b45f087227bad6356f887c38458a1",
+      "sha256": "8068345934247e9828e43fca9e330dd977c0aef784f124f5c2360d69d77e8cf8",
       "status": "added"
     },
     "tests/pi-acquire.test.ts": {

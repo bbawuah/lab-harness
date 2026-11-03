@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
+import { alwaysAsk, approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
 import { installPermissionExtension, modeIndicator, permissionOptionsFromEnvironment, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
 import { browserCallText, browserResultText, recordBrowserCall, renderBrowserSuccess } from "../src/pi/browser-extension.ts";
 import { columns } from "../src/pi/display.ts";
@@ -388,7 +388,7 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     expect(h.prompts).toHaveLength(4);
     const title = h.prompts[0]!.title;
     expect(h.prompts[0]!.options).toEqual(["Cancel", "Switch to auto"]); // safe default first
-    for (const part of ["switch from ask to auto?", "edits", "shell commands", "browser actions", "Relay sends", "Desktop actions still ask", "not a sandbox"]) expect(title.replace(/\n/g, "")).toContain(part); // rows wrap by column, not by word
+    for (const part of ["switch from ask to auto?", "edits", "shell commands", "browser actions", "Relay sends", "desktop actions still ask", "not a sandbox"]) expect(title.replace(/\n/g, "")).toContain(part); // rows wrap by column, not by word
     for (const row of title.split("\n")) expect(columns(row)).toBeLessThanOrEqual(78);
     await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.prompts).toHaveLength(4); // already auto: no new confirm
   } finally { h.done(); }
@@ -401,7 +401,7 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     sel.ctx.ui.select = async (t, o) => { titles.push(t); return titles.length === 1 ? o.find(x => x.startsWith("auto"))! : "Cancel"; };
     await sel.commands.get("lab-mode").handler("", sel.ctx); expect(sel.gate.mode).toBe("ask"); expect(titles[1]).toContain("switch from ask to auto?");
   } finally { sel.done(); }
-  expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode.");
+  expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends; desktop actions still ask. Change it with /lab-mode.");
   expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions.");
 });
 
@@ -486,4 +486,29 @@ test("mode footer uses the shared indicator and is never truncated away at 40 co
     expect(columns(text)).toBeLessThanOrEqual(37);
     for (const width of [40, 80, 120]) expect(piFooter({ ...long, [indicatorSlots.mode]: text }, width).startsWith(text)).toBe(true);
   }
+});
+
+test("alwaysAsk policy hook (desktop): Allow once / Deny only, asks in every mode including auto, refused read-only", async () => {
+  expect(alwaysAsk).toEqual({ sessionGrants: false, inAuto: "ask", denyWithNote: false });
+  const desktop = { ...alwaysAsk, family: "Desktop", tools: ["lab_desktop"], isRead: (_t: string, i: Record<string, unknown>) => ["list", "snapshot", "read"].includes(String(i.operation)),
+    describe: (_t: string, i: Record<string, unknown>) => ({ heading: `Desktop: ${String(i.operation)}?`, lines: ["app: Notes · window: Untitled"], scope: "-", scopeLabel: "-" }) };
+  for (const mode of ["ask", "edits", "auto"] as PermissionMode[]) {
+    const h = harness({ mode, answers: ["Allow once", "Allow once", "Deny"] });
+    try {
+      h.gate.registerFamily(desktop);
+      expect(await h.call("lab_desktop", { operation: "snapshot" })).toBeUndefined();
+      expect(await h.call("lab_desktop", { operation: "click" })).toBeUndefined();
+      expect(await h.call("lab_desktop", { operation: "click" })).toBeUndefined();
+      expect((await h.call("lab_desktop", { operation: "type" })).reason).toBe("LAB_PERMISSION_DENIED: lab_desktop was not run (the user denied it). Do not retry it without asking the user.");
+      expect(h.prompts.map(p => p.options)).toEqual(Array(3).fill(["Allow once", "Deny"]));
+      expect(h.gate.grants.size).toBe(0);
+    } finally { h.done(); }
+  }
+  const ro = harness({ mode: "read-only" });
+  try { ro.gate.registerFamily(desktop); expect((await ro.call("lab_desktop", { operation: "click" })).reason).toContain("LAB_PERMISSION_REFUSED"); expect(await ro.call("lab_desktop", { operation: "read" })).toBeUndefined(); } finally { ro.done(); }
+  // The auto confirm names desktop as still asking, with or without the family registered.
+  const h = harness({ mode: "ask", answers: ["Cancel"] });
+  try { h.gate.registerFamily(desktop); await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.prompts[0]!.title.replace(/\n/g, "")).toContain("Relay sends; desktop actions still ask."); } finally { h.done(); }
+  const bad = harness({});
+  try { expect(() => bad.gate.registerFamily({ ...desktop, denyWithNote: "no" as any })).toThrow("LAB_PERMISSION_FAMILY"); } finally { bad.done(); }
 });

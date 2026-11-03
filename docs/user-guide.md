@@ -214,7 +214,7 @@ hanging. Reads, searches, browser snapshots and inbox reads never ask.
 | ask (default) | Reads only; everything else asks |
 | edits | Also file edits and writes inside the project; shell, browser and Relay sends still ask |
 | read-only | Reads only; every change is refused with a message to the model |
-| auto | Everything. Today's unattended behaviour; choose it explicitly |
+| auto | Everything except desktop actions, which always ask. Choose it explicitly |
 
 Start with `lab --mode edits` (or another mode), or change it inside Pi with
 `/lab-mode` (shows a picker), `/lab-mode read-only`, or `/lab-mode next` to
@@ -224,6 +224,7 @@ is Pi's thinking level, and other keys don't reach Pi reliably in default termin
 
 Switching to auto inside Pi asks once to confirm. The prompt names what auto skips:
 no approval prompt for edits, shell commands, browser actions or Relay sends.
+Desktop actions still ask in auto (Allow once / Deny) and are refused in read-only.
 Cancel or Esc keeps the current mode. `lab --mode auto` prints a one-line warning
 before the workspace starts.
 

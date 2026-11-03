@@ -92,12 +92,17 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
   `lab-web` and `lab-x-desktop`, and the longest mode chip is 29 columns, so the mode is never truncated away at
   40 columns. `/lab-help` and `lab --help` list modes.
 - Entering `auto` from `/lab-mode auto` or the selector asks one confirm, "LAB: switch from <m> to auto?". It names
-  what auto skips: "auto shows no approval prompt for edits, shell commands, browser actions or Relay sends", plus
-  registered families with what they do in auto (e.g. "Desktop actions still ask"), and "not a sandbox". The
-  choices are `Cancel` (first, the default) / `Switch to auto`. Cancel, Esc or a failed prompt keeps the mode. Without the interactive
-  UI, `/lab-mode auto` never switches. Already in auto, there is no new confirm.
+  what auto skips and what it doesn't: "auto shows no approval prompt for edits, shell commands, browser actions or
+  Relay sends; desktop actions still ask". Other registered families are named with what they do in auto. It ends
+  with "not a sandbox". The choices are `Cancel` (first, the default) / `Switch to auto`. Cancel, Esc or a failed
+  prompt keeps the mode. Without the interactive UI, `/lab-mode auto` never switches. Already in auto, there is no
+  new confirm.
+- **Auto does not cover desktop.** Desktop mutations (agent-desktop, PR #28) are Allow once / Deny in every mode,
+  including `auto`, and refused in `read-only`. The confirm and the start warning say so even before the desktop
+  family is installed.
 - `lab --mode auto` prints one warning line before the workspace starts: "LAB warning: started in auto mode; auto
-  shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode."
+  shows no approval prompt for edits, shell commands, browser actions or Relay sends; desktop actions still ask.
+  Change it with /lab-mode."
 - **No keyboard shortcut.** `Shift+Tab` is reserved by Pi for `app.thinking.cycle` (`core/keybindings.ts:33–35`), and
   reserved keys cannot be overridden by extensions (`runner.ts:97–104, 697–703`). Every plain Ctrl letter is either
   bound by Pi or is a terminal control (Ctrl+H/I/M). Option/Alt combinations reach the pty only when the terminal
@@ -135,15 +140,19 @@ Other LAB tool families (first: agent-desktop) use this gate rather than adding 
 `installPermissionExtension` returns `registerFamily(family)` (`GatedFamily` in `src/pi/permission.ts`):
 
 ```ts
+import { alwaysAsk } from "./permission.ts";
 gate.registerFamily({
+  ...alwaysAsk,                        // policy hook: { sessionGrants: false, inAuto: "ask", denyWithNote: false }
   family: "Desktop",                   // shown in the prompt heading
-  tools: ["desktop_act"],              // tool names this family owns
-  isRead: (tool, input) => false,      // read operations run in every mode
-  sessionGrants: false,                // false: no "Allow for this session" choice
-  inAuto: "ask",                       // "ask" keeps asking in auto; "run" lets auto run it
+  tools: ["lab_desktop"],              // tool names this family owns
+  isRead: (tool, input) => ["list", "snapshot", "read"].includes(String(input.operation)), // reads run in every mode
   describe: (tool, input) => ({ heading, lines, scope, scopeLabel }),
 });
 ```
+
+`alwaysAsk` is the desktop policy: choices are exactly `Allow once` / `Deny`, nothing is granted for the session,
+and `auto` still asks. Without the preset, a family sets the fields itself: `sessionGrants` (false removes "Allow for
+this session"), `inAuto` (`"ask"` or `"run"`) and `denyWithNote` (false removes "Deny with note…"; default true).
 
 - A family's mutating calls are refused in `read-only`, always asked in `ask` and `edits` (`edits` never
   auto-approves them), and `inAuto` decides `auto`. The no-UI rule applies: without an interactive TUI they are
