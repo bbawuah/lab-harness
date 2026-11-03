@@ -13,7 +13,7 @@ const cols=(row:string)=>Bun.stringWidth(row);
 function fakeSession(run:(args:string[])=>Promise<string>) {
  const root=mkdtempSync(join(tmpdir(),'lab-browser-test-'));for(const n of ['s','t'])mkdirSync(join(root,n),{mode:0o700});
  const s:any=Object.create(BrowserSession.prototype);Object.assign(s,{descriptor:{root,session:'lab-'+'a'.repeat(24),origin:'http://example.test',launchHash:'h'},queue:Promise.resolve(),refs:new Set(),issued:new Set(),labels:new Map(),actions:0,pendingChange:false,closed:false,binary:'/nonexistent'});
- s.run=run;return {s,root};
+ s.run=run;s.daemonAlive=()=>true;return {s,root};
 }
 function response(data:any,content?:string) {const r={_boundary:{nonce:'a'.repeat(32),origin:'http://example.test/'},data:{...data,lifecycle:{reused:true}},error:null,success:true};return JSON.stringify({_meta:{agentBrowserVersion:'0.41.0'},content:[{type:'text',text:content??JSON.stringify(r)}],isError:false,structuredContent:{exitCode:0,response:r,stdout:JSON.stringify(r),stderr:''}});}
 test('origin validation excludes credentials, protocols and other ports/schemes',()=>{

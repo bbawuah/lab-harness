@@ -22,13 +22,14 @@ function envelope(data: any, content?: string) {
   const r = { _boundary: { nonce: 'a'.repeat(32), origin: ORIGIN + '/' }, data: { ...data, lifecycle }, error: null, success: true };
   return JSON.stringify({ _meta: { agentBrowserVersion: '0.41.0' }, content: [{ type: 'text', text: content ?? JSON.stringify(r) }], isError: false, structuredContent: { exitCode: 0, response: r, stdout: JSON.stringify(r), stderr: '' } });
 }
-type Plan = { url?: string; tabs?: number; fail?: Partial<Record<string, string>>; closeFails?: boolean };
+type Plan = { url?: string; tabs?: number; fail?: Partial<Record<string, string>>; closeFails?: boolean; daemonDead?: boolean };
 /** Real BrowserSession logic over a scripted private transport; records every command sent. */
 function scripted(plan: Plan = {}) {
   const root = mkdtempSync(join(tmpdir(), 'lab-browser-ux-')); for (const n of ['s', 't']) mkdirSync(join(root, n), { mode: 0o700 });
   const sent: string[] = [];
   const s: any = Object.create(BrowserSession.prototype);
   Object.assign(s, { descriptor: { root, session: 'lab-' + 'c'.repeat(24), origin: ORIGIN, launchHash: 'h' }, queue: Promise.resolve(), refs: new Set(), issued: new Set(), labels: new Map(), actions: 0, pendingChange: false, closed: false, binary: '/nonexistent' });
+  s.daemonAlive = () => !plan.daemonDead;
   s.run = async (args: string[]) => {
     if (args[1] === 'close') { sent.push('close'); if (plan.closeFails) throw new Error('LAB_BROWSER_TIMEOUT'); return JSON.stringify({ success: true }); }
     const tool = args[2]!; sent.push(tool);
@@ -124,6 +125,8 @@ test('verdict comes from tool results only', () => {
   expect(verdict([ok('snapshot'), { isError: true, details: { operation: 'click', state: 'stale' } }, ok('snapshot')])).toBe('✓ browser: 2 snapshot · 1 refused');
   expect(verdict([{ isError: true, details: {} }])).toBe('! browser: nothing sent · 1 refused'); // Pi validation error / denied approval
   expect(verdict([ok('snapshot'), { isError: true, details: { operation: 'click', state: 'uncertain' } }])).toBe('✗ browser: 1 failed (result unknown) · 1 snapshot · browser closed');
+  expect(verdict([ok('snapshot'), { isError: true, details: { operation: 'click', state: 'breach' } }])).toBe('✗ browser: 1 failed (left origin) · 1 snapshot · browser closed');
+  expect(verdict([{ isError: true, details: { operation: 'snapshot', state: 'lost' } }])).toBe('✗ browser: 1 failed (disconnected) · browser closed');
   expect(verdict([{ isError: false, details: { operation: 'evil\u001b' } }, { isError: false, details: 'x' }])).toBe('! browser: nothing sent · '); // unknown shapes are ignored, never trusted
 });
 
@@ -182,4 +185,33 @@ test('help Usage lists every option, the shell launcher matches it, and setup en
     expect(lines[0]).toBe('✓ agent-browser 0.41.0 verified · no browser downloaded'); expect(lines.at(-1)).toStartWith('Next:  lab --browser ');
     expect(lines[1]).toStartWith(found ? '✓ browser found: ' : '! no approved browser found');
   }
+});
+
+test('a dead daemon is reported as lost before any command can relaunch it', async () => {
+  const { s, sent, done } = scripted({ daemonDead: true });
+  try {
+    const info = await failureOf(s.execute({ operation: 'snapshot' }));
+    expect(info).toMatchObject({ code: 'LAB_BROWSER_SESSION_LOST', phase: 'action', cleanup: 'done' });
+    expect(classify(info)).toBe('lost'); expect(recoveryText(info, ORIGIN)).toContain('daemon exited or was replaced');
+    expect(sent).toEqual(['close']); // no browser command was sent to a replacement daemon
+  } finally { done(); }
+});
+
+test('orphan reap signals only a live process proven to use the owned profile', async () => {
+  const { reapOwnedBrowsers } = await import('../src/browser/session.ts');
+  const { spawn } = await import('node:child_process'); const { symlinkSync } = await import('node:fs');
+  const t = mkdtempSync(join(tmpdir(), 'lab-browser-reap-'));
+  const fake = (dir: string) => spawn(process.execPath, ['-e', 'setTimeout(()=>{},30000)', '--user-data-dir=' + dir], { stdio: 'ignore' });
+  const mine = join(t, 'agent-browser-chrome-a'), foreign = join(t, 'agent-browser-chrome-b'); mkdirSync(mine); mkdirSync(foreign);
+  const a = fake(mine), b = fake(join(t, 'elsewhere'));
+  try {
+    await new Promise(r => setTimeout(r, 300));
+    symlinkSync('host-' + a.pid, join(mine, 'SingletonLock'));
+    symlinkSync('host-' + b.pid, join(foreign, 'SingletonLock')); // live pid whose profile is not this one
+    expect(await reapOwnedBrowsers(t, ['agent-browser-chrome-a', 'agent-browser-chrome-b'])).toBe(false);
+    expect(() => process.kill(b.pid!, 0)).not.toThrow(); expect(() => process.kill(a.pid!, 0)).not.toThrow(); // nothing signalled when any target is unproven
+    expect(await reapOwnedBrowsers(t, ['agent-browser-chrome-a'])).toBe(true);
+    expect(() => process.kill(a.pid!, 0)).toThrow();
+    expect(await reapOwnedBrowsers(t, ['agent-browser-chrome-a', 'missing'])).toBe(true); // dead pid / no lock: nothing to do
+  } finally { for (const c of [a, b]) try { process.kill(c.pid!, 'SIGKILL'); } catch {} rmSync(t, { recursive: true, force: true }); }
 });

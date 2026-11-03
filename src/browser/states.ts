@@ -83,13 +83,14 @@ export function statusLines(view: LifecycleView): string[] {
 export type ToolOutcome = { isError: boolean; details?: any };
 export function verdict(outcomes: ToolOutcome[]): string | undefined {
   if (!outcomes.length) return;
-  const counts = new Map<string, number>(); let failed = 0, refused = 0, pending = false, verifiedAfterChange = false, unknown = 0;
+  const counts = new Map<string, number>(); let failed = 0, refused = 0, pending = false, verifiedAfterChange = false; const reasons = new Set<string>();
   for (const o of outcomes) {
     const d = o.details && typeof o.details === 'object' ? o.details : {};
     const op = typeof d.operation === 'string' && /^(snapshot|navigate|fill|click|read)$/.test(d.operation) ? d.operation : undefined;
     if (o.isError) {
       const st = typeof d.state === 'string' ? d.state : undefined;
-      if (st === 'stale' || st === 'refused' || st === 'closed' || !st) refused++; else { failed++; if (mutating(op)) unknown++; }
+      if (st === 'stale' || st === 'refused' || st === 'closed' || !st) refused++;
+      else { failed++; reasons.add(st === 'breach' ? 'left origin' : st === 'lost' ? 'disconnected' : st === 'cleanup-failed' ? 'cleanup pending' : mutating(op) ? 'result unknown' : 'read failed'); }
       continue;
     }
     if (!op) continue;
@@ -98,7 +99,7 @@ export function verdict(outcomes: ToolOutcome[]): string | undefined {
   }
   const parts = ['snapshot', 'navigate', 'fill', 'click', 'read'].filter(k => counts.get(k)).map(k => `${counts.get(k)} ${k}`);
   if (refused) parts.push(`${refused} refused`);
-  if (failed) return `✗ browser: ${failed} failed${unknown ? ' (result unknown)' : ''}${parts.length ? ' · ' + parts.join(' · ') : ''} · browser closed`;
+  if (failed) return `✗ browser: ${failed} failed (${[...reasons].join(', ')})${parts.length ? ' · ' + parts.join(' · ') : ''} · browser closed`;
   if (pending) return `! browser: page changed, not read back · ${parts.join(' · ')}`;
   if (!counts.size) return `! browser: nothing sent · ${parts.join(' · ')}`;
   return `✓ browser: ${parts.join(' · ')}${verifiedAfterChange ? ' · read back after change' : ''}`;

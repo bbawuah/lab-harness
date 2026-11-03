@@ -1,6 +1,6 @@
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { browserURL, selectBrowser, verifyBrowserRuntime } from './runtime.ts';
@@ -18,6 +18,8 @@ export class BrowserSession {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
     insist(/^lab-[a-f0-9]{24}$/.test(descriptor.session),'LAB_BROWSER_STATE'); browserURL(descriptor.origin);
+    // Activity survives /reload rebinding (display only; never used for authorization).
+    try{const a=JSON.parse(readFileSync(join(descriptor.root,'activity.json'),'utf8'));if(Number.isSafeInteger(a?.actions)&&a.actions>=0)this.actions=a.actions;if(typeof a?.last==='string'&&/^(snapshot|navigate|fill|click|read)( @e\d+)?$/.test(a.last))this.last=a.last;}catch{}
   }
   static async create(url: string, executable?: string, signal?: AbortSignal) {
     const u=browserURL(url);verifyBrowserRuntime(); const browser=selectBrowser(executable);
@@ -84,24 +86,50 @@ export class BrowserSession {
       }
      }catch(e){throw e instanceof BrowserFailure?e:fail(e,'pre',this.failed()?(this.closed?'done':'retained'):'none');}
       try {
+        // A dead daemon must not be silently replaced by a fresh one on the next command.
+        insist(this.daemonAlive(),'LAB_BROWSER_SESSION_LOST: browser daemon exited.');
         await this.scope(signal);if(op!=='snapshot'&&op!=='read')this.refs.clear();
         const raw=await this.call(tool,args,signal);const {result,lifecycle}=project(raw,op);this.identity({lifecycle});
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
         if(op==='snapshot'){const refs=result.result.refs as Record<string,{role:string;name:string}>;this.refs=new Set(Object.keys(refs).map(r=>'@'+r));this.labels=new Map(Object.entries(refs).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));for(const r of this.refs)this.issued.add(r);}
         else if(op!=='read')this.labels.clear();
-        this.actions++;this.last=op+(input.ref?' '+input.ref:'');
+        this.actions++;this.last=op+(input.ref?' '+input.ref:'');try{writeFileSync(join(this.descriptor.root,'activity.json'),JSON.stringify({actions:this.actions,last:this.last}),{mode:0o600});}catch{}
         let verifies=false;if(mutating(op))this.pendingChange=true;else if(this.pendingChange){this.pendingChange=false;verifies=true;}
         return {...result,verifiedOrigin:this.descriptor.origin,operation:op,...(input.ref?{ref:input.ref}:{}),...(verifies?{verifies:true}:{})};
       } catch(e) {this.refs.clear();this.labels.clear();this.markFailed();let cleanup:BrowserFailureInfo['cleanup']='done';await this.closeNow().catch(()=>{cleanup='retained';});throw fail(e,'action',cleanup);}
     });this.queue=task.catch(()=>{});return task;
   }
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
+  /** Owned daemon liveness from its pidfile in the private socket dir (signal 0 only). */
+  private daemonAlive() {try{const pid=Number(readFileSync(join(this.descriptor.root,'s',this.descriptor.session+'.pid'),'utf8'));if(!Number.isInteger(pid)||pid<=1)return false;process.kill(pid,0);return true;}catch{return false;}}
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}
     this.markFailed();
     const pidfile=join(r,'s',this.descriptor.session+'.pid');let pid:number|undefined;try{pid=Number(readFileSync(pidfile,'utf8'));}catch{}
     const raw=await this.run(['--json','close']); const response=JSON.parse(raw);insist(response.success===true,'LAB_BROWSER_CLEANUP_FAILED');
-    for(let n=0;n<40;n++){let alive=false;if(pid&&Number.isInteger(pid)){try{process.kill(pid,0);alive=true;}catch{}}if(!alive&&readdirSync(join(r,'t')).every(n=>!n.startsWith('agent-browser-chrome-'))){this.closed=true;rmSync(r,{recursive:true});return;}await new Promise(r=>setTimeout(r,50));}
+    const alive=()=>{if(pid&&Number.isInteger(pid)){try{process.kill(pid,0);return true;}catch{}}return false;};
+    const profiles=()=>readdirSync(join(r,'t')).filter(n=>n.startsWith('agent-browser-chrome-'));
+    for(let n=0;n<40;n++){if(!alive()&&!profiles().length){this.closed=true;rmSync(r,{recursive:true});return;}await new Promise(r=>setTimeout(r,50));}
+    // Daemon gone but its browser left behind (daemon crash/kill): stop only a browser
+    // proven to run on this run's private profile, then require it to be gone.
+    if(!alive()&&await reapOwnedBrowsers(join(r,'t'),profiles())){this.closed=true;rmSync(r,{recursive:true});return;}
     throw new Error('LAB_BROWSER_CLEANUP_FAILED: owned state retained; no success claimed.');
   }
+}
+
+/** Chrome's SingletonLock names its pid; signal it only if its command line uses exactly this owned profile. Returns true when none remain alive. */
+export async function reapOwnedBrowsers(tdir:string,profiles:string[]):Promise<boolean>{
+  const owned=(pid:number,dir:string)=>{const r=spawnSync('/bin/ps',['-o','command=','-p',String(pid)],{encoding:'utf8',env:{PATH:'/usr/bin:/bin'}});const cmd=r.status===0?r.stdout.trimEnd():'';return cmd.includes(' --user-data-dir='+dir+' ')||cmd.endsWith(' --user-data-dir='+dir);};
+  const live=(pid:number)=>{try{process.kill(pid,0);return true;}catch{return false;}};
+  const wait=async(pids:number[])=>{for(let n=0;n<60&&pids.some(live);n++)await new Promise(r=>setTimeout(r,50));};
+  const targets=new Map<number,string>();
+  for(const name of profiles){const dir=join(tdir,name);let lock='';try{lock=readlinkSync(join(dir,'SingletonLock'));}catch{continue;}
+    const pid=Number(/-(\d+)$/.exec(lock)?.[1]);if(!Number.isInteger(pid)||pid<=1||!live(pid))continue;
+    if(!owned(pid,dir))return false; // a live pid we cannot prove is ours: never signal, retain state
+    targets.set(pid,dir);}
+  for(const pid of targets.keys())try{process.kill(pid,'SIGTERM');}catch{}
+  await wait([...targets.keys()]);
+  for(const [pid,dir] of targets)if(live(pid)&&owned(pid,dir))try{process.kill(pid,'SIGKILL');}catch{}
+  await wait([...targets.keys()]);
+  return ![...targets.keys()].some(live);
 }
