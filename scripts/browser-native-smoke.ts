@@ -60,7 +60,7 @@ const automate=(async()=>{
  const observed=JSON.parse(await (b as any).run(['--json','get','text','output']));
  if(observed.data.text!=='Saved: Native Fixture')throw new Error('native independent DOM mismatch');
  await (b as any).run(['--json','screenshot',join(evidence,'browser-native.png')]);
- const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(wrapped(server.port),'<FIXTURE_PORT>').replace(wrapped(other.port),'<OTHER_PORT>'));
+ const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
  // Ports may be split by TUI wrapping: allow an escaped newline plus indent between digits.
  function wrapped(port:number){return new RegExp(String(port).split('').join('(?:\\\\n *)?'),'g');}
  await capture('tui-tools.txt');

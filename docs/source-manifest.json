@@ -1512,7 +1512,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "4765788925f92abef9694ecb1c0fb11643738887ff8195315c6f594a374a8ffd",
+      "sha256": "15668781970d46ac1f5b79f98c6b91a85dbbc79a0f645b8fb961dc6b3aa0315c",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1672,11 +1672,11 @@
       "status": "added"
     },
     "scripts/browser-native-smoke.ts": {
-      "sha256": "c6c4fae5029f2b61c46db3df15cdb910f4072b70e7084630ee634b9d2c4cb875",
+      "sha256": "e79eb1b408ef8d44697323db05501409cca999f0ae098091bcda5f6d4ef3774e",
       "status": "added"
     },
     "scripts/browser-smoke.ts": {
-      "sha256": "0667e31382c3d62306df32eb044c69a99124afae4ed4f73653b1babd68151597",
+      "sha256": "3e41da0cd23a5aac96f658bba392c0e00bf27bf065312eca45cd5505ec344faa",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1750,11 +1750,11 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "b2d37ce5298777ce14702889ed01b5fc4a7c25d61f4a8ab3c397d0bfcaabe49e",
+      "sha256": "c16b8c355ba7b4c907225765e378851ec9cd1cbccdf40b9241a0c8cc8de413eb",
       "status": "added"
     },
     "src/browser/states.ts": {
-      "sha256": "a3867bf85637d4df80b8e01e917ad6c5c4a7148b9dbda472484c774ae1516f5d",
+      "sha256": "7ac47b37c55ae4902a9067e88ccaf54e47e0a37ce7852a8c85a23607ea93c3bd",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1934,11 +1934,11 @@
       "status": "added"
     },
     "tests/browser-ux.test.ts": {
-      "sha256": "18ef9447b22a037d6adabf7f8649a2ed6056cc554c22aa2518ee2a778c389142",
+      "sha256": "f1affe207dc5dcf75c31777a7481a0f1de43bc1aa42284dfc428b0337f3be9d5",
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "52fdf87c3640ccb19dc3fe06b17b9d0465763ed50cb74414c9559d94244d8b47",
+      "sha256": "819a6b1cc9f9fed891f91cc5ee7289fa911d34f3db18049d92ecc7977a4eac97",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
