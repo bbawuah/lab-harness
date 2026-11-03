@@ -1791,7 +1791,7 @@
       "status": "added"
     },
     "scripts/browser-native-smoke.ts": {
-      "sha256": "898640d987242713401e34c9fd1b370b2f9634f8c7be167aaa873723002bb842",
+      "sha256": "b4c12930ffd6467cd9598816474ffbf0b5e6dcb50844aba4bd5365ba875f71b2",
       "status": "added"
     },
     "scripts/browser-smoke.ts": {

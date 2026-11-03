@@ -40,7 +40,9 @@ console.log('Native fixture: scripted prompts and slash commands are sent throug
 const child=spawn(resolve('lab'),['--offline','--single-pane','--project',fixtureProject,'--browser',`http://127.0.0.1:${server.port}/`],{stdio:'inherit',env:{PATH:process.env.PATH,HOME:homedir(),TERM:'xterm-256color',SHELL:'/bin/sh',LAB_WORKSPACE_STATE_ROOT:state}});
 const deadline=setTimeout(()=>child.kill('SIGTERM'),120000);
 const delay=(n:number)=>new Promise(r=>setTimeout(r,n));
-let automationError:string|undefined;
+let automationError:string|undefined;let approvals=0;
+// Footer-only run (LAB_SMOKE_FOOTER=1): launch, capture the combined mode + web footer at the terminal width, exit.
+const footerOnly=process.env.LAB_SMOKE_FOOTER==='1',cols=process.stdout.columns??0;
 const automate=(async()=>{
  let socket='';let run='';
  for(let n=0;n<100;n++){
@@ -53,16 +55,21 @@ const automate=(async()=>{
  if(!socket)throw new Error('owned socket not found');
  const pane='w1:p2';
  const read=async()=>{const r=await request(socket,'pane.read',{pane_id:pane,source:'visible',lines:100,format:'text',strip_ansi:true});return JSON.stringify(r);};
- const wait=async(text:string)=>{for(let n=0;n<100;n++){const r=await read().catch(()=> '');if(r.includes(text))return r;await delay(100);}throw new Error('native output missing: '+text);};
+ // Default permission mode is ask (#26): answer each browser approval with "Allow once", the operator's normal path.
+ const wait=async(text:string)=>{for(let n=0;n<150;n++){const r=await read().catch(()=> '');if(r.includes(text))return r;
+   if(r.includes('→ Allow once')){approvals++;await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});for(let m=0;m<50&&(await read().catch(()=> '')).includes('→ Allow once');m++)await delay(100);continue;}
+   await delay(100);}throw new Error('native output missing: '+text);};
+ const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
+ // Ports may be split by TUI wrapping: allow an escaped newline plus indent between digits.
+ function wrapped(port:number){return new RegExp(String(port).split('').join('(?:\\\\n *)?'),'g');}
  const send=async(text:string)=>{await request(socket,'pane.send_text',{pane_id:pane,text});await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});};
- await wait('Relay ready');await wait('● web 127.0.0.1');await send('fixture run');await wait('completed (run)');await wait('✓ browser');
+ await wait('Relay ready');
+ if(footerOnly){await wait('mode: ask');await wait('● web');await capture(`tui-footer-${cols}.txt`);await send('/exit');return;}
+ await wait('● web 127.0.0.1');await send('fixture run');await wait('completed (run)');await wait('✓ browser');
  const desc=JSON.parse(readFileSync(join(run,'browser-ref.json'),'utf8'));const b=new BrowserSession(desc);
  const observed=JSON.parse(await (b as any).run(['--json','get','text','output']));
  if(observed.data.text!=='Saved: Native Fixture')throw new Error('native independent DOM mismatch');
  await (b as any).run(['--json','screenshot',join(evidence,'browser-native.png')]);
- const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
- // Ports may be split by TUI wrapping: allow an escaped newline plus indent between digits.
- function wrapped(port:number){return new RegExp(String(port).split('').join('(?:\\\\n *)?'),'g');}
  await capture('tui-tools.txt');
  await send('/lab-browser status');await wait('private profile');await capture('tui-status.txt');
  await send('/reload');await wait('Reloaded keybindings');await send('/lab-browser status');await wait('5 actions');await wait('● web 127.0.0.1');
@@ -76,8 +83,8 @@ try{const code=await new Promise<number>((done,reject)=>{child.on('error',reject
  await automate;
  const runs=readdirSync(join(state,'runs'));const run=join(state,'runs',runs[0]!);const attachment=JSON.parse(readFileSync(join(run,'attachment.json'),'utf8'));
  const descriptor=JSON.parse(readFileSync(join(run,'browser-ref.json'),'utf8'));
- const cleanup=attachment.cleanup;const ok=!automationError&&code===0&&requests===10&&events.every(e=>e.toolAvailable)&&!existsSync(descriptor.root)&&Object.values(cleanup).every(v=>v===true);
- writeFileSync(join(evidence,'result.json'),JSON.stringify({kind:'normal lab native Pi/Herdr with local deterministic protocol fixture, no inference',ok,code,automationError,requests,events,foreignHits,cleanup,browserRootRemoved:!existsSync(descriptor.root)},null,2)+'\n');
+ const cleanup=attachment.cleanup;const ok=!automationError&&code===0&&(footerOnly?requests===0:requests===10&&approvals>0)&&events.every(e=>e.toolAvailable)&&!existsSync(descriptor.root)&&Object.values(cleanup).every(v=>v===true);
+ writeFileSync(join(evidence,'result.json'),JSON.stringify({kind:'normal lab native Pi/Herdr with local deterministic protocol fixture, no inference',mode:'ask (default)',footerOnly,cols,ok,code,automationError,requests,approvals,events,foreignHits,cleanup,browserRootRemoved:!existsSync(descriptor.root)},null,2)+'\n');
  console.log(JSON.stringify({ok,evidence:evidence.replace(process.cwd(),'<WORKTREE>')}));if(!ok)process.exitCode=1;
  const databases=Array.from(new Bun.Glob('relay/**/control.sqlite').scanSync({cwd:state}));
  for(const f of databases){const db=new Database(join(state,f),{readonly:true});try{const rows=db.query("SELECT phase FROM sessions").all() as any[];if(rows.some(r=>r.phase!=='released'))throw new Error('Relay not released; state retained');}finally{db.close();}}
