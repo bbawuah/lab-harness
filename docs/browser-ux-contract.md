@@ -53,13 +53,23 @@ Rules:
 - The chip is set when the session starts (including after `/reload`), after every `lab_browser` result and after
   `/lab-browser close`. Ordinary `lab` with no browser sets no chip.
 - `/lab-browser status` and `/lab-browser close` write a transcript row through `pi.appendEntry` and `registerEntryRenderer`.
-  They also still notify, so headless modes keep working. These rows never enter model context.
+  Outside the TUI (`ctx.mode !== 'tui'`: print, json, rpc) they also notify, escaped, because entries are not drawn there.
+  These rows never enter model context.
+- Every action-phase failure records whether the command was dispatched. If the daemon was already gone or the page had
+  already left the origin before the action was sent, the recovery text says the action was not sent (still closed for the
+  run) instead of blaming it; the verdict reason is `not sent` and the chip `check failed` / `left origin` / `connection lost`.
+- Cleanup never sends a command to a dead daemon (the CLI could start a replacement whose pid was never read). It goes straight
+  to the verified profile reap; ownership is re-proved immediately before each signal.
+- If `/reload` cannot reattach the browser while owned state still exists, the chip is `! web not reattached · /exit cleans up`
+  (the launcher closes the browser on exit); it never claims `closed` while state is live.
 
 ## Verification and the browser turn verdict
 
 - The session tracks a pending change. After a successful fill, click or navigate the change is *unverified*. A later successful
   `snapshot` or `read` sets `details.verifies = true` and clears it. This tells the permission-modes success rows (F30) and the
   verdict that the page was read back after the change.
+- Read-back is scoped to one agent run: the verdict counts a change as verified only when a snapshot or read follows it in the
+  same run.
 - When an agent run that used `lab_browser` ends (`agent_end`), one verdict row is appended. It is built only from the
   `tool_execution_end` results (`isError` and `details`), never from model text:
   - `✓ browser: 1 snapshot · 1 fill · 1 click · 1 read · read back after change`

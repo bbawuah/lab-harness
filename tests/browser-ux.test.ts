@@ -258,10 +258,57 @@ test('a dead daemon is reported as lost before any command can relaunch it', asy
   const { s, sent, done } = scripted({ daemonDead: true });
   try {
     const info = await failureOf(s.execute({ operation: 'snapshot' }));
-    expect(info).toMatchObject({ code: 'LAB_BROWSER_SESSION_LOST', phase: 'action', cleanup: 'done' });
-    expect(classify(info)).toBe('lost'); expect(recoveryText(info, ORIGIN)).toContain('daemon exited or was replaced');
-    expect(sent).toEqual(['close']); // no browser command was sent to a replacement daemon
+    expect(info).toMatchObject({ code: 'LAB_BROWSER_SESSION_LOST', phase: 'action', cleanup: 'done', dispatched: false });
+    expect(classify(info)).toBe('lost'); expect(recoveryText(info, ORIGIN)).toContain('daemon exited or was replaced before snapshot was sent');
+    expect(sent).toEqual([]); // no command at all, not even close: the CLI could start a replacement daemon
   } finally { done(); }
+});
+
+test('a page already off-origin before the action: the click is not sent and the wording does not blame it', async () => {
+  const { s, sent, done } = scripted();
+  try {
+    await s.execute({ operation: 'snapshot' });
+    (s as any).run = (orig => async (a: string[]) => { const r = await orig(a); return a[2] === 'agent_browser_get_url' ? edit(r, d => { d.url = 'http://127.0.0.1:1/'; }) : r; })((s as any).run);
+    const info = await failureOf(s.execute({ operation: 'click', ref: '@e2' }));
+    expect(info).toMatchObject({ code: 'LAB_BROWSER_ORIGIN', phase: 'action', dispatched: false }); expect(classify(info)).toBe('breach');
+    expect(sent).not.toContain('agent_browser_click');
+    expect(recoveryText(info, ORIGIN)).toContain('before click @e2 was sent; click @e2 was not sent');
+    expect(indicatorText(chip(s.view()))).toBe('○ web closed · left origin');
+    expect(verdict([{ isError: true, details: { operation: 'click', state: 'uncertain', dispatched: false } }])).toBe('✗ browser: 1 failed (not sent) · browser closed');
+  } finally { done(); }
+});
+
+test('malformed input is refused as LAB_BROWSER_INPUT before dispatch', async () => {
+  const { s, sent, done } = scripted();
+  try {
+    for (const bad of [{ operation: 'snapshot', url: 'x' }, { operation: 'navigate' }, { operation: 'click', ref: '@e1', text: 'x' }])
+      expect(await failureOf(s.execute(bad as any))).toMatchObject({ code: 'LAB_BROWSER_INPUT', phase: 'pre' });
+    expect(sent).toEqual([]);
+  } finally { done(); }
+});
+
+test('activity.json: a planted symlink is replaced, never followed, on write', async () => {
+  const { symlinkSync, lstatSync } = await import('node:fs');
+  const { s, root, done } = scripted(); const target = join(root, 'target'); writeFileSync(target, 'keep');
+  try {
+    symlinkSync(target, join(root, 'activity.json'));
+    await s.execute({ operation: 'snapshot' });
+    expect(readFileSync(target, 'utf8')).toBe('keep'); expect(lstatSync(join(root, 'activity.json')).isSymbolicLink()).toBe(false);
+    expect(JSON.parse(readFileSync(join(root, 'activity.json'), 'utf8'))).toEqual({ actions: 1, last: 'snapshot' });
+  } finally { done(); }
+});
+
+test('outside the TUI, rows are also notified (escaped); after a failed reattach with live state, the chip says so', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'lab-browser-ux-detached-')); const ref = join(dir, 'browser-ref.json'); const live = join(dir, 'live'); mkdirSync(live, { mode: 0o700 });
+  writeFileSync(ref, JSON.stringify({ root: live, session: 'bad', origin: ORIGIN }), { mode: 0o600 });
+  const saved = process.env.LAB_BROWSER_REF; process.env.LAB_BROWSER_REF = ref; const notes: string[] = [], status: any[] = [], entries: any[] = []; let command: any, start: any;
+  try {
+    installBrowserExtension({ on: (n: string, f: any) => { if (n === 'session_start') start = f; }, registerTool() {}, registerCommand: (_n: string, c: any) => { command = c; }, sendMessage() {}, appendEntry: (_t: string, d: any) => entries.push(d) } as any);
+    const ctx: any = { mode: 'print', ui: { notify: (m: string) => notes.push(m), setStatus: (_k: string, t: any) => status.push(t) } };
+    start({}, ctx); expect(status).toEqual(['! web not reattached · /exit cleans up']);
+    await command.handler('status', ctx); expect(entries[0].lines[0]).toContain('could not be reattached'); expect(notes[0]).toBe(entries[0].lines[0]);
+    ctx.mode = 'tui'; await command.handler('status', ctx); expect(notes).toHaveLength(1); // TUI draws the entry; no duplicate toast
+  } finally { if (saved) process.env.LAB_BROWSER_REF = saved; else delete process.env.LAB_BROWSER_REF; rmSync(dir, { recursive: true, force: true }); }
 });
 
 test('orphan reap signals only a live process proven to use the owned profile', async () => {

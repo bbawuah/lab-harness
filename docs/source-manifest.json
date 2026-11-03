@@ -592,7 +592,7 @@
       "status": "added"
     },
     "docs/browser-ux-contract.md": {
-      "sha256": "03aa3c7c86a0918242213dd12bcc139a8a202760f33bc1b32b05d88e497f8d4a",
+      "sha256": "7d2d2f79bbcc713abc608f3e53853d6b5dc4b78bef489edeba11cc8e899f69c3",
       "status": "added"
     },
     "docs/browser-workspace-contract.md": {
@@ -1750,11 +1750,11 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "c16b8c355ba7b4c907225765e378851ec9cd1cbccdf40b9241a0c8cc8de413eb",
+      "sha256": "f939717672c8cd897a1914cadd8ac09333218f7f2e535c7ab7faeb2c8c997ec9",
       "status": "added"
     },
     "src/browser/states.ts": {
-      "sha256": "a21be65a5a851b239fab60547c7394f4e2a535e844ace960e347582d5cde433b",
+      "sha256": "b108b3836a32527fa09f518c6c2526431340bb5bfa0c26f08a57c91c58da596b",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1830,7 +1830,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "13b2e1a54ad02322fd7411d6c6cb7abbd712d3bc51f4f7e1624bc2350a63c989",
+      "sha256": "b6f41d1af4b9b286463611234e3385b1525d00bfa37bb022803d322f3681748c",
       "status": "added"
     },
     "src/pi/commands.ts": {
@@ -1934,7 +1934,7 @@
       "status": "added"
     },
     "tests/browser-ux.test.ts": {
-      "sha256": "da942327aae00e75494ac8182adc5822e7be952882646e3998c66d5be55711ea",
+      "sha256": "f732cfb46792ff41979fe75164784b4355bda13d5833f5aa6cbb1d20aef0e635",
       "status": "added"
     },
     "tests/browser.test.ts": {

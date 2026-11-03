@@ -5,11 +5,11 @@
  */
 export type BrowserOperation = 'snapshot' | 'navigate' | 'fill' | 'click' | 'read';
 export type FailureState = 'stale' | 'refused' | 'closed' | 'uncertain' | 'breach' | 'lost' | 'cleanup-failed';
-export type BrowserFailureInfo = { code: string; operation?: string; ref?: string; phase: 'pre' | 'action'; cleanup: 'none' | 'done' | 'retained'; staleKind?: 'stale' | 'unknown' };
+export type BrowserFailureInfo = { code: string; operation?: string; ref?: string; phase: 'pre' | 'action'; cleanup: 'none' | 'done' | 'retained'; staleKind?: 'stale' | 'unknown'; dispatched?: boolean };
 export type LifecycleView =
   | { state: 'active'; origin: string; actions: number; last?: string }
   | { state: 'closed'; origin: string; failure?: BrowserFailureInfo }
-  | { state: 'cleanup-failed'; origin: string; failure?: BrowserFailureInfo };
+  | { state: 'cleanup-failed'; origin: string; failure?: BrowserFailureInfo; detached?: true };
 
 export const mutating = (op?: string) => op === 'fill' || op === 'click' || op === 'navigate';
 export const codeOf = (message: string) => /^LAB_BROWSER_[A-Z_]+/.exec(message)?.[0] ?? 'LAB_BROWSER_REFUSED';
@@ -45,21 +45,16 @@ export function recoveryText(info: BrowserFailureInfo, origin: string): string {
       ? 'Browser stopped after an earlier failure; nothing was sent. Owned state kept: run /lab-browser close to retry cleanup.'
       : `Browser is closed for this run; nothing was sent. Start a new run: ${restartCommand(origin)}`;
     case 'refused': return 'Refused before anything was sent to the page' + (info.code === 'LAB_BROWSER_ORIGIN' ? `; stay on ${origin}.` : '; check the operation and arguments.');
-    case 'breach': return `Browser closed: the page left ${origin} or opened another tab after ${action(info)}. ${restart}`;
-    case 'lost': return `Browser disconnected: the browser daemon exited or was replaced; page state is unknown. ${restart}`;
+    case 'breach': return info.dispatched === false
+      ? `Browser closed: the page had left ${origin} or opened another tab before ${action(info)} was sent; ${action(info)} was not sent. ${restart}`
+      : `Browser closed: the page left ${origin} or opened another tab after ${action(info)}. ${restart}`;
+    case 'lost': return `Browser disconnected: the browser daemon exited or was replaced${info.dispatched === false ? ` before ${action(info)} was sent` : ''}; page state is unknown. ${restart}`;
     case 'cleanup-failed': return `Browser stopped after ${action(info)}; result unknown. Owned state kept: run /lab-browser close to retry cleanup.`;
-    default: return mutating(info.operation)
+    default: if (info.dispatched === false) return `Browser closed: a page check before ${action(info)} ${cause(info)}; ${action(info)} was not sent. ${restart}`;
+      return mutating(info.operation)
       ? `Browser closed: ${action(info)} ${cause(info)}, result unknown. Check the page yourself before trying again. ${restart}`
       : `Browser closed: ${action(info)} ${cause(info)}; nothing was changed by this read. ${restart}`;
   }
-}
-
-/** One escaped-later headline per state, for transcript rows. */
-export function failureHeadline(info: BrowserFailureInfo, origin: string): string {
-  const state = classify(info);
-  if (state === 'stale' || state === 'refused' || state === 'closed') return '! ' + recoveryText(info, origin);
-  if (state === 'cleanup-failed') return '! ' + recoveryText(info, origin);
-  return '○ ' + recoveryText(info, origin);
 }
 
 /** Short reason a run's browser closed after a failed action, shown beside "closed". Undefined for an operator close. */
@@ -68,13 +63,13 @@ export function closedReason(failure?: BrowserFailureInfo): string | undefined {
   const state = classify(failure);
   if (state === 'breach') return 'left origin';
   if (state === 'lost') return 'connection lost';
-  if (state === 'uncertain') return mutating(failure.operation) ? 'result unknown' : 'read failed';
+  if (state === 'uncertain') return failure.dispatched === false ? 'check failed' : mutating(failure.operation) ? 'result unknown' : 'read failed';
   return;
 }
 export type ChipState = { glyph: '●' | '○' | '!'; label: string; detail?: string };
 export function chip(view: LifecycleView): ChipState {
   if (view.state === 'active') return { glyph: '●', label: 'web', detail: view.origin.replace(/^https?:\/\//, '') };
-  if (view.state === 'cleanup-failed') return { glyph: '!', label: 'web', detail: 'cleanup · /lab-browser close' };
+  if (view.state === 'cleanup-failed') return { glyph: '!', label: 'web', detail: view.detached ? 'not reattached · /exit cleans up' : 'cleanup · /lab-browser close' };
   const reason = closedReason(view.failure);
   return { glyph: '○', label: 'web', detail: 'closed' + (reason ? ' · ' + reason : '') };
 }
@@ -86,7 +81,8 @@ export function failureRecord(value: unknown): BrowserFailureInfo | undefined {
   if (v.phase !== 'action' || (v.cleanup !== 'done' && v.cleanup !== 'retained')) return;
   if (v.operation !== undefined && (typeof v.operation !== 'string' || !ops.test(v.operation))) return;
   if (v.ref !== undefined && (typeof v.ref !== 'string' || !/^@e\d{1,6}$/.test(v.ref))) return;
-  return { code: v.code, phase: 'action', cleanup: v.cleanup, ...(v.operation ? { operation: v.operation } : {}), ...(v.ref ? { ref: v.ref } : {}) };
+  if (v.dispatched !== undefined && typeof v.dispatched !== 'boolean') return;
+  return { code: v.code, phase: 'action', cleanup: v.cleanup, ...(v.operation ? { operation: v.operation } : {}), ...(v.ref ? { ref: v.ref } : {}), ...(typeof v.dispatched === 'boolean' ? { dispatched: v.dispatched } : {}) };
 }
 
 export function statusLines(view: LifecycleView): string[] {
@@ -94,6 +90,7 @@ export function statusLines(view: LifecycleView): string[] {
     `● browser ${view.origin} only · private profile`,
     `  ${view.actions} action${view.actions === 1 ? '' : 's'}${view.last ? ' · last: ' + view.last : ''} · /lab-browser close`,
   ];
+  if (view.state === 'cleanup-failed' && view.detached) return ['! Browser could not be reattached after reload; browser actions are off. Owned state is kept until LAB exits (/exit), which cleans it up.'];
   if (view.state === 'cleanup-failed') return ['! ' + (view.failure ? recoveryText({ ...view.failure, cleanup: 'retained' }, view.origin) : 'Browser cleanup failed. Owned state kept: run /lab-browser close to retry cleanup.')];
   if (view.failure && view.failure.phase === 'action') return ['○ ' + recoveryText(view.failure, view.origin)];
   return [`○ browser closed. Start a new run: ${restartCommand(view.origin)}`];
@@ -110,7 +107,7 @@ export function verdict(outcomes: ToolOutcome[]): string | undefined {
     if (o.isError) {
       const st = typeof d.state === 'string' ? d.state : undefined;
       if (st === 'stale' || st === 'refused' || st === 'closed' || !st) refused++;
-      else { failed++; reasons.add(st === 'breach' ? 'left origin' : st === 'lost' ? 'disconnected' : st === 'cleanup-failed' ? 'cleanup pending' : mutating(op) ? 'result unknown' : 'read failed'); }
+      else { failed++; reasons.add(st === 'breach' ? 'left origin' : st === 'lost' ? 'disconnected' : st === 'cleanup-failed' ? 'cleanup pending' : d.dispatched === false ? 'not sent' : mutating(op) ? 'result unknown' : 'read failed'); }
       continue;
     }
     if (!op) continue;
