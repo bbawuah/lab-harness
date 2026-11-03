@@ -4,7 +4,7 @@
  * browser, permission modes and future desktop control; label/detail are
  * escaped and bounded so untrusted origins cannot drive the terminal.
  */
-import { fitColumns } from './terminal-text.ts';
+import { fitColumns } from './display.ts';
 export type IndicatorGlyph = '●' | '○' | '!';
 export type IndicatorState = { glyph: IndicatorGlyph; label: string; detail?: string };
 export type StatusUI = { setStatus?(key: string, text: string | undefined): void };

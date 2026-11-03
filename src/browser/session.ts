@@ -13,7 +13,7 @@ export type BrowserDescriptor = { root: string; session: string; origin: string;
 export class BrowserSession {
   readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Set<string>(); private closed = false; private failedInMemory = false;
   // UX state (docs/browser-ux-contract.md). issued = every ref ever returned, so a retired ref reads as stale, not unknown.
-  private issued = new Set<string>(); private labels = new Map<string,{role:string;name:string}>(); private actions = 0; private last?: string; private pendingChange = false; private lastFailure?: BrowserFailureInfo;
+  private issued = new Set<string>(); private actions = 0; private last?: string; private pendingChange = false; private lastFailure?: BrowserFailureInfo;
   constructor(descriptor: BrowserDescriptor) {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
     const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
@@ -39,8 +39,6 @@ export class BrowserSession {
   private failed() {return this.failedInMemory || !!lstatSync(this.failedMarker,{throwIfNoEntry:false});}
   // In-memory flag first so a marker write failure cannot leave this session usable.
   private markFailed() {this.failedInMemory=true;try{writeFileSync(this.failedMarker,'',{mode:0o600});}catch{}}
-  /** Role/name of a ref from the latest snapshot, for call/result rows (display-escape before rendering). */
-  refLabel(ref:string){return this.labels.get(ref);}
   view():LifecycleView {const origin=this.descriptor.origin;
     if(this.closed || !lstatSync(this.descriptor.root,{throwIfNoEntry:false}))return {state:'closed',origin,failure:this.lastFailure};
     if(this.failed())return {state:'cleanup-failed',origin,failure:this.lastFailure};
@@ -92,12 +90,11 @@ export class BrowserSession {
         await this.scope(signal);if(op!=='snapshot'&&op!=='read')this.refs.clear();
         dispatched=true;const raw=await this.call(tool,args,signal);const {result,lifecycle}=project(raw,op);this.identity({lifecycle});
         await this.scope(signal);if(result.boundary.origin!=='unknown')browserURL(result.boundary.origin,this.descriptor.origin);
-        if(op==='snapshot'){const refs=result.result.refs as Record<string,{role:string;name:string}>;this.refs=new Set(Object.keys(refs).map(r=>'@'+r));this.labels=new Map(Object.entries(refs).map(([r,v])=>['@'+r,{role:v.role,name:v.name}]));for(const r of this.refs)this.issued.add(r);}
-        else if(op!=='read')this.labels.clear();
+        if(op==='snapshot'){const refs=result.result.refs as Record<string,{role:string;name:string}>;this.refs=new Set(Object.keys(refs).map(r=>'@'+r));for(const r of this.refs)this.issued.add(r);}
         this.actions++;this.last=op+(input.ref?' '+input.ref:'');this.saveActivity();
         let verifies=false;if(mutating(op))this.pendingChange=true;else if(this.pendingChange){this.pendingChange=false;verifies=true;}
         return {...result,verifiedOrigin:this.descriptor.origin,operation:op,...(input.ref?{ref:input.ref}:{}),...(verifies?{verifies:true}:{})};
-      } catch(e) {this.refs.clear();this.labels.clear();this.markFailed();let cleanup:BrowserFailureInfo['cleanup']='done';await this.closeNow().catch(()=>{cleanup='retained';});throw fail(e,'action',cleanup);}
+      } catch(e) {this.refs.clear();this.markFailed();let cleanup:BrowserFailureInfo['cleanup']='done';await this.closeNow().catch(()=>{cleanup='retained';});throw fail(e,'action',cleanup);}
     });this.queue=task.catch(()=>{});return task;
   }
   /** Display-only counter; written to a fresh temp file then renamed, so a planted link is replaced, never followed. */

@@ -8,7 +8,7 @@ import { chip, classify, closedReason, failureRecord, recoveryText, statusLines,
 import { setupSummary } from '../src/browser/runtime.ts';
 import { installBrowserExtension } from '../src/pi/browser-extension.ts';
 import { indicatorSlots, indicatorText, setIndicator } from '../src/pi/status-indicator.ts';
-import { fitColumns } from '../src/pi/terminal-text.ts';
+import { fitColumns } from '../src/pi/display.ts';
 import { shellOptions, shellUsage, shellHelp } from '../src/pi/commands.ts';
 
 const widths = [40, 80, 120];
@@ -28,7 +28,7 @@ function scripted(plan: Plan = {}) {
   const root = mkdtempSync(join(tmpdir(), 'lab-browser-ux-')); for (const n of ['s', 't']) mkdirSync(join(root, n), { mode: 0o700 });
   const sent: string[] = [];
   const s: any = Object.create(BrowserSession.prototype);
-  Object.assign(s, { descriptor: { root, session: 'lab-' + 'c'.repeat(24), origin: ORIGIN, launchHash: 'h' }, queue: Promise.resolve(), refs: new Set(), issued: new Set(), labels: new Map(), actions: 0, pendingChange: false, closed: false, binary: '/nonexistent' });
+  Object.assign(s, { descriptor: { root, session: 'lab-' + 'c'.repeat(24), origin: ORIGIN, launchHash: 'h' }, queue: Promise.resolve(), refs: new Set(), issued: new Set(), actions: 0, pendingChange: false, closed: false, binary: '/nonexistent' });
   s.daemonAlive = () => !plan.daemonDead;
   s.run = async (args: string[]) => {
     if (args[1] === 'close') { sent.push('close'); if (plan.closeFails) throw new Error('LAB_BROWSER_TIMEOUT'); return JSON.stringify({ success: true }); }
@@ -50,9 +50,9 @@ test('stale and unknown refs are refused before anything is sent; browser stays 
   const { s, sent, done } = scripted();
   try {
     const snap: any = await s.execute({ operation: 'snapshot' });
-    expect(snap.operation).toBe('snapshot'); expect(s.refLabel('@e1')).toEqual({ role: 'textbox', name: 'Name' });
+    expect(snap.operation).toBe('snapshot');
     const fill: any = await s.execute({ operation: 'fill', ref: '@e1', text: 'Alpha' });
-    expect(fill.ref).toBe('@e1'); expect(s.refLabel('@e1')).toBeUndefined();
+    expect(fill.ref).toBe('@e1');
     const before = sent.length;
     const stale = await failureOf(s.execute({ operation: 'click', ref: '@e2' }));
     expect(stale).toMatchObject({ code: 'LAB_BROWSER_STALE_REF', phase: 'pre', staleKind: 'stale', ref: '@e2', operation: 'click' });

@@ -1,4 +1,4 @@
-/** Display-only terminal text helpers shared by LAB Pi extensions. Machine data stays unchanged; only rendering is escaped. */
+/** Terminal-safe display helpers shared by LAB Pi renderers and prompts (from PR #23). */
 // Display-only text: escape C0/C1 controls (incl. ESC), bidi/format controls
 // and lone surrogates so page or argument text cannot drive the terminal or
 // reorder rows. Machine details stay unchanged; only rendering is escaped.

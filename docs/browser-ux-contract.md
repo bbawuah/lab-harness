@@ -10,11 +10,11 @@ uses only scripted 127.0.0.1 fixture pages.
 
 These belong to the permission-modes thread: approval prompts and modes, batched approval for page changes, and the F30 call and
 success-result rows that name the ref, label, value and origin (`renderCall` and the success branch of `renderResult`). This
-slice gives those rows the data they need (`details.operation`, `details.ref`, `session.refLabel(ref)`) but does not render them.
+slice gives those rows the data they need (`details.operation`, `details.ref`; ref labels come from #26's `session.element(ref)`) but does not render them.
 
 ## Shared helpers (generic, reused by other threads)
 
-- `src/pi/terminal-text.ts` holds `displaySafe`, `columns` and `wrapColumns`, moved unchanged from PR #23, plus a new `fitColumns`
+- `src/pi/display.ts` holds `displaySafe`, `columns` and `wrapColumns`, moved unchanged from PR #23, plus a new `fitColumns`
   that cuts a value to one row with `…`. `browser-extension.ts` re-exports them.
 - `src/pi/status-indicator.ts` provides `indicatorText({ glyph, label, detail })` and `setIndicator(ui, key, state | undefined)`.
   They sit on Pi's `ctx.ui.setStatus`. The glyph is one of `●` (active), `○` (off) or `!` (needs attention), so state never

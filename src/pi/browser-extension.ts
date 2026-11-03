@@ -3,10 +3,10 @@ import { BrowserFailure, BrowserSession, type BrowserInput } from '../browser/se
 import { browserURL } from '../browser/runtime.ts';
 import { chip, classify, failureRecord, recoveryText, statusLines, verdict, type LifecycleView, type ToolOutcome } from '../browser/states.ts';
 import type { WorkspaceContext, WorkspaceExtensionAPI } from './workspace-extension.ts';
-import { displaySafe, textComponent } from './terminal-text.ts';
+import { displaySafe, textComponent } from './display.ts';
 import { indicatorSlots, setIndicator } from './status-indicator.ts';
-// Display helpers moved to terminal-text.ts (shared); re-exported for existing callers.
-export { columns, displaySafe, fitColumns, wrapColumns } from './terminal-text.ts';
+// Display helpers moved to display.ts (shared); re-exported for existing callers.
+export { columns, displaySafe, fitColumns, wrapColumns } from './display.ts';
 const component=textComponent;
 const entryType='lab-browser', chipKey=indicatorSlots.web;
 const errorText=(result:any)=>{const d=result?.details?.error;if(typeof d==='string')return d;const t=result?.content?.find?.((c:any)=>c?.type==='text')?.text;return typeof t==='string'&&t?t.slice(0,400):'error';};

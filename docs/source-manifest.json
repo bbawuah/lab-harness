@@ -385,11 +385,11 @@
     "src/pi/appearance.ts",
     "src/pi/browser-extension.ts",
     "src/pi/commands.ts",
+    "src/pi/display.ts",
     "src/pi/header.ts",
     "src/pi/relay-extension.ts",
     "src/pi/status-indicator.ts",
     "src/pi/terminal-mark.json",
-    "src/pi/terminal-text.ts",
     "src/pi/workspace-appearance-store.ts",
     "src/pi/workspace-appearance.ts",
     "src/pi/workspace-config.ts",
@@ -612,7 +612,7 @@
       "status": "added"
     },
     "docs/browser-ux-contract.md": {
-      "sha256": "691ffb6af00223c7b78419832c9cb0f814c5a4c411f2c6e5fa48e4f17ec5c545",
+      "sha256": "17df5347e465af8a6c11434315650e3876050f49d2caabe9773d0e597b26e3f5",
       "status": "added"
     },
     "docs/browser-workspace-contract.md": {
@@ -1696,7 +1696,7 @@
       "status": "added"
     },
     "scripts/browser-smoke.ts": {
-      "sha256": "3e41da0cd23a5aac96f658bba392c0e00bf27bf065312eca45cd5505ec344faa",
+      "sha256": "31d37def9583d8ede8b517fe82d624b73f9f77062a82e4ca74f11fdc0e7d1bf1",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1770,7 +1770,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "f939717672c8cd897a1914cadd8ac09333218f7f2e535c7ab7faeb2c8c997ec9",
+      "sha256": "eae7d013e31ca02c0b4f892edb4cdcff845aad9ec391b8d62760685a08bfc3e7",
       "status": "added"
     },
     "src/browser/states.ts": {
@@ -1850,11 +1850,15 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "b6f41d1af4b9b286463611234e3385b1525d00bfa37bb022803d322f3681748c",
+      "sha256": "da7fe6fb8f356d0462b0626be7de0ee484b29b404a980631825f3ddba3c10df8",
       "status": "added"
     },
     "src/pi/commands.ts": {
       "sha256": "60b60213bf5949560f7051217e8a257846e834eff9297b9337ddaf0202e272d0",
+      "status": "added"
+    },
+    "src/pi/display.ts": {
+      "sha256": "db9572f56dd349d847364eb97fc4ae14d28e778361c547fd8faf7e04664a081d",
       "status": "added"
     },
     "src/pi/header.ts": {
@@ -1866,15 +1870,11 @@
       "status": "added"
     },
     "src/pi/status-indicator.ts": {
-      "sha256": "8733615a1e6f3d43e6f20e03bd6523786afe4591c865aa0a7164adc7cd2362b1",
+      "sha256": "0e0f47380506e6bdc0bdcbbcbdd116eb725d29f9170a5f9327c13bc5d2db508f",
       "status": "added"
     },
     "src/pi/terminal-mark.json": {
       "sha256": "6d4f694a1bb26ee27be3c2209a35be4133214c375e98393b0470bd22822eee2d",
-      "status": "added"
-    },
-    "src/pi/terminal-text.ts": {
-      "sha256": "d60f6a3127597c89dbb4ef17f188a1640cf415c3766795ef5ddb75fc8a472f24",
       "status": "added"
     },
     "src/pi/workspace-appearance-store.ts": {
@@ -1954,11 +1954,11 @@
       "status": "added"
     },
     "tests/browser-ux.test.ts": {
-      "sha256": "f732cfb46792ff41979fe75164784b4355bda13d5833f5aa6cbb1d20aef0e635",
+      "sha256": "0da7909b74bed49f86eb251c81d7787e751d7f98f8438909c808e15201861b82",
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "819a6b1cc9f9fed891f91cc5ee7289fa911d34f3db18049d92ecc7977a4eac97",
+      "sha256": "4527c670af9ab61d4e74c60e53255cd79cc85f94c8a50b2dfe97b08ac05c4340",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {

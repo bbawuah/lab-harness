@@ -2,7 +2,7 @@
 import { BrowserFailure, BrowserSession } from '../src/browser/session.ts';
 import { chip, classify, recoveryText, statusLines } from '../src/browser/states.ts';
 import { indicatorText } from '../src/pi/status-indicator.ts';
-import { wrapColumns } from '../src/pi/terminal-text.ts';
+import { wrapColumns } from '../src/pi/display.ts';
 import { renderBrowserFailure } from '../src/pi/browser-extension.ts';
 import { installBrowserExtension } from '../src/pi/browser-extension.ts';
 import { randomUUID } from 'node:crypto';
