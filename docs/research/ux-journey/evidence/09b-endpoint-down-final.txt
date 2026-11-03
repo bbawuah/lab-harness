@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││                                                      ││user@host demo-app  │
+   main                  ││                                                      ││user@host demo-app  │
+                         ││ $ sh test.sh                                         ││%                                   │
+                         ││                                                      ││                                    │
+                         ││ FAIL: expected 'Hello, Ada!' got 'Hello, Ada'        ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Command exited with code 1                           ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Took 0.0s                                            ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ [SCRIPTED FIXTURE] greet.sh now ends the greeting    ││                                    │
+                         ││ with '!'. sh test.sh passes. Nothing committed yet — ││                                    │
+                         ││ review with git diff.                                ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+ new                 menu││ Reply with exactly READY.                            ││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││                                                      ││                                    │
+                         ││ Error: Connection error.                             ││                                    │
+ ○ LAB-HARNE… · LAB work…││                                                      ││                                    │
+   pi                    ││ Error: Connection error.                             ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Error: Connection error.                             ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Error: Connection error.                             ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Error: Retry failed after 3 attempts: Connection     ││                                    │
+                         ││ error.                                               ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑4 ↓4 30.7%/8.2k (auto)                  fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

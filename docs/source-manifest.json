@@ -239,6 +239,50 @@
     "docs/research/provider-connection-ux/sources.md",
     "docs/research/provider-connection-ux/terminal.md",
     "docs/research/provider-connection-ux/validation.md",
+    "docs/research/ux-journey/INTERVIEW-GUIDE.md",
+    "docs/research/ux-journey/JOURNEY.md",
+    "docs/research/ux-journey/PERSONAS-AND-SESSIONS.md",
+    "docs/research/ux-journey/RESEARCH.md",
+    "docs/research/ux-journey/SUMMARY.md",
+    "docs/research/ux-journey/WIREFRAMES.md",
+    "docs/research/ux-journey/evidence/01-install-progress.txt",
+    "docs/research/ux-journey/evidence/02-project-missing.txt",
+    "docs/research/ux-journey/evidence/03-model-setup.txt",
+    "docs/research/ux-journey/evidence/04-model-setup-invalid.txt",
+    "docs/research/ux-journey/evidence/05-help.txt",
+    "docs/research/ux-journey/evidence/05b-unknown-flag.txt",
+    "docs/research/ux-journey/evidence/05c-version.txt",
+    "docs/research/ux-journey/evidence/06-setup-key.txt",
+    "docs/research/ux-journey/evidence/07-first-start.txt",
+    "docs/research/ux-journey/evidence/08-coding-turn.txt",
+    "docs/research/ux-journey/evidence/09-endpoint-down.txt",
+    "docs/research/ux-journey/evidence/09b-endpoint-down-final.txt",
+    "docs/research/ux-journey/evidence/10-coding-turn-ok.txt",
+    "docs/research/ux-journey/evidence/11-diff-in-shell.txt",
+    "docs/research/ux-journey/evidence/12-commit.txt",
+    "docs/research/ux-journey/evidence/13-slash-menu.txt",
+    "docs/research/ux-journey/evidence/14-lab-help.txt",
+    "docs/research/ux-journey/evidence/15-hotkeys.txt",
+    "docs/research/ux-journey/evidence/15b-hotkeys-mid.txt",
+    "docs/research/ux-journey/evidence/16-appearance.txt",
+    "docs/research/ux-journey/evidence/17-reload.txt",
+    "docs/research/ux-journey/evidence/18-second-run-resume.txt",
+    "docs/research/ux-journey/evidence/19-width-80.txt",
+    "docs/research/ux-journey/evidence/20-width-40.txt",
+    "docs/research/ux-journey/evidence/21-width-80-zoom.txt",
+    "docs/research/ux-journey/evidence/22-herdr-help.txt",
+    "docs/research/ux-journey/evidence/23-width-80-zoom-nosidebar.txt",
+    "docs/research/ux-journey/evidence/24-single-pane-40.txt",
+    "docs/research/ux-journey/evidence/25-setup-browser.txt",
+    "docs/research/ux-journey/evidence/26-browser-start.txt",
+    "docs/research/ux-journey/evidence/27-browser-commands.txt",
+    "docs/research/ux-journey/evidence/27b-browser-transcript.txt",
+    "docs/research/ux-journey/evidence/28-rerun-update.txt",
+    "docs/research/ux-journey/evidence/29-manual-uninstall.txt",
+    "docs/research/ux-journey/evidence/README.md",
+    "docs/research/ux-journey/evidence/fixture-page.html.txt",
+    "docs/research/ux-journey/evidence/fixture-requests.jsonl.txt",
+    "docs/research/ux-journey/evidence/fixture-server.ts.txt",
     "docs/search.md",
     "docs/skills-inventory.json",
     "docs/skills.md",
@@ -1206,6 +1250,182 @@
     },
     "docs/research/provider-connection-ux/validation.md": {
       "sha256": "63655af7fb041f463d9adc89ebbf86da80d92760f5e5e7d38f4b5b7e63d2fc84",
+      "status": "added"
+    },
+    "docs/research/ux-journey/INTERVIEW-GUIDE.md": {
+      "sha256": "8bed623a46212784c3ec15ccccbd7825b5093068d2e940fbb03f37fb814b5c1b",
+      "status": "added"
+    },
+    "docs/research/ux-journey/JOURNEY.md": {
+      "sha256": "0d88dc2d9023475e94d1963962e3a0d61f64484b592e8c493f17b36e9c94fd91",
+      "status": "added"
+    },
+    "docs/research/ux-journey/PERSONAS-AND-SESSIONS.md": {
+      "sha256": "445d9c6b34ead7a55bafdc29cba67e2a759e105fe4b5a5784efd6dbd8eaf094c",
+      "status": "added"
+    },
+    "docs/research/ux-journey/RESEARCH.md": {
+      "sha256": "c4f13eda29f3c5dc9ad065a394cc390ee3afbd2da89752c68ab48b8d1ee78a28",
+      "status": "added"
+    },
+    "docs/research/ux-journey/SUMMARY.md": {
+      "sha256": "84127e64314a32dbc76f645214380533652ae4f18b0544bc7bada8a1c10b2c62",
+      "status": "added"
+    },
+    "docs/research/ux-journey/WIREFRAMES.md": {
+      "sha256": "f4b07b3f00bc5f79a2a60c68c0888698e21dd3c8c61f067c96595d986de0ba8b",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/01-install-progress.txt": {
+      "sha256": "2094a4564014f4ddb50a82380d200083b243f17edf060e6f2e47e22aefad7e2b",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/02-project-missing.txt": {
+      "sha256": "6509c33a8ca22d3104641fbf1c9de5203d8eb06ceabd81acf1e24343d03da8ae",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/03-model-setup.txt": {
+      "sha256": "66d17cfa6657eb44edc614b3453070d67519083097563c40662e229e4fa1c60c",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/04-model-setup-invalid.txt": {
+      "sha256": "ce45f8557a0af9a3d2e59cab5cf4f2b1d3a4ea86d5df01573a6a5dc9b6a820a3",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/05-help.txt": {
+      "sha256": "ebae5c467de73cb55b60e3493eb19193ce12c404a3a6a5159e2c26b65c68ca54",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/05b-unknown-flag.txt": {
+      "sha256": "5250b06155400747510e22d51e32fb18b9adfe6246a7e1b28d4855fe41328573",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/05c-version.txt": {
+      "sha256": "97e1ab06cbdeaf3ce2a752640d4df434473ae2cb72aafdd43e3013d7acb8207c",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/06-setup-key.txt": {
+      "sha256": "162ec76cb726d85bcc640b4cc873b5bbb3cac74c002ac99558b7d1b0f66c41cb",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/07-first-start.txt": {
+      "sha256": "39bd5daf3296130158ca78a7bcc3a519885afada1095a004b9c6aa74efcb9038",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/08-coding-turn.txt": {
+      "sha256": "60ab0a5cb2c6996669fc5df4c6364837368dcd1228046a7ced0ab63ecebb1982",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/09-endpoint-down.txt": {
+      "sha256": "7b7c0a2466538905848c11fb1c14b90435993e80838459388abb047f94f6e503",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/09b-endpoint-down-final.txt": {
+      "sha256": "44bee90c5f22078cf8b38c9f10f0b84804584c76d72ad6ee9eec09b666bc45ad",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/10-coding-turn-ok.txt": {
+      "sha256": "0ce14e406cef38c6c2d7abc8af9c776fefb8da62f04ed5d0a31bedc6fde8e0ee",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/11-diff-in-shell.txt": {
+      "sha256": "ae63d2b0c43d319e8dca6b0f56a310fb7bfd6f50433041502c00310c1f10b393",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/12-commit.txt": {
+      "sha256": "c9f64af178a2b2900777c1ebba95f00ea3829e54deeb6a40e4064cdea1c811f7",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/13-slash-menu.txt": {
+      "sha256": "0e1e58a4b6b5f5bc4b9999c81c91e331e9af12282463b2e4f541fc35cc9ef279",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/14-lab-help.txt": {
+      "sha256": "50ef577896f49036c9b31cce842782205467fb3ac027a4e7795300433baffbca",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/15-hotkeys.txt": {
+      "sha256": "dfb394307d35fa36184da27e0ec4cd5d0cb88ef8bc159b19ba08e39903753486",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/15b-hotkeys-mid.txt": {
+      "sha256": "918a5837dc56ae9616ad7366fb3f45ed4524b55de6c0ff68fed953e38039554f",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/16-appearance.txt": {
+      "sha256": "a3fa76261bb18d4541cf625bfaacf741d9dd0649d8e40c8200ec5b58bb8a832c",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/17-reload.txt": {
+      "sha256": "9f8bd38cb074e2ce749d237653ac7bd93015de6c0225380cc29e85355a9fa73a",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/18-second-run-resume.txt": {
+      "sha256": "bc947a4e469e8077a7022936f1272d50247bf575d60cbd74abd22264be9badd1",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/19-width-80.txt": {
+      "sha256": "6fe41d626a2444c70ec51928e43ea01deedd95710ff178d312bf3eb70d9a1612",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/20-width-40.txt": {
+      "sha256": "6b5294ea2a414c1e6b01db438b392820958fc900613a7213d69817e742e7e2bf",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/21-width-80-zoom.txt": {
+      "sha256": "1c1ce33d94732f8d7f8bcb7ca35ec0452eb051087ee437c0b8de63ee93f1ab2f",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/22-herdr-help.txt": {
+      "sha256": "ff8753e9f6395dfa898ca014cc008679e20ace9c1917212d8f0baa4d4bfc3f9a",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/23-width-80-zoom-nosidebar.txt": {
+      "sha256": "d4009cd86932e3ca057fcabaf1c32ab52ffba9a9405aac65f4194f2fb4724b5c",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/24-single-pane-40.txt": {
+      "sha256": "ea92fd238529e63c24136539cc419475546b36fc110c3c3f4cc4819f14714ebd",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/25-setup-browser.txt": {
+      "sha256": "574bdac8ab0f9c686adde36acebb9a02690dcb34a4d1750d5da272c1783e00a6",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/26-browser-start.txt": {
+      "sha256": "5c71cf87db6de2be3bc2341ce9294533bfbb5ae301c1675159a5c872b06909df",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/27-browser-commands.txt": {
+      "sha256": "c31000d26a312549e5c5a7108c7718037adf72cbba1fe37d33c4c98cf78f694d",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/27b-browser-transcript.txt": {
+      "sha256": "ff2fc74cf66395d265f7b14e3f23ab5f6d92ea855522bf77b46d00d418d828fa",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/28-rerun-update.txt": {
+      "sha256": "dd8f6af01a1e44395a41d371a3bee8e4f43469273a2b5f4c374fc98690db828a",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/29-manual-uninstall.txt": {
+      "sha256": "d7e88c5470470d20a300a55f69abf07d12b9aa5bd9939f2524cc7fe71da02643",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/README.md": {
+      "sha256": "34055959a0b4ad8d1a8980325f3c1c637cbbb1971a01b59fe41e675335ac5ee7",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/fixture-page.html.txt": {
+      "sha256": "be9bd0eb7b417e2d7d01c0c86e9483e5a8a40b2e4650c323345a6f44ead6bb51",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/fixture-requests.jsonl.txt": {
+      "sha256": "d761bbe12fb9551d9acf70fa5802e3183206035232da1bcc59d8627cce3d80ec",
+      "status": "added"
+    },
+    "docs/research/ux-journey/evidence/fixture-server.ts.txt": {
+      "sha256": "cadb5e7427b135b435bc87a3eab9551407a076c0f85c6c2222f2ea52148ddef7",
       "status": "added"
     },
     "docs/search.md": {

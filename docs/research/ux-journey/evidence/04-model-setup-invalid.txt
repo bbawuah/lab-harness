@@ -1,0 +1,174 @@
+host% cd ~ && PS1='%~ %% ' && clear
+
+~ % date -u; time (curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.sh | sh)
+Tue Nov  3 07:41:25 UTC 2026
+LAB: downloading pinned harness 05b0d3679ed36be43c7e907a6d27bdd7ad8af864
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 2769k    0 2769k    0     0  2402k      0 --:--:--  0:00:01 --:--:-- 2404k
+LAB: acquiring verified project-local Bun 1.4.2
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 24.2M  100 24.2M    0     0  27.1M      0 --:--:-- --:--:-- --:--:-- 27.1M
+
+install: Checking real Relay publication capability (loader refusals remain visible)
+
+install: Installing frozen dependencies without lifecycle scripts
+bun install v1.4.2 (744846f84)
+
++ @types/bun@1.4.4
++ @types/node@26.6.6
++ bun-types@1.4.4
++ typescript@7.0.2
++ undici-types@8.12.3
+
+7 packages installed [228.00ms]
+
+install: Acquiring checksum-pinned Herdr, ripgrep, fd and standalone Pi
+$ bun --no-env-file --no-install scripts/herdr/acquire.ts
+{"executable":"$SCRATCH_HOME…2b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8a
+f864/.tmp/herdr/herdr","version":"0.9.5","sha256":"fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2","ca
+ched":false,"sourcePinMatch":false}
+$ bun --no-env-file --no-install scripts/acquire-rg.ts
+{"tool":"ripgrep","version":"14.1.1","binarySHA256":"0e0cb83f5195f1f51bb8feef1fff5b0b171e82bd1db6bd35deee701a3e7102f8","
+cached":false,"location":".tmp/rg/rg"}
+$ bun --no-env-file --no-install scripts/acquire-fd.ts
+{"tool":"fd","version":"10.3.0","binarySHA256":"14134aadba85ab2cfe4494d0f44253145f897b77a23fd4d7df2cb4929b53c786","cache
+d":false,"location":".tmp/fd/fd"}
+$ bun --no-env-file --no-install scripts/pi/acquire.ts
+{"command":["$SCRATCH_HOME…-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af8
+64/.tmp/pi/1.4.0/darwin-arm64/pi/pi"],"version":"1.4.0"}
+
+install: Checking immutable source publication integrity
+$ bun --no-env-file --no-install scripts/check-publication.ts
+Publication integrity: 363 allowed files; original concept provenance retained; 362 current hashes; 9 pinned Relay files
+.
+
+install: Checking an actual owned Herdr worker with bounded cleanup; no model calls
+$ bun --no-env-file --no-install scripts/herdr/smoke.ts
+{
+  "label": "actual-herdr-owned-process",
+  "session": "lab-c02214b9ffff",
+  "sourcePin": "bc8c28988f75c538d4ca058b702f5adbea30566e",
+  "observedOutput": "LAB_HERDR_OK_4a125584e77452bb\n",
+  "stopped": true,
+  "taskAcceptance": "unchanged",
+  "runDirectory": "$SCRATCH_HOME…32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7
+ad8af864/.tmp/h-2wxAGM",
+  "cleanup": {
+    "serverExited": true,
+    "socketsRemoved": true,
+    "workerStopped": true,
+    "errors": [],
+    "paneCloseAcknowledged": true,
+    "stopAcknowledged": true,
+    "exitCode": 0,
+    "signal": null
+  },
+  "runtime": {
+    "version": "0.9.5",
+    "releaseCommit": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+    "sourcePinMatch": false,
+    "binarySha256": "fb77c2232a05a8035421382c894392f4174e4e38a18e48af3dd0290157c3a7e2",
+    "artifact": "herdr-macos-aarch64"
+  },
+  "serverPid": 38384,
+  "status": {
+    "type": "pong",
+    "version": "0.9.5",
+    "protocol": 22,
+    "capabilities": {
+      "live_handoff": true,
+      "detached_server_daemon": false,
+      "endpoint_protocol_generation": 1,
+      "surface_interest": true,
+      "health_check": true,
+      "ssh_agent_registration": true
+    }
+  },
+  "workspaceId": "w1",
+  "paneId": "w1:p2",
+  "launch": {
+    "type": "layout_apply",
+    "layout": {
+      "workspace_id": "w1",
+      "tab_id": "w1:t2",
+      "zoomed": false,
+      "focused_pane_id": "w1:p2",
+      "root": {
+        "type": "pane",
+        "pane_id": "w1:p2",
+        "label": "lab-c02214b9ffff",
+        "cwd": "$SCRATCH_HOME…32b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8
+af864/.tmp/h-2wxAGM",
+        "command": [
+          "/bin/sh",
+          "$SCRATCH_HOME…f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af864
+/.tmp/h-2wxAGM/worker.sh",
+          "LAB_HERDR_OK_4a125584e77452bb"
+        ]
+      }
+    }
+  },
+  "workerPid": 38430,
+  "workerStatus": {
+    "type": "pane_process_info",
+    "process_info": {
+      "pane_id": "w1:p2",
+      "shell_pid": 38430,
+      "foreground_process_group_id": 38430,
+      "foreground_processes": [
+        {
+          "pid": 38430,
+          "name": "bash",
+          "argv0": "sh",
+          "argv": [
+            "/bin/sh",
+            "$SCRATCH_HOME…-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af8
+64/.tmp/h-2wxAGM/worker.sh",
+            "LAB_HERDR_OK_4a125584e77452bb"
+          ],
+          "cmdline": "/bin/sh $SCRATCH_HOME…terminal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e9
+07a6d27bdd7ad8af864/.tmp/h-2wxAGM/worker.sh LAB_HERDR_OK_4a125584e77452bb",
+          "cwd": "$SCRATCH_HOME…2832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7a
+d8af864/.tmp/h-2wxAGM"
+        }
+      ]
+    }
+  },
+  "serverLog": "herdr server running; you can use any herdr CLI command in another terminal.\napi socket: /tmp/lab-s-BWX
+04Y/s.sock\nclient socket: /tmp/lab-s-BWX04Y/s-client.sock\nlogs: $SCRATCH_HOME…-lab-harness-research-ux-install-to-terminal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-ha
+rness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af864/.tmp/h-2wxAGM/cfg/herdr/sessions/lab-c02214b9ffff/herdr-server.l
+og\ndid you mean to open the Herdr TUI? run `herdr`; you do not need `herdr server`.\n"
+}
+
+Installation complete. Start the interactive LAB workspace:
+  $SCRATCH_HOME…ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/releases/05b0d3679ed36be43c7e907a6d27bdd7ad8af864/lab
+First start asks for your endpoint/model. No model weights or paid requests were selected.
+Controlled LAB task execution remains unavailable; native Pi workspace is separate.
+LAB command installed at $SCRATCH_HOME…nal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin/lab. To enable it in this shell, run:
+  export PATH='$SCRATCH_HOME…2b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/bin':"$PATH"
+Then verify: command -v lab
+For future terminals, add that PATH line to your own zsh/bash startup file. No profiles were edited.
+
+LAB is installed. Launcher: $SCRATCH_HOME…rminal/0e32832b-5f1d-4fcb-ad01-5d97cb771d37/scratchpad/$SCRATCH_HOME/.local/share/lab-harness/lab
+Choose a project folder before LAB starts. Your home folder and folders containing LAB's installation or private state c
+annot be the project.
+Use an existing code/project folder, for example ~/Projects/my-app. LAB will not search your home folder.
+Enter a path without shell quotes; spaces are supported. Relative paths start from your original folder. Blank, Ctrl-C o
+r Ctrl-D cancels.
+Project directory: ~/Projects/demo-app
+Choose an existing project directory outside LAB's release/state folders. Home, filesystem roots, missing directories an
+d symlink directories are refused.
+Project directory: ~/Projects/demo-app
+LAB interactive coding workspace. Controlled LAB tasks remain unavailable.
+Choose an existing endpoint; setup makes no model request.
+local = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpo
+int.
+Route (local or litellm): ollama
+Explicit OpenAI-compatible base URL (including /v1 where required): localhost:11434
+Exact local model ID or existing LiteLLM alias: llama3.2
+LAB: Invalid workspace route; run ./lab --configure
+( curl -fsSL  | sh; )  0.20s user 0.14s system 0% cpu 1:17.73 total
+~ %

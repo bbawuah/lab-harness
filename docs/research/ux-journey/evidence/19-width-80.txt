@@ -1,0 +1,29 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────┐┌ Terminal ──────────┐
+ ○ LAB-HARNESS           ││                              ││user@host-xx │
+   main                  ││[LB] (text fallback)          ││x-xx demo-app lab │
+                         ││LAB-HARNESS                   ││user@host-xx │
+                         ││Powered by Pi                 ││x-xx demo-app %   │
+                         ││Interactive coding workspace  ││                    │
+                         ││Controlled LAB tasks:         ││                    │
+                         ││unavailable                   ││                    │
+                         ││                              ││                    │
+                         ││[Extensions]                  ││                    │
+                         ││  workspace-extension.ts      ││                    │
+                         ││                              ││                    │
+                         ││                              ││                    │
+ new                 menu││ Relay ready:                 ││                    │
+─────────────────────────││ demo-app/01a1a060-059a-7738- ││                    │
+ agents           grouped││ 9382--a45b1f840e44           ││                    │
+                         ││ (pi-52b42e7a91cecea458fee263 ││                    │
+ ○ LAB-HARNE… · LAB work…││ ea25c72973b2b4e11accccf1a232 ││                    │
+   pi                    ││ 13327e662823). Use           ││                    │
+                         ││ /relay-peers.                ││                    │
+                         ││                              ││                    │
+                         ││                              ││                    │
+                         ││──────────────────────────────││                    │
+                         ││                              ││                    │
+                         ││──────────────────────────────││                    │
+                         ││$SCRATCH…││                    │
+                         ││0.0%/8.2k (auto)  fixture-code││                    │
+                        «│└──────────────────────────────┘└────────────────────┘

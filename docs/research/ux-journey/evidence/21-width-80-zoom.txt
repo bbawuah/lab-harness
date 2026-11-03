@@ -1,0 +1,29 @@
+ spaces                  │  LAB workspace Z    +
+                         │┌ Pi interactive ────────────────────────────────────┐
+ ○ LAB-HARNESS           ││                                                    │
+   main                  ││[LB] (text fallback)                                │
+                         ││LAB-HARNESS                                         │
+                         ││Powered by Pi                                       │
+                         ││Interactive coding workspace                        │
+                         ││Controlled LAB tasks: unavailable                   │
+                         ││                                                    │
+                         ││[Extensions]                                        │
+                         ││  workspace-extension.ts                            │
+                         ││                                                    │
+                         ││                                                    │
+                         ││ Relay ready:                                       │
+ new                 menu││ demo-app/01a1a060-059a-7738-9382--a45b1f840e44     │
+─────────────────────────││ (pi-52b42e7a91cecea458fee263ea25c72973b2b4e11acccc │
+ agents           grouped││ f1a23213327e662823). Use /relay-peers.             │
+                         ││                                                    │
+ ○ LAB-HARNE… · LAB work…││                                                    │
+   pi                    ││                                                    │
+                         ││                                                    │
+                         ││                                                    │
+                         ││                                                    │
+                         ││────────────────────────────────────────────────────│
+                         ││                                                    │
+                         ││────────────────────────────────────────────────────│
+                         ││$SCRATCH…│
+                         ││0.0%/8.2k (auto)                       fixture-coder│
+                        «│└────────────────────────────────────────────────────┘

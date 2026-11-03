@@ -1,0 +1,41 @@
+// SCRIPTED FIXTURE, NOT A MODEL. Deterministic OpenAI-compatible responses for the UX walkthrough.
+// Binds 127.0.0.1 only. Logs request shape (tool names/schemas, message roles) — never keys.
+import { appendFileSync, writeFileSync } from "node:fs";
+const log = process.argv[2]!, portFile = process.argv[3]!;
+let n = 0;
+const sse = (o: unknown) => "data: " + JSON.stringify(o) + "\n\n";
+function reply(body: any) {
+  const msgs = body.messages ?? [];
+  const lastUser = [...msgs].reverse().find((m: any) => m.role === "user");
+  const userText = typeof lastUser?.content === "string" ? lastUser.content : JSON.stringify(lastUser?.content ?? "");
+  const sinceUser = msgs.slice(msgs.lastIndexOf(lastUser) + 1);
+  const toolsDone = sinceUser.filter((m: any) => m.role === "tool").length;
+  const call = (name: string, args: unknown) => ({ tool_calls: [{ index: 0, id: `fx-${++n}`, type: "function", function: { name, arguments: JSON.stringify(args) } }] });
+  if (/commit/i.test(userText)) {
+    if (toolsDone === 0) return call("bash", { command: "git add greet.sh && git -c user.name=ux-fixture -c user.email=ux@example.invalid commit -m 'greet: end greeting with !' && git log --oneline -2" });
+    return { content: "[SCRIPTED FIXTURE] Committed. (Scripted response; no model.)" };
+  }
+  if (/plan/i.test(userText)) return { content: "[SCRIPTED FIXTURE] Plan:\n1. Read greet.sh and test.sh\n2. Change the printf to end with '!'\n3. Run sh test.sh\nNo files changed yet." };
+  if (/greet|test/i.test(userText)) {
+    if (toolsDone === 0) return call("read", { path: "greet.sh" });
+    if (toolsDone === 1) return call("edit", { path: "greet.sh", edits: [{ oldText: "printf 'Hello, %s\\n' \"$1\"", newText: "printf 'Hello, %s!\\n' \"$1\"" }] });
+    if (toolsDone === 2) return call("bash", { command: "sh test.sh" });
+    const last = String(sinceUser.at(-1)?.content ?? ""); if (!/PASS/.test(last)) return { content: "[SCRIPTED FIXTURE] The test still fails; see the output above. Nothing committed." };
+    return { content: "[SCRIPTED FIXTURE] greet.sh now ends the greeting with '!'. `sh test.sh` passes. Nothing committed yet — review with `git diff`." };
+  }
+  return { content: "[SCRIPTED FIXTURE] READY (scripted response; no model was called)." };
+}
+const server = Bun.serve({ hostname: "127.0.0.1", port: 0, async fetch(req) {
+  const url = new URL(req.url);
+  if (req.method === "GET") { appendFileSync(log, `GET ${url.pathname}\n`); return Response.json({ object: "list", data: [{ id: "fixture-coder", object: "model" }] }); }
+  const body = await req.json() as any;
+  appendFileSync(log, JSON.stringify({ path: url.pathname, model: body.model, stream: body.stream, roles: body.messages?.map((m: any) => m.role), tools: body.tools?.map((t: any) => ({ name: t.function?.name, params: t.function?.parameters })), max_tokens: body.max_tokens ?? body.max_completion_tokens, systemChars: String(body.messages?.[0]?.content ?? "").length, toolsChars: JSON.stringify(body.tools ?? []).length }) + "\n");
+  const r: any = reply(body);
+  const finish = r.tool_calls ? "tool_calls" : "stop";
+  if (!body.stream) return Response.json({ id: "fx", object: "chat.completion", created: 1, model: body.model, choices: [{ index: 0, message: { role: "assistant", content: r.content ?? null, tool_calls: r.tool_calls }, finish_reason: finish }], usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } });
+  const chunk = (delta: unknown, fr: string | null) => sse({ id: "fx", object: "chat.completion.chunk", created: 1, model: body.model, choices: [{ index: 0, delta, finish_reason: fr }] });
+  const text = chunk({ role: "assistant", ...r }, null) + chunk({}, finish) + sse({ id: "fx", object: "chat.completion.chunk", created: 1, model: body.model, choices: [], usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } }) + "data: [DONE]\n\n";
+  return new Response(text, { headers: { "content-type": "text/event-stream" } });
+} });
+writeFileSync(portFile, String(server.port));
+console.log("fixture listening on 127.0.0.1:" + server.port);

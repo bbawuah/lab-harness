@@ -1,0 +1,29 @@
+ spaces                  │  LAB workspace Z    +
+                         │┌ Pi interactive ────────────────────────────────────┐
+ ○ LAB-HARNESS           ││                                                    │
+  ┌──────────────────────────────────────────────────────────────────────────┐ │
+  │keybinds                                                       esc close  │ │
+  │ / press / to filter by command or shortcut                               │ │
+  │                                                                          │ │
+  │ global                                                                  ▐│ │
+  │ ctrl+b                       prefix mode                                ▐│ │
+  │ prefix+?                     keybinds                                   ▐│ │
+  │ prefix+s                     settings                                   ▐│ │
+  │ prefix+q                     detach                                     ▐│ │
+  │ prefix+shift+r               reload config                              ▐│ │
+  │ prefix+o                     open notification target                   ▐│ │
+ n│                                                                         ▐│ │
+──│ navigation                                                              ▐│ │
+ a│ esc                          back                                       ▐│ │
+  │ up / down                    workspace list                             ▐│ │
+ ○│ h / j / k / l / left / right move focus                                 ▐│ │
+  │ tab / shift+tab              cycle pane                                 ▐│ │
+  │ enter                        open workspace                             ▐│ │
+  │ 1..9                         switch workspace                           ▐│ │
+  │                                                                          │ │
+  │ search / · scroll j/k/↑↓/pgup/pgdn · close esc/enter                     │─│
+  └──────────────────────────────────────────────────────────────────────────┘ │
+                         ││────────────────────────────────────────────────────│
+                         ││$SCRATCH…│
+                         ││0.0%/8.2k (auto)                       fixture-coder│
+                        «│└────────────────────────────────────────────────────┘

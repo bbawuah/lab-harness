@@ -1,0 +1,28 @@
+ ○ LAB-HA…  tab LAB workspace │
+ all idle                     │ switch
+
+[LB] (text fallback)
+LAB-HARNESS
+Powered by Pi
+Interactive coding workspace
+Controlled LAB tasks: unavailable
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready:
+ demo-app/01a1a060-b9e0-73e9-a298--8f4c
+ 16a1f777
+ (pi-b84c908ba4d43f8b1895e87bc5d1215337
+ c350744c337e517000e5ee9c95facd). Use
+ /relay-peers.
+
+
+
+
+
+────────────────────────────────────────
+
+────────────────────────────────────────
+$SCRATCH…0.0%/8.2k (auto)           fixture-coder

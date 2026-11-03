@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││ $ sh test.sh                                         ││user@host demo-app  │
+   main                  ││                                                      ││user@host demo-app  │
+                         ││ PASS: greet                                          ││% git --no-pager diff; sh test.sh   │
+                         ││                                                      ││diff --git a/greet.sh b/greet.sh    │
+                         ││ Took 0.0s                                            ││index 1cfcbc0..ba86050 100644       │
+                         ││                                                      ││--- a/greet.sh                      │
+                         ││                                                      ││+++ b/greet.sh                      │
+                         ││ [SCRIPTED FIXTURE] greet.sh now ends the greeting    ││@@ -1,3 +1,3 @@                     │
+                         ││ with '!'. sh test.sh passes. Nothing committed yet — ││ #!/bin/sh                          │
+                         ││ review with git diff.                                ││ # Usage: greet.sh NAME             │
+                         ││                                                      ││-printf 'Hello, %s\n' "$1"          │
+                         ││                                                      ││+printf 'Hello, %s!\n' "$1"         │
+                         ││ Looks good, commit it.                               ││PASS: greet                         │
+                         ││                                                      ││user@host demo-app  │
+                         ││                                                      ││%                                   │
+                         ││                                                      ││                                    │
+                         ││ $ git add greet.sh && git -c user.name=ux-fixture -c ││                                    │
+ new                 menu││ user.email=ux@example.invalid commit -m 'greet: end  ││                                    │
+─────────────────────────││ greeting with !' && git log --oneline -2             ││                                    │
+ agents           grouped││                                                      ││                                    │
+                         ││ [main 1e487da] greet: end greeting with !            ││                                    │
+ ○ LAB-HARNE… · LAB work…││  1 file changed, 1 insertion(+), 1 deletion(-)       ││                                    │
+   pi                    ││ 1e487da greet: end greeting with !                   ││                                    │
+                         ││ 813c59d fixture: initial                             ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Took 0.2s                                            ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ [SCRIPTED FIXTURE] Committed. (Scripted response; no ││                                    │
+                         ││ model.)                                              ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││↑6 ↓6 0.0%/8.2k (auto)                   fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

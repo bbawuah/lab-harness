@@ -1,0 +1,1 @@
+<!doctype html><title>Fixture Todo</title><h1>Fixture Todo</h1><label>New item <input id="item"></label><button onclick="document.getElementById('list').insertAdjacentHTML('beforeend','<li>'+document.getElementById('item').value+'</li>')">Add</button><ul id="list"></ul>

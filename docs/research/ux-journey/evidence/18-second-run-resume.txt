@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││                                                      ││user@host demo-app  │
+   main                  ││[LB] (text fallback)                                  ││user@host demo-app  │
+                         ││LAB-HARNESS                                           ││%                                   │
+                         ││Powered by Pi                                         ││                                    │
+                         ││Interactive coding workspace                          ││                                    │
+                         ││Controlled LAB tasks: unavailable                     ││                                    │
+                         ││                                                      ││                                    │
+                         ││[Extensions]                                          ││                                    │
+                         ││  workspace-extension.ts                              ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Relay ready:                                         ││                                    │
+                         ││ demo-app/01a1a060-059a-7738-9382--a45b1f840e44       ││                                    │
+                         ││ (pi-52b42e7a91cecea458fee263ea25c72973b2b4e11accccf1 ││                                    │
+                         ││ a23213327e662823). Use /relay-peers.                 ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+ new                 menu││                                                      ││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││                                                      ││                                    │
+                         ││                                                      ││                                    │
+ ○ LAB-HARNE… · LAB work…││                                                      ││                                    │
+   pi                    ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││Re ◉ Current Folder | ○ All  Name: All  Sort: Threaded││                                    │
+                         ││tab scope · re:<pattern> regex · "phrase" exact       ││                                    │
+                         ││ctrl+s sort · ctrl+n named · ctrl+d delete · ctrl+p p…││                                    │
+                         ││                                                      ││                                    │
+                         ││>                                                     ││                                    │
+                         ││                                                      ││                                    │
+                         ││› sh test.sh fails. Make greet end with an exc…  13 1m││                                    │
+                         ││  sh test.sh fails. Make greet end with an exc…  14 2m││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││0.0%/8.2k (auto)                         fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘

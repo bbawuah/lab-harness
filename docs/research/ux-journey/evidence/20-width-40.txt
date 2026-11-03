@@ -1,0 +1,29 @@
+ ○ LAB-HA…  tab LAB workspace │
+ all idle                     │ switch
+┌ Pi interactive ──────┐┌ Terminal ────┐
+│Interactive coding    ││user@ho  │
+│workspace             ││st-xx-xx  │
+│Controlled LAB tasks: ││demo-app labl │
+│unavailable           ││ser@hos │
+│                      ││user@ho  │
+│[Extensions]          ││st-xx-xx  │
+│                      ││demo-app %    │
+│workspace-extension.ts││              │
+│                      ││              │
+│                      ││              │
+│ Relay ready:         ││              │
+│ demo-app/01a1a060-05 ││              │
+│ 9a-7738-9382--a45b1f ││              │
+│ 840e44               ││              │
+│ (pi-52b42e7a91cecea4 ││              │
+│ 58fee263ea25c72973b2 ││              │
+│ b4e11accccf1a2321332 ││              │
+│ 7e662823). Use       ││              │
+│ /relay-peers.        ││              │
+│                      ││              │
+│──────────────────────││              │
+│                      ││              │
+│──────────────────────││              │
+│/private/tmp/claude...││              │
+│0.0%/8.2k (auto)  fixt││              │
+└──────────────────────┘└──────────────┘

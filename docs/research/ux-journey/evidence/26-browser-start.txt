@@ -1,0 +1,39 @@
+ spaces                  │  LAB workspace    +
+                         │┌ Pi interactive ──────────────────────────────────────┐┌ Terminal ──────────────────────────┐
+ ○ LAB-HARNESS           ││                                                      ││user@host demo-app  │
+   main                  ││[LB] (text fallback)                                  ││user@host demo-app  │
+                         ││LAB-HARNESS                                           ││%                                   │
+                         ││Powered by Pi                                         ││                                    │
+                         ││Interactive coding workspace                          ││                                    │
+                         ││Controlled LAB tasks: unavailable                     ││                                    │
+                         ││                                                      ││                                    │
+                         ││[Extensions]                                          ││                                    │
+                         ││  workspace-extension.ts                              ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││ Relay ready:                                         ││                                    │
+                         ││ demo-app/01a1a061-4bec-7207-84b0--8b91790e0f0e       ││                                    │
+                         ││ (pi-80d66d7e49e959a76869a3b7efc1696b0867c94ac80d46ed ││                                    │
+                         ││ 172e28adad34c7b9). Use /relay-peers.                 ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+ new                 menu││                                                      ││                                    │
+─────────────────────────││                                                      ││                                    │
+ agents           grouped││                                                      ││                                    │
+                         ││                                                      ││                                    │
+ ○ LAB-HARNE… · LAB work…││                                                      ││                                    │
+   pi                    ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││                                                      ││                                    │
+                         ││──────────────────────────────────────────────────────││                                    │
+                         ││$SCRATCH_HOME…││                                    │
+                         ││0.0%/8.2k (auto)                         fixture-coder││                                    │
+                        «│└──────────────────────────────────────────────────────┘└────────────────────────────────────┘
