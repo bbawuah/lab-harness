@@ -1,0 +1,3 @@
+(eval):4: no matches found: /private/tmp/lab-desktop-*
+owned roots after both runs: none
+agent-desktop processes after both runs: none

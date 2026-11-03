@@ -1,0 +1,5 @@
+Accessibility is off for /opt/homebrew/Cellar/bun/1.4.2/bin/bun.
+  That is a generic command-line runtime, not an app. Do NOT grant it: that would let every script and program this runtime runs anywhere on this Mac control other apps.
+  Instead, quit and start LAB from a terminal app (Terminal or iTerm2), then run  lab --setup-desktop  there.
+  LAB never changes this setting and never shows the macOS prompt.
+✓ owned hosts stopped by pid and root removed

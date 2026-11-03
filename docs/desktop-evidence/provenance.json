@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-03",
+  "kind": "local terminal text; not a mockup",
+  "captureSource": {
+    "commit": "f4640312bb3e24ac3a8ca373beaaf51c8366622d",
+    "tree": "clean (only docs/desktop-evidence/ untracked during capture)",
+    "platform": "macOS 27.0.1 arm64",
+    "tool": "agent-desktop 1.0.2 (cached, verified against contracts/agent-desktop-source.json)",
+    "launcher": "T3 Code agent shell; the computed responsible process is Homebrew bun, a generic runtime, so LAB refuses to suggest granting it"
+  },
+  "notExercised": [
+    "Accessibility granted",
+    "list-windows on a real or fixture window",
+    "any click/type/scroll/press",
+    "native Pi TUI with lab --desktop"
+  ],
+  "files": {
+    "leftovers.txt": {
+      "sha256": "d37dceb7ca791feeaef26b24eac46b0a7533368f63bccff3f15cbcc52cbc78fb",
+      "source": "ls of /private/tmp/lab-desktop-* and pgrep -x agent-desktop after both runs"
+    },
+    "live-smoke-denied.txt": {
+      "sha256": "45a500832a98a0c28aa00c13d5cad06f01f99f48a51c4850a51df198e6e325c3",
+      "source": "bun scripts/desktop-live-smoke.ts without Accessibility: exits 2 before building or starting the fixture"
+    },
+    "setup-denied.txt": {
+      "sha256": "0e1f7c4e46ea83489b44746d68cf2f2269e27c3f84f9b1dcb7d4cab2082908ed",
+      "source": "bun scripts/start.ts --setup-desktop --offline (same path as lab --setup-desktop --offline), stdout+stderr, $HOME replaced by ~"
+    },
+    "unit-tests.txt": {
+      "sha256": "1aac83606512e6bd56249b22ab713b7780841b81f48d1f5f8e2a655048b5f525",
+      "source": "tail of bun test tests/desktop.test.ts (fake transport; no tool or app involved)"
+    }
+  }
+}
