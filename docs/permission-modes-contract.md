@@ -86,7 +86,14 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 - `lab --mode ask|edits|read-only|auto` sets the mode for the launch. Without it, the mode is `ask`.
 - `/lab-mode` shows the current mode and a selector. `/lab-mode <mode>` sets it directly. `/lab-mode next` cycles
   `ask → edits → read-only → ask` (it never enters `auto`).
-- The footer always shows `mode: <m> · /lab-mode`. `/lab-help` and `lab --help` list modes.
+- The footer always shows `mode: <m> · /lab-mode`, including in `auto`. `/lab-help` and `lab --help` list modes.
+- Entering `auto` from `/lab-mode auto` or the selector asks one confirm, "LAB: switch from <m> to auto?". It names
+  what auto skips: "auto shows no approval prompt for edits, shell commands, browser actions or Relay sends", plus
+  registered families with what they do in auto (e.g. "Desktop actions still ask"), and "not a sandbox". The
+  choices are `Switch to auto` / `Cancel`. Cancel, Esc or a failed prompt keeps the mode. Without the interactive
+  UI, `/lab-mode auto` never switches. Already in auto, there is no new confirm.
+- `lab --mode auto` prints one warning line before the workspace starts: "LAB warning: started in auto mode; auto
+  shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode."
 - **No keyboard shortcut.** `Shift+Tab` is reserved by Pi for `app.thinking.cycle` (`core/keybindings.ts:33–35`), and
   reserved keys cannot be overridden by extensions (`runner.ts:97–104, 697–703`). Every plain Ctrl letter is either
   bound by Pi or is a terminal control (Ctrl+H/I/M). Option/Alt combinations reach the pty only when the terminal

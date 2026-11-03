@@ -219,8 +219,13 @@ hanging. Reads, searches, browser snapshots and inbox reads never ask.
 Start with `lab --mode edits` (or another mode), or change it inside Pi with
 `/lab-mode` (shows a picker), `/lab-mode read-only`, or `/lab-mode next` to
 cycle ask → edits → read-only. `next` never enters auto. The footer always shows
-`mode: … · /lab-mode`. There is no keyboard shortcut: Shift+Tab is Pi's thinking
-level, and other keys don't reach Pi reliably in default terminals.
+`mode: … · /lab-mode`, including in auto. There is no keyboard shortcut: Shift+Tab
+is Pi's thinking level, and other keys don't reach Pi reliably in default terminals.
+
+Switching to auto inside Pi asks once to confirm. The prompt names what auto skips:
+no approval prompt for edits, shell commands, browser actions or Relay sends.
+Cancel or Esc keeps the current mode. `lab --mode auto` prints a one-line warning
+before the workspace starts.
 
 The mode survives `/reload`, `/new` and `/resume` within one launch. Each new
 `lab` launch starts in ask unless you pass `--mode`. "Allow for this session"

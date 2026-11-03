@@ -143,6 +143,10 @@ try {
     await io.wait("FIXTURE S5 done"); await io.capture("10-read-only-refusal");
     checks.readOnlyRefused = !existsSync(join(project, "readonly.txt")) && modelLog.some(m => m.scenario === "S5" && m.toolResults.some(r => r.includes("LAB_PERMISSION_REFUSED")));
     await io.send("/reload"); await io.wait("mode: read-only"); await io.capture("11-mode-survives-reload");
+    // Entering auto from inside Pi asks one confirm naming what auto skips; Esc keeps the mode.
+    await io.send("/lab-mode auto"); await io.wait("Switch to auto"); await io.capture("11b-auto-confirm");
+    await io.key("escape"); await io.wait("LAB mode not changed: still read-only");
+    checks.autoConfirmCancelKeepsMode = (await io.screen()).includes("mode: read-only");
   });
   // Launch B: explicit auto, 80 columns.
   await launch("auto", ["--mode", "auto"], 80, 30, async io => {
@@ -151,6 +155,7 @@ try {
     await io.wait("FIXTURE S6 done"); await io.capture("12-auto-mode");
     checks.autoRanWithoutPrompts = readFileSync(join(project, "notes.txt"), "utf8") === "status: auto\n" && existsSync(join(project, "auto.txt"));
   });
+  checks.autoStartWarningPrinted = (rawStreams.auto ?? "").includes("LAB warning: started in auto mode");
   // Launch C: 40 columns, hostile command text, deny with note.
   await launch("narrow", [], 40, 40, async io => {
     await io.wait("mode: ask");
@@ -168,7 +173,7 @@ checks.narrowRawStreamHasNoHostileControls = !!rawStreams.narrow && !rawStreams.
 
 const sanitizedLog = modelLog.map(m => ({ ...m, toolResults: m.toolResults.map(sanitize) }));
 checks.noHostPathsInModelLog = !leaks(JSON.stringify(sanitizedLog));
-const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 19;
+const ok = !failure && Object.values(checks).every(Boolean) && Object.keys(checks).length >= 21;
 const git = (args: string[]) => Bun.spawnSync(["git", ...args], { cwd: source }).stdout.toString().trim();
 const files = Object.fromEntries(readdirSync(out).filter(f => f.endsWith(".txt")).sort().map(f => [f, createHash("sha256").update(readFileSync(join(out, f))).digest("hex")]));
 writeFileSync(join(out, "result.json"), JSON.stringify({

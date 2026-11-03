@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync, chmodSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { approvalChoices, approvalTitle, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
+import { approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
 import { installPermissionExtension, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
 import { browserCallText, browserResultText } from "../src/pi/browser-extension.ts";
 import { columns } from "../src/pi/display.ts";
@@ -272,6 +272,7 @@ test("/lab-mode changes mode, persists privately, clears grants, shows the foote
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("read-only");
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("ask");
     await h.commands.get("lab-mode").handler("yolo", h.ctx); expect(h.gate.mode).toBe("ask"); expect(h.notices.at(-1)).toContain("Unknown mode");
+    h.ctx.ui.select = async (_t, o) => o[0]; // confirm "Switch to auto"
     await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("auto");
     // The selector form, as the operator would use it.
     const h2 = harness({ answers: [] });
@@ -372,4 +373,33 @@ test("registered tool family (agent-desktop seam): always asks, no session grant
     expect(() => bad.gate.registerFamily({ ...desktop, tools: ["x"], inAuto: "yes" as any })).toThrow("LAB_PERMISSION_FAMILY");
     expect(() => bad.gate.registerFamily({ ...desktop, tools: ["x"], sessionGrants: undefined as any })).toThrow("LAB_PERMISSION_FAMILY");
   } finally { bad.done(); }
+});
+
+test("switching to auto needs one confirm that names what auto skips; the start warning names it too", async () => {
+  const h = harness({ mode: "ask", answers: [undefined, "Cancel", new Error("render failed"), "Switch to auto"] });
+  try {
+    h.gate.registerFamily({ family: "Desktop", tools: ["desktop_act"], sessionGrants: false, inAuto: "ask", describe: () => ({ heading: "x", lines: [], scope: "x", scopeLabel: "x" }) });
+    for (let n = 0; n < 3; n++) { await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("ask"); } // Esc, Cancel, throw
+    expect(h.notices.at(-1)).toBe("LAB mode not changed: still ask.");
+    expect(JSON.parse(readFileSync(h.statePath, "utf8"))).toEqual({ mode: "ask" });
+    await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("auto");
+    expect(h.statuses.at(-1)).toBe("mode: auto · /lab-mode"); // footer stays visible in auto
+    expect(h.prompts).toHaveLength(4);
+    const title = h.prompts[0]!.title;
+    expect(h.prompts[0]!.options).toEqual(["Switch to auto", "Cancel"]);
+    for (const part of ["switch from ask to auto?", "edits", "shell commands", "browser actions", "Relay sends", "Desktop actions still ask", "not a sandbox"]) expect(title.replace(/\n/g, "")).toContain(part); // rows wrap by column, not by word
+    for (const row of title.split("\n")) expect(columns(row)).toBeLessThanOrEqual(78);
+    await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.prompts).toHaveLength(4); // already auto: no new confirm
+  } finally { h.done(); }
+  // No UI: never switches to auto. The selector path also confirms.
+  const n = harness({});
+  try { await n.commands.get("lab-mode").handler("auto", { ...n.ctx, hasUI: false }); expect(n.gate.mode).toBe("ask"); expect(n.prompts).toHaveLength(0); } finally { n.done(); }
+  const sel = harness({});
+  try {
+    const titles: string[] = [];
+    sel.ctx.ui.select = async (t, o) => { titles.push(t); return titles.length === 1 ? o.find(x => x.startsWith("auto"))! : "Cancel"; };
+    await sel.commands.get("lab-mode").handler("", sel.ctx); expect(sel.gate.mode).toBe("ask"); expect(titles[1]).toContain("switch from ask to auto?");
+  } finally { sel.done(); }
+  expect(autoStartWarning()).toBe("LAB warning: started in auto mode; auto shows no approval prompt for edits, shell commands, browser actions or Relay sends. Change it with /lab-mode.");
+  expect(autoSummary([{ family: "Desktop", inAuto: "run" }])).toContain("Relay sends or Desktop actions.");
 });

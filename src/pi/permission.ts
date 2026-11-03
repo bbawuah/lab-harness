@@ -17,6 +17,19 @@ export const modeDescriptions: Record<PermissionMode, string> = {
   "read-only": "reads only; every mutating tool is refused",
   auto: "everything runs without asking (explicit opt-in)",
 };
+/**
+ * Names what auto skips, for the /lab-mode auto confirm and the `lab --mode auto`
+ * start warning. Registered families are named with what they do in auto.
+ */
+export function autoSummary(families: readonly { family: string; inAuto: "run" | "ask" }[] = []): string {
+  const list = (items: string[]) => items.length < 2 ? items.join("") : items.slice(0, -1).join(", ") + " or " + items.at(-1);
+  const runs = ["edits", "shell commands", "browser actions", "Relay sends", ...families.filter(f => f.inAuto === "run").map(f => displaySafe(f.family.slice(0, 32)) + " actions")];
+  const asks = families.filter(f => f.inAuto !== "run").map(f => displaySafe(f.family.slice(0, 32)) + " actions");
+  return `auto shows no approval prompt for ${list(runs)}` + (asks.length ? `; ${list(asks)} still ask` : "") + ".";
+}
+export const autoChoices = ["Switch to auto", "Cancel"] as const;
+/** One line printed by `lab --mode auto` before the workspace starts. */
+export const autoStartWarning = () => `LAB warning: started in auto mode; ${autoSummary()} Change it with /lab-mode.`;
 /** Keyboard-free cycle used by /lab-mode next. It never enters auto. */
 export const modeCycle: Record<PermissionMode, PermissionMode> = { ask: "edits", edits: "read-only", "read-only": "ask", auto: "ask" };
 export function parseMode(value: unknown): PermissionMode | undefined {

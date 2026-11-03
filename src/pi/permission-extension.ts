@@ -5,7 +5,8 @@
  */
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
-import { approvalChoices, approvalTitle, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
+import { wrapColumns } from "./display.ts";
+import { approvalChoices, approvalTitle, autoChoices, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
 
 export type PermissionUI = {
   select(title: string, options: string[], opts?: { signal?: AbortSignal }): Promise<string | undefined>;
@@ -83,6 +84,18 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     status(ctx);
   });
 
+  /** Entering auto needs one explicit confirm that names what auto skips. Anything else keeps the mode. */
+  async function confirmAuto(ctx: PermissionContext): Promise<boolean> {
+    if (mode === "auto") return true;
+    if (!ctx.hasUI) { ctx.ui.notify("LAB mode not changed: switching to auto needs a confirmation in the interactive UI (or start with lab --mode auto).", "warning"); return false; }
+    const width = Math.max(20, (options.columns?.() ?? process.stdout.columns ?? 80) - 2);
+    const title = [`LAB: switch from ${mode} to auto?`, autoSummary([...new Set(families.values())]), "Approved actions run as you; this is not a sandbox."].flatMap(row => wrapColumns(row, width)).join("\n");
+    let choice: string | undefined;
+    try { choice = await ctx.ui.select(title, [...autoChoices], { signal: ctx.signal }); } catch { choice = undefined; }
+    if (choice === autoChoices[0]) return true;
+    ctx.ui.notify(`LAB mode not changed: still ${mode}.`, "info"); return false;
+  }
+
   pi.registerCommand("lab-mode", { description: "Show or change the LAB permission mode (ask, edits, read-only, auto)", async handler(args, ctx) {
     const value = args.trim();
     try {
@@ -90,13 +103,14 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
       if (value) {
         const next = parseMode(value);
         if (!next) return ctx.ui.notify(`Unknown mode "${value.slice(0, 32)}". Use ask, edits, read-only or auto.`, "error");
+        if (next === "auto" && !await confirmAuto(ctx)) return;
         return setMode(next, ctx);
       }
       if (!ctx.hasUI) return ctx.ui.notify(`LAB mode: ${mode}`, "info");
       const labels = permissionModes.map(m => `${m}${m === mode ? " (current)" : ""} — ${modeDescriptions[m]}`);
       const choice = await ctx.ui.select(`LAB permission mode (current: ${mode})`, labels);
       const picked = choice ? permissionModes[labels.indexOf(choice)] : undefined;
-      if (picked && picked !== mode) setMode(picked, ctx);
+      if (picked && picked !== mode && (picked !== "auto" || await confirmAuto(ctx))) setMode(picked, ctx);
     } catch { ctx.ui.notify("LAB mode was not changed: its private state could not be written.", "error"); }
   } });
 
