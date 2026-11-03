@@ -2,7 +2,7 @@
  LAB_PERMISSION_DENIED: bash was not run (the user denied it). Do not retry it without asking
  the user.
 
- Took 1.1s
+ Took 1.0s
 
 
  FIXTURE S2 done; tool results seen by the fixture: #1 LAB_PERMISSION_DENIED. Not a model
@@ -40,4 +40,4 @@
 ──────────────────────────────────────────────────────────────────────────────────────────────
 $PROJECT
 ↑900 ↓90 1.3%/8.2k (auto)                                                   permission-fixture
-mode: ask · /lab-mode
+● mode: ask · /lab-mode

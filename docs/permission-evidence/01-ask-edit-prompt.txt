@@ -8,8 +8,8 @@
   workspace-extension.ts
 
 
- Relay ready: PROJECT/01a1a1ec-e305-7535-89ca--fae84e67419b
- (pi-1f776b82b65b8d0b03fb7465380252e1b4b751b06e16ec3c9bfc6270576f5e51). Use /relay-peers.
+ Relay ready: PROJECT/01a1a20b-f5a8-72f4-9fa3--737a5068fcc6
+ (pi-026b9b5e8a0296be4493a95351d420018a094ef1e051500d54fc2ce215984de3). Use /relay-peers.
 
 
  S1 edit the notes file
@@ -40,4 +40,4 @@
 ──────────────────────────────────────────────────────────────────────────────────────────────
 $PROJECT
 ↑100 ↓10 1.3%/8.2k (auto)                                                   permission-fixture
-mode: ask · /lab-mode
+● mode: ask · /lab-mode

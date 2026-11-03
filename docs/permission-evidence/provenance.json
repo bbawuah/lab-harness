@@ -2,7 +2,7 @@
   "date": "2026-11-03",
   "kind": "native Herdr pane.read text from the actual ./lab (pinned Pi 1.4.0 + Herdr) in owned pseudo-terminals; not a mockup",
   "captureSource": {
-    "commit": "7726d05edd1ed15b1a109dbf7a9fcf916e9c0e18",
+    "commit": "52cc73b2c759a82cb41a1a01362d079f4867b10a",
     "tree": "clean (dirty=false in result.json)",
     "script": "scripts/permission-actual.ts via bun run smoke:permission",
     "platform": "darwin-arm64",
@@ -16,13 +16,16 @@
     "browserSnapshotNotPrompted": true,
     "browserFillsSucceeded": true,
     "editsAutoApprovedInProjectEdit": true,
+    "editsAskedForPiSettings": true,
     "escDenied": true,
     "readOnlyRefused": true,
+    "autoConfirmCancelKeepsMode": true,
     "ask:exit0": true,
     "ask:modeFileOutsideProject": true,
     "autoRanWithoutPrompts": true,
     "auto:exit0": true,
     "auto:modeFileOutsideProject": true,
+    "autoStartWarningPrinted": true,
     "noteReachedModel": true,
     "narrow:exit0": true,
     "narrow:modeFileOutsideProject": true,
@@ -32,17 +35,20 @@
   },
   "exercised": [
     "ask: allow once (edit), deny (bash; model receives the denial), Esc (denies), deny with note",
-    "edits: in-project edit auto-approved, bash still asks",
+    "edits: in-project edit auto-approved, bash still asks, a write to .pi/settings.json asks (agent/VCS config)",
     "read-only: write refused",
-    "auto: launch flag, no prompts",
-    "/lab-mode switching, footer indicator, /reload persistence",
-    "browser fill prompts with origin, element label and masked secret; F30 rows",
+    "auto: launch flag prints the one-line start warning on stdout; edit and bash run with no prompts",
+    "/lab-mode auto confirm (Cancel first; Esc keeps the mode) naming what auto skips and that desktop actions still ask",
+    "/lab-mode switching, footer '● mode: <m> · /lab-mode' indicator, /reload persistence",
+    "browser fill prompts with origin, element label and masked secret; F30 rows labelled from the per-call record",
     "hostile text at 40 columns; widths 120, 80 and 40"
   ],
   "notExercised": [
     "Allow for this session in the pty (unit tests only)",
     "relay_send prompt and relay_ack refusal in the pty (unit tests only; the actual Relay model test runs json mode with explicit auto)",
-    "edits refusing an out-of-project, symlinked or LAB-state path in the pty (unit tests only)",
+    "edits refusing an out-of-project, symlinked, LAB-state or other sensitive path besides .pi/settings.json in the pty (unit tests only)",
+    "the in-Pi auto start notification (the capture is taken after it has gone; unit test only)",
+    "stale-ref refusal for a parallel snapshot+fill batch, broken/FIFO mode file, unregistered lab_desktop, registered desktop family (unit tests only; agent-desktop is PR #28)",
     "no-UI denial in Pi json/print mode in the pty (unit tests only)",
     "Linux"
   ],
@@ -52,51 +58,59 @@
   ],
   "files": {
     "01-ask-edit-prompt.txt": {
-      "sha256": "5e8fef14c648cd6c60c88e24103cbbfb94941598c8a6d95ef557e54575721826",
+      "sha256": "b12b5ba6d02c0d760fe8c15c39eb91333abc71734a702039332f10a6f781722a",
       "source": "ask mode, 120 columns: the edit prompt with path, diff preview and choices"
     },
     "02-ask-edit-allowed.txt": {
-      "sha256": "ee639ae876e38dac55894b273005d6c75051d7f8780b3fc8c7d817b17ef48370",
+      "sha256": "3e70e58f2be2d189396231dc4fbe236ffa77a871a01f88ef6a879c2d9bd84507",
       "source": "after Allow once: the edit ran"
     },
     "03-ask-bash-prompt.txt": {
-      "sha256": "fa920ce9b66b1d903507f15c2e7bc18487d6dc5103b46b7a8ad04a0c4e32e27a",
+      "sha256": "1523ed9dd5b06500d728812545baf8ddc048346a3c9aa250e5ce9c39fe40e204",
       "source": "ask mode: bash prompt with the full command and cwd"
     },
     "04-ask-bash-denied.txt": {
-      "sha256": "8f84503ffe8d2e12018becb3e77b22020080ac17e468759873d7a9d8af322fa1",
+      "sha256": "d782168e25425d06dbffae7c766fd30185a6067d62a0cedb85246278e2fb584b",
       "source": "after Deny: the model receives LAB_PERMISSION_DENIED; denied.txt was not created"
     },
     "05-browser-fill-password-prompt.txt": {
-      "sha256": "8e89460cc4df950cec836f996cdd3bc1b6ab06345f3f1faca36174976f663a75",
+      "sha256": "6ab379e2dcf86f19a1d5bcaed3af4edfabbc883f6c68d9f84fc7c88b95ebda9f",
       "source": "browser fill prompt on the local fixture page: origin, element label, masked secret value"
     },
     "06-browser-fill-email-prompt.txt": {
-      "sha256": "737c98c77140c5249146f3bf8f12d5b1403ed2c6811ab12b39f3421298439a98",
+      "sha256": "82497d68e5c32e41185768401780ce95e3619d4da63ce1c2e655e2ba940acfa4",
       "source": "second fill after a fresh snapshot: element label and quoted value"
     },
     "07-browser-rows.txt": {
-      "sha256": "b2cf42bc96734df5189cbc42cf853b75949a2898d57a9faffaaca57804b00bed",
-      "source": "F30 rows: fill/filled with element, masked or quoted value and origin; snapshot not prompted"
+      "sha256": "ecdde2d70db1286ea5223bfd832f93d4358c66806cf257d0997e86e175cce829",
+      "source": "F30 rows labelled from the per-call record: fill/filled with element, masked or quoted value and origin; snapshot not prompted"
     },
     "08-edits-mode-bash-still-asks.txt": {
-      "sha256": "d9ac0911a5e49d42a20b31998d93455522885405c3a0661ff604079fd52ad1d0",
+      "sha256": "8cfb43058169213844ca15532b7e9227e3d1ab59653f06351a47e26ac9be57bb",
       "source": "edits mode: the in-project edit ran without a prompt; bash still asks"
     },
+    "08a-edits-mode-pi-settings-asks.txt": {
+      "sha256": "2909a3a9ec1a79ea5b1b9d70fdcbae172bbaaad338d969a4747dd256320804e0",
+      "source": "edits mode: a write to .pi/settings.json asks and is marked (agent/VCS config — can run code)"
+    },
     "09-edits-mode-result.txt": {
-      "sha256": "c84ebf998f2899a1c1e6a453fd3503f9e76f609b257dcc7eb0affb5752e39886",
+      "sha256": "869a9646dd0ebf02fa595acc556a44ca704f0e942bb0d800d405671e1bb81262",
       "source": "edits mode: Esc on the bash prompt denies"
     },
     "10-read-only-refusal.txt": {
-      "sha256": "664983db5c27e1b8ef1f1d9e5ba50e2a0b8a20bd61f1a4d5676da7c51768b795",
+      "sha256": "5cb434cc879ebbb24a5a8de61f9e5fb89d373686add7bd22808d38832a777b17",
       "source": "read-only mode: write refused with LAB_PERMISSION_REFUSED"
     },
     "11-mode-survives-reload.txt": {
-      "sha256": "9daf1f487507f6faf875a99a68aee91feb3c21fd3490b411310bd760b8dc2f04",
-      "source": "/reload keeps the mode (footer mode: read-only)"
+      "sha256": "52180f4f5ac43c77f067a252d0499ecd7816880b8a883c256efe23c129b54d6b",
+      "source": "/reload keeps the mode (footer '● mode: read-only · /lab-mode')"
+    },
+    "11b-auto-confirm.txt": {
+      "sha256": "36589d27d97ece7399ddb41f2afd4914ebee8a269ad6dab0fbafd7f1d499582d",
+      "source": "/lab-mode auto: one-time confirm naming what auto skips, desktop actions still ask, Cancel first; Esc keeps the mode"
     },
     "12-auto-mode.txt": {
-      "sha256": "3744e6f2b9340c0da425fece075e4189faf73a272fbdabeb310c5edf10812f3a",
+      "sha256": "fb84c52b9fdac0ff1806845dba6c001ceda352a9b0e275ad5bd2a6add40f46fe",
       "source": "launch with --mode auto, 80 columns: edit and bash run without prompts"
     },
     "13-narrow-hostile-bash-prompt.txt": {
@@ -104,11 +118,11 @@
       "source": "40 columns: hostile command (ESC, OSC, BEL, RLO, wide and emoji text) escaped and wrapped"
     },
     "14-narrow-deny-with-note.txt": {
-      "sha256": "c9406df5980d91d9499f84ecb253a0f855cbea56eb2967cbd551f29200f09053",
+      "sha256": "3f0de4ed4d34e7eb497a20378ed2c8aad479272c114a968c7603729101c73bb3",
       "source": "Deny with note: the note reaches the model"
     },
     "result.json": {
-      "sha256": "a335735b1540ad5d1bc5f55eaaad4f26045bd213e0bb45eed4627a0615b2482c",
+      "sha256": "a2a446bbd6d78bce3f89ec39cc0d9c44138bcf3ae0181e5fe4014589808fd3d5",
       "source": "script result: checks, sanitized fixture model log and capture hashes, unmodified"
     }
   }

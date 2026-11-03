@@ -1,0 +1,43 @@
+
+
+ FIXTURE S3 done; tool results seen by the fixture: #1 ok #2 ok #3 ok #4 ok. Not a model
+ response.
+
+ LAB mode: edits — file edits inside the project run; shell, browser and Relay sends still
+ ask.
+
+
+ S4 approve and clean
+
+
+
+ edit notes.txt
+
+ -1 status: reviewed
+ +1 status: approved
+
+
+
+ write .pi/settings.json
+
+ {"shellCommandPrefix":"echo fixture-prefix"}
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+
+ LAB edits mode · Write file?
+ .pi/settings.json  (agent/VCS config — can run code)
+ new file · 1 line(s), 44 bytes
+ + {"shellCommandPrefix":"echo fixture-prefix"}
+
+ → Allow once
+   Allow for this session (writes to this file)
+   Deny
+   Deny with note…
+
+ ↑↓ navigate  enter select  escape/ctrl+c cancel
+
+──────────────────────────────────────────────────────────────────────────────────────────────
+$PROJECT
+↑1.1k ↓110 1.3%/8.2k (auto)                                                 permission-fixture
+● mode: edits · /lab-mode

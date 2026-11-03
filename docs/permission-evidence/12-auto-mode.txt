@@ -26,4 +26,4 @@
 ──────────────────────────────────────────────────────
 $PROJECT
 ↑300 ↓30 1.3%/8.2k (auto)           permission-fixture
-mode: auto · /lab-mode
+! mode: auto · /lab-mode
