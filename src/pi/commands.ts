@@ -31,7 +31,7 @@ export function workspaceHelp(): string {
     "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }
-/** One-line Usage generated from shellOptions (F17); the `lab` shell launcher repeats it verbatim (tested). */
+/** One Usage line generated from shellOptions; the ./lab shell launcher carries the same text (tested). */
 export function shellUsage(): string {
   return "Usage: lab " + shellOptions.map(([option]) => "[" + option + "]").join(" ");
 }

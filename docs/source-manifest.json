@@ -1854,7 +1854,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "60b60213bf5949560f7051217e8a257846e834eff9297b9337ddaf0202e272d0",
+      "sha256": "a2056914a079f94e66f987fbac502913b02513eb066c8c6dc1efb878ad656ec2",
       "status": "added"
     },
     "src/pi/display.ts": {
