@@ -1,8 +1,11 @@
 /**
- * Operator-run live desktop acceptance against a disposable fixture window that
- * this script builds, starts, owns and stops by pid. Never lists, binds or
- * touches any other app or window: list-windows is always filtered to the
- * fixture app and the binding must match the fixture's own pid and nonce title.
+ * Operator-run live desktop acceptance against a disposable fixture app that
+ * this script builds and starts (via `open -n`, so it may take focus), whose pid
+ * it verifies by proc_pidpath, and which it stops by that pid only. Never lists,
+ * binds or touches any other app or window: list-windows is always filtered to
+ * the fixture app and the binding must match the fixture's own pid and nonce
+ * title. The press refusal is proven by moving focus to the fixture's OWN
+ * second window.
  *
  * Preconditions (the operator does these, LAB never does):
  *   - run from Terminal.app, with Accessibility granted to Terminal yourself;
@@ -12,16 +15,16 @@
  *
  * Usage: bun scripts/desktop-live-smoke.ts [--out FILE]
  */
-import { spawn, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { DesktopSession } from "../src/desktop/session.ts";
 import { DesktopApprovals } from "../src/desktop/approval.ts";
 import { OwnedHost } from "../src/desktop/host.ts";
 import { envelope, windows, type Node } from "../src/desktop/projection.ts";
 import { accessibilityAdvice } from "../src/desktop/setup.ts";
-import { responsibleApp } from "../src/desktop/responsible.ts";
+import { executableOf, responsibleApp } from "../src/desktop/responsible.ts";
 import { desktopVersion } from "../src/desktop/runtime.ts";
 
 const APP = "LABDesktopFixture";
@@ -37,7 +40,9 @@ const find = (node: Node, test: (n: Node) => boolean): Node | undefined => test(
 const session = DesktopSession.create();
 const host = session.transport as OwnedHost;
 const fixtureRoot = mkdtempSync("/private/tmp/lab-desktop-fixture-"); chmodSync(fixtureRoot, 0o700);
-let fixture: ReturnType<typeof spawn> | undefined;
+let fixturePid: number | undefined, fixtureExe: string | undefined;
+/** Stop the fixture only if that pid still runs our fixture binary. */
+const stopFixture = () => { if (fixturePid && fixtureExe && executableOf(fixturePid) === fixtureExe) { try { process.kill(fixturePid, "SIGTERM"); } catch {} } fixturePid = undefined; };
 let exitCode = 0;
 try {
   const report = await session.permissions();
@@ -51,9 +56,16 @@ try {
     writeFileSync(join(bundle, "Contents/Info.plist"), `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict><key>CFBundleName</key><string>${APP}</string><key>CFBundleExecutable</key><string>${APP}</string><key>CFBundleIdentifier</key><string>dev.lab-harness.desktop-fixture</string><key>CFBundlePackageType</key><string>APPL</string><key>NSPrincipalClass</key><string>NSApplication</string></dict></plist>\n`);
     const build = spawnSync("/usr/bin/xcrun", ["swiftc", "-O", "-o", join(macos, APP), resolve(import.meta.dir, "desktop-fixture.swift")], { stdio: "inherit", timeout: 180000 });
     if (build.status !== 0) throw new Error("fixture build failed");
-    const nonce = randomUUID().slice(0, 8), title = `LAB fixture ${nonce}`, savedFile = join(fixtureRoot, "saved.txt");
-    fixture = spawn(join(macos, APP), [title, savedFile], { stdio: "ignore" });
-    const pid = fixture.pid!;
+    const nonce = randomUUID().slice(0, 8), title = `LAB fixture ${nonce}`, savedFile = join(fixtureRoot, "saved.txt"), trigger = join(fixtureRoot, "unfocus"), pidFile = join(fixtureRoot, "pid");
+    fixtureExe = realpathSync(join(macos, APP));
+    // Launch through LaunchServices so the fixture may activate itself; it reports its own pid.
+    const launched = spawnSync("/usr/bin/open", ["-n", bundle, "--args", title, savedFile, trigger, pidFile], { stdio: "ignore", timeout: 15000 });
+    if (launched.status !== 0) throw new Error("fixture launch failed");
+    for (let n = 0; n < 100 && !existsSync(pidFile); n++) await new Promise(r => setTimeout(r, 100));
+    const pid = Number(readFileSync(pidFile, "utf8").trim());
+    if (!Number.isInteger(pid) || pid <= 1 || executableOf(pid) !== fixtureExe) throw new Error("fixture pid could not be verified");
+    fixturePid = pid;
+    record("fixture started and its pid runs the fixture binary", true);
     // Find ONLY the fixture's own window (filtered by app, then by our pid and nonce title).
     let window;
     for (let n = 0; n < 100 && !window; n++) {
@@ -89,17 +101,23 @@ try {
     let saved = ""; for (let n = 0; n < 50 && !saved; n++) { saved = existsSync(savedFile) ? readFileSync(savedFile, "utf8") : ""; if (!saved) await new Promise(r => setTimeout(r, 100)); }
     record("fixture independently recorded the saved value", saved === "Native Fixture", saved);
     // press goes to the app's focused window, so LAB sends it only while the bound window holds focus.
-    // The fixture never activates itself; record whichever branch this run exercised.
     try {
       const pressed = await act({ operation: "press", key: "tab" }) as any;
-      record("press tab while the fixture window is focused", pressed.action === "press", pressed.delivery);
-    } catch (e) {
-      const m = e instanceof Error ? e.message : String(e);
-      record("press refused because the fixture window is not focused (nothing sent)", m.startsWith("LAB_DESKTOP_REFUSED: NOT_FOCUSED"), m.slice(0, 120));
+      record("press tab while the bound fixture window is focused", pressed.action === "press", pressed.delivery);
+    } catch (e) { record("press tab while the bound fixture window is focused", false, (e instanceof Error ? e.message : String(e)).slice(0, 160)); }
+    // Move focus to the fixture's OWN second window (no other app is touched), then press must be refused.
+    writeFileSync(trigger, "");
+    let moved = false;
+    for (let n = 0; n < 50 && !moved; n++) {
+      const r = await host.run(["list-windows", `--app=${APP}`]); const e = envelope(r.stdout, "list-windows");
+      moved = e.ok && windows(e.data).some(w => w.pid === pid && w.title === `${title} (other)` && w.focused);
+      if (!moved) await new Promise(r => setTimeout(r, 100));
     }
+    record("focus moved to the fixture's own second window", moved);
+    if (moved) await expectError("press refused once the bound window lost focus (nothing sent)", act({ operation: "press", key: "tab" }), "LAB_DESKTOP_REFUSED: NOT_FOCUSED");
     const hostsWhileBound = host.hostPids();
     record("one owned host running while bound", hostsWhileBound.length === 1, `${hostsWhileBound.length} host(s)`);
-    process.kill(pid, "SIGTERM"); fixture = undefined;
+    stopFixture();
     for (let n = 0; n < 50; n++) { try { process.kill(pid, 0); await new Promise(r => setTimeout(r, 100)); } catch { break; } }
     await expectError("closed fixture window unbinds; nothing done", session.execute({ operation: "snapshot" }, undefined), "LAB_DESKTOP_UNBOUND");
     record("binding removed after window closed", session.binding() === undefined);
@@ -107,7 +125,7 @@ try {
 } catch (e) {
   record("unexpected failure", false, e instanceof Error ? e.message.slice(0, 200) : String(e)); exitCode = 1;
 } finally {
-  if (fixture?.pid) { try { process.kill(fixture.pid, "SIGTERM"); } catch {} }
+  stopFixture();
   const root = session.descriptor.root;
   try { await session.close(); record("owned hosts stopped by pid and root removed", !existsSync(root)); }
   catch (e) { record("cleanup", false, e instanceof Error ? e.message : String(e)); exitCode = 1; }
