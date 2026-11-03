@@ -3,6 +3,7 @@
  * and projection to the small model-facing shape. Anything malformed,
  * oversized or from a different envelope version is refused, never sliced.
  */
+import { isSecure } from "./display.ts";
 export function insist(value: unknown, code = "LAB_DESKTOP_RESPONSE"): asserts value { if (!value) throw new Error(code); }
 const record = (x: unknown): x is Record<string, any> => !!x && typeof x === "object" && !Array.isArray(x);
 const text = (x: unknown, max = 2000) => typeof x === "string" && x.length <= max;
@@ -68,6 +69,8 @@ export function snapshot(data: any, expect: { app: string; windowId: string }) {
       if (v === undefined || v === null) continue; insist(text(v, 4000)); (out as any)[k] = v;
     }
     if (n.states !== undefined) { insist(Array.isArray(n.states) && n.states.length <= 32 && n.states.every((s: unknown) => text(s, 64))); out.states = n.states; }
+    // Secure text fields (AXSecureTextField) are never readable: drop any value the tool reported.
+    if (isSecure(out)) delete out.value;
     if (n.ref_id !== undefined) {
       const m = REF.exec(n.ref_id); insist(m && m[1] === id && !refs.has(n.ref_id));
       out.ref = n.ref_id; refs.set(n.ref_id, { role: out.role, name: out.name, value: out.value, states: out.states });

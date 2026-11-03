@@ -360,3 +360,44 @@ Actual validation: macOS arm64 with existing Chrome. macOS Intel/Linux x64 have
 pinned tool assets but need platform acceptance; Windows/WSL-to-Windows Edge,
 existing profiles and desktop control are outside this slice. See
 [browser evidence and reproduction](browser-workspace-evidence.md).
+
+## Optional desktop control (macOS)
+
+Desktop control lets the agent act inside **one window you pick**, on macOS 13
+or later. Ordinary `lab` has no desktop dependency and no desktop tool.
+
+1. Run `lab --setup-desktop` once from Terminal or iTerm2. It acquires the
+   checksum-pinned agent-desktop 1.0.2 (`--offline` needs a verified cache) and
+   then reports, without prompting, whether Accessibility is on. It names
+   **who** macOS would grant it to: the app that started LAB. That grant covers
+   every program started from that app, not only LAB.
+2. If Accessibility is off, turn it on yourself in System Settings › Privacy &
+   Security › Accessibility (named Device Control and Data Access on macOS 27
+   and later). LAB never changes this setting and never shows the macOS prompt.
+   If setup names a command-line runtime such as `bun`, `node` or `sh` instead
+   of an app, do **not** grant it: start LAB from Terminal or iTerm2 instead.
+   Revoke the grant there when you are done.
+3. Start `lab --desktop`. In Pi, `/lab-desktop attach` lists windows; pick one.
+   The status line shows `● desk App · title`. `/lab-desktop status` shows the
+   binding, and `/lab-desktop release` (or closing that window) unbinds it.
+
+The model receives `lab_desktop`: `snapshot`, `read`, `click`, `type`, `scroll`
+and `press` (named keys only), all limited to the attached window. It cannot
+list windows, attach, launch apps, run commands, read files or press global
+shortcuts. **Every click, type, scroll and press asks you: Allow once or Deny.**
+This holds in every permission mode, including auto; read-only refuses them.
+There is no "always" for desktop actions. If no prompt can be shown, the action
+is denied.
+
+Window text is untrusted data. Password (secure) fields are never read or typed
+into, and secret-looking values are masked in rows and prompts. If an action's
+delivery is unknown, LAB does not retry it: look at the window and tell the
+agent what happened. A timeout, malformed reply or window mismatch stops desktop
+control for the rest of the run, including after `/reload`; `/lab-desktop
+release` retries cleanup. Each run has its own private agent-desktop host,
+stopped by process id when Pi exits.
+
+Validation: macOS arm64. The Intel artifact is pinned but not executed here.
+Windows, Linux and WSL are out of scope. See the
+[desktop contract](desktop-workspace-contract.md) and
+[evidence](desktop-evidence/README.md).

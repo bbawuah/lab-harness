@@ -9,6 +9,8 @@ export const shellOptions = [
   ["--setup-browser", "Explicitly acquire the optional pinned browser control tool; --offline requires cache."],
   ["--browser URL", "Start an owned ephemeral browser bound to this HTTP(S) origin."],
   ["--browser-executable PATH", "Use an existing approved same-OS browser executable."],
+  ["--setup-desktop", "macOS: acquire the optional pinned desktop control tool and show who needs Accessibility; never changes it."],
+  ["--desktop", "macOS: allow desktop control this run; attach one window in Pi with /lab-desktop attach."],
   ["--help", "Show this help without starting Pi or a model request."],
 ] as const;
 export const workspaceCommands = [
@@ -24,6 +26,7 @@ export function workspaceHelp(): string {
     ...relayTools.map(tool => "/relay-" + tool.action + " " + tool.usage + " — " + tool.description),
     "/lab-appearance — Preview light/dark/terminal mode, colors and spacing; Apply/Cancel/Reset.",
     "/lab-browser status|close — Inspect or close this run’s owned browser; start with --browser URL.",
+    "/lab-desktop status|attach|release — Pick the one window the agent may act in (start with --desktop); each action asks.",
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",
