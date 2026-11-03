@@ -1000,19 +1000,19 @@
       "status": "added"
     },
     "docs/permission-evidence/01-ask-edit-prompt.txt": {
-      "sha256": "b12b5ba6d02c0d760fe8c15c39eb91333abc71734a702039332f10a6f781722a",
+      "sha256": "89f91e523eb92958b6a92b7b3586c29af9d256ff229df8a1391797dd3440e8be",
       "status": "added"
     },
     "docs/permission-evidence/02-ask-edit-allowed.txt": {
-      "sha256": "3e70e58f2be2d189396231dc4fbe236ffa77a871a01f88ef6a879c2d9bd84507",
+      "sha256": "7d632a541249623a3edc88ddbeb027af801916bfcd066da6dc45fbcc47c8fda6",
       "status": "added"
     },
     "docs/permission-evidence/03-ask-bash-prompt.txt": {
-      "sha256": "1523ed9dd5b06500d728812545baf8ddc048346a3c9aa250e5ce9c39fe40e204",
+      "sha256": "6d154122c2957b968730271380330ec6961b500cf90f56ae6a0729f53b31dd50",
       "status": "added"
     },
     "docs/permission-evidence/04-ask-bash-denied.txt": {
-      "sha256": "d782168e25425d06dbffae7c766fd30185a6067d62a0cedb85246278e2fb584b",
+      "sha256": "34830552e9e981b1508cadd2eafd65044431b463a9304c018df1b62981234c0b",
       "status": "added"
     },
     "docs/permission-evidence/05-browser-fill-password-prompt.txt": {
@@ -1060,15 +1060,15 @@
       "status": "added"
     },
     "docs/permission-evidence/14-narrow-deny-with-note.txt": {
-      "sha256": "3f0de4ed4d34e7eb497a20378ed2c8aad479272c114a968c7603729101c73bb3",
+      "sha256": "2bb393fc6a2a6ee764f86feb964ff786885e5fc758b389d6442d28add15db742",
       "status": "added"
     },
     "docs/permission-evidence/provenance.json": {
-      "sha256": "31d73eb829adff7c8bd8688fcd288171b2475d3f5ffc56c29319644952ea6f76",
+      "sha256": "6cc136e67b559ae328bc9e93e37e72193391c0c50baa3a0dcf8a0fd731fb4722",
       "status": "added"
     },
     "docs/permission-evidence/result.json": {
-      "sha256": "a2a446bbd6d78bce3f89ec39cc0d9c44138bcf3ae0181e5fe4014589808fd3d5",
+      "sha256": "3785dff206d1efcedbfef58f78f5d883dac6dc681bf626fc81cc89f1692f5192",
       "status": "added"
     },
     "docs/permission-modes-contract.md": {

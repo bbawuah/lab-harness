@@ -19,8 +19,8 @@
   workspace-extension.ts
 
 
- Relay ready: PROJECT/01a1a20b-f5a8-72f4-9fa3--737a5068fcc6
- (pi-026b9b5e8a0296be4493a95351d420018a094ef1e051500d54fc2ce215984de3). Use /relay-peers.
+ Relay ready: PROJECT/01a1a212-be7f-70e1-ac47--ec2c92bc1260
+ (pi-9230d0addc7e908ccd9ebb27be1d8ee910790ac7620e45c01a7fe367c953909a). Use /relay-peers.
 
 
  S1 edit the notes file

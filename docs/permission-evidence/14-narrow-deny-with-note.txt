@@ -23,7 +23,7 @@
  it without asking the user. User note:
  use the test script instead
 
- Took 1.6s
+ Took 1.9s
 
 
  FIXTURE S7 done; tool results seen by
