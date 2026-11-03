@@ -6,6 +6,7 @@
 import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, statSync, writeSync } from "node:fs";
 import { dirname } from "node:path";
 import { wrapColumns } from "./display.ts";
+import { indicatorSlots, setIndicator, type IndicatorState } from "./status-indicator.ts";
 import { approvalChoices, approvalTitle, autoChoices, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
 
 export type PermissionUI = {
@@ -27,6 +28,8 @@ export type PermissionOptions = {
   columns?: () => number;
 };
 
+/** Footer chip for the mode: "● mode: ask · /lab-mode"; auto uses the attention glyph. */
+export const modeIndicator = (mode: PermissionMode): IndicatorState => ({ glyph: mode === "auto" ? "!" : "●", label: `mode: ${mode}`, detail: "· /lab-mode" });
 /** Reads the private LAB mode file. Anything unexpected falls back to ask. */
 export function readModeFile(path: string | undefined): PermissionMode {
   if (!path) return "ask";
@@ -82,7 +85,9 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
     for (const tool of frozen.tools) families.set(tool, frozen);
   };
   let queue: Promise<unknown> = Promise.resolve();
-  const status = (ctx: PermissionContext) => { try { ctx.ui.setStatus?.("lab-mode", `mode: ${mode} · /lab-mode`); } catch {} };
+  // Shared footer chip (status-indicator.ts). Key lab-mode sorts first, so Pi's
+  // right-side footer truncation never cuts the mode (longest text: 29 columns).
+  const status = (ctx: PermissionContext) => { try { setIndicator(ctx.ui, indicatorSlots.mode, modeIndicator(mode)); } catch {} };
   const setMode = (next: PermissionMode, ctx: PermissionContext) => {
     if (options.statePath) { writeModeFile(options.statePath, next); memory.set(options.statePath, next); }
     mode = next; grants.clear(); status(ctx);

@@ -86,7 +86,11 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 - `lab --mode ask|edits|read-only|auto` sets the mode for the launch. Without it, the mode is `ask`.
 - `/lab-mode` shows the current mode and a selector. `/lab-mode <mode>` sets it directly. `/lab-mode next` cycles
   `ask → edits → read-only → ask` (it never enters `auto`).
-- The footer always shows `mode: <m> · /lab-mode`, including in `auto`. `/lab-help` and `lab --help` list modes.
+- The footer always shows `● mode: <m> · /lab-mode` (`! mode: auto · /lab-mode` in auto). It uses the shared
+  footer chip (`src/pi/status-indicator.ts`, slot `lab-mode`, shared with browser UX and desktop). Pi 1.4.0 sorts
+  footer statuses by key and cuts the line from the right (`footer.ts:288–297`). `lab-mode` sorts before
+  `lab-web` and `lab-x-desktop`, and the longest mode chip is 29 columns, so the mode is never truncated away at
+  40 columns. `/lab-help` and `lab --help` list modes.
 - Entering `auto` from `/lab-mode auto` or the selector asks one confirm, "LAB: switch from <m> to auto?". It names
   what auto skips: "auto shows no approval prompt for edits, shell commands, browser actions or Relay sends", plus
   registered families with what they do in auto (e.g. "Desktop actions still ask"), and "not a sandbox". The

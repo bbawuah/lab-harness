@@ -3,9 +3,10 @@ import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, s
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { approvalChoices, approvalTitle, autoStartWarning, autoSummary, classify, decide, describeApproval, isSecretField, looksSecretValue, modeCycle, permissionModes, resolveTargetPath, valuePreview, type PermissionMode } from "../src/pi/permission.ts";
-import { installPermissionExtension, permissionOptionsFromEnvironment, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
+import { installPermissionExtension, modeIndicator, permissionOptionsFromEnvironment, readModeFile, writeModeFile, type PermissionContext, type ToolCallEvent } from "../src/pi/permission-extension.ts";
 import { browserCallText, browserResultText, recordBrowserCall, renderBrowserSuccess } from "../src/pi/browser-extension.ts";
 import { columns } from "../src/pi/display.ts";
+import { indicatorSlots, indicatorText } from "../src/pi/status-indicator.ts";
 import extension from "../src/pi/workspace-extension.ts";
 
 const width = (row: string) => Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(row)).reduce((n, s) => n + columns(s.segment), 0);
@@ -262,13 +263,13 @@ test("/lab-mode changes mode, persists privately, clears grants, shows the foote
   const h = harness({ answers: ["session"] });
   try {
     await h.handlers.get("session_start")!({ reason: "startup" }, h.ctx);
-    expect(h.statuses.at(-1)).toBe("mode: ask · /lab-mode");
+    expect(h.statuses.at(-1)).toBe("● mode: ask · /lab-mode");
     expect(await h.call("bash", { command: "ls" })).toBeUndefined(); expect(h.gate.grants.size).toBe(1);
     await h.commands.get("lab-mode").handler("edits", h.ctx);
     expect(h.gate.mode).toBe("edits"); expect(h.gate.grants.size).toBe(0);
     expect(JSON.parse(readFileSync(h.statePath, "utf8"))).toEqual({ mode: "edits" });
     expect(statSync(h.statePath).mode & 0o777).toBe(0o600);
-    expect(h.statuses.at(-1)).toBe("mode: edits · /lab-mode");
+    expect(h.statuses.at(-1)).toBe("● mode: edits · /lab-mode");
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("read-only");
     await h.commands.get("lab-mode").handler("next", h.ctx); expect(h.gate.mode).toBe("ask");
     await h.commands.get("lab-mode").handler("yolo", h.ctx); expect(h.gate.mode).toBe("ask"); expect(h.notices.at(-1)).toContain("Unknown mode");
@@ -383,7 +384,7 @@ test("switching to auto needs one confirm that names what auto skips; the start 
     expect(h.notices.at(-1)).toBe("LAB mode not changed: still ask.");
     expect(JSON.parse(readFileSync(h.statePath, "utf8"))).toEqual({ mode: "ask" });
     await h.commands.get("lab-mode").handler("auto", h.ctx); expect(h.gate.mode).toBe("auto");
-    expect(h.statuses.at(-1)).toBe("mode: auto · /lab-mode"); // footer stays visible in auto
+    expect(h.statuses.at(-1)).toBe("! mode: auto · /lab-mode"); // footer stays visible in auto, with the attention glyph
     expect(h.prompts).toHaveLength(4);
     const title = h.prompts[0]!.title;
     expect(h.prompts[0]!.options).toEqual(["Cancel", "Switch to auto"]); // safe default first
@@ -469,4 +470,20 @@ test("review r1 P2/P3: environment wiring excludes the run dir, state and instal
       await h.call("write", { path: "link.txt", content: "x" }); expect(h.prompts[0]!.title).toContain("overwrites 5 bytes");
     } finally { h.done(); }
   } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test("mode footer uses the shared indicator and is never truncated away at 40 columns", () => {
+  // Pinned Pi footer (footer.ts:288–297): statuses sorted by key, joined by " ", cut from the right with "...".
+  const piFooter = (statuses: Record<string, string>, width: number) => {
+    const line = Object.entries(statuses).sort(([a], [b]) => a.localeCompare(b)).map(([, t]) => t).join(" ");
+    if (columns(line) <= width) return line;
+    let out = "", used = 0; for (const ch of Array.from(line)) { const n = columns(ch); if (used + n > width - 3) break; out += ch; used += n; } return out + "...";
+  };
+  const long = { [indicatorSlots.web]: indicatorText({ glyph: "●", label: "web", detail: "http://a-very-long-origin-name.example.test:4321" }), [indicatorSlots.desktop]: indicatorText({ glyph: "!", label: "desktop", detail: "Notes — Untitled" }) };
+  for (const mode of permissionModes) {
+    const text = indicatorText(modeIndicator(mode));
+    expect(text).toBe(`${mode === "auto" ? "!" : "●"} mode: ${mode} · /lab-mode`);
+    expect(columns(text)).toBeLessThanOrEqual(37);
+    for (const width of [40, 80, 120]) expect(piFooter({ ...long, [indicatorSlots.mode]: text }, width).startsWith(text)).toBe(true);
+  }
 });

@@ -219,7 +219,7 @@ hanging. Reads, searches, browser snapshots and inbox reads never ask.
 Start with `lab --mode edits` (or another mode), or change it inside Pi with
 `/lab-mode` (shows a picker), `/lab-mode read-only`, or `/lab-mode next` to
 cycle ask → edits → read-only. `next` never enters auto. The footer always shows
-`mode: … · /lab-mode`, including in auto. There is no keyboard shortcut: Shift+Tab
+`● mode: … · /lab-mode` (with `!` in auto), and it stays visible at 40 columns. There is no keyboard shortcut: Shift+Tab
 is Pi's thinking level, and other keys don't reach Pi reliably in default terminals.
 
 Switching to auto inside Pi asks once to confirm. The prompt names what auto skips:

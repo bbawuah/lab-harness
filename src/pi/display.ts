@@ -16,3 +16,8 @@ export function wrapColumns(text:string,width:number):string[]{const w=Math.max(
     if(safe!==segment){const parts=Array.from(safe),n=parts.reduce((t,c)=>t+columns(c),0);if(n<=w)put(safe,n);else for(const c of parts){const m=columns(c);m>w?put('?',1):put(c,m);}} // escape stays on one row when it fits
     else{const n=columns(segment);n>w?put('?',1):put(segment,n);}}
   rows.push(row);return rows;});}
+/** One escaped row of at most width columns; overflow ends in '…'. Newlines become spaces. */
+export function fitColumns(text:string,width:number):string{const w=Math.max(1,Math.floor(width)||1);const rows=wrapColumns(text.replace(/[\r\n]+/g,' '),w);
+  if(rows.length<=1)return rows[0]??'';let row='',used=0;for(const {segment} of segmenter.segment(rows[0]!)){const n=columns(segment);if(used+n>w-1)break;row+=segment;used+=n;}return row+'…';}
+/** Minimal Pi component over pre-escaped wrapping. */
+export const textComponent=(text:string)=>({render:(width:number)=>wrapColumns(text,width),invalidate(){}});
