@@ -22,19 +22,31 @@ export function looksSecretValue(value: string): boolean {
 export function maskedValue(value: string, element?: Element, max = 48): string {
   const chars = Array.from(value);
   if (isSecretElement(element) || looksSecretValue(value)) return `•••• (masked, ${chars.length} chars)`;
-  return '"' + (chars.length > max ? chars.slice(0, max).join("") + `…" (${chars.length} chars)` : value + '"');
+  return '"' + oneLine(value, max) + '"' + (chars.length > max ? ` (${chars.length} chars)` : "");
+}
+
+/**
+ * One display line from untrusted text: line breaks become a visible ⏎ (so a
+ * window title or AX label cannot forge extra prompt lines, and typed newlines
+ * are visible as Return), capped at `max` graphemes. Escaping of other
+ * controls happens in the renderer.
+ */
+export function oneLine(text: unknown, max = 60): string {
+  const value = typeof text === "string" ? text.replace(/\r\n|[\r\n\u2028\u2029\u0085\u000b\u000c]/g, "⏎") : String(text);
+  const parts = Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(value), s => s.segment);
+  return parts.length > max ? parts.slice(0, max).join("") + "…" : value;
 }
 
 export type RowFacts = { app?: string; title?: string; element?: Element };
 /** Call row: `Desktop · type textfield "Name" = "Ada" in TextEdit · Untitled`. */
 export function callRow(args: any, facts: RowFacts = {}): string {
-  const op = typeof args?.operation === "string" ? args.operation.slice(0, 16) : "action";
-  const where = facts.app ? ` in ${facts.app}${facts.title ? " · " + Array.from(facts.title).slice(0, 60).join("") : ""}` : "";
-  const element = facts.element ? `${facts.element.role.slice(0, 32)} "${Array.from(facts.element.name ?? "").slice(0, 60).join("")}"` : typeof args?.ref === "string" ? args.ref.slice(0, 32) : "";
+  const op = typeof args?.operation === "string" ? oneLine(args.operation, 16) : "action";
+  const where = facts.app ? ` in ${oneLine(facts.app, 40)}${facts.title ? " · " + oneLine(facts.title) : ""}` : "";
+  const element = facts.element ? `${oneLine(facts.element.role, 32)} "${oneLine(facts.element.name ?? "")}"` : typeof args?.ref === "string" ? oneLine(args.ref, 32) : "";
   if (op === "snapshot") return `Desktop · snapshot${where}`;
-  if (op === "press") return `Desktop · press ${typeof args?.key === "string" ? args.key.slice(0, 16) : "?"}${where}`;
+  if (op === "press") return `Desktop · press ${typeof args?.key === "string" ? oneLine(args.key, 16) : "?"}${where}`;
   if (op === "type") return `Desktop · type ${element} = ${maskedValue(typeof args?.text === "string" ? args.text : "", facts.element)}${where}`;
-  if (op === "scroll") return `Desktop · scroll ${element} ${String(args?.direction).slice(0, 8)} ×${Number(args?.amount) || "?"}${where}`;
+  if (op === "scroll") return `Desktop · scroll ${element} ${oneLine(String(args?.direction), 8)} ×${Number(args?.amount) || "?"}${where}`;
   if (op === "read") return `Desktop · read ${element} ${args?.property === "value" ? "value" : "text"}${where}`;
   return `Desktop · ${op} ${element}${where}`;
 }

@@ -7,7 +7,7 @@
  * the tool call id and the bound window; DesktopSession refuses an action
  * without an unused genuine token, so a missing or bypassed gate fails closed.
  */
-import { maskedValue } from "./display.ts";
+import { maskedValue, oneLine } from "./display.ts";
 import type { Element } from "./projection.ts";
 
 export type DesktopOperation = "snapshot" | "read" | "click" | "type" | "scroll" | "press";
@@ -56,19 +56,19 @@ export type DesktopApprovalText = { heading: string; lines: string[] };
 export const desktopChoices = ["Allow once", "Deny"] as const;
 
 export function elementText(element: Element | undefined, ref: unknown): string {
-  if (!element) return typeof ref === "string" ? ref.slice(0, 32) : "(unknown element)";
-  const label = element.name ?? "";
-  return `${element.role.slice(0, 32)} "${Array.from(label).slice(0, 80).join("")}"`;
+  if (!element) return typeof ref === "string" ? oneLine(ref, 32) : "(unknown element)";
+  return `${oneLine(element.role, 32)} "${oneLine(element.name ?? "", 80)}"`;
 }
 
 export function describeDesktopApproval(input: DesktopInput, facts: DesktopFacts): DesktopApprovalText {
   const op = input.operation;
-  const lines = [`in ${facts.app} · ${facts.title || "(untitled window)"}`];
+  // Every line is built from single-line fields, so untrusted text cannot add or hide lines.
+  const lines = [`in ${oneLine(facts.app, 40)} · ${oneLine(facts.title || "(untitled window)")}`];
   if (facts.uncertain) lines.push("! The previous desktop action's delivery is unknown. Look at the window before allowing another.");
-  if (op === "press") lines.push(`press ${String(input.key)} (sent only to this app's window)`);
+  if (op === "press") lines.push(`press ${oneLine(String(input.key), 16)} → goes to ${oneLine(facts.app, 40)}'s focused window; LAB sends it only while the attached window is focused`);
   else lines.push(`${op} ${elementText(facts.element, input.ref)}`);
   if (op === "type") lines.push("value: " + maskedValue(typeof input.text === "string" ? input.text : "", facts.element));
-  if (op === "scroll") lines.push(`direction: ${String(input.direction)} · amount: ${String(input.amount)}`);
+  if (op === "scroll") lines.push(`direction: ${oneLine(String(input.direction), 8)} · amount: ${oneLine(String(input.amount), 4)}`);
   lines.push("No \"always\" for desktop: each action asks.");
   return { heading: `Desktop: ${op}?`, lines };
 }

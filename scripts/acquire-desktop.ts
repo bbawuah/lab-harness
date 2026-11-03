@@ -44,6 +44,7 @@ if (import.meta.main) {
   if (args.some(a => a !== "--offline")) throw new Error("Usage: acquire-desktop.ts [--offline]");
   const { cached } = await acquireDesktop(args.includes("--offline") || process.env.LAB_INSTALL_OFFLINE === "1");
   // Non-prompting status only: no --request/--guide, no app or window access.
-  const { lines } = await runDesktopSetup(cached);
+  const { lines, signalled } = await runDesktopSetup(cached);
   console.log(lines.join("\n"));
+  if (signalled) process.exit(128 + signalled);
 }

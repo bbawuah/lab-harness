@@ -384,7 +384,9 @@ or later. Ordinary `lab` has no desktop dependency and no desktop tool.
 The model receives `lab_desktop`: `snapshot`, `read`, `click`, `type`, `scroll`
 and `press` (named keys only), all limited to the attached window. It cannot
 list windows, attach, launch apps, run commands, read files or press global
-shortcuts. **Every click, type, scroll and press asks you: Allow once or Deny.**
+shortcuts. `press` works only while the attached window is focused, because macOS
+sends keys to an app's focused window; `type` takes up to 400 characters.
+**Every click, type, scroll and press asks you: Allow once or Deny.**
 This holds in every permission mode, including auto; read-only refuses them.
 There is no "always" for desktop actions. If no prompt can be shown, the action
 is denied.

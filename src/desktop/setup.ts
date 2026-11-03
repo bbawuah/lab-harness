@@ -5,6 +5,7 @@
  * lists or touches any app or window.
  */
 import { createHostRoot, OwnedHost, type Transport } from "./host.ts";
+import { guardBrowserLifecycle } from "../browser/lifecycle.ts";
 import { envelope, permissions, type PermissionState } from "./projection.ts";
 import { grantSubject, responsibleApp, type ResponsibleApp } from "./responsible.ts";
 import { desktopVersion, verifyDesktopRuntime } from "./runtime.ts";
@@ -50,17 +51,27 @@ export function setupReport(report: PermissionReport, app: ResponsibleApp | unde
   return { lines, ready };
 }
 
-/** One owned root for the check; the host it starts is stopped and the root removed before returning. */
-export async function runDesktopSetup(cached: boolean, root = createHostRoot()): Promise<{ lines: string[]; ready: boolean; report: PermissionReport; app?: ResponsibleApp }> {
-  const { binary, helper } = verifyDesktopRuntime();
-  const host = new OwnedHost({ root, binary, helper });
-  let result: Awaited<ReturnType<typeof runDesktopSetup>> | undefined, failure: unknown;
+export type SetupResult = { lines: string[]; ready: boolean; report?: PermissionReport; app?: ResponsibleApp; signalled?: number };
+/**
+ * One owned root for the check; the host it starts is stopped and the root
+ * removed before returning. The #23 signal guard covers the whole run: a
+ * signal cancels the check, and cleanup still finishes before exit.
+ */
+export async function runDesktopSetup(cached: boolean, root?: string, transport?: Transport): Promise<SetupResult> {
+  const runtime = transport ? undefined : verifyDesktopRuntime();
+  const guard = guardBrowserLifecycle();
+  let result: SetupResult | undefined, failure: unknown;
   try {
-    const report = await checkPermissions(host);
-    const app = responsibleApp();
-    result = { ...setupReport(report, app, cached), report, app };
-  } catch (error) { failure = error; }
-  await host.stopHosts(); host.remove();
+    const host = transport ?? new OwnedHost({ root: root ?? createHostRoot(), binary: runtime!.binary, helper: runtime!.helper });
+    try {
+      const report = await checkPermissions(host, guard.signal);
+      const app = responsibleApp();
+      result = { ...setupReport(report, app, cached), report, app };
+    } catch (error) { failure = error; }
+    guard.state.phase = "cleanup";
+    await host.stopHosts(); host.remove();
+  } finally { guard.release(); }
+  if (guard.state.signalled) return { lines: ["Desktop setup cancelled; owned state cleaned up."], ready: false, signalled: guard.state.signalled };
   if (failure) throw failure;
   return result!;
 }

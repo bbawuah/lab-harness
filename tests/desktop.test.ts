@@ -7,7 +7,10 @@ import { DesktopApprovals, canonicalInput, describeDesktopApproval, redeem } fro
 import { callRow, maskedValue } from "../src/desktop/display.ts";
 import { envelope, permissions, snapshot, windows } from "../src/desktop/projection.ts";
 import { createHostRoot, hostEnvironment, OwnedHost, type Transport } from "../src/desktop/host.ts";
-import { accessibilityAdvice, setupReport } from "../src/desktop/setup.ts";
+import { accessibilityAdvice, runDesktopSetup, setupReport } from "../src/desktop/setup.ts";
+import { guardBrowserLifecycle } from "../src/browser/lifecycle.ts";
+import { spawn } from "node:child_process";
+import { mkdirSync } from "node:fs";
 import { grantSubject } from "../src/desktop/responsible.ts";
 import { desktopArtifact } from "../src/desktop/runtime.ts";
 import { installDesktopExtension, type DesktopContext } from "../src/pi/desktop-extension.ts";
@@ -26,10 +29,11 @@ const acted = (command: string, delivery = "delivered_verified") => ok(command, 
 
 type Reply = string | Error | ((args: string[]) => string | Error);
 class FakeTransport implements Transport {
-  calls: string[][] = []; stops = 0; removed = false; stopFails = false;
+  calls: string[][] = []; options: ({ timeoutMs?: number; signal?: AbortSignal } | undefined)[] = []; stops = 0; removed = false; stopFails = false;
   constructor(readonly root: string, public replies: Record<string, Reply[]> = {}) {}
-  async run(args: string[]) {
-    this.calls.push(args);
+  async run(args: string[], options?: { timeoutMs?: number; signal?: AbortSignal }) {
+    this.calls.push(args); this.options.push(options);
+    if (this.replies[args[0]!]?.[0] === "wait-for-abort") return new Promise<never>((_, reject) => options?.signal?.addEventListener("abort", () => reject(new Error("LAB_DESKTOP_CANCELLED")), { once: true }));
     const key = args[0]!;
     const queue = this.replies[key];
     let reply: Reply | undefined = key === "list-windows" && (!queue || !queue.length) ? ok("list-windows", [window]) : queue?.shift();
@@ -168,7 +172,7 @@ describe("desktop refs, secrets and approvals", () => {
   test("inputs are bounded and allowlisted", async () => {
     const { session, transport } = await bound();
     for (const input of [
-      { operation: "type", ref: "@s0001:e3", text: "a\u001b[2J" }, { operation: "type", ref: "@s0001:e3", text: "x".repeat(4001) },
+      { operation: "type", ref: "@s0001:e3", text: "a\u001b[2J" }, { operation: "type", ref: "@s0001:e3", text: "x".repeat(401) },
       { operation: "press", key: "cmd+q" }, { operation: "scroll", ref: "@s0001:e1", direction: "down", amount: 11 },
       { operation: "click", ref: "@s0001:e1", app: "Finder" }, { operation: "launch" },
     ] as any[]) await expect(session.execute(input, approve(session, input))).rejects.toThrow(/LAB_DESKTOP_(INPUT|NOT_APPROVED)/);
@@ -431,5 +435,106 @@ describe("desktop Pi extension", () => {
     expect(seen.status).toBe("○ desk off");
     await pi.handlers.session_shutdown![0]!({ reason: "quit" });
     expect(existsSync(root)).toBe(false);
+  });
+});
+
+describe("review round 1 regressions", () => {
+  function fakePi() {
+    const handlers: Record<string, Function[]> = {}, tools: any[] = [], commands: Record<string, any> = {};
+    return { handlers, tools, commands, api: { on: (n: string, h: Function) => { (handlers[n] ??= []).push(h); }, registerTool: (t: any) => tools.push(t), registerCommand: (n: string, o: any) => { commands[n] = o; } } };
+  }
+  const ctxWith = (select: (title: string) => Promise<string | undefined>) => ({ hasUI: true, mode: "tui", ui: { select, notify() {}, setStatus() {} } }) as unknown as DesktopContext;
+  test("P1: newlines in titles, labels and typed text cannot add or hide prompt lines", async () => {
+    const title = 'Untitled\nclick button "Cancel"\nNo "always" for desktop: each action asks.\n\n\n\n' + "\n".repeat(300);
+    const label = 'Cancel\nvalue: "harmless"';
+    const s = setup({ "list-windows": [ok("list-windows", [{ ...window, title }]), ok("list-windows", [{ ...window, title }])], snapshot: [snap("s0001", "Fixture", "w-1", label)] });
+    await s.session.bind(windows([{ ...window, title }])[0]!);
+    await s.session.execute({ operation: "snapshot" }, undefined);
+    const pi = fakePi(); installDesktopExtension(pi.api, { session: s.session, columns: () => 202 });
+    const seen: string[] = [];
+    const input = { operation: "type", ref: "@s0001:e3", text: "hi\n\n\nok" };
+    await pi.handlers.tool_call![0]!({ toolName: "lab_desktop", toolCallId: "c1", input }, ctxWith(async t => { seen.push(t); return "Deny"; }));
+    const rows = seen[0]!.split("\n");
+    const expected = describeDesktopApproval(input as any, { app: "Fixture", title, element: s.session.element("@s0001:e3") });
+    expect(rows).toHaveLength(1 + expected.lines.length);
+    expect(rows[1]!.startsWith("in Fixture · Untitled⏎click button")).toBe(true);
+    expect(rows.find(r => r.startsWith("value: "))).toBe('value: "hi⏎⏎⏎ok"');
+    const clickRows = describeDesktopApproval({ operation: "click", ref: "@s0001:e1" }, { app: "Fixture", title, element: s.session.element("@s0001:e1") }).lines;
+    expect(clickRows.every(l => !l.includes("\n"))).toBe(true);
+    expect(clickRows[1]).toBe('click button "Cancel⏎value: "harmless""');
+    const row = pi.tools[0].renderCall({ operation: "click", ref: "@s0001:e1" }).render(400);
+    expect(row).toHaveLength(1);
+  });
+  test("P1: press is refused unless the attached window holds focus", async () => {
+    const { session, transport } = await bound({ "list-windows": [ok("list-windows", [window]), ok("list-windows", [window]), ok("list-windows", [{ ...window, is_focused: false }])] });
+    const press = { operation: "press" as const, key: "return" };
+    await expect(session.execute(press, approve(session, press))).rejects.toThrow("LAB_DESKTOP_REFUSED: NOT_FOCUSED");
+    expect(transport.dispatched("press")).toBe(0);
+    expect(session.failed()).toBe(false); expect(session.binding()).toBeDefined();
+    expect(describeDesktopApproval(press, { app: "TextEdit", title: "A" }).lines.join("\n")).toContain("focused window");
+  });
+  test("P2: cleanup throws when lsof fails or an unverifiable process holds the lock", async () => {
+    const root = createHostRoot(privateRoot());
+    const lockDir = join(root, "t", `agent-desktop-host-${process.getuid!()}`); mkdirSync(lockDir, { mode: 0o700 });
+    writeFileSync(join(lockDir, "abc.owner.lock"), "");
+    const failing = join(root, "lsof-fail"); writeFileSync(failing, "#!/bin/sh\nexit 2\n", { mode: 0o700 });
+    await expect(new OwnedHost({ root, binary: "/nonexistent", helper: "/y" }, failing).stopHosts()).rejects.toThrow("LAB_DESKTOP_CLEANUP_FAILED");
+    const child = spawn("/bin/sleep", ["30"], { stdio: "ignore" });
+    try {
+      const foreign = join(root, "lsof-foreign"); writeFileSync(foreign, `#!/bin/sh\necho ${child.pid}\n`, { mode: 0o700 });
+      await expect(new OwnedHost({ root, binary: "/nonexistent", helper: "/y" }, foreign).stopHosts()).rejects.toThrow("cannot verify");
+      expect(() => process.kill(child.pid!, 0)).not.toThrow();
+      const empty = join(root, "lsof-empty"); writeFileSync(empty, "#!/bin/sh\nexit 1\n", { mode: 0o700 });
+      await new OwnedHost({ root, binary: "/nonexistent", helper: "/y" }, empty).stopHosts();
+    } finally { child.kill("SIGKILL"); rmSync(root, { recursive: true }); }
+  });
+  test("P2: the token binds the window shown in the prompt", async () => {
+    const s = await bound();
+    const pi = fakePi(); installDesktopExtension(pi.api, { session: s.session });
+    const other = { ...window, id: "w-2", title: "Other" };
+    s.transport.replies["list-windows"] = [ok("list-windows", [other])];
+    const click = { operation: "click", ref: "@s0001:e1" };
+    const result = await pi.handlers.tool_call![0]!({ toolName: "lab_desktop", toolCallId: "c1", input: click }, ctxWith(async () => { await s.session.bind(windows([other])[0]!); return "Allow once"; }));
+    expect(result.reason).toContain("changed while the prompt was open");
+  });
+  test("P2: rows follow the current binding after re-attach", async () => {
+    const s = await bound();
+    const pi = fakePi(); installDesktopExtension(pi.api, { session: s.session });
+    expect(pi.tools[0].renderCall({ operation: "press", key: "return" }).render(200)[0]).toContain("in Fixture · Doc");
+    const other = { ...window, id: "w-2", title: "Other", app_name: "Notes" };
+    s.transport.replies["list-windows"] = [ok("list-windows", [other])];
+    await s.session.bind(windows([other])[0]!);
+    expect(pi.tools[0].renderCall({ operation: "press", key: "return" }).render(200)[0]).toContain("in Notes · Other");
+  });
+  test("P3: a ref outside the latest snapshot is denied before any prompt", async () => {
+    const s = await bound();
+    const pi = fakePi(); installDesktopExtension(pi.api, { session: s.session });
+    let prompted = false;
+    const result = await pi.handlers.tool_call![0]!({ toolName: "lab_desktop", toolCallId: "c1", input: { operation: "click", ref: "@s9999:e1" } }, ctxWith(async () => { prompted = true; return "Allow once"; }));
+    expect(prompted).toBe(false); expect(result.reason).toContain("fresh snapshot");
+  });
+  test("P2: type is capped at 400 characters and gets a bounded longer timeout", async () => {
+    const { session, transport } = await bound({ type: [acted("type")] });
+    const type = { operation: "type" as const, ref: "@s0001:e3", text: "界".repeat(400) };
+    await session.execute(type, approve(session, type));
+    expect(transport.options[transport.calls.findIndex(a => a[0] === "type")]?.timeoutMs).toBe(30000);
+  });
+  test("P2: signal guard: a signal during desktop cleanup is absorbed until cleanup finishes", async () => {
+    const s = await bound();
+    const guard = guardBrowserLifecycle();
+    try {
+      guard.state.phase = "cleanup";
+      process.emit("SIGTERM" as any);
+      await s.session.close();
+      expect(guard.state.signalled).toBe(15); expect(existsSync(s.root)).toBe(false);
+    } finally { guard.release(); }
+  });
+  test("P2: setup cancelled by a signal still stops the host and removes the root", async () => {
+    const root = privateRoot(), transport = new FakeTransport(root, { permissions: ["wait-for-abort"] });
+    const running = runDesktopSetup(true, root, transport);
+    await new Promise(r => setTimeout(r, 20));
+    process.emit("SIGINT" as any);
+    const result = await running;
+    expect(result.signalled).toBe(2); expect(transport.stops).toBe(1); expect(transport.removed).toBe(true);
   });
 });
