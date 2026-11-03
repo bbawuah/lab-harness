@@ -88,8 +88,15 @@ try {
     record("click Save", clicked.action === "click", clicked.delivery);
     let saved = ""; for (let n = 0; n < 50 && !saved; n++) { saved = existsSync(savedFile) ? readFileSync(savedFile, "utf8") : ""; if (!saved) await new Promise(r => setTimeout(r, 100)); }
     record("fixture independently recorded the saved value", saved === "Native Fixture", saved);
-    const pressed = await act({ operation: "press", key: "tab" }) as any;
-    record("press tab scoped to the fixture pid", pressed.action === "press", pressed.delivery);
+    // press goes to the app's focused window, so LAB sends it only while the bound window holds focus.
+    // The fixture never activates itself; record whichever branch this run exercised.
+    try {
+      const pressed = await act({ operation: "press", key: "tab" }) as any;
+      record("press tab while the fixture window is focused", pressed.action === "press", pressed.delivery);
+    } catch (e) {
+      const m = e instanceof Error ? e.message : String(e);
+      record("press refused because the fixture window is not focused (nothing sent)", m.startsWith("LAB_DESKTOP_REFUSED: NOT_FOCUSED"), m.slice(0, 120));
+    }
     const hostsWhileBound = host.hostPids();
     record("one owned host running while bound", hostsWhileBound.length === 1, `${hostsWhileBound.length} host(s)`);
     process.kill(pid, "SIGTERM"); fixture = undefined;
