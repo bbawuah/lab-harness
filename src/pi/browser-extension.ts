@@ -61,10 +61,12 @@ export function installBrowserExtension(pi:WorkspaceExtensionAPI):((input:Record
   const ref=process.env.LAB_BROWSER_REF;let browser:BrowserSession|undefined;let stale:{origin:string;root?:string}|undefined;
   if(ref) { try { browser=BrowserSession.rebind(ref); } catch { /* Closed/missing browser must not disable source/Relay tools on reload. */ stale=closedState(ref); } }
   const reason=ref?readReason(ref):undefined;
-  const view=():LifecycleView|undefined=>{if(stale)return stale.root&&lstatSync(stale.root,{throwIfNoEntry:false})?{state:'cleanup-failed',origin:stale.origin,detached:true}:{state:'closed',origin:stale.origin,...(reason?{failure:reason}:{})};if(!browser)return;const v=browser.view();return v.state!=='active'&&!v.failure&&reason?{...v,failure:reason}:v;};
+  const view=():LifecycleView|undefined=>{if(stale)return stale.root&&lstatSync(stale.root,{throwIfNoEntry:false})?{state:'cleanup-failed',origin:stale.origin,detached:true}:{state:'closed',origin:stale.origin,...(reason?{failure:reason}:{})};if(!browser||typeof (browser as any).view!=='function')return;const v=browser.view();return v.state!=='active'&&!v.failure&&reason?{...v,failure:reason}:v;};
   // Temp file then rename, so a planted link at the reason path is replaced, never followed.
   const remember=(info:any)=>{const r=failureRecord(info);if(!ref||!r)return;const p=reasonPath(ref),t=p+'.'+process.pid+'.tmp';try{writeFileSync(t,JSON.stringify(r),{flag:'wx',mode:0o600});renameSync(t,p);}catch{try{rmSync(t,{force:true});}catch{}}};
-  const refresh=(ctx?:WorkspaceContext)=>{try{const v=view();if(v)setIndicator(ctx?.ui,chipKey,chip(v));}catch{/* status UI is best effort; never fails a tool call */}};
+  let refreshWarned=false;
+  // Status UI is best effort and never fails a tool call, but the first failure is reported so a stale chip is not silent.
+  const refresh=(ctx?:WorkspaceContext)=>{try{const v=view();if(v)setIndicator(ctx?.ui,chipKey,chip(v));}catch(e){if(refreshWarned)return;refreshWarned=true;try{ctx?.ui.notify('Browser status could not be updated; run /lab-browser status. '+displaySafe(String((e as any)?.message??e)).slice(0,160),'error');}catch{}}};
   // Transcript row outside model context; notify fallback for UIs without custom entries.
   // Outside the TUI (print/json/rpc) entries are not drawn, so the operator also gets an escaped notification.
   const post=(lines:string[],ctx?:WorkspaceContext,kind:'info'|'error'='info')=>{if(pi.appendEntry)pi.appendEntry(entryType,{lines});if(!pi.appendEntry||ctx?.mode!=='tui')ctx?.ui.notify(lines.map(l=>displaySafe(l)).join('\n'),kind);};

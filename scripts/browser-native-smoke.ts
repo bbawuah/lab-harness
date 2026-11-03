@@ -59,7 +59,11 @@ const automate=(async()=>{
  const wait=async(text:string)=>{for(let n=0;n<150;n++){const r=await read().catch(()=> '');if(r.includes(text))return r;
    if(r.includes('→ Allow once')){approvals++;await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});for(let m=0;m<50&&(await read().catch(()=> '')).includes('→ Allow once');m++)await delay(100);continue;}
    await delay(100);}throw new Error('native output missing: '+text);};
- const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(/\/(?:private\/)?var\/folders\/[^\s"\\]*/g,'<OWNED_PROJECT>'). /* narrow panes truncate the project path */replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
+ const W='(?:\\\\n *)?';
+ const capture=async(name:string)=>writeFileSync(join(evidence,name),guard((await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(/\/(?:private\/)?var\/folders\/[^\s"\\]*/g,'<OWNED_PROJECT>'). /* narrow panes truncate the project path */replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>')
+   .replace(new RegExp('(lab-browser-project-)[A-Za-z0-9]+/(?:[0-9a-f-]'+W+')*[0-9a-f]','g'),'$1<ID>/<RELAY_SESSION>').replace(new RegExp('pi-(?:[0-9a-f]'+W+'){63}[0-9a-f]','g'),'<RELAY_PEER>')));
+ // Wrapped text: an escaped newline plus indent may split any id or path; fail the run rather than publish a leftover.
+ const guard=(t:string)=>{if(/pi-[0-9a-f]{6}|folders\/|\/T\/lab-|lab-browser-project-(?!<ID>)/.test(t))throw new Error('capture sanitization incomplete');return t;};
  // Ports may be split by TUI wrapping: allow an escaped newline plus indent between digits.
  function wrapped(port:number){return new RegExp(String(port).split('').join('(?:\\\\n *)?'),'g');}
  const send=async(text:string)=>{await request(socket,'pane.send_text',{pane_id:pane,text});await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});};
@@ -83,7 +87,7 @@ try{const code=await new Promise<number>((done,reject)=>{child.on('error',reject
  await automate;
  const runs=readdirSync(join(state,'runs'));const run=join(state,'runs',runs[0]!);const attachment=JSON.parse(readFileSync(join(run,'attachment.json'),'utf8'));
  const descriptor=JSON.parse(readFileSync(join(run,'browser-ref.json'),'utf8'));
- const cleanup=attachment.cleanup;const ok=!automationError&&code===0&&(footerOnly?requests===0:requests===10&&approvals>0)&&events.every(e=>e.toolAvailable)&&!existsSync(descriptor.root)&&Object.values(cleanup).every(v=>v===true);
+ const cleanup=attachment.cleanup;const ok=!automationError&&code===0&&(footerOnly?requests===0:requests===10&&approvals===4 /* one per approval-required call in the two scripted prompts */)&&events.every(e=>e.toolAvailable)&&!existsSync(descriptor.root)&&Object.values(cleanup).every(v=>v===true);
  writeFileSync(join(evidence,'result.json'),JSON.stringify({kind:'normal lab native Pi/Herdr with local deterministic protocol fixture, no inference',mode:'ask (default)',footerOnly,cols,ok,code,automationError,requests,approvals,events,foreignHits,cleanup,browserRootRemoved:!existsSync(descriptor.root)},null,2)+'\n');
  console.log(JSON.stringify({ok,evidence:evidence.replace(process.cwd(),'<WORKTREE>')}));if(!ok)process.exitCode=1;
  const databases=Array.from(new Bun.Glob('relay/**/control.sqlite').scanSync({cwd:state}));
