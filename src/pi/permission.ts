@@ -132,8 +132,13 @@ function realTarget(absolute: string): string | undefined {
  * config, direnv). `edits` never auto-approves them; they always ask.
  * Compared per path component, case- and normalization-insensitively (APFS).
  */
-export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc"];
-const isSensitive = (relativePath: string) => relativePath.split(sep).some(part => sensitiveComponents.includes(part.normalize("NFC").toLowerCase()));
+export const sensitiveComponents: readonly string[] = [".git", ".pi", ".agents", ".claude", ".codex", ".husky", ".vscode", ".envrc", ".githooks", ".pre-commit-config.yaml", "lefthook.yml", ".lefthook.yml"];
+// NFKC folds ſ→s, K→K and ligatures as APFS case-insensitive lookup does; any other
+// non-ASCII character in a dot-leading component is treated as sensitive (fail closed).
+const isSensitive = (relativePath: string) => relativePath.split(sep).some(part => {
+  const folded = part.normalize("NFKC").toLowerCase();
+  return sensitiveComponents.includes(folded) || (folded.startsWith(".") && /[^\x20-\x7e]/.test(part));
+});
 export function resolveTargetPath(raw: unknown, cwd: string, roots: PathRoots): ResolvedPath {
   if (typeof raw !== "string" || raw.length === 0 || raw.length > 4096) return { inside: false, display: "(invalid path)" };
   if (unsafePathCharacters.test(raw)) return { inside: false, display: displaySafe(raw) + "  (unusual characters)" };
@@ -262,7 +267,8 @@ export function describeFamilyApproval(family: GatedFamily, toolName: string, in
   let described: Partial<Approval> | undefined;
   try { described = family.describe(toolName, input); } catch {}
   const ok = described && typeof described.heading === "string" && Array.isArray(described.lines) && described.lines.every(line => typeof line === "string") && typeof described.scope === "string" && typeof described.scopeLabel === "string";
-  const base = ok ? { heading: described!.heading!.slice(0, 200), lines: described!.lines!.slice(0, 40).map(line => line.slice(0, 2000)), scope: described!.scope!, scopeLabel: described!.scopeLabel!.slice(0, 80) } : fallback;
+  const oneRow = (text: string, max: number) => text.slice(0, max).replace(/[\r\n]+/g, " ");
+  const base = ok ? { heading: oneRow(described!.heading!, 200), lines: described!.lines!.slice(0, 40).flatMap(line => line.slice(0, 2000).split("\n")).slice(0, 60), scope: described!.scope!, scopeLabel: oneRow(described!.scopeLabel!, 80) } : fallback;
   // Scopes are namespaced by family and tool so one family cannot reuse another's grant.
   return { ...base, scope: `family\0${family.family}\0${toolName}\0${base.scope}`, sessionGrants: family.sessionGrants, denyWithNote: family.denyWithNote !== false };
 }

@@ -58,7 +58,8 @@ export function installBrowserExtension(pi:WorkspaceExtensionAPI):((input:Record
     // Pinned Pi reports validation/blocked/cancelled errors via context.isError with details {}.
     renderResult(result:any,options:any,_theme?:any,context?:any){const failed=context?.isError===true||result?.isError===true||!!result?.details?.error;
       return failed?renderBrowserFailure(result):renderBrowserSuccess(result,options,context);},
-    async execute(_id,params,signal){recordBrowserCall(_id,(params as any)?.ref,browser!.element((params as any)?.ref));try{const result=await browser!.execute(params as BrowserInput,signal);return {content:[{type:'text',text:JSON.stringify(result)}],details:result};}catch(e){const error=e instanceof Error&&e.message.startsWith('LAB_BROWSER_')?e.message:'LAB_BROWSER_REFUSED';return {content:[{type:'text',text:error}],details:{error},isError:true};}}
+    async execute(_id,params,signal){const element=browser!.element((params as any)?.ref);recordBrowserCall(_id,(params as any)?.ref,element);try{// Bind the run to the element shown at approval: a snapshot queued earlier in the same batch makes it stale.
+const result=await browser!.execute(params as BrowserInput,signal,element);return {content:[{type:'text',text:JSON.stringify(result)}],details:result};}catch(e){const error=e instanceof Error&&e.message.startsWith('LAB_BROWSER_')?e.message:'LAB_BROWSER_REFUSED';return {content:[{type:'text',text:error}],details:{error},isError:true};}}
   });
   return facts;
 }

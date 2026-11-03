@@ -103,6 +103,7 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
 - `lab --mode auto` prints one warning line before the workspace starts: "LAB warning: started in auto mode; auto
   shows no approval prompt for edits, shell commands, browser actions or Relay sends; desktop actions still ask.
   Change it with /lab-mode."
+  The full-screen TUI erases that line, so Pi shows the same warning as a notification at session start.
 - **No keyboard shortcut.** `Shift+Tab` is reserved by Pi for `app.thinking.cycle` (`core/keybindings.ts:33–35`), and
   reserved keys cannot be overridden by extensions (`runner.ts:97–104, 697–703`). Every plain Ctrl letter is either
   bound by Pi or is a terminal control (Ctrl+H/I/M). Option/Alt combinations reach the pty only when the terminal
@@ -124,11 +125,19 @@ Esc denies. Prompts are serialized, one at a time. Session grants live only in m
   characters ask instead. A path under the LAB run directory, the LAB state root or the install root also asks, even
   when it sits inside the project.
 - `edits` never auto-approves project paths that tools later turn into code execution or agent instructions. Any
-  path component (case- and NFC-insensitive) of `.git`, `.pi`, `.agents`, `.claude`, `.codex`, `.husky`, `.vscode`
-  or `.envrc` asks, and the prompt marks it "(agent/VCS config — can run code)". Examples: git config and hooks
+  path component (case- and NFKC-insensitive, so APFS folds such as `ſ`→`s` match) of `.git`, `.pi`, `.agents`,
+  `.claude`, `.codex`, `.husky`, `.vscode`, `.envrc`, `.githooks`, `.pre-commit-config.yaml`, `lefthook.yml` or
+  `.lefthook.yml` asks, as does any dot-leading component with a non-ASCII character, and the prompt marks it "(agent/VCS config — can run code)". Examples: git config and hooks
   (fsmonitor, pager, hooks run on later git commands); Pi's `.pi/settings.json` (`shellCommandPrefix`/`shellPath`
   would silently prefix every approved bash after `/reload`); `.pi/SYSTEM.md`; direnv. `ask` mode is unchanged.
+  The list is a heuristic, not a guarantee. A custom `core.hooksPath`, `package.json` scripts, test files and CI
+  workflows are ordinary project files. Approving `git commit`, `npm test` or `git push` runs project code that
+  `edits` may have changed without a prompt.
+- The in-memory mode is authoritative. The model's shell can see `LAB_PERMISSION_STATE`. If it breaks the mode file,
+  `/lab-mode` still changes the mode for the session and warns that the file could not be written.
 - `bash` is never auto-approved by `edits`.
+- A browser `fill`/`click`/`read` runs only if its ref still names the role and name shown in the approval. A
+  snapshot queued earlier in the same parallel batch makes it fail with `LAB_BROWSER_STALE_REF`.
 - This is an approval gate, not an OS sandbox. Approved commands run as the user. Paths are resolved when a call is
   gated. Pi gates a whole parallel tool batch before running it, so an approved command in the same batch can swap a
   directory for a symlink before an auto-approved edit runs. Hard links already in the project are followed. The
@@ -150,7 +159,8 @@ gate.registerFamily({
 });
 ```
 
-An optional `onApproved(toolCallId, toolName, input)` is called only after the gate allows a mutating call. Desktop
+The default export of `src/pi/workspace-extension.ts` returns this gate, so a family installed in the same load
+registers on it before any tool call. An optional `onApproved(toolCallId, toolName, input)` is called only after the gate allows a mutating call. Desktop
 uses it to mint a single-use token bound to that call, so a missing or bypassed gate fails closed in the tool. If it
 throws, the call is denied. A family must not add its own `tool_call` handler or mode check: one gate, one prompt
 queue.

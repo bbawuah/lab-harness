@@ -53,7 +53,8 @@ export class BrowserSession {
     insist(Array.isArray(tabs.data.tabs)&&tabs.data.tabs.length===1,'LAB_BROWSER_NEW_TARGET');
     browserURL(tabs.data.tabs[0].url,this.descriptor.origin);
   }
-  execute(input:BrowserInput,signal?:AbortSignal):Promise<unknown> {
+  /** `expected`: the role/name the operator approved for `ref`; a mismatch at run time is a stale ref. */
+  execute(input:BrowserInput,signal?:AbortSignal,expected?:{role:string;name:string}):Promise<unknown> {
     const task=this.queue.then(async()=>{
       insist(!this.closed && !!lstatSync(this.descriptor.root,{throwIfNoEntry:false}),'LAB_BROWSER_CLOSED');
       insist(!this.failed(),'LAB_BROWSER_FAILED: browser stopped after an earlier failure; actions disabled until a new LAB run.');
@@ -62,7 +63,7 @@ export class BrowserSession {
       const op=input.operation;
       if(op==='snapshot'){insist(Object.keys(input).length===1);tool='agent_browser_snapshot';args={interactive:true};}
       else if(op==='navigate'){insist(Object.keys(input).length===2&&typeof input.url==='string');tool='agent_browser_open';args={url:browserURL(input.url,this.descriptor.origin).href};}
-      else {insist(['fill','click','read'].includes(op)&&typeof input.ref==='string'&&/^@e\d+$/.test(input.ref)&&this.refs.has(input.ref),'LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.');
+      else {insist(['fill','click','read'].includes(op)&&typeof input.ref==='string'&&/^@e\d+$/.test(input.ref)&&this.refs.has(input.ref)&&(!expected||(this.refs.get(input.ref)!.role===expected.role&&this.refs.get(input.ref)!.name===expected.name)),'LAB_BROWSER_STALE_REF: take a fresh snapshot and use @eN.');
         insist(Object.keys(input).length===(op==='fill'?3:2));tool=op==='read'?'agent_browser_get_text':'agent_browser_'+op;args={selector:input.ref};
         if(op==='fill'){insist(typeof input.text==='string'&&Buffer.byteLength(input.text)<=4000&&!input.text.includes('\0'),'LAB_BROWSER_INPUT');args={...args,text:input.text};}
       }

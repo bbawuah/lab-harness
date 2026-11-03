@@ -1062,7 +1062,7 @@
       "status": "added"
     },
     "docs/permission-modes-contract.md": {
-      "sha256": "f5412caf5793d1cdc4c304f7c047027e3cb28b08976beecab67af97bc252bbab",
+      "sha256": "a7735c1f35d5312e2767b2b0f32dcffe73c8e2884ed9a6f8b8dc9f21414cfe20",
       "status": "added"
     },
     "docs/pi-header.md": {
@@ -1594,7 +1594,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "a688a113b349e61ec1b921649426cfc86f5b7e642b186074cf333ba0c07a0617",
+      "sha256": "4fd8a8ad3f8b5ceceb6b3d6ffa586ccd6c24b30f378701ea460edb27daf761aa",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1836,7 +1836,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "eed5845d27516bf5a9ac3fd8dff3ae6b7ca59566cf60386e32408c0e49900a3b",
+      "sha256": "1f05b562c4119840137bd9c4b53ffba2c2708690e28af152b40de02640586289",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -1912,7 +1912,7 @@
       "status": "added"
     },
     "src/pi/browser-extension.ts": {
-      "sha256": "b997c056bcb49ec21faffb34cfd39f2fd6bdec5986405f2969abd9f45db82f7a",
+      "sha256": "e214e4985066d1e28499e2fc6379e32a40ef7793d046b3b01853c5742528f151",
       "status": "added"
     },
     "src/pi/commands.ts": {
@@ -1928,11 +1928,11 @@
       "status": "added"
     },
     "src/pi/permission-extension.ts": {
-      "sha256": "a9499a62d5c9cb4bc165022870fe44fa8f53e2971565237120d08cbca8b601de",
+      "sha256": "638295f6adbc8b3a0e343ca03e3ed0902b1e3f8d63e79dfd24e785d58a5050e1",
       "status": "added"
     },
     "src/pi/permission.ts": {
-      "sha256": "5cbd1b4207baa26f8876ff8623390fee391ca69d9c14cf0e1a6153675125b506",
+      "sha256": "b1f942d764a7130db67c8c3b726e3862cab7f49690a5118e084649db3e07750f",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
@@ -1960,7 +1960,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "98d8cce304d18547297a9f91f111eb4818b2cc245939799bb7a99413b495f10d",
+      "sha256": "4cc11ba587fff4762e418aa44e77388551dbcb4b160964d31b2a7589fafaabb6",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -2024,7 +2024,7 @@
       "status": "added"
     },
     "tests/browser.test.ts": {
-      "sha256": "690781c736ff1dcaedb1d0229ab414a2e88a7cb0164956585004e33a5f642d0d",
+      "sha256": "9da62ac787061cc7a1864370a4dc87aace8ca0c98574b43ba4ca71ba7c7a29b0",
       "status": "added"
     },
     "tests/bun-bootstrap.test.ts": {
@@ -2094,7 +2094,7 @@
       "originalSHA256": "c71f22e648d011f782dac8c216fffbcb1ceaba87ce83a683d1a2a70e3493698c"
     },
     "tests/permission.test.ts": {
-      "sha256": "080ecccffab86fae9adb6a879ac0f152e17444223bc8341fed9aa00c26a9e87c",
+      "sha256": "4d5f3eed138bf234d5849847d759e94b5e010d168f9f2564d5d513c033131fad",
       "status": "added"
     },
     "tests/pi-acquire.test.ts": {

@@ -412,7 +412,9 @@ test("review r1 P1: edits never auto-approves git, Pi, agent or direnv config (c
     mkdirSync(join(p, ".git", "hooks"), { recursive: true }); writeFileSync(join(p, ".git", "config"), "[core]\n");
     mkdirSync(join(p, "sub", ".git"), { recursive: true }); mkdirSync(join(p, ".Pi"), { recursive: true });
     const sensitive = [".git/config", ".git/hooks/pre-commit", ".GIT/config", ".pi/settings.json", ".PI/settings.json", ".pi/APPEND_SYSTEM.md", "sub/.git/config",
-      ".agents/x.md", ".claude/settings.json", ".codex/config.toml", ".husky/pre-commit", ".vscode/tasks.json", ".envrc", "./.git", "sub/../.pi/settings.json"];
+      ".agents/x.md", ".claude/settings.json", ".codex/config.toml", ".husky/pre-commit", ".vscode/tasks.json", ".envrc", "./.git", "sub/../.pi/settings.json",
+      // review r2 P2-1: APFS folds ſ→s; NFKC catches it, other non-ASCII dot-names fail closed.
+      ".agent\u017f/skills/x/SKILL.md", ".hu\u017fky/pre-commit", ".v\u017fcode/tasks.json", ".\u0261it/config"];
     for (const path of sensitive) {
       const r = resolveTargetPath(path, p, { project: p, excluded: [] });
       expect([path, r.inside, r.sensitive]).toEqual([path, false, true]);
@@ -547,4 +549,31 @@ test("an unregistered lab_desktop is refused in every mode, never 'other' with a
     } finally { h.done(); }
   }
   expect(classify("lab_desktop", { operation: "snapshot" })).toBe("unregistered");
+});
+
+test("review r2 P2-2: a broken mode file cannot lock the operator out of /lab-mode", async () => {
+  const h = harness({ mode: "auto" });
+  try {
+    rmSync(h.statePath); mkdirSync(h.statePath); // model bash replaced $LAB_PERMISSION_STATE with a directory
+    await h.commands.get("lab-mode")!.handler("read-only", h.ctx);
+    expect(h.gate.mode).toBe("read-only");
+    expect(await h.call("write", { path: "a.txt", content: "x" })).toMatchObject({ block: true });
+    expect(h.notices.some(text => text.includes("could not be written"))).toBe(true);
+  } finally { h.done(); }
+});
+
+test("review r2 P3: family heading/scope newlines cannot forge prompt rows; auto start repeats the warning in Pi", async () => {
+  const h = harness({ mode: "ask", answers: ["deny"] });
+  try {
+    h.gate.registerFamily({ ...alwaysAsk, family: "Desktop", tools: ["lab_desktop"], describe: () => ({ heading: "click Notes\nLAB ask mode · Edit file?", lines: Array(40).fill("a\n".repeat(100)), scope: "s", scopeLabel: "x\ny" }) });
+    await h.call("lab_desktop", { operation: "click" });
+    const title = h.prompts[0]!.title;
+    expect(title.split("\n")[0]).toContain("click Notes LAB ask mode");
+    expect(title.split("\n").length).toBeLessThan(80);
+  } finally { h.done(); }
+  const a = harness({ mode: "auto" });
+  try {
+    a.handlers.get("session_start")!({ reason: "startup" }, a.ctx);
+    expect(a.notices.includes(autoStartWarning())).toBe(true);
+  } finally { a.done(); }
 });

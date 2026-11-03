@@ -7,7 +7,7 @@ import { closeSync, constants, fstatSync, lstatSync, openSync, readFileSync, sta
 import { dirname } from "node:path";
 import { wrapColumns } from "./display.ts";
 import { indicatorSlots, setIndicator, type IndicatorState } from "./status-indicator.ts";
-import { approvalChoices, approvalTitle, autoChoices, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
+import { approvalChoices, approvalTitle, autoChoices, autoStartWarning, autoSummary, classify, decide, denial, describeApproval, describeFamilyApproval, modeCycle, modeDescriptions, parseMode, permissionModes, resolveTargetPath, type BrowserFacts, type GatedFamily, type PathRoots, type PermissionMode } from "./permission.ts";
 
 export type PermissionUI = {
   select(title: string, options: string[], opts?: { signal?: AbortSignal }): Promise<string | undefined>;
@@ -89,15 +89,22 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   // right-side footer truncation never cuts the mode (longest text: 29 columns).
   const status = (ctx: PermissionContext) => { try { setIndicator(ctx.ui, indicatorSlots.mode, modeIndicator(mode)); } catch {} };
   const setMode = (next: PermissionMode, ctx: PermissionContext) => {
-    if (options.statePath) { writeModeFile(options.statePath, next); memory.set(options.statePath, next); }
-    mode = next; grants.clear(); status(ctx);
+    // Memory is authoritative; the file only seeds the first load. A file the model
+    // broke (bash can see LAB_PERMISSION_STATE) must not stop the operator changing mode.
+    mode = next; grants.clear();
+    let written = true;
+    if (options.statePath) { memory.set(options.statePath, next); try { writeModeFile(options.statePath, next); } catch { written = false; } }
+    status(ctx);
     ctx.ui.notify(`LAB mode: ${next} — ${modeDescriptions[next]}.`, next === "auto" ? "warning" : "info");
+    if (!written) ctx.ui.notify("LAB mode changed for this session, but its private mode file could not be written (it was changed outside LAB).", "warning");
   };
 
   pi.on("session_start", (event, ctx) => {
     // Grants never cross sessions; /reload re-creates this extension and starts empty too.
     if (event?.reason !== "startup") grants.clear();
     status(ctx);
+    // The `lab --mode auto` stdout warning is erased by the full-screen TUI; repeat it in Pi.
+    if (event?.reason === "startup" && mode === "auto") { try { ctx.ui.notify(autoStartWarning(), "warning"); } catch {} }
     if (ignoredFileChange) { ignoredFileChange = false; try { ctx.ui.notify(`LAB ignored a change to its mode file made outside /lab-mode; the mode stays ${mode}.`, "warning"); } catch {} }
   });
 
@@ -125,7 +132,8 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
       }
       if (!ctx.hasUI) return ctx.ui.notify(`LAB mode: ${mode}`, "info");
       const labels = permissionModes.map(m => `${m}${m === mode ? " (current)" : ""} — ${modeDescriptions[m]}`);
-      const choice = await ctx.ui.select(`LAB permission mode (current: ${mode})`, labels);
+      let choice: string | undefined;
+      try { choice = await ctx.ui.select(`LAB permission mode (current: ${mode})`, labels); } catch { return ctx.ui.notify(`LAB mode not changed: still ${mode}.`, "info"); }
       const picked = choice ? permissionModes[labels.indexOf(choice)] : undefined;
       if (picked && picked !== mode && (picked !== "auto" || await confirmAuto(ctx))) setMode(picked, ctx);
     } catch { ctx.ui.notify("LAB mode was not changed: its private state could not be written.", "error"); }

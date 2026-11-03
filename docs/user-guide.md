@@ -211,7 +211,7 @@ hanging. Reads, searches, browser snapshots and inbox reads never ask.
 
 | Mode | What runs without asking |
 | --- | --- |
-| ask (default) | Reads only; everything else asks |
+| ask (default) | Reads and Relay acknowledgements; everything else asks |
 | edits | Also file edits and writes inside the project; shell, browser and Relay sends still ask |
 | read-only | Reads only; every change is refused with a message to the model |
 | auto | Everything except desktop actions, which always ask. Choose it explicitly |

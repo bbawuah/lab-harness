@@ -75,3 +75,12 @@ test('renderer wraps by terminal columns and escapes hostile controls in calls, 
   expect(tool.renderResult({details:{verifiedOrigin:'x'}},{}).render(80).join('')).toContain('completed');
  }finally{(BrowserSession as any).rebind=orig;if(saved)process.env.LAB_BROWSER_REF=saved;else delete process.env.LAB_BROWSER_REF;rmSync(root,{recursive:true,force:true});}
 });
+
+test('review r2 P2-3: a run is bound to the element approved for its ref; a newer snapshot makes it stale',async()=>{
+ let calls=0;const {s,root}=fakeSession(async()=>{calls++;return '';});
+ try {
+  s.refs=new Map([['@e4',{role:'textbox',name:'Search'}]]);
+  await expect(s.execute({operation:'fill',ref:'@e4',text:'x'},undefined,{role:'textbox',name:'Email'})).rejects.toThrow('LAB_BROWSER_STALE_REF');
+  expect(calls).toBe(0);
+ } finally {rmSync(root,{recursive:true,force:true});}
+});

@@ -56,7 +56,7 @@ export function callWorkspaceBridge(request: Request, signal?: AbortSignal): Pro
     child.stdin.on("error", () => {}); child.stdin.end(serialized);
   });
 }
-export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
+export default function workspaceExtension(pi: WorkspaceExtensionAPI): ReturnType<typeof installPermissionExtension> {
   pi.registerCommand("exit", { description: "Exit this native Pi workspace (alias for /quit)", async handler(_args, ctx) { ctx.shutdown(); } });
   pi.registerCommand("lab-help", { description: "Show LAB workspace commands", async handler() {
     pi.sendMessage({ customType: "lab-help", content: workspaceHelp(), display: true }, { triggerTurn: false });
@@ -86,7 +86,9 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): void {
   installRelayExtension(pi, callWorkspaceBridge);
   const browser = installBrowserExtension(pi);
   // Approval gate for every model tool call (F01/F30); fails closed.
-  installPermissionExtension(pi as unknown as PermissionAPI, { ...permissionOptionsFromEnvironment(), browser });
+  // Other tool families (agent-desktop) register on this gate in the same load: gate.registerFamily({...alwaysAsk, ...}).
+  const gate = installPermissionExtension(pi as unknown as PermissionAPI, { ...permissionOptionsFromEnvironment(), browser });
+  return gate;
 }
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */
 export async function executeWorkspaceRequest(request: Request): Promise<unknown> {
