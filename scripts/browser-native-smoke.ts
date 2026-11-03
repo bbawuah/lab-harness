@@ -59,7 +59,7 @@ const automate=(async()=>{
  const wait=async(text:string)=>{for(let n=0;n<150;n++){const r=await read().catch(()=> '');if(r.includes(text))return r;
    if(r.includes('→ Allow once')){approvals++;await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});for(let m=0;m<50&&(await read().catch(()=> '')).includes('→ Allow once');m++)await delay(100);continue;}
    await delay(100);}throw new Error('native output missing: '+text);};
- const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
+ const capture=async(name:string)=>writeFileSync(join(evidence,name),(await read()).replaceAll('/private'+fixtureProject,'<OWNED_PROJECT>').replaceAll(fixtureProject,'<OWNED_PROJECT>').replace(/\/(?:private\/)?var\/folders\/[^\s"\\]*/g,'<OWNED_PROJECT>'). /* narrow panes truncate the project path */replace(wrapped(server.port!),'<FIXTURE_PORT>').replace(wrapped(other.port!),'<OTHER_PORT>'));
  // Ports may be split by TUI wrapping: allow an escaped newline plus indent between digits.
  function wrapped(port:number){return new RegExp(String(port).split('').join('(?:\\\\n *)?'),'g');}
  const send=async(text:string)=>{await request(socket,'pane.send_text',{pane_id:pane,text});await request(socket,'pane.send_keys',{pane_id:pane,keys:['enter']});};
