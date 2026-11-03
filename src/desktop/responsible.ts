@@ -68,9 +68,13 @@ export function executableOf(pid: number, override: Native | null = load()): str
   try { return override?.path(pid); } catch { return undefined; }
 }
 
-/** Who receives the grant, and what else it covers; used by setup and by the denied path. */
-export function grantSubject(app: ResponsibleApp | undefined): { who: string; detail: string; reach: string } {
-  if (!app) return { who: "the app that started LAB (for example Terminal or iTerm2)", detail: "LAB could not determine it on this Mac.", reach: "every program started from that app" };
-  if (app.bundle) return { who: app.name, detail: `${app.bundle}${app.bundleId ? " (" + app.bundleId + ")" : ""}`, reach: `every program started from ${app.name}` };
-  return { who: app.executable, detail: "a command-line program, not an app bundle; add it with the + button", reach: "everything this program runs" };
+/**
+ * Who receives the grant, and what else it covers. A grantee that is not an app
+ * bundle (Homebrew bun, node, sh, a bare CLI) is a generic runtime: granting it
+ * would let every script on the Mac control apps, so LAB advises against it.
+ */
+export function grantSubject(app: ResponsibleApp | undefined): { who: string; detail: string; reach: string; recommended: boolean } {
+  if (!app) return { who: "the app that started LAB (for example Terminal or iTerm2)", detail: "LAB could not determine it on this Mac.", reach: "every program started from that app", recommended: true };
+  if (app.bundle) return { who: app.name, detail: `${app.bundle}${app.bundleId ? " (" + app.bundleId + ")" : ""}`, reach: `every program started from ${app.name}`, recommended: true };
+  return { who: app.executable, detail: "a generic command-line runtime, not an app", reach: "every script and program this runtime runs anywhere on this Mac", recommended: false };
 }

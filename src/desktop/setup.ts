@@ -23,12 +23,18 @@ const settingsPath = "System Settings › Privacy & Security › Accessibility (
 
 /** Plain-text lines shared by setup and the in-session denied path. */
 export function accessibilityAdvice(app: ResponsibleApp | undefined): string[] {
-  const { who, detail, reach } = grantSubject(app);
+  const { who, detail, reach, recommended } = grantSubject(app);
+  if (!recommended) return [
+    `Accessibility is off for ${who}.`,
+    `  That is ${detail}. Do NOT grant it: that would let ${reach} control other apps.`,
+    `  Instead, quit and start LAB from a terminal app (Terminal or iTerm2), then run  lab --setup-desktop  there.`,
+    `  LAB never changes this setting and never shows the macOS prompt.`,
+  ];
   return [
     `Accessibility is off for ${who}.`,
     `  ${detail}`,
     `  Turning it on lets ${reach} control other apps, not only LAB.`,
-    `  To grant it yourself: ${settingsPath} → add ${who} → turn it on.`,
+    `  To grant it yourself: ${settingsPath} → add ${who} → turn it on. Revoke it there when you are done.`,
     `  LAB never changes this setting and never shows the macOS prompt.`,
   ];
 }
@@ -40,7 +46,7 @@ export function setupReport(report: PermissionReport, app: ResponsibleApp | unde
   if (ready) lines.push(`✓ Accessibility: on for ${who}`, `  This lets ${reach} control other apps; LAB binds each session to one window you pick.`);
   else lines.push("✗ " + accessibilityAdvice(app)[0]!, ...accessibilityAdvice(app).slice(1));
   lines.push(report.screenRecording === "granted" ? "✓ Screen Recording: on (not used by LAB in this release)" : "– Screen Recording: off (optional; LAB does not take screenshots in this release)");
-  lines.push(ready ? "Next: lab --desktop, then /lab-desktop attach to pick one window." : "Next: grant it yourself, then run  lab --setup-desktop  again.");
+  lines.push(ready ? "Next: lab --desktop, then /lab-desktop attach to pick one window." : grantSubject(app).recommended ? "Next: grant it yourself, then run  lab --setup-desktop  again." : "Next: run  lab --setup-desktop  from Terminal or iTerm2.");
   return { lines, ready };
 }
 
