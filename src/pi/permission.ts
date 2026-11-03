@@ -57,6 +57,8 @@ export type GatedFamily = {
   sessionGrants: boolean;
   inAuto: "run" | "ask";
   denyWithNote?: boolean;
+  /** Called only after the gate allows a mutating call (prompt allow, or auto with inAuto "run"); a throw denies it. */
+  onApproved?: (toolCallId: string, toolName: string, input: Record<string, unknown>) => void;
   describe(toolName: string, input: Record<string, unknown>): { heading: string; lines: string[]; scope: string; scopeLabel: string };
 };
 /** Policy hook for families that must always ask: no session grants, asks in auto, choices Allow once / Deny. */

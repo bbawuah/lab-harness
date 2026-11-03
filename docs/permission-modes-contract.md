@@ -150,6 +150,11 @@ gate.registerFamily({
 });
 ```
 
+An optional `onApproved(toolCallId, toolName, input)` is called only after the gate allows a mutating call. Desktop
+uses it to mint a single-use token bound to that call, so a missing or bypassed gate fails closed in the tool. If it
+throws, the call is denied. A family must not add its own `tool_call` handler or mode check: one gate, one prompt
+queue.
+
 `alwaysAsk` is the desktop policy: choices are exactly `Allow once` / `Deny`, nothing is granted for the session,
 and `auto` still asks. Without the preset, a family sets the fields itself: `sessionGrants` (false removes "Allow for
 this session"), `inAuto` (`"ask"` or `"run"`) and `denyWithNote` (false removes "Deny with note…"; default true).

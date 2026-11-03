@@ -79,7 +79,7 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
   const builtIn = new Set(["read", "grep", "find", "ls", "edit", "write", "bash", "lab_search", "lab_files", "lab_browser", "relay_peers", "relay_send", "relay_inbox", "relay_ack"]);
   /** Lets another tool family (e.g. agent-desktop) use this gate. Throws on a name collision. */
   const registerFamily = (family: GatedFamily) => {
-    if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask") || (family.denyWithNote !== undefined && typeof family.denyWithNote !== "boolean")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
+    if (!family || typeof family.family !== "string" || !family.family || !Array.isArray(family.tools) || typeof family.describe !== "function" || typeof family.sessionGrants !== "boolean" || (family.inAuto !== "run" && family.inAuto !== "ask") || (family.denyWithNote !== undefined && typeof family.denyWithNote !== "boolean") || (family.onApproved !== undefined && typeof family.onApproved !== "function")) throw new Error("LAB_PERMISSION_FAMILY: invalid family");
     for (const tool of family.tools) if (typeof tool !== "string" || builtIn.has(tool) || families.has(tool)) throw new Error(`LAB_PERMISSION_FAMILY: ${String(tool).slice(0, 64)} is already gated`);
     const frozen = Object.freeze({ ...family, tools: Object.freeze([...family.tools]) });
     for (const tool of frozen.tools) families.set(tool, frozen);
@@ -163,12 +163,19 @@ export function installPermissionExtension(pi: PermissionAPI, options: Permissio
         ? resolveTargetPath(input.path, ctx.cwd ?? options.projectRoot ?? process.cwd(), { project: options.projectRoot ?? ctx.cwd ?? process.cwd(), excluded: options.excluded ?? [] }).inside
         : false;
       const decision = decide(mode, toolName, klass, inside, family);
-      if (decision.kind === "run") return undefined;
+      // A family may bind each allowed mutation (e.g. a single-use token for this
+      // toolCallId and input). If it cannot, the call is denied.
+      const approved = (outcome: { block: true; reason: string } | undefined) => {
+        if (outcome || klass !== "family" || !family?.onApproved) return outcome;
+        try { family.onApproved(event.toolCallId, toolName, input); return undefined; }
+        catch { return { block: true as const, reason: denial(toolName, "the tool family could not record the approval, so LAB denied it") }; }
+      };
+      if (decision.kind === "run") return approved(undefined);
       if (decision.kind === "refuse") return { block: true, reason: decision.reason };
       // One prompt at a time; a failed prompt never blocks later ones.
       const result = queue.then(() => ask({ ...event, toolName, input }, ctx));
       queue = result.catch(() => {});
-      return await result;
+      return approved(await result);
     } catch {
       return { block: true, reason: denial(toolName, "the approval prompt failed, so LAB denied it") };
     }

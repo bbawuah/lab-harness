@@ -512,3 +512,22 @@ test("alwaysAsk policy hook (desktop): Allow once / Deny only, asks in every mod
   const bad = harness({});
   try { expect(() => bad.gate.registerFamily({ ...desktop, denyWithNote: "no" as any })).toThrow("LAB_PERMISSION_FAMILY"); } finally { bad.done(); }
 });
+
+test("family onApproved binds only allowed mutations; a throwing hook denies", async () => {
+  const seen: string[] = [];
+  const desktop = { ...alwaysAsk, family: "Desktop", tools: ["lab_desktop"], isRead: (_t: string, i: Record<string, unknown>) => i.operation === "snapshot",
+    onApproved: (id: string, tool: string, input: Record<string, unknown>) => { if (input.operation === "boom") throw new Error("x"); seen.push(`${id}:${tool}:${String(input.operation)}`); },
+    describe: () => ({ heading: "Desktop?", lines: [], scope: "-", scopeLabel: "-" }) };
+  const h = harness({ mode: "auto", answers: ["Allow once", "Deny", "Allow once"] });
+  try {
+    h.gate.registerFamily(desktop);
+    expect(await h.call("lab_desktop", { operation: "snapshot" })).toBeUndefined(); // read: no hook
+    expect(await h.call("lab_desktop", { operation: "click" })).toBeUndefined(); // allowed: hook
+    expect(await h.call("lab_desktop", { operation: "type" })).toMatchObject({ block: true }); // denied: no hook
+    expect((await h.call("lab_desktop", { operation: "boom" })).reason).toContain("could not record the approval");
+    expect(seen).toEqual(["t:lab_desktop:click"]);
+    expect(() => h.gate.registerFamily({ ...desktop, tools: ["x"], onApproved: 1 as any })).toThrow("LAB_PERMISSION_FAMILY");
+  } finally { h.done(); }
+  const ro = harness({ mode: "read-only" });
+  try { ro.gate.registerFamily(desktop); await ro.call("lab_desktop", { operation: "click" }); expect(seen).toHaveLength(1); } finally { ro.done(); }
+});
