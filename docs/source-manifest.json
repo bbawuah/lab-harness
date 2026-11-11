@@ -1823,7 +1823,7 @@
       "status": "added"
     },
     "scripts/browser-windows-diagnostics.ts": {
-      "sha256": "eeee042becf77f757bbda61041b033b95910836dee723005f108015541a5f08a",
+      "sha256": "a8ddd6d40224cc98bf8f6a4d14fdb2bc0c6bce24f6b523155f73c31ef8cb858d",
       "status": "added"
     },
     "scripts/browser-windows-smoke.ts": {
