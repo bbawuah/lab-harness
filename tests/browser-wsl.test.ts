@@ -57,7 +57,7 @@ test('fake interop stages only owned Windows config/profile, checks policy first
   try {
     expect(w.prepare(session, binary, edge, 'fixture.test')).toBe(join(local, 'agent-browser.exe'));
     expect(readFileSync(join(local, 'agent-browser.exe'), 'utf8')).toBe('fixture tool');
-    expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).toMatchObject({ executablePath: edge, allowedDomains: ['fixture.test'], noWebmcp: true });
+    expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).toMatchObject({ executablePath: edge, args: '--edge-skip-compat-layer-relaunch', allowedDomains: ['fixture.test'], noWebmcp: true });
     expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).not.toHaveProperty('profile'); // upstream refuses persistent profile + allowlist
     w.cleanup(session); expect(existsSync(local)).toBe(false);
     const cleanup = scripts.find(s => s.includes('$p.Kill()'))!;

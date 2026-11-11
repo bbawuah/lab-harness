@@ -667,7 +667,7 @@
       "status": "added"
     },
     "docs/browser-wsl-edge.md": {
-      "sha256": "cf1ef6760a38a4d1d175beccc052ef6e4227af16a39ae31ba3a9acaea40d9deb",
+      "sha256": "c51e5d1d28962d04b0006739285a4d080b0337a82463d6b789225f56276b2eea",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1913,7 +1913,7 @@
       "status": "added"
     },
     "src/browser/windows.ts": {
-      "sha256": "8db05a1d99efeb74d1adc162ad6ae261d88d27f90337393927f1ef659ceea5dd",
+      "sha256": "974145479aea5912f924729a4695586a07641a94e361e7a3a595e6f9e26c47bd",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -2105,7 +2105,7 @@
       "status": "added"
     },
     "tests/browser-wsl.test.ts": {
-      "sha256": "65bec971a2bfe5749f5c0efc83a41e440fb438780de75ca399c65ac26e064e39",
+      "sha256": "865533f6a83457bcebc3717b0a5db0b01f930b514f64a987478d3dd1d635e1b7",
       "status": "added"
     },
     "tests/browser.test.ts": {

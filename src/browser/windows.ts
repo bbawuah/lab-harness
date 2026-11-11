@@ -86,7 +86,7 @@ export class WindowsInterop {
     const local = this.localPath(root);
     try {
       copyFileSync(binary, join(local, 'agent-browser.exe'));
-      writeFileSync(join(local, 'config.json'), JSON.stringify({ executablePath: executable, allowedDomains: [hostname], contentBoundaries: true, maxOutput: 12000, noWebmcp: true, idleTimeout: '15m' }));
+      writeFileSync(join(local, 'config.json'), JSON.stringify({ executablePath: executable, args: '--edge-skip-compat-layer-relaunch', allowedDomains: [hostname], contentBoundaries: true, maxOutput: 12000, noWebmcp: true, idleTimeout: '15m' }));
     } catch (e) { this.cleanup(session); throw e; }
     return this.localPath(win32.join(root, 'agent-browser.exe'));
   }

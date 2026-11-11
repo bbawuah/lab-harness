@@ -61,6 +61,11 @@ agent-browser 0.41.0 refuses `allowedDomains` together with an explicit persiste
 `profile` (it cannot contain restored pages early enough). LAB keeps the allowlist
 and uses the launcher's fresh ephemeral profile in the private `TEMP` directory.
 
+Windows Edge receives `--edge-skip-compat-layer-relaunch`, matching
+[Microsoft Playwright's pinned launch switches](https://github.com/microsoft/playwright/blob/cfe490d941f992655948eee8fd4fd94e1c4234bf/packages/playwright-core/src/server/chromium/chromiumSwitches.ts)
+for an Edge compatibility restart that can drop debugging handles. This is a
+launch compatibility setting; enterprise policy and sandbox settings are retained.
+
 The pinned implementation differs from the earlier Playwright bridge proposal:
 [connection.rs](https://github.com/vercel-labs/agent-browser/blob/1453dd37a40c730fe00f592bc32198a896ff8747/cli/src/connection.rs)
 and
