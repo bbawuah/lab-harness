@@ -407,10 +407,12 @@
     "src/pi/appearance.ts",
     "src/pi/browser-extension.ts",
     "src/pi/commands.ts",
+    "src/pi/composer.ts",
     "src/pi/display.ts",
     "src/pi/header.ts",
     "src/pi/permission-extension.ts",
     "src/pi/permission.ts",
+    "src/pi/relay-display.ts",
     "src/pi/relay-extension.ts",
     "src/pi/status-indicator.ts",
     "src/pi/terminal-mark.json",
@@ -1641,7 +1643,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "a0fedcd5d965a0e93140de0e1b59a1e2fb7b7c2956716f6cf6661de6401f1839",
+      "sha256": "f0d5ca4406c8e458a08f2513ba565495c7201db1f6662ee8aaa2fce902b9e1c9",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1970,6 +1972,10 @@
       "sha256": "dfd95db53c6352de7da93aedbb6bf56001f0ba5ea0362ba67f74bea7767eaba3",
       "status": "added"
     },
+    "src/pi/composer.ts": {
+      "sha256": "754cd5f2ac3fcf11cf347a2cccd74a7dd9e4f3b277c786b77b3338925d63ddb9",
+      "status": "added"
+    },
     "src/pi/display.ts": {
       "sha256": "db9572f56dd349d847364eb97fc4ae14d28e778361c547fd8faf7e04664a081d",
       "status": "added"
@@ -1986,8 +1992,12 @@
       "sha256": "ce9aeb951decf348460f0c204aa08bba8cd3436c5e9914913b38683dd33a8b2e",
       "status": "added"
     },
+    "src/pi/relay-display.ts": {
+      "sha256": "126a1816eff38bb10663f9f7b0849d0b27cd68d07c12cfb9923b8767b67d8bfc",
+      "status": "added"
+    },
     "src/pi/relay-extension.ts": {
-      "sha256": "c15faa7e6595f3d94f07ea45dbb7d431df758ca2b2ea06043ffadbc58382e30b",
+      "sha256": "9674ed3511373ebf7739978d2a9e1fae087c41e197306d08327c66efa1ed4fef",
       "status": "added"
     },
     "src/pi/status-indicator.ts": {
@@ -2011,7 +2021,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "6756d07d1ec54a1bf5abae7b3a209dae3bc85a78a464c82f3b00286e1944dd3b",
+      "sha256": "0622c515635c6d36cd7684251be6f676b431faa10d60b03203f224be324a0e43",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -2037,7 +2047,7 @@
       "originalSHA256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58"
     },
     "src/relay/workspace.ts": {
-      "sha256": "5be557bc597b051f9f5d2e8eb40510b78253db7db0f3302614ed619c1b3623ad",
+      "sha256": "ab582744d6d2f99fcae7e0b3d946ebf6f8b2b07a06aeda5bcbb7b8e63b4244d0",
       "status": "added"
     },
     "src/runtime/pi.ts": {
@@ -2202,7 +2212,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "c64ae62fc70b83d44ed2e0195e6259e54ca7e396d4c7f851772fea685ef3abff",
+      "sha256": "5c43346e83b1a41a5f0042beb1cd2fc258c635ab1e7474e4cf7758152e9b6a3f",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -2218,7 +2228,7 @@
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
-      "sha256": "f7b5238901ed9c5ddcb343e114ce98a40ddfac8128e567347ccd236a726355ae",
+      "sha256": "384392aed39e5103ea836137c8c8326cbd18b14b74c4534c9ac17b43e1c84a2c",
       "status": "added"
     },
     "tests/relay-loader-env-child.ts": {
@@ -2234,7 +2244,7 @@
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
-      "sha256": "e9acb4d1e3398490e7f5b46408dd70c3945de91c8ed48ba29e59d0e17b1df949",
+      "sha256": "f2107c70dc8a0c60f96caeb410f6e459686c40321a5ba9632048c71cadf0fdfb",
       "status": "added"
     },
     "tests/relay.test.ts": {

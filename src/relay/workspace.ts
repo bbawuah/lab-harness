@@ -34,7 +34,7 @@ export interface BoundWorkspaceRelay {
   };
   send(input: Extract<RelayRequest, { action: "send" }>): Receipt;
   inbox(input?: { limit?: number; waitMs?: number }, signal?: AbortSignal): Promise<{
-    messages: Envelope[]; unread: number; timedOut: boolean;
+    messages: (Envelope & { senderName?: string })[]; unread: number; timedOut: boolean;
   }>;
   ack(input: { ids: string[] }): { acknowledged: number; ignored: number };
   heartbeat(): void;
@@ -443,7 +443,7 @@ export function openBoundWorkspaceRelay(runRef: string, sessionId: string, optio
       try {
         for (;;) {
           if (signal?.aborted || waiter.signal.aborted) throw new DOMException("Relay inbox cancelled", "AbortError");
-          const result = locked(() => ({ messages: h.service.read({ namespace: ref.namespace, peerId: bound.peerId, limit }), unread: h.store.unread(ref.namespace, bound.peerId), timedOut: false }));
+          const result = locked(() => ({ messages: h.service.read({ namespace: ref.namespace, peerId: bound.peerId, limit }).map(message => ({ ...message, senderName: h.store.getPeer(ref.namespace, message.from)?.name })), unread: h.store.unread(ref.namespace, bound.peerId), timedOut: false }));
           if (result.messages.length) return output(result);
           const remaining = deadline - performance.now();
           if (remaining <= 0) return output({ ...result, timedOut: waitMs > 0 });

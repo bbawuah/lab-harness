@@ -61,7 +61,9 @@ skills, while installed runtime and private settings stay separate.
 The default workspace has fullscreen Pi on the left and your regular
 interactive shell on the right. Both start in the selected project; your shell
 startup files may intentionally change its directory. The Pi composer stays at
-the bottom while the conversation scrolls above it.
+the bottom while the conversation scrolls above it. Its double-rule border
+and Message label distinguish the draft from sent messages. The editor grows
+with the draft, then scrolls internally when it reaches its visible-line limit.
 
 Use Ctrl+B, then h or l to focus left or right; Ctrl+B, then Tab cycles panes.
 Ctrl+B, then z zooms the focused pane, and Ctrl+B, then ? lists Herdr controls.
@@ -269,6 +271,11 @@ In session B, read:
 ~~~text
 /relay-inbox
 ~~~
+
+Incoming messages appear in a labeled Relay block with the sender session and
+message body. Press Ctrl+O to expand details, including the message ID needed
+for acknowledgement or a reply. The same compact display applies to the
+model’s relay_inbox tool; structured tool results retain their metadata.
 
 Reading again returns the same unacknowledged message. After handling it:
 
