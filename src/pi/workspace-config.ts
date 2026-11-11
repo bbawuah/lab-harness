@@ -5,13 +5,18 @@ import { homedir } from "node:os";
 import { createInterface } from "node:readline/promises";
 import { randomUUID } from "node:crypto";
 
-export type WorkspaceRoute = { version: 1; kind: "local" | "litellm"; endpoint: string; model: string };
+export type WorkspaceRoute = { version: 1; kind: "local" | "litellm" | "anthropic" | "openai"; endpoint: string; model: string };
+export const cloudEndpoints = { anthropic: "https://api.anthropic.com", openai: "https://api.openai.com/v1" } as const;
+export function workspaceProvider(route: WorkspaceRoute): string {
+  return route.kind === "anthropic" || route.kind === "openai" ? route.kind : "lab-workspace";
+}
 export function validateRoute(value: unknown): WorkspaceRoute {
   const route = value as WorkspaceRoute;
-  if (!route || route.version !== 1 || !["local", "litellm"].includes(route.kind)) throw new Error("Invalid workspace route; run ./lab --configure");
+  if (!route || route.version !== 1 || !["local", "litellm", "anthropic", "openai"].includes(route.kind)) throw new Error("Invalid workspace route; run ./lab --configure");
   let url: URL;
   try { url = new URL(route.endpoint); } catch { throw new Error("Endpoint must be an explicit HTTP(S) URL"); }
   if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) throw new Error("Endpoint cannot contain credentials, query, or fragment");
+  if ((route.kind === "anthropic" || route.kind === "openai") && url.toString().replace(/\/$/, "") !== cloudEndpoints[route.kind]) throw new Error("Invalid workspace route: direct providers require their official HTTPS endpoint");
   if (typeof route.model !== "string" || !route.model.trim() || route.model.length > 200 || /[\x00-\x20\x7f]/.test(route.model)) throw new Error("Enter the exact model ID or LiteLLM alias without spaces");
   return { version: 1, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model };
 }
@@ -60,9 +65,9 @@ export function writePrivate(path: string, text: string): void {
   writeFileSync(temporary, text, { flag: "wx", mode: 0o600 }); renameSync(temporary, path);
 }
 /** No echo, shell, command argument, or readline history contains this input. */
-export async function readPrivateKey(): Promise<string> {
+export async function readPrivateKey(required = false): Promise<string> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error("Private key input requires an interactive terminal");
-  process.stdout.write("API key (private; blank for unauthenticated local server): ");
+  process.stdout.write(required ? "API key (private; required): " : "API key (private; blank for unauthenticated local server): ");
   const wasRaw = process.stdin.isRaw;
   process.stdin.setRawMode(true); process.stdin.resume();
   return new Promise((resolve, reject) => {
@@ -85,17 +90,22 @@ export async function readPrivateKey(): Promise<string> {
 }
 export async function configureWorkspace(root: string): Promise<WorkspaceRoute> {
   if (!process.stdin.isTTY || !process.stdout.isTTY) throw new Error("First run requires a terminal; run ./lab --configure interactively");
-  process.stdout.write("LAB interactive coding workspace. Controlled LAB tasks remain unavailable.\nChoose an existing endpoint; setup makes no model request.\nlocal = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpoint.\n");
+  process.stdout.write("LAB interactive coding workspace. Controlled LAB tasks remain unavailable.\nChoose an existing endpoint; setup makes no model request.\nanthropic / openai = direct cloud API with your own key. local = local/self-hosted OpenAI-compatible server, including LAN or tailnet URLs. litellm = your existing LiteLLM endpoint.\n");
   const rl = createInterface({ input: process.stdin, output: process.stdout });
   let route: WorkspaceRoute;
   try {
-    const kind = (await rl.question("Route (local or litellm): ")).trim();
-    const endpoint = (await rl.question("Explicit OpenAI-compatible base URL (including /v1 where required): ")).trim();
-    const model = (await rl.question("Exact local model ID or existing LiteLLM alias: ")).trim();
+    let kind: string;
+    do {
+      kind = (await rl.question("Route (anthropic, openai, local or litellm): ")).trim();
+      if (!["anthropic", "openai", "local", "litellm"].includes(kind)) process.stdout.write("Choose anthropic, openai, local or litellm.\n");
+    } while (!["anthropic", "openai", "local", "litellm"].includes(kind));
+    const endpoint = kind === "anthropic" || kind === "openai" ? cloudEndpoints[kind] : (await rl.question("Explicit OpenAI-compatible base URL (including /v1 where required): ")).trim();
+    if (kind === "anthropic" || kind === "openai") process.stdout.write(`Using ${endpoint}. Enter a model ID supported by the bundled Pi runtime and your account.\n`);
+    const model = (await rl.question("Exact model ID or existing LiteLLM alias: ")).trim();
     route = validateRoute({ version: 1, kind, endpoint, model });
   } finally { rl.close(); }
-  const key = await readPrivateKey();
-  if (route.kind === "litellm" && !key) throw new Error("LiteLLM route requires an explicit key");
+  const key = await readPrivateKey(route.kind !== "local");
+  if (route.kind !== "local" && !key) throw new Error("Invalid workspace route: this provider requires an explicit API key");
   privateDirectory(root);
   writePrivate(join(root, "key"), key);
   writePrivate(join(root, "route.json"), JSON.stringify(route) + "\n");
@@ -104,9 +114,12 @@ export async function configureWorkspace(root: string): Promise<WorkspaceRoute> 
 export function loadWorkspaceRoute(root: string): { route: WorkspaceRoute; key: string } {
   const route = validateRoute(JSON.parse(readPrivate(join(root, "route.json"))));
   const key = readPrivate(join(root, "key"));
-  if (/[\x00-\x1f\x7f]/.test(key) || key.length > 8192 || route.kind === "litellm" && !key) throw new Error("Invalid private route key; run ./lab --configure");
+  if (/[\x00-\x1f\x7f]/.test(key) || key.length > 8192 || route.kind !== "local" && !key) throw new Error("Invalid private route key; run ./lab --configure");
   return { route, key };
 }
 export function modelsForRoute(route: WorkspaceRoute): unknown {
+  if (route.kind === "anthropic" || route.kind === "openai") {
+    return { providers: { [route.kind]: { baseUrl: route.endpoint, apiKey: "$LAB_WORKSPACE_API_KEY" } } };
+  }
   return { providers: { "lab-workspace": { baseUrl: route.endpoint, api: "openai-completions", apiKey: "$LAB_WORKSPACE_API_KEY", models: [{ id: route.model, name: route.model, reasoning: false, input: ["text"], contextWindow: 8192, maxTokens: 1024, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }] } } };
 }

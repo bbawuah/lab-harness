@@ -1,11 +1,45 @@
 import { afterEach, expect, test } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { homedir, tmpdir } from "node:os";
-import { loadWorkspaceRoute, modelsForRoute, readPrivate, validateRoute, writePrivate } from "../src/pi/workspace-config.ts";
+import { cloudEndpoints, loadWorkspaceRoute, modelsForRoute, readPrivate, validateRoute, workspaceProvider, writePrivate } from "../src/pi/workspace-config.ts";
 const roots: string[] = [];
-const temporary = () => { const root = mkdtempSync(join(tmpdir(), "lab-route-")); roots.push(root); return root; };
+const temporary = () => { const root = realpathSync(mkdtempSync(join(tmpdir(), "lab-route-"))); roots.push(root); return root; };
 afterEach(() => { for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true }); });
+test("direct cloud routes require official endpoints and private keys, retaining native model metadata", () => {
+  for (const kind of ["anthropic", "openai"] as const) {
+    const route = validateRoute({ version: 1, kind, endpoint: cloudEndpoints[kind], model: "account-model" });
+    expect(workspaceProvider(route)).toBe(kind);
+    expect(modelsForRoute(route)).toEqual({ providers: { [kind]: { baseUrl: cloudEndpoints[kind], apiKey: "$LAB_WORKSPACE_API_KEY" } } });
+    for (const endpoint of ["http://api.openai.com/v1", "https://other.invalid/v1", cloudEndpoints[kind] + "/wrong"]) expect(() => validateRoute({ ...route, endpoint })).toThrow("official HTTPS");
+    const root = temporary();
+    writePrivate(join(root, "route.json"), JSON.stringify(route)); writePrivate(join(root, "key"), "");
+    expect(() => loadWorkspaceRoute(root)).toThrow("Invalid private route key");
+    writePrivate(join(root, "key"), "private-provider-fixture");
+    expect(loadWorkspaceRoute(root).route).toEqual(route);
+  }
+});
+
+test("interactive cloud setup skips URL input, hides keys and rejects empty keys without replacing configuration", async () => {
+  for (const kind of ["anthropic", "openai"] as const) for (const key of ["private-fixture-token", ""]) {
+    const root = temporary(); writePrivate(join(root, "route.json"), "previous route"); writePrivate(join(root, "key"), "previous key");
+    const code = `import {configureWorkspace} from ${JSON.stringify(resolve(import.meta.dir, "../src/pi/workspace-config.ts"))}; try { await configureWorkspace(process.argv[1]); } catch { process.exitCode=1; }`;
+    const responses: [string, string][] = [["Route (anthropic, openai, local or litellm): ", kind + "\n"], ["Exact model ID or existing LiteLLM alias: ", "fixture-model\n"], ["API key (private; required): ", key + "\n"]];
+    let output = "", cursor = 0;
+    const child = Bun.spawn([process.execPath, "--no-env-file", "--eval", code, root], { env: { PATH: "/usr/bin:/bin", HOME: root }, terminal: { cols: 100, rows: 30, data(terminal, bytes) {
+      output += new TextDecoder().decode(bytes); const next = responses[0];
+      if (next) { const at = output.indexOf(next[0], cursor); if (at >= 0) { cursor = at + next[0].length; responses.shift(); terminal.write(next[1]); } }
+    } } });
+    const timer = setTimeout(() => child.kill("SIGKILL"), 5000);
+    try {
+      expect(await child.exited, output).toBe(key ? 0 : 1); expect(responses).toHaveLength(0);
+      expect(output).not.toContain("private-fixture-token"); expect(output).not.toContain("Explicit OpenAI-compatible base URL");
+      expect(readPrivate(join(root, "key"))).toBe(key || "previous key");
+      if (key) expect(loadWorkspaceRoute(root).route.kind).toBe(kind);
+      else expect(readPrivate(join(root, "route.json"))).toBe("previous route");
+    } finally { clearTimeout(timer); child.terminal!.close(); }
+  }
+});
 test("self-hosted routes accept remote HTTP(S) endpoints and refuse embedded credentials or invalid URLs", () => {
   const route = validateRoute({version:1,kind:"local",endpoint:"http://127.0.0.1:8080/v1/",model:"local-model"});
   expect(route.endpoint).toBe("http://127.0.0.1:8080/v1");

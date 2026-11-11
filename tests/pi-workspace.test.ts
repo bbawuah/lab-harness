@@ -34,12 +34,19 @@ test("native launch uses caller or explicit project B while all startup writes s
   // A captured RegularShell includes its input environment. Keep this fixture
   // entirely synthetic rather than serializing the developer's real environment.
   const env:NodeJS.ProcessEnv={HOME:home,CAPTURE_PATH:capture,PATH:"/usr/bin:/bin",SHELL:"/bin/sh",LANG:"C",LAB_CALLER_PATH_PRESENT:"1",LAB_CALLER_PATH:"/synthetic/original-bin",BUN_INSTALL_CACHE_DIR:"/app-injected-cache",LAB_CALLER_BUN_CACHE_PRESENT:"0",BUN_RUNTIME_TRANSPILER_CACHE_PATH:"/app-injected-transpiler",LAB_CALLER_BUN_TRANSPILE_PRESENT:"1",LAB_CALLER_BUN_TRANSPILE:"/synthetic/original-transpiler"};
-  for(const [explicit,singlePane] of [[false,false],[true,false],[true,true]]) {
+  for(const [explicit,singlePane,kind] of [[false,false,"local"],[true,false,"local"],[true,true,"local"],[true,false,"anthropic"],[true,false,"openai"]] as const) {
+    const endpoint = kind === "anthropic" ? "https://api.anthropic.com" : kind === "openai" ? "https://api.openai.com/v1" : "http://127.0.0.1:9/v1";
+    writeFileSync(join(state,"route.json"),JSON.stringify({version:1,kind,endpoint,model:"fixture-no-inference"}),{mode:0o600});
+    writeFileSync(join(state,"key"),kind === "local" ? "" : "private-cloud-fixture",{mode:0o600});
     const code=`import {runInteractiveWorkspace} from ${JSON.stringify(join(install,"src/pi/workspace.ts"))}; Object.defineProperty(process.stdin,"isTTY",{value:true}); Object.defineProperty(process.stdout,"isTTY",{value:true}); process.exitCode=await runInteractiveWorkspace(${JSON.stringify({...(explicit?{project}:{}),singlePane})});`;
     const result=Bun.spawnSync([process.execPath,"--no-env-file","--no-install","--eval",code],{cwd:explicit?install:project,env});
     expect(result.stderr.toString()).toBe(""); expect(result.exitCode).toBe(0);
     const launch=JSON.parse(readFileSync(capture,"utf8"));
     expect(launch.cwd).toBe(project);
+    const provider = kind === "local" ? "lab-workspace" : kind;
+    expect(launch.command[launch.command.indexOf("--provider")+1]).toBe(provider);
+    expect(JSON.parse(readFileSync(join(launch.environment.PI_CODING_AGENT_DIR,"settings.json"),"utf8")).defaultProvider).toBe(provider);
+    expect(launch.command.join(" ")).not.toContain("private-cloud-fixture");
     expect(launch.environment.LAB_WORKSPACE_ROOT).toBe(project);
     expect(JSON.parse(launch.environment.LAB_WORKSPACE_BINDING)).toMatchObject({root:project,device:statSync(project).dev,inode:statSync(project).ino});
     expect(launch.environment.LAB_INSTALL_ROOT).toBe(install);

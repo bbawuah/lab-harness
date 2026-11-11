@@ -56,7 +56,7 @@ test("curl from fresh HOME selects a valid project before route setup, retries u
     const result = await terminalRun(f, ["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], f.home, [
       ["Project directory: ", "~\n"], ["Project directory: ", "missing\n"], ["Project directory: ", ".local/share/lab-harness\n"],
       ["Project directory: ", "project link\n"], ["Project directory: ", "~/Projects/project B with spaces\n"],
-      ["Route (local or litellm): ", "local\n"], ["base URL (including /v1 where required): ", "http://127.0.0.1:9/v1\n"],
+      ["Route (anthropic, openai, local or litellm): ", "local\n"], ["base URL (including /v1 where required): ", "http://127.0.0.1:9/v1\n"],
       ["model ID or existing LiteLLM alias: ", "fixture-no-inference\n"], ["API key (private; blank for unauthenticated local server): ", "\n"],
     ]);
     expect(result.code, result.output.slice(-3000)).toBe(0); expect(result.remaining).toBe(0);

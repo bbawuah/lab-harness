@@ -445,6 +445,7 @@
     "tests/bun-bootstrap.test.ts",
     "tests/cleanup-child.ts",
     "tests/cleanup.test.ts",
+    "tests/cloud-provider-actual.test.ts",
     "tests/context-cli.test.ts",
     "tests/context.test.ts",
     "tests/crash-child.ts",
@@ -518,7 +519,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "9ef3a45448ce87bb5d6095de0a0076976784e4712eb639619ee408c6febc8871",
+      "sha256": "3ef1ea222c4e51491ea8a6097972e2cbc670aa9aa306b6fd76085b4c829d387b",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -1651,7 +1652,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "0fbe987c28e0e68b6c0e0f28210d5258c4859590173b52f8773c34a9a4ef2aaf",
+      "sha256": "2feca18d06832584f468485f878dc5926777d822ad08540d02675990dd9b5fad",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1989,7 +1990,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "0fc2b6ce13ec9cbe06aa5a0676a8ea44f4e4dfc4a605a81332d5b87ed83e6170",
+      "sha256": "70a5247ff8e0525834afab25ee714ee0b1a06031901d7b4fcc55a4a9241f9598",
       "status": "added"
     },
     "src/pi/composer.ts": {
@@ -2041,7 +2042,7 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "647e4df40e91ecb018ad3bd97a0118c08cb03b4879a00abd64a11fa55189e05d",
+      "sha256": "63bb3319cf7a4704c106a9f9a0839fec4f84fc0b2d61312f50f41d0ae5b6a5ea",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
@@ -2053,7 +2054,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "1144fb6fb3d854129ce2fe507b2f35d565767f5adac0b0868df17ff25ec438d1",
+      "sha256": "2e976975715aa974573edaff10d3ebddf580a931e11e57156e366afe43084f5e",
       "status": "added"
     },
     "src/project.ts": {
@@ -2137,6 +2138,10 @@
       "sha256": "27288b4652a7991c5f737043af84225880285fc36988436212db47d61549027b",
       "status": "unchanged",
       "originalSHA256": "27288b4652a7991c5f737043af84225880285fc36988436212db47d61549027b"
+    },
+    "tests/cloud-provider-actual.test.ts": {
+      "sha256": "3a8293596f8344393d4cdb8e92cffead855c8ce3495427907dce62526d8cf63e",
+      "status": "added"
     },
     "tests/context-cli.test.ts": {
       "sha256": "cf79603a6cbe014aeab840bc976f63a5276a962e7d9bac439e1937da0cb2cb5e",
@@ -2227,7 +2232,7 @@
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {
-      "sha256": "742e251f3438585d8a3c56e23770c890f3c6ee9ca240d7488d17b164704b17a2",
+      "sha256": "7205a31975cc8b4356363031cd0efff395ef7a6e5df3a43a6c15fe5c4805977b",
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
@@ -2235,7 +2240,7 @@
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "2caeacd870f278c10cbe63ec91d371a26c95808eac8f74347a94d8ca3152646e",
+      "sha256": "26963477f60c1a4b686d737570d40eaab96fc7999b3ebbeb2f0071632849ee26",
       "status": "added"
     },
     "tests/process-crash.test.ts": {
@@ -2244,7 +2249,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "ec31f1c347b6f401d5742bb819a6386633ca72b011e9d1a50e222fbc28b7dfbf",
+      "sha256": "07c9e9e61c82073be3233172d4d5a06781be22a44e4c18479e371b9e44502b04",
       "status": "added"
     },
     "tests/project.test.ts": {

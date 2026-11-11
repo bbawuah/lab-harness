@@ -16,9 +16,10 @@ LiteLLM service. Setup installs runtimes, not model weights or an inference serv
 2. From home, choose an existing project such as ~/Projects/my-app. Enter the
    path without shell quotes; spaces work. Home and LAB's application folders
    cannot be the project. Blank input, Ctrl-C or Ctrl-D cancels selection.
-3. Choose local for a local/self-hosted **OpenAI-compatible** server, including
-   LAN or tailnet URLs, or litellm for your existing LiteLLM service. Enter its
-   exact base URL, model ID/alias and private API key. Key input is hidden; blank
+3. Choose anthropic or openai to connect directly with your API key, or choose
+   local for a self-hosted **OpenAI-compatible** server (including LAN/tailnet),
+   or litellm for your gateway. Cloud routes select the official URL automatically;
+   local and litellm ask for a base URL. Enter the exact model ID/alias and key. Key input is hidden; blank
    is allowed for an unauthenticated self-hosted endpoint. No prompt is sent
    during setup. Review Pi's native project-trust prompt.
 4. Installation creates an owned ~/.local/bin/lab command when there is no
@@ -392,8 +393,24 @@ or reverse proxy. You start/operate that server yourself.
 
 Use an existing LiteLLM endpoint and its exact public model alias for litellm;
 LAB is a client and deploys no gateway. Do not put credentials in the URL.
-Dedicated OpenAI/Anthropic provider onboarding and model-profile switching are
-separately researched work, not features of this current two-route setup.
+For direct cloud access on a MacBook or another supported host, run:
+
+~~~sh
+lab --configure
+~~~
+
+Choose `anthropic` or `openai`, enter a model ID supported by your account and the
+bundled Pi model catalog, then enter your API key at the hidden prompt. There is
+no gateway or base URL to configure. Keys are required for these routes and are
+stored in the same private state as existing routes; setup makes no API request.
+Native Pi supplies the provider's API protocol, model limits, reasoning and image
+capabilities. The cloud routes are fixed to the official HTTPS endpoints. Use
+`/model` for the available catalog; an unknown startup model is reported by Pi.
+Changing providers replaces the saved route/key; multiple saved profiles are not
+yet supported. Existing transcripts remain on disk.
+
+Authentication follows the [OpenAI API documentation](https://developers.openai.com/api/reference/overview)
+and [Anthropic API documentation](https://platform.claude.com/docs/en/api/overview).
 Do not configure Anthropic's Messages endpoint as if it were Chat Completions.
 Changing endpoint/model currently uses lab --configure and a fresh launch.
 

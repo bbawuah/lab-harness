@@ -48,7 +48,7 @@ export function shellHelp(): string {
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),
     "Permission modes: ask confirms every edit, write, shell command, browser change and Relay send; edits",
     "auto-approves file edits inside the project; read-only refuses changes; auto asks nothing (explicit opt-in).",
-    "Setup: local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.",
+    "Setup: anthropic/openai = direct API key; local = self-hosted OpenAI-compatible endpoint (LAN/tailnet allowed); litellm = existing gateway.",
     "You provide the model server or service. Setup sends no model prompt and installs no weights.",
     "In Pi: /lab-help for LAB search/skills/Relay commands; /exit to leave.",
     "Guide: https://github.com/bbawuah/lab-harness/blob/main/docs/user-guide.md",

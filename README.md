@@ -32,18 +32,19 @@ such as `~/Projects/my-app`. Enter the path without shell quotes; spaces work.
 Blank input, Ctrl-C or Ctrl-D cancels. LAB never selects home for source search.
 Model setup then asks for:
 
-1. `local` for a local/self-hosted OpenAI-compatible server, or `litellm` for
-   your existing LiteLLM endpoint. Self-hosted URLs may be on any HTTP(S) host,
-   including LAN and tailnet addresses.
-2. The existing OpenAI-compatible base URL, including `/v1` when required.
-3. The exact local model ID or existing LiteLLM alias, then its API key.
+1. `anthropic` or `openai` to use your API key directly, `local` for a self-hosted
+   OpenAI-compatible server, or `litellm` for an existing gateway.
+2. Cloud routes use their official HTTPS endpoint automatically. For local or
+   LiteLLM, enter the base URL, including `/v1` when required; LAN and tailnet URLs work.
+3. The exact model ID supported by your account and bundled Pi runtime, or the
+   gateway's alias, then the API key.
    Key input is hidden; leave it blank for an unauthenticated local server.
 
 Pi may also ask whether you trust the selected project folder. Review that native
 prompt and make your choice; LAB does not bypass it.
 
-**You provide the model endpoint.** Start your local model server separately,
-or use an existing LiteLLM service. Installation does not deploy LiteLLM, download
+**You provide an API key or model service.** Anthropic and OpenAI connect directly.
+For self-hosted use, start your server separately or use an existing LiteLLM service. Installation does not deploy LiteLLM, download
 model weights, send a model prompt or choose a paid model. Once the TUI opens,
 type a prompt. Use `/exit` to leave.
 
