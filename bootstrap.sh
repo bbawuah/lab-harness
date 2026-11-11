@@ -47,6 +47,10 @@ main() {
     diff -qr -x .tmp -x node_modules "$bootstrap_stage/source" "$bootstrap_destination" >/dev/null || bootstrap_fail 'Installed release source changed or is partial; move it aside and rerun.'
   fi
   "$bootstrap_destination/install.sh" || bootstrap_fail 'Installation failed; rerun to reuse verified runtime caches.'
+  [ ! -L "$bootstrap_destination/.tmp" ] || bootstrap_fail "Unsafe release cache directory."
+  mkdir -p "$bootstrap_destination/.tmp"
+  printf "%s\n" "$bootstrap_commit" > "$bootstrap_stage/release-commit"
+  mv -f "$bootstrap_stage/release-commit" "$bootstrap_destination/.tmp/release-commit"
   bootstrap_launcher=$bootstrap_root/lab
   if [ -e "$bootstrap_launcher" ] || [ -L "$bootstrap_launcher" ]; then
     [ -f "$bootstrap_launcher" ] && [ ! -L "$bootstrap_launcher" ] && \

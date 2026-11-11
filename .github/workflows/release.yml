@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Require main bootstrap to pin this release
+        run: bun --no-env-file --no-install scripts/release/pin.ts tag "$GITHUB_REF_NAME"
+      - name: Install development tooling and pinned runtimes
+        run: PATH=/usr/bin:/bin ./install.sh
+      - name: Check tests, types and publication integrity
+        run: bun --no-env-file run check
+      - name: Build release bundle
+        run: bun --no-env-file --no-install scripts/bundle/build.ts --commit "$GITHUB_SHA" --target linux-x64
+      - name: Prepare test image
+        run: docker pull --platform linux/amd64 ubuntu:24.04
+      - name: Verify actual offline install and smoke as a non-root user
+        run: scripts/bundle/test-offline.sh
+      - name: Upload qualified release assets
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: offline-release
+          path: .tmp/bundles/linux-x64/*
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: qualify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: offline-release
+          path: release-assets
+      - name: Publish qualified bundle and checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > release-notes.md <<'NOTES'
+          Offline bundle for Linux x64, including WSL2. Contains exact-commit LAB source and checksum-pinned Bun, Pi, Herdr, rg, fd and agent-browser. No model weights or browser are included.
+
+          Download the tarball and SHA256SUMS, verify with sha256sum -c SHA256SUMS before extraction, then run sh install.sh from the extracted bundle. The same tarball can be transferred manually from the Mac mini.
+
+          Installation and Herdr smoke passed in a non-root Ubuntu container with --network none. Target WSL2 model and Windows Edge qualification remain separate. See docs/airgap-install.md and docs/release.md at this tag.
+          NOTES
+          gh release create "$GITHUB_REF_NAME" release-assets/* --repo "$GITHUB_REPOSITORY" --verify-tag --title "LAB-HARNESS $GITHUB_REF_NAME" --notes-file release-notes.md

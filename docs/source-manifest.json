@@ -40,6 +40,7 @@
   "publicationFileAllowlist": [
     ".bun-version",
     ".github/workflows/ci.yml",
+    ".github/workflows/release.yml",
     ".gitignore",
     "NOTICE.md",
     "README.md",
@@ -378,6 +379,8 @@
     "scripts/bundle/licenses.json",
     "scripts/bundle/pack.ts",
     "scripts/bundle/test-offline.sh",
+    "scripts/bundle/uninstall.sh",
+    "scripts/bundle/uninstall.ts",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
@@ -389,6 +392,8 @@
     "scripts/pi/smoke-header.ts",
     "scripts/publication-policy.ts",
     "scripts/refresh-publication.ts",
+    "scripts/release/fetch.sh",
+    "scripts/release/pin.ts",
     "scripts/runtime-bun.sh",
     "scripts/start.ts",
     "src/admission.ts",
@@ -445,7 +450,10 @@
     "tests/browser-ux.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
+    "tests/bundle-fetch.test.ts",
     "tests/bundle-manifest.test.ts",
+    "tests/bundle-pin.test.ts",
+    "tests/bundle-uninstall.test.ts",
     "tests/bundle-version.test.ts",
     "tests/cleanup-child.ts",
     "tests/cleanup.test.ts",
@@ -509,7 +517,11 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "0bd0644dc7ae390a175e6fc82feea2e0ab396866ade35d3efe7df7b7140e0e03",
+      "sha256": "1209d02217208319df44d863551ff8060883e8ade3b34afa8dad5969102d0568",
+      "status": "added"
+    },
+    ".github/workflows/release.yml": {
+      "sha256": "7d4e994bb85a82e42c8902b21f85afd7e1ef10767b2b18b678015df7bfce3c7b",
       "status": "added"
     },
     ".gitignore": {
@@ -561,7 +573,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "7b288d8cff3f826480eb9c1d2deda623cbe9852bd5008a3a9b8629af661712b3",
+      "sha256": "fba82bf6415c0316f0304ac74408fbb17483313df4fcce11e9a1d96e29a87dd7",
       "status": "added"
     },
     "bun.lock": {
@@ -602,7 +614,7 @@
       "status": "added"
     },
     "docs/airgap-install.md": {
-      "sha256": "8bf59be7479650bad8fec6cf5ecea0e4290e47097a14bf6ab23e1e7c6895da79",
+      "sha256": "7f68103c18e315f715fb858ccb97ab1145c189b3e720f3683bb8740e9fc0dfeb",
       "status": "added"
     },
     "docs/airgap-production-plan.md": {
@@ -1162,7 +1174,7 @@
       "status": "added"
     },
     "docs/release.md": {
-      "sha256": "dcb5394b0d3ebe6947c6d8eb4d7e51a4ebfa0dc7da80cc4147442b2a22f499c5",
+      "sha256": "c7f8937516963bfbabd5f2186ea1a022f55359cbf476442f6248b9e7fc95ebc5",
       "status": "added"
     },
     "docs/research/agent-tools/CONTINUATION-CONTRACT.md": {
@@ -1858,7 +1870,15 @@
       "status": "added"
     },
     "scripts/bundle/test-offline.sh": {
-      "sha256": "1380cc63bbf9b545c917da0fc8db11a3dd1471022043ea77e144e9d3b79fb4aa",
+      "sha256": "20c10316d89af124e8b0b48bb5818203edb6958f27307f24c1183aa302da57c0",
+      "status": "added"
+    },
+    "scripts/bundle/uninstall.sh": {
+      "sha256": "aeca6dbd02e10e37ad3773b1cf62695df84b7bccf4d1f878a775bd302c191c92",
+      "status": "added"
+    },
+    "scripts/bundle/uninstall.ts": {
+      "sha256": "4bc3ab8c3d6b7b0bc5ac63cb3e7ee077855e07c1dd31f33f2a4e9f8ad29be527",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1903,6 +1923,14 @@
     },
     "scripts/refresh-publication.ts": {
       "sha256": "f9bad851b8c85842caf3b699101f8ed2b519d408464d65e6468cf07ec2edce19",
+      "status": "added"
+    },
+    "scripts/release/fetch.sh": {
+      "sha256": "19d153ce39efbf1931162c02dea50155bec155698043eb0bfaa5c339e0492859",
+      "status": "added"
+    },
+    "scripts/release/pin.ts": {
+      "sha256": "ff6887414402cffbafa681d62128f35abe5f872d15c4993bafd9954d245a82bb",
       "status": "added"
     },
     "scripts/runtime-bun.sh": {
@@ -2139,8 +2167,20 @@
       "sha256": "0faa47dcad069850c3b442155c8f50d2a50ee7d28f894d0158fbbcfef65c057a",
       "status": "added"
     },
+    "tests/bundle-fetch.test.ts": {
+      "sha256": "c7ddb0d778bf5f29a47df7e4d3c0b8b1259a5e4f05a169d878d2277c7dcd928a",
+      "status": "added"
+    },
     "tests/bundle-manifest.test.ts": {
       "sha256": "c0ce4044a9a893ab0994f28946eef95d55e2cfe34ad67a60ad241e742ead6829",
+      "status": "added"
+    },
+    "tests/bundle-pin.test.ts": {
+      "sha256": "12bdcfbe48da982ac09a30311c83d2c4405820ec12651e8e404b12b7081d0018",
+      "status": "added"
+    },
+    "tests/bundle-uninstall.test.ts": {
+      "sha256": "35c266ebdc4fdf2bcac95e0926cd6d196bd25f0fdad41e2fcfa4fdff5c87984d",
       "status": "added"
     },
     "tests/bundle-version.test.ts": {
