@@ -1,14 +1,30 @@
-/** Temporary CI-only static probe: no browser, user data or inherited values are printed. */
-import { spawnSync } from 'node:child_process';
-import { win32 } from 'node:path';
-import { interopEnvironment } from '../src/browser/windows.ts';
-const exe = win32.join(interopEnvironment().SystemRoot!, 'System32/WindowsPowerShell/v1.0/powershell.exe');
-const command = Buffer.from("[Console]::WriteLine('LAB_POWERSHELL_OK')", 'utf16le').toString('base64');
-for (const clean of [true, false]) for (const ignore of [true, false]) {
-  const start = Date.now();
-  const r = spawnSync(exe, ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', command], {
-    encoding: 'utf8', timeout: 15000, maxBuffer: 4096, env: clean ? interopEnvironment() : undefined,
-    stdio: [ignore ? 'ignore' : 'pipe', 'pipe', 'pipe'], windowsHide: true,
-  });
-  console.log(JSON.stringify({ clean, ignore, elapsedMs: Date.now()-start, status: r.status, error: (r.error as NodeJS.ErrnoException)?.code, expectedOutput: r.stdout.trim() === 'LAB_POWERSHELL_OK' }));
-}
+/** Temporary CI-only upstream launch probe, fixture pages and owned roots only. */
+import { spawn } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { WindowsInterop } from '../src/browser/windows.ts';
+import { verifyBrowserRuntime } from '../src/browser/runtime.ts';
+const w = new WindowsInterop();
+const browser = w.edge();
+const server = Bun.serve({ hostname:'127.0.0.1', port:0, fetch(){ return new Response('<!doctype html><h1>fixture</h1>',{headers:{'content-type':'text/html'}}); } });
+try {
+  for (const mcp of [false,true]) for (const inherited of [false,true]) {
+    const session='lab-'+randomUUID().replaceAll('-','').slice(0,24);
+    const binary=w.prepare(session,verifyBrowserRuntime(),browser,'127.0.0.1');
+    const env=w.environment(w.root(session),session);
+    const url=`http://127.0.0.1:${server.port}/`;
+    const args=mcp?['mcp','call','agent_browser_open',JSON.stringify({url})]:['--json','open',url];
+    const start=Date.now();
+    try {
+      const result=await new Promise(resolve=>{
+        const child=spawn(binary,args,{env:inherited?{...process.env,...env}:env,stdio:['ignore','pipe','pipe']});
+        let stdout='',stderr='';
+        const timer=setTimeout(()=>{child.kill('SIGKILL');resolve({timeout:true});},20000);
+        child.stdout.on('data',c=>{if(stdout.length<65536)stdout+=c;});
+        child.stderr.on('data',c=>{if(stderr.length<65536)stderr+=c;});
+        child.on('error',()=>{clearTimeout(timer);resolve({spawnError:true});});
+        child.on('close',code=>{clearTimeout(timer);resolve({code,stdout,stderr});});
+      });
+      console.log(JSON.stringify({mcp,inherited,elapsedMs:Date.now()-start,result}));
+    } finally { w.cleanup(session); }
+  }
+} finally { server.stop(true); }

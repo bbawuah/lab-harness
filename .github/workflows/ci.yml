@@ -86,11 +86,11 @@ jobs:
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
         with:
           bun-version-file: .bun-version
-      - name: Diagnose Windows process transport
-        run: bun --no-env-file scripts/browser-windows-diagnostics.ts
       - name: Acquire and verify pinned Windows browser tool
         run: bun --no-env-file scripts/acquire-browser.ts
       - name: Verify offline cache
         run: bun --no-env-file scripts/acquire-browser.ts --offline
+      - name: Diagnose isolated upstream Windows launch
+        run: bun --no-env-file scripts/browser-windows-diagnostics.ts
       - name: Exercise installed Edge with an owned fixture profile
         run: bun --no-env-file scripts/browser-windows-smoke.ts

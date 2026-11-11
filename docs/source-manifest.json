@@ -502,7 +502,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "7e4404dc0a0da2f0f97dc700ce7625321d3a7b184f251e619cc0f9887bdc9dac",
+      "sha256": "d741c116ed27829896dc301df855a8fd4308a5561cb6cd4beb0e1d04babd3c33",
       "status": "added"
     },
     ".gitignore": {
@@ -1823,7 +1823,7 @@
       "status": "added"
     },
     "scripts/browser-windows-diagnostics.ts": {
-      "sha256": "6af17c02b5de5fb6aa4db672f1c4f97622dea893f706da2ceedef70eded72805",
+      "sha256": "261cbf0f3ecf1ce4d14e394746c610a48fed961281d22296c479cc022604da00",
       "status": "added"
     },
     "scripts/browser-windows-smoke.ts": {
