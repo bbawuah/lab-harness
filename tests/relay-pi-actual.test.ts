@@ -257,7 +257,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     expect(message.body).toBe("Explicit mail from A");
     await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, '"duplicate": true');
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
-    await paste(b, "/relay-inbox"); await visible(b, "Explicit mail from A");
+    await paste(b, "/relay-inbox"); await visible(b, "Explicit mail from A"); await visible(b, "Relay · Session");
     await paste(b, "/relay-inbox"); await visible(b, "Explicit mail from A");
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(1);
     await paste(a, "/relay-ack " + message.id); await visible(a, "RELAY_CONFLICT");
@@ -275,7 +275,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
     await wait(async deadline => (await rows(deadline)).some(peer => peer.peer_id === b.peer!.peer_id && peer.generation === oldGeneration + 1 && peer.phase === "active"), "native reload reconnect");
     // The ready notification is transient. A fresh successful inbox command
     // proves the reloaded handler can use the renewed binding.
-    await paste(b, "/relay-inbox"); await visible(b, '"messages": []');
+    await paste(b, "/relay-inbox"); await visible(b, "No new Relay messages.");
     await paste(a, "/relay-send " + b.peer!.peer_id + " intro-1 Explicit mail from A"); await visible(a, '"duplicate": true');
     expect(store.unread(namespace, b.peer!.peer_id)).toBe(0);
     const lease = (await rows()).find(peer => peer.peer_id === a.peer!.peer_id)!.lease_until;

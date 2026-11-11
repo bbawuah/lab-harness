@@ -2240,7 +2240,7 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "c4804f1e6a722d68f58cdbb6a7399d2c7c71f59a0c6055718720c22d3bf54e6b",
+      "sha256": "49e816fc481a9e28bf7b5f0905a9bb74eec053fde77bb4ddff5f8c84531361d1",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
