@@ -1,5 +1,10 @@
 # Organisation Edge from WSL
 
+**Implementation draft; Windows launch is blocked, 2026-11-11. Do not include the
+browser in today's airgap acceptance claim.** The pinned Windows tool starts
+owned Edge processes on the public runner, but it has not completed the fixture
+round trip. WSL2 and the organisation's managed machine remain unqualified.
+
 LAB in Linux x64 under WSL2 uses the organisation's installed Windows Microsoft
 Edge. It never downloads a browser, attaches to user tabs, copies user profiles,
 or changes Edge policy. macOS and ordinary Linux retain their existing browser
@@ -141,7 +146,7 @@ tool reports failure. Tool/page diagnostics and form values are not echoed.
 `Windows owned Edge` in `.github/workflows/ci.yml` is a separate
 `windows-latest` job. It downloads and verifies the pinned exe, validates warm
 offline setup and drives the runner's installed Edge through the production
-browser session: open, snapshot, fill, click, independent read-back, text read,
+browser session (intended acceptance; currently blocked at open): open, snapshot, fill, click, independent read-back, text read,
 close, profile/root removal and daemon termination. No external fixture,
 model inference or personal browser state is used. The smoke can also run on
 the real WSL target:
@@ -155,11 +160,37 @@ environment forwarding, configuration staging, cleanup scope and sanitized
 error mapping. These fakes validate invocation contracts; they cannot prove
 Windows process, ACL or Job Object behavior.
 
-Windows CI proves only its installed Edge and Windows-side runtime on the
-runner. It cannot prove WSL2 stdio/env propagation, the organisation's policies,
+A passing Windows job would prove only its installed Edge and Windows-side
+runtime on the runner. It cannot prove WSL2 stdio/env propagation, the organisation's policies,
 WSL NAT localhost forwarding, internal DNS/TLS/SSO, application behavior or
 offline Windows/browser egress. No WSL2 execution was possible on the authoring
 macOS arm64 host.
+
+The current blocker is recorded in
+[CI run 42997097453](https://github.com/bbawuah/lab-harness/actions/runs/42997097453)
+at `73711213d7dfed131cc7c110b4061c5e536238ea`, Windows Edge **156.0.4314.58**:
+
+- The direct win32 CLI and MCP calls time out with isolated profiles, with both
+  minimal and inherited fixture environments. This does not involve WSL.
+- A 45-second direct-CLI probe returned `outcome_unknown`, Windows socket error
+  **10060**, after sending the command to the daemon. It explicitly did not
+  retry the uncertain operation.
+- Both the launcher's private desktop and a diagnostic normal-desktop headless
+  launch had a live daemon/port file and owned Edge processes, but no
+  `DevToolsActivePort`. The compatibility flag did not resolve it. The cause is
+  unresolved; this is not proof of an enterprise-policy block.
+- The probes' owned cleanup completed and removed their roots. Snapshot, fill,
+  click, read, concurrent-session isolation and successful close after a working
+  round trip are **not yet actual Windows evidence**.
+- The existing Ubuntu/macOS CI jobs passed in the diagnostic rounds; local
+  `check` and `check:actual` passed. Fake interop tests are not Windows evidence.
+
+`bun --no-env-file scripts/browser-windows-diagnostics.ts` preserves this bounded
+reproduction and reports fixture-only output, Edge version and owned-process
+counts before cleanup. Its normal-desktop case is a diagnostic comparison, not
+an implemented fallback. Resolving the pinned-runtime/Edge launch failure is a
+release gate for this feature; do not bypass policy, disable the sandbox, attach
+a personal profile or silently substitute bundled Chromium to make it pass.
 
 Manual qualification on the approved target:
 
