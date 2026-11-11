@@ -369,6 +369,7 @@
     "scripts/benchmark-search.ts",
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
+    "scripts/browser-windows-smoke.ts",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
@@ -389,6 +390,7 @@
     "src/browser/runtime.ts",
     "src/browser/session.ts",
     "src/browser/states.ts",
+    "src/browser/windows.ts",
     "src/candidate.ts",
     "src/cli.ts",
     "src/context.ts",
@@ -497,7 +499,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "137042d022788a974dc9caa149c91b53931c9f9bc283709b008e24791d38cc18",
+      "sha256": "b2f9810cf1ace213990c243ed29c419799051b1c4f895ae4e283aaaefd00d948",
       "status": "added"
     },
     ".gitignore": {
@@ -557,7 +559,7 @@
       "status": "added"
     },
     "contracts/agent-browser-source.json": {
-      "sha256": "0f867335b0e9fdb67b68f88cb28b8df956987b41041cdc8f0953b5954129c8b9",
+      "sha256": "c854b278c7d925d0ab065d9043f3df4a6db9b28373763712ecf1332dc77e56ae",
       "status": "added"
     },
     "contracts/bun-runtime.txt": {
@@ -1790,7 +1792,7 @@
       "status": "added"
     },
     "scripts/acquire-browser.ts": {
-      "sha256": "40a2dead388ac3df7807c8d4f9f599a59f3fda599fc6a73c191648e1853fa411",
+      "sha256": "c39be06fb4209d1cea9553b59fe8416a58f2e705e2ed3eafd43c9d0d43d49fb6",
       "status": "added"
     },
     "scripts/acquire-fd.ts": {
@@ -1811,6 +1813,10 @@
     },
     "scripts/browser-smoke.ts": {
       "sha256": "31d37def9583d8ede8b517fe82d624b73f9f77062a82e4ca74f11fdc0e7d1bf1",
+      "status": "added"
+    },
+    "scripts/browser-windows-smoke.ts": {
+      "sha256": "121012b8fa85e22b0f479520e6106bc04aad112dd2ca040d19acf269cbabf435",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1884,15 +1890,19 @@
       "status": "added"
     },
     "src/browser/runtime.ts": {
-      "sha256": "2ac6b976a1f11f815cc352c783c311a4be310c41e35b87aa0d43172c3b08e752",
+      "sha256": "c8f918ad7530693ac29876c6ef14785e563d9dd00bf3d1f51c7c2d755ba0b14e",
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "89edddb831c7affe31614fee92d611e4684edd992f1171f12fbb86ed9ecfa327",
+      "sha256": "a161b6f97d433ca7f3e242d30d0efad630ca0f73de4b79d7c6a080720f81cbe1",
       "status": "added"
     },
     "src/browser/states.ts": {
       "sha256": "95abc2661aab3d97f813c24d0e60ba0cc541bea9b33122bbdba52ee70b98acf2",
+      "status": "added"
+    },
+    "src/browser/windows.ts": {
+      "sha256": "d5f2ea15be09c08ac5e6444e651b86847a771adbc13dd6cb9417c15c5f9da1d6",
       "status": "added"
     },
     "src/candidate.ts": {

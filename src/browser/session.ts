@@ -1,3 +1,4 @@
+import { WindowsInterop, windowsBrowser } from './windows.ts';
 import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -9,14 +10,14 @@ import { codeOf, mutating, type BrowserFailureInfo, type LifecycleView } from '.
 /** Error with operator-state info; message keeps the PR #23 LAB_BROWSER_* code prefix. */
 export class BrowserFailure extends Error { constructor(message: string, readonly info: BrowserFailureInfo) { super(message); } }
 export type BrowserInput = { operation: 'snapshot'|'navigate'|'fill'|'click'|'read'; url?: string; ref?: string; text?: string };
-export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown };
+export type BrowserDescriptor = { root: string; session: string; origin: string; launchHash?: unknown; windows?: true };
 export class BrowserSession {
   readonly binary: string; readonly descriptor: BrowserDescriptor; private queue: Promise<unknown> = Promise.resolve(); private refs = new Map<string,{role:string;name:string}>(); private generation = 0; private closed = false; private failedInMemory = false;
   // UX state (docs/browser-ux-contract.md). issued = every ref ever returned, so a retired ref reads as stale, not unknown.
   private issued = new Set<string>(); private actions = 0; private last?: string; private pendingChange = false; private lastFailure?: BrowserFailureInfo;
   constructor(descriptor: BrowserDescriptor) {
     this.binary=verifyBrowserRuntime(); this.descriptor=descriptor;
-    const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && s.uid===process.getuid?.() && (s.mode&0o077)===0,'LAB_BROWSER_STATE');
+    const s=lstatSync(descriptor.root); insist(s.isDirectory() && !s.isSymbolicLink() && (process.platform==='win32'||(s.uid===process.getuid?.() && (s.mode&0o077)===0)),'LAB_BROWSER_STATE');
     insist(/^lab-[a-f0-9]{24}$/.test(descriptor.session),'LAB_BROWSER_STATE'); browserURL(descriptor.origin);
     // Activity survives /reload rebinding (display only; never used for authorization).
     try{const p=join(descriptor.root,'activity.json'),st=lstatSync(p);insist(st.isFile()&&!st.isSymbolicLink()&&st.size<=1024,'LAB_BROWSER_STATE');const a=JSON.parse(readFileSync(p,'utf8'));if(Number.isSafeInteger(a?.actions)&&a.actions>=0)this.actions=a.actions;if(typeof a?.last==='string'&&/^(snapshot|navigate|fill|click|read)( @e\d+)?$/.test(a.last))this.last=a.last;}catch{}
@@ -27,8 +28,8 @@ export class BrowserSession {
     const root=mkdtempSync(join(tmpdir(),'lab-browser-')); const session='lab-'+randomUUID().replaceAll('-','').slice(0,24);
     for (const n of ['s','t','home','cache']) mkdirSync(join(root,n),{mode:0o700});
     writeFileSync(join(root,'config.json'),JSON.stringify({executablePath:browser,allowedDomains:[u.hostname],contentBoundaries:true,maxOutput:12000,noWebmcp:true,idleTimeout:'15m'}),{mode:0o600});
-    const b=new BrowserSession({root,session,origin:u.origin});
-    try { const raw=await b.call('agent_browser_open',{url:u.href},signal); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(signal); return b; }
+    const b=new BrowserSession({root,session,origin:u.origin,...(windowsBrowser()?{windows:true as const}:{})});
+    try { if(b.descriptor.windows) new WindowsInterop().prepare(session,b.binary,browser,u.hostname); const raw=await b.call('agent_browser_open',{url:u.href},signal); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(signal); return b; }
     catch(e) { await b.close().catch(()=>{});throw e; }
   }
   static rebind(path: string) { const s=lstatSync(path);insist(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0,'LAB_BROWSER_STATE'); return new BrowserSession(JSON.parse(readFileSync(path,'utf8'))); }
@@ -45,10 +46,10 @@ export class BrowserSession {
     return {state:'active',origin,actions:this.actions,last:this.last};}
   status() {if(this.closed || !lstatSync(this.descriptor.root,{throwIfNoEntry:false}))return 'Browser closed. Start a new LAB run with --browser URL.';
     return this.failed() ? 'Browser stopped after a failure; actions disabled. Owned state retained; run /lab-browser close to retry cleanup.' : `Owned browser · ${this.descriptor.origin} · fresh snapshot required before actions.`;}
-  private environment() {const r=this.descriptor.root;return {PATH:'/usr/bin:/bin:/usr/sbin:/sbin',HOME:join(r,'home'),TMPDIR:join(r,'t'),XDG_CACHE_HOME:join(r,'cache'),AGENT_BROWSER_SOCKET_DIR:join(r,'s'),AGENT_BROWSER_CONFIG:join(r,'config.json'),AGENT_BROWSER_SESSION:this.descriptor.session,NO_COLOR:'1'};}
+  private environment() {if(this.descriptor.windows){const w=new WindowsInterop();return w.environment(w.root(this.descriptor.session),this.descriptor.session);}const r=this.descriptor.root;return {PATH:'/usr/bin:/bin:/usr/sbin:/sbin',HOME:join(r,'home'),TMPDIR:join(r,'t'),XDG_CACHE_HOME:join(r,'cache'),AGENT_BROWSER_SOCKET_DIR:join(r,'s'),AGENT_BROWSER_CONFIG:join(r,'config.json'),AGENT_BROWSER_SESSION:this.descriptor.session,NO_COLOR:'1'};}
   private run(args: string[], signal?: AbortSignal): Promise<string> {
     if(signal?.aborted) return Promise.reject(new Error('LAB_BROWSER_CANCELLED'));
-    return new Promise((done,reject)=>{const child=spawn(this.binary,args,{cwd:this.descriptor.root,env:this.environment(),stdio:['ignore','pipe','pipe'],detached:true});let output='',count=0,error:Error|undefined;
+    return new Promise((done,reject)=>{const binary=this.descriptor.windows?new WindowsInterop().localPath(new WindowsInterop().root(this.descriptor.session)+'\\agent-browser.exe'):this.binary;const child=spawn(binary,args,{cwd:this.descriptor.root,env:this.environment(),stdio:['ignore','pipe','pipe'],detached:true});let output='',count=0,error:Error|undefined;
       const kill=()=>{try{if(child.pid)process.kill(-child.pid,'SIGKILL');}catch{}};
       const cancel=()=>{error=new Error('LAB_BROWSER_CANCELLED');kill();}; const timer=setTimeout(()=>{error=new Error('LAB_BROWSER_TIMEOUT');kill();},20000);
       signal?.addEventListener('abort',cancel,{once:true});child.on('error',()=>{error=new Error('LAB_BROWSER_SPAWN: browser tool could not start.');});
@@ -110,10 +111,11 @@ export class BrowserSession {
   element(ref:unknown):{role:string;name:string;generation:number}|undefined {const e=typeof ref==='string'?this.refs.get(ref):undefined;return e?{...e,generation:this.generation}:undefined;}
   close():Promise<void>{const task=this.queue.then(()=>this.closeNow());this.queue=task.catch(()=>{});return task;}
   /** Owned daemon liveness from its pidfile in the private socket dir (signal 0 only). */
-  private daemonAlive() {try{const pid=Number(readFileSync(join(this.descriptor.root,'s',this.descriptor.session+'.pid'),'utf8'));if(!Number.isInteger(pid)||pid<=1)return false;process.kill(pid,0);return true;}catch{return false;}}
+  private daemonAlive() {if(this.descriptor.windows)return new WindowsInterop().alive(this.descriptor.session);try{const pid=Number(readFileSync(join(this.descriptor.root,'s',this.descriptor.session+'.pid'),'utf8'));if(!Number.isInteger(pid)||pid<=1)return false;process.kill(pid,0);return true;}catch{return false;}}
   private async closeNow() {
     if(this.closed)return;const r=this.descriptor.root;if(!lstatSync(r,{throwIfNoEntry:false})){this.closed=true;return;}
     this.markFailed();
+    if(this.descriptor.windows){new WindowsInterop().cleanup(this.descriptor.session);rmSync(r,{recursive:true});this.closed=true;return;}
     const pidfile=join(r,'s',this.descriptor.session+'.pid');const readPid=()=>{try{const n=Number(readFileSync(pidfile,'utf8'));return Number.isInteger(n)&&n>1?n:undefined;}catch{return undefined;}};
     let pid=readPid();
     // A daemon proven dead (its pidfile names a dead pid) gets no command: the CLI could start a fresh daemon.
