@@ -336,6 +336,7 @@ def main():
         save("model.json", json.dumps(model_log, indent=2) + "\n")
         result = {"ok": failure is None, "failure": failure, "sourceCommit": os.environ.get("TEST_SOURCE_COMMIT"),
                   "platform": "linux-x86_64", "uid": os.getuid(), "network": args.network, "command": command,
+                  "projectIdentity": {"device": project.stat().st_dev, "inode": project.stat().st_ino},
                   "testKind": "real Pi + Herdr, outer PTY input, scripted loopback SSE; no model inference",
                   "interfaces": os.listdir("/sys/class/net"), "modelRequests": len(model_log), "seconds": round(time.monotonic() - started, 2),
                   "timings": timings, "exitCode": exit_code, "checks": checks, "files": captures}

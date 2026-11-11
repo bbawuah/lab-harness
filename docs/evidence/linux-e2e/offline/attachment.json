@@ -1,0 +1,21 @@
+{
+  "label": "actual-herdr-native-client",
+  "runtimeVersion": "0.9.5",
+  "paneId": "w1:p2",
+  "shellPaneId": "w1:p3",
+  "serverPid": 53,
+  "clientPid": 93,
+  "shellPid": 71,
+  "regularShellPid": 74,
+  "exitCode": 0,
+  "failed": false,
+  "startupProof": {
+    "bootstrapStopped": true
+  },
+  "cleanup": {
+    "serverExited": true,
+    "clientExited": true,
+    "workerStopped": true,
+    "socketsRemoved": true
+  }
+}

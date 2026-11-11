@@ -4,6 +4,6 @@
   "uid": 1001,
   "architecture": "x86_64",
   "gitInstalled": false,
-  "exitCode": 139,
-  "seconds": 6.61
+  "exitCode": 0,
+  "seconds": 15.03
 }

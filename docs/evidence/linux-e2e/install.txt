@@ -5,30 +5,125 @@ LAB: acquiring verified project-local Bun 1.4.2
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
 
-  0 34.9M    0 41313    0     0  88824      0  0:06:52 --:--:--  0:06:52 88824
- 56 34.9M   56 19.6M    0     0  13.4M      0  0:00:02  0:00:01  0:00:01 19.7M
-100 34.9M  100 34.9M    0     0  15.4M      0  0:00:02  0:00:02 --:--:-- 19.4M
+ 69 34.9M   69 24.3M    0     0  31.4M      0  0:00:01 --:--:--  0:00:01 31.4M
+100 34.9M  100 34.9M    0     0  26.6M      0  0:00:01  0:00:01 --:--:-- 19.6M
 
 install: Checking real Relay publication capability (loader refusals remain visible)
-============================================================
-Bun v1.4.2 (744846f84) Linux x64
-Linux Kernel v6.8.0 | glibc v2.39
-CPU: sse42 popcnt
-Args: "/lab/source/.tmp/bun/1.4.2/bun" "--no-env-file" "--no-install" "-e" "import { assertPublishCapability } from \"./vendor/relay/src/storage/publish.ts\"; assertPublishCapability();"
-Features: jsc no_avx2 no_avx tsconfig
-Builtins: "bun:main"
 
-Elapsed: 185ms | User: 156ms | Sys: 29ms
-RSS: 107.0 MB | Peak: 107.30 MB | Commit: 35.79 MB | Faults: 0 | Machine: 8.31 GB
+install: Installing frozen dependencies without lifecycle scripts
+bun install v1.4.2 (744846f84)
 
-CPU lacks AVX support. Please consider upgrading to a newer CPU.
-panic: Segmentation fault at address 0x0
-oh no: Bun has crashed. This indicates a bug in Bun, not your code.
++ @types/bun@1.4.4
++ @types/node@26.6.6
++ bun-types@1.4.4
++ typescript@7.0.2
++ undici-types@8.12.3
 
-To send a redacted crash report to Bun's team,
-please file a GitHub issue using the link below:
+7 packages installed [2.16s]
 
- https://bun.report/1.4.2/la1744846fgCggggigD6wmrzB_A2AA
+install: Acquiring checksum-pinned Herdr, ripgrep, fd and standalone Pi
+$ bun --no-env-file --no-install scripts/herdr/acquire.ts
+{"executable":"/lab/source/.tmp/herdr/herdr","version":"0.9.5","sha256":"14d9e8bc8b4a9e0118d77c32266f76d461f09b40342eb23752960bd89f59929d","cached":false,"sourcePinMatch":false}
+$ bun --no-env-file --no-install scripts/acquire-rg.ts
+{"tool":"ripgrep","version":"14.1.1","binarySHA256":"f401154e2393f9002ac77e419f9ee5521c18f4f8cd3e32293972f493ba06fce7","cached":false,"location":".tmp/rg/rg"}
+$ bun --no-env-file --no-install scripts/acquire-fd.ts
+{"tool":"fd","version":"10.3.0","binarySHA256":"9f48273b6c780a5f4f084ef30bc67d98cbd7d10c55c4605cf3a6ee29b741af87","cached":false,"location":".tmp/fd/fd"}
+$ bun --no-env-file --no-install scripts/pi/acquire.ts
+{"command":["/lab/source/.tmp/pi/1.4.0/linux-x64/pi/pi"],"version":"1.4.0"}
 
-qemu: uncaught target signal 11 (Segmentation fault) - core dumped
-Segmentation fault
+install: Checking immutable source publication integrity
+$ bun --no-env-file --no-install scripts/check-publication.ts
+Publication integrity: 452 allowed files; original concept provenance retained; 451 current hashes; 9 pinned Relay files.
+
+install: Checking an actual owned Herdr worker with bounded cleanup; no model calls
+$ bun --no-env-file --no-install scripts/herdr/smoke.ts
+{
+  "label": "actual-herdr-owned-process",
+  "session": "lab-e032dcb6afb1",
+  "sourcePin": "bc8c28988f75c538d4ca058b702f5adbea30566e",
+  "observedOutput": "LAB_HERDR_OK_7949ec673b78263e\n",
+  "stopped": true,
+  "taskAcceptance": "unchanged",
+  "runDirectory": "/lab/source/.tmp/h-q3w4QT",
+  "cleanup": {
+    "serverExited": true,
+    "socketsRemoved": true,
+    "workerStopped": true,
+    "errors": [],
+    "paneCloseAcknowledged": true,
+    "stopAcknowledged": true,
+    "exitCode": 0,
+    "signal": null
+  },
+  "runtime": {
+    "version": "0.9.5",
+    "releaseCommit": "2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01",
+    "sourcePinMatch": false,
+    "binarySha256": "14d9e8bc8b4a9e0118d77c32266f76d461f09b40342eb23752960bd89f59929d",
+    "artifact": "herdr-linux-x86_64"
+  },
+  "serverPid": 145,
+  "status": {
+    "type": "pong",
+    "version": "0.9.5",
+    "protocol": 22,
+    "capabilities": {
+      "live_handoff": true,
+      "detached_server_daemon": false,
+      "endpoint_protocol_generation": 1,
+      "surface_interest": true,
+      "health_check": true,
+      "ssh_agent_registration": true
+    }
+  },
+  "workspaceId": "w1",
+  "paneId": "w1:p2",
+  "launch": {
+    "type": "layout_apply",
+    "layout": {
+      "workspace_id": "w1",
+      "tab_id": "w1:t2",
+      "zoomed": false,
+      "focused_pane_id": "w1:p2",
+      "root": {
+        "type": "pane",
+        "pane_id": "w1:p2",
+        "label": "lab-e032dcb6afb1",
+        "cwd": "/lab/source/.tmp/h-q3w4QT",
+        "command": [
+          "/bin/sh",
+          "/lab/source/.tmp/h-q3w4QT/worker.sh",
+          "LAB_HERDR_OK_7949ec673b78263e"
+        ]
+      }
+    }
+  },
+  "workerPid": 166,
+  "workerStatus": {
+    "type": "pane_process_info",
+    "process_info": {
+      "pane_id": "w1:p2",
+      "shell_pid": 166,
+      "foreground_process_group_id": 166,
+      "foreground_processes": [
+        {
+          "pid": 166,
+          "name": "sh",
+          "argv": [
+            "/bin/sh",
+            "/lab/source/.tmp/h-q3w4QT/worker.sh",
+            "LAB_HERDR_OK_7949ec673b78263e"
+          ],
+          "cmdline": "/bin/sh /lab/source/.tmp/h-q3w4QT/worker.sh LAB_HERDR_OK_7949ec673b78263e",
+          "cwd": "/lab/source/.tmp/h-q3w4QT"
+        }
+      ]
+    }
+  },
+  "serverLog": "herdr server running; you can use any herdr CLI command in another terminal.\napi socket: /tmp/lab-s-rwoyrZ/s.sock\nclient socket: /tmp/lab-s-rwoyrZ/s-client.sock\nlogs: /lab/source/.tmp/h-q3w4QT/cfg/herdr/sessions/lab-e032dcb6afb1/herdr-server.log\ndid you mean to open the Herdr TUI? run `herdr`; you do not need `herdr server`.\n"
+}
+
+Installation complete. Start the interactive LAB workspace:
+  /lab/source/lab
+First start asks for your endpoint/model. No model weights or paid requests were selected.
+Controlled LAB task execution remains unavailable; native Pi workspace is separate.

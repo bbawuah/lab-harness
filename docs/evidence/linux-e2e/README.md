@@ -1,173 +1,143 @@
 # Linux amd64 interactive acceptance, 2026-11-11
 
-**Blocked before the TUI. Linux/WSL acceptance has not passed.** Pinned Bun
-1.4.2 repeatedly segfaults under this host's QEMU 7.0.0. No product code was
-changed. The defect is filed as
-[LAB-HARNESS #32](https://github.com/bbawuah/lab-harness/issues/32).
-
-Tested product source: `f414f7c548f6a53815f824dda4df0433914a2986`.
-The runner copies that exact Git archive into the container, without host
-credentials, caches, Git metadata or working-tree changes. Its source bytes
-are the clone's committed bytes; this is the clone `./install.sh` path, not the
-public bootstrap or an offline bundle.
+**Passed on Ubuntu 24.04 x86_64 under Rosetta**, using Docker context
+`colima-lab-amd64`. The tested product source is
+`f414f7c548f6a53815f824dda4df0433914a2986`. No product code was changed.
+This establishes a Linux interactive smoke result, not WSL2, Azure, Edge or
+real-model qualification.
 
 ## Results against the workstream E brief
 
-1. **User install failed.** `./install.sh` ran as UID 1001 with isolated HOME.
-   Bun downloaded and passed its pinned size/hash/version checks. The final
-   fresh run exited 139 at the Relay capability check, after 6.61 seconds.
-   The first exploratory fresh run reached the frozen dependency install and
-   exited 139 after 8.13 seconds. Neither completed installation, acquisition
-   of Pi/Herdr/rg/fd, publication validation or the Herdr smoke.
-2. **Loopback fixture self-test passed in 0.53 seconds.** A Python HTTP server
-   streamed fragmented Chat Completions tool arguments and final text. A
-   synthetic tool result exercised the second HTTP response. This was a
-   protocol-fixture check, with no LAB process, tool execution or inference.
-   The existing version-1 `local` route and blank key were written directly
-   into private files, mode 0600, under the isolated workspace state root.
-   LAB did not get far enough to demonstrate loading them.
-3. **Real interactive startup failed in 2.04 seconds.** The driver started
-   `/lab/source/lab --project /lab/fixture` in a real PTY, using the default
-   two-pane layout and default ask mode. The launcher segfaulted with signal
-   11 before opening a Herdr socket. The fake model received **zero requests**.
-   TUI rendering, prompt delivery, approval, tool execution, `/lab-search`,
-   `/lab-files`, `/lab-skills`, `/relay-peers` and `/exit` cleanup are all
-   **unverified**, not passes. This startup was deliberately attempted after
-   the failed install; it is diagnostic evidence, not an installed-runtime test.
-4. **Offline acceptance skipped.** There was no successful installation to
-   reuse. No `--network none` launch is claimed. The runner implements a
-   separate `docker run --network none` after a successful install, preserves
-   its inspect result, and requires loopback to be its only interface.
-5. **Evidence and rerun script supplied.** No host paths, keys, real model
-   requests, browser sessions or product patches are published here. The
-   publication manifest is refreshed separately as required by the plan.
+1. **Clone install passed in 15.03 seconds.** The unmodified `./install.sh`
+   ran as UID 1001 with isolated HOME and no Git installed. It acquired the
+   verified Bun 1.4.2, Herdr 0.9.5, Pi 1.4.0, ripgrep 14.1.1 and fd 10.3.0;
+   installed frozen development dependencies; passed publication integrity;
+   and passed the actual Herdr worker/cleanup smoke.
+2. **The local model route worked without configuration prompts.** The driver
+   wrote the existing version-1 `local` route and blank key directly into the
+   private workspace state, with mode 0600. A Python server on loopback sent
+   streaming Chat Completions, fragmented `bash` tool arguments, and final
+   text after receiving the tool result. This is a scripted protocol fixture,
+   with no inference, paid service, model weights or real credentials.
+3. **The default two-pane interactive flow passed in 11.35 seconds.** The
+   actual `lab --project /lab/fixture` ran in a PTY. The TUI started in ask mode,
+   the prompt reached the fixture, and LAB showed the concrete shell approval.
+   The marker file was absent before approval. Pressing Allow once ran the
+   command, produced `LINUX_TOOL_OK`, and returned it to the fixture, which
+   streamed `LINUX_E2E_FINAL_OK`. `/lab-search`, `/lab-files`, `/lab-skills`
+   and `/relay-peers` returned visible results without extra model requests.
+   `/exit` returned 0; the owned Herdr/Pi/shell PIDs and sockets disappeared;
+   an unrelated process survived.
+4. **The same interactive flow passed with `--network none` in 11.95 seconds.**
+   A fresh container reused the installed source, HOME and project through an
+   isolated named volume. Docker inspect recorded network mode `none`; the
+   driver observed only `lo`. The loopback model/tool round trip and all
+   commands/cleanup checks passed again. LAB's `--offline` flag was deliberately
+   omitted, so this proves ordinary cached launch works without external
+   networking. Each interactive run made exactly two local model requests.
+5. **Sanitized evidence and a rerun script are supplied.** Source, state,
+   fixture projects and model traffic stayed inside the containers. Host HOME,
+   credentials and working-tree changes were not mounted or imported. Text
+   captures use LF newlines without trailing whitespace. Each session result
+   records SHA-256 identities for its captured files.
 
-The completed runner returns 1. See [runner-result.json](runner-result.json),
-[install transcript](install.txt), [install timing](install-result.json),
-[PTY failure](startup-after-failed-install/failure-pty.txt),
-[startup result](startup-after-failed-install/result.json), and
-[empty model log](startup-after-failed-install/model.json).
-The [fixture self-test](fixture-selftest/result.json) is labelled separately.
-Published capture hashes are recorded in the startup result. Text transcripts
-use LF newlines and omit trailing whitespace; diagnostic content is retained.
+The online TUI reached ready in 6.12 seconds; its tool round trip took 0.87s.
+Offline ready took 6.22 seconds; its tool round trip took 0.86s. Durations
+include verification of pinned runtime bytes. Docker image preparation is
+outside these timings. The separate SSE fixture self-test took 0.39 seconds.
+
+See [install transcript](install.txt), [install result](install-result.json),
+[online checks](online/result.json), [online approval](online/approval.txt),
+[online model round trip](online/model.json), [offline checks](offline/result.json),
+[offline approval](offline/approval.txt), [offline model round trip](offline/model.json),
+[Docker network mode](offline-network.txt) and [runner result](runner-result.json).
+The attachment reports and visible command responses sit alongside each
+session result. Online and offline project device/inode identities match.
 
 ## Reproduce
 
-From this branch, with Docker running:
+From this branch, with the Rosetta-backed Docker profile running:
 
 ```sh
-scripts/e2e-linux/run.sh f414f7c
+LAB_E2E_DOCKER_CONTEXT=colima-lab-amd64 scripts/e2e-linux/run.sh f414f7c
 ```
 
-The optional second argument chooses an output directory. It defaults to an
-ignored `.tmp/linux-e2e-*` directory. Test a later integration commit with:
+Every Docker invocation receives `--context colima-lab-amd64`. The script never
+changes the global Docker context. On a native amd64 Docker host, omit the
+environment variable. To test a later integration commit:
 
 ```sh
-scripts/e2e-linux/run.sh HEAD
+LAB_E2E_DOCKER_CONTEXT=colima-lab-amd64 scripts/e2e-linux/run.sh HEAD
 ```
 
-The runner builds an Ubuntu 24.04 amd64 image, creates a non-root user and a
-separate HOME, copies only the selected commit, then runs the unmodified
-installer with network access. Python is the only extra test dependency.
-It never mounts host HOME or imports host auth. Core dumps are disabled because
-QEMU's first crashes produced multi-gigabyte dumps. Only containers and tagged
-images created by the runner are removed at exit; result files remain.
+The optional second argument chooses an output directory; the default is an
+ignored `.tmp/linux-e2e-*` directory. The script returns nonzero if installation,
+fixture self-test, online acceptance or offline acceptance fails. It copies an
+exact Git archive into the container, so the product sees the clone's committed
+bytes without Git metadata. This tests the clone installer, not bootstrap or an
+offline release bundle.
 
-`Dockerfile` uses the official `amd64/ubuntu:24.04` architecture alias because
-this Colima installation lacks Buildx and its legacy builder selected ARM64
-from the multi-platform `ubuntu:24.04` tag despite `--platform linux/amd64`.
-The final [base-image digest](base-image.json) is recorded. The container
-reports Linux x86_64 and UID 1001 in both install and startup results.
+The Dockerfile uses the official `amd64/ubuntu:24.04` architecture alias. This
+host's legacy Docker builder selected ARM64 from the multi-platform tag despite
+the platform flag; the explicit alias avoids that. The
+[base-image digest](base-image.json) and [Docker context](docker-context.txt)
+are recorded. Core dumps are disabled. On completion the runner removes only
+its own containers, tagged image and named volume; result files remain.
 
-After a successful install, the acceptance driver sends input through the
-native Herdr client attached to an outer PTY. It reads visible pane text
-through the same owned Herdr API used by `scripts/permission-actual.ts`.
-It accepts the isolated fixture project's native trust prompt if shown.
-The fixture requests a shell command that writes `approval-marker.txt`.
-The driver requires that file to be absent while the approval prompt is visible,
-presses Allow once, then checks the file, streamed final text and returned tool
-result. Operator commands must produce visible results without another model
-request. Cleanup must pass the attachment report, independent PID/socket checks
-and an unrelated-process-survival check. **Those checks exist but have not run
-past startup on this host.** The full post-startup driver still needs validation
-on a working amd64 runtime.
-
-The offline phase snapshots the installed container into a temporary image,
-then creates a fresh container with `--network none`. Its loopback fake server
-runs inside that container. The driver deliberately omits LAB's `--offline`
-flag so it tests ordinary launch without external networking.
+The acceptance driver sends input through the real Herdr client attached to
+an outer Python PTY. It reads visible pane text through the same owned Herdr
+API used by `scripts/permission-actual.ts`. It accepts the isolated fixture
+project's native trust prompt if shown. The fake model's only command writes
+and reads `approval-marker.txt` in that fixture project. No browser or desktop
+integration is started. Cleanup checks cover the named owned PIDs and sockets,
+not arbitrary long-lived descendants.
 
 ## Distro packages
 
-The bare Ubuntu 24.04 image already had Bash/sh, `tar`, `sha256sum`/coreutils,
-`ps`, `script`/util-linux, glibc, `libgcc-s1` and `libstdc++6`. It lacked `curl`,
-`unzip`, CA certificates, Git and Python.
-
-The expected additions for LAB's network bootstrap are:
+The base Ubuntu 24.04 image already contains Bash/sh, `tar`, SHA-256/coreutils,
+`ps`, `script`/util-linux, glibc, `libgcc-s1` and `libstdc++6`. Add the following
+for online clone installation:
 
 ```sh
 apt-get update
 apt-get install -y --no-install-recommends curl unzip ca-certificates
 ```
 
-The smoke image also installs `python3` for the PTY and fake model driver.
-Python is a test dependency, not a LAB runtime requirement. Git is needed to
-obtain a clone using `git clone`, but is absent from this container; copying a
-clone/archive gets as far as the Bun failure without it. A completed install
-without Git, and the sufficiency of this package set for the full interactive
-runtime, remain unverified. Do not turn the blocked run into a claim that the
-complete distro dependency list has passed. Actual package versions are in
-[packages.txt](packages.txt), including apt's dependencies.
+The interactive test image also installs `python3` for the PTY driver and fake
+model server. Python is test infrastructure. Git is needed to obtain source
+with `git clone`, but not to install or launch from the copied clone bytes:
+Git was absent throughout both passing interactive runs. LAB acquires Bun and
+standalone Pi itself; Node is not preinstalled.
 
-## Defect #32 and narrower probes
+Exact distro package versions are recorded in [packages.txt](packages.txt).
+An additional fresh distro run installed only those three apt packages,
+without Python, Git or Node, and passed `./install.sh` including Herdr smoke
+in 14 seconds (whole-second timing). Its [result](minimal-distro/result.json),
+[absent-tool probes](minimal-distro/optional-tools.txt),
+[transcript](minimal-distro/install.txt) and
+[runtime library linkage](minimal-distro/runtime-linkage.txt) confirm that
+Python's dependencies are not hiding an installer prerequisite.
+No sudo is used by the installer. Apt is run as root only while preparing the
+test distro, then all LAB installation/session work runs as the non-root user.
 
-Host observations: macOS arm64; Colima Virtualization.Framework aarch64 VM;
-Linux kernel 6.8.0; binfmt interpreter `/usr/bin/qemu-x86_64`, version 7.0.0.
-The container reports glibc 2.39 and no AVX/AVX2. This is user-mode emulation,
-not native x86_64 and not WSL2.
+## Earlier failures and limits
 
-Exact smaller reproduction inside the populated container:
-
-```sh
-cd /lab/source
-ulimit -c 0
-.tmp/bun/1.4.2/bun --no-env-file --no-install -e 'import { assertPublishCapability } from "./vendor/relay/src/storage/publish.ts"; console.log(typeof assertPublishCapability)'
-```
-
-Observed output includes:
-
-```text
-Bun v1.4.2 (744846f84) Linux x64
-CPU: sse42 popcnt
-panic: Segmentation fault at address 0x8C8
-qemu: uncaught target signal 11 (Segmentation fault) - core dumped
-```
-
-The direct Python subprocess records `-11` for SIGSEGV; a shell reports 139.
-[All bounded probe commands and timings](diagnostics/result.json) and their
-individual `.txt` outputs are retained. Version, simple JavaScript, importing
-`bun:ffi`, and opening libc's `__errno_location` passed in that run. Importing
-the Relay module crashed even without calling `assertPublishCapability`.
-This narrows the reproduction but does **not** prove that Relay's FFI calls
-or any particular LAB statement caused it.
-
-Suspected integration boundaries at the tested commit:
-
-- `install.sh:20`: Relay module import/capability probe; `install.sh:25` also
-  crashed on the first run during dependency installation.
-- `scripts/runtime-bun.sh:67`: version-only validation passes before these
-  runtime crashes; `contracts/bun-runtime.txt:7` selects the pinned Linux
-  baseline executable.
-- `vendor/relay/src/storage/publish.ts:1`: the smaller crashing module import.
-  A native rerun is needed before blaming product code.
-
-Disabling JIT (`BUN_JSC_useJIT=0`) and selecting `QEMU_CPU=max` or
-`QEMU_CPU=Haswell` did not produce a reliable successful installer. One Haswell
-capability probe succeeded; the next full installer and repeated probe failed.
-There is no established one-line product fix. Keep artifact verification and
-the Relay capability check intact. The next useful test is the same script on
-native amd64 Ubuntu/WSL or a separately qualified newer emulator.
-
-The first install evidence is retained under
-[exploratory-first-install](exploratory-first-install/install-result.json).
-Neither that run nor the final fresh run qualifies the target platform.
+- The default Colima QEMU 7.0.0 profile lacks AVX/AVX2 and repeatedly segfaulted
+  in pinned Bun, before the TUI. This is filed as
+  [environment issue #32](https://github.com/bbawuah/lab-harness/issues/32).
+  Exact commands, source boundaries, crash output and timings are retained in
+  [the historical QEMU report](qemu/README.md). The lead supplied the Rosetta
+  context; no runtime pin, product code or approval gate was changed to obtain
+  the passing result.
+- The first Rosetta offline test used `docker commit` and then copied the HOME
+  and project into a new container filesystem. LAB refused the changed project
+  identity with `LAB: conflict`. That was a test setup error: Relay binds a
+  project to its device/inode at `src/relay/workspace.ts:194`. The runner now
+  mounts the same isolated named volume in both containers. The
+  [failed relocation capture](snapshot-diagnostic/failure-pty.txt) is kept
+  separately; it is not a failed offline launch with stable project identity.
+- No product defect was reproduced after selecting the working emulator and
+  preserving project identity. WSL2 interop, Windows Edge, Azure/proxy/CA auth,
+  real-model tool selection, interrupted sessions and arbitrary descendants
+  remain outside this smoke test. The results apply to the tested source
+  commit; re-run after integrating the other airgap workstreams.

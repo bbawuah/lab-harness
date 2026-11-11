@@ -1,0 +1,57 @@
+
+███████ ███████████▄▄
+███████ ██████████████▄
+███████ ███████████████▄
+███████ ████████████████   LAB-HARNESS
+███████ ████████████████   Powered by Pi
+███████ ███████████████▀   Interactive coding workspace
+███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+███████ ███████ ▀▀▀▀
+███████ ███████ ███▄▄
+████████ ▀▀████ ██████▄
+███████▀    ▀██ ███████▄
+▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+███████████████ ████████
+███████████████ ███████▀
+███████████████ ██████▀
+ ▀█████████████ ███▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready: fixture/01a1c9ea-d1e5-70b3-a784--26c71e363d51
+ (pi-a5df615b0e3d0ec168538072bef826d1f3d65af588a35de7d6c4c63c50e03992). Use /relay-peers.
+
+
+ LINUX_E2E_PROMPT: run the fixture shell command then finish.
+
+
+
+ $ printf 'LINUX_TOOL_OK\n' > approval-marker.txt; cat approval-marker.txt
+
+ LINUX_TOOL_OK
+
+ Took 0.0s
+
+
+ LINUX_E2E_FINAL_OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+── ⠧ Working ─────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────
+/lab/fixture
+26.5%/8.2k (auto)                                                        linux-e2e-fixture
+● mode: ask · /lab-mode
