@@ -28,7 +28,7 @@ export function interopEnvironment(env = process.env, wsl = isWSL()): NodeJS.Pro
     USERPROFILE: get('USERPROFILE'), TEMP: get('TEMP'), TMP: get('TMP'), PATH: win32.join(system, 'System32') };
 }
 export const systemInterop: Interop = (command, args) => {
-  const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true, env: interopEnvironment() });
+  const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true, stdio: ['ignore','pipe','pipe'], env: interopEnvironment() });
   if (r.error || r.status !== 0) {
     throw interopFailure(command, String(r.stderr ?? '') + (r.error ? ' LAB_BROWSER_WINDOWS_' + (r.error as NodeJS.ErrnoException).code : ''));
   }
@@ -42,7 +42,7 @@ export class WindowsInterop {
   constructor(readonly run: Interop = systemInterop, readonly wsl = isWSL()) {}
   powershell(script: string) {
     return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : win32.join(interopEnvironment().SystemRoot!, 'System32/WindowsPowerShell/v1.0/powershell.exe'),
-      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';$env:PSModulePath=Join-Path $PSHOME 'Modules';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
+      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';$env:PSModulePath=$PSHOME+'\\Modules';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
   }
   windowsPath(value: string): string {
     const p = value.startsWith('/') && this.wsl ? this.run('wslpath', ['-w', value]) : value;

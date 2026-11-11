@@ -370,6 +370,7 @@
     "scripts/benchmark-search.ts",
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
+    "scripts/browser-windows-diagnostics.ts",
     "scripts/browser-windows-smoke.ts",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
@@ -501,7 +502,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "b2f9810cf1ace213990c243ed29c419799051b1c4f895ae4e283aaaefd00d948",
+      "sha256": "7e4404dc0a0da2f0f97dc700ce7625321d3a7b184f251e619cc0f9887bdc9dac",
       "status": "added"
     },
     ".gitignore": {
@@ -1821,6 +1822,10 @@
       "sha256": "31d37def9583d8ede8b517fe82d624b73f9f77062a82e4ca74f11fdc0e7d1bf1",
       "status": "added"
     },
+    "scripts/browser-windows-diagnostics.ts": {
+      "sha256": "6af17c02b5de5fb6aa4db672f1c4f97622dea893f706da2ceedef70eded72805",
+      "status": "added"
+    },
     "scripts/browser-windows-smoke.ts": {
       "sha256": "a9ffcdc2f667030f920e620cd621f69ee229ebca18ec22727fd10bc758de1a2c",
       "status": "added"
@@ -1908,7 +1913,7 @@
       "status": "added"
     },
     "src/browser/windows.ts": {
-      "sha256": "2205f6fd9f15d231860e5c0272b55529d7e12cd37ac0fc0db996d6b3474c1bf7",
+      "sha256": "c836f401f8ed6fd0808414b4274beb25dc8b0ea39cb5d80a372ff35d380ad2e3",
       "status": "added"
     },
     "src/candidate.ts": {
