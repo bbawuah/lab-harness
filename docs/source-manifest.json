@@ -2253,7 +2253,7 @@
       "status": "added"
     },
     "scripts/qualify-airgap.sh": {
-      "sha256": "53602880931ae0dadc0d31a181a8f01b54120303380696724818f07beff182bf",
+      "sha256": "6afd4ee679ac6afbd0c1df8b71319504a77adf9d1351d2f76414373fc4df731c",
       "status": "added"
     },
     "scripts/refresh-publication.ts": {

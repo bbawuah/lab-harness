@@ -277,8 +277,8 @@ if [ -n "$q_rel" ]; then
   if [ -f "$q_rel/lab" ] && [ -f "$q_rel/install.sh" ] && [ -d "$q_rel/contracts" ]; then
     q_record PASS install.release "release $(q_short "$q_rel_id") (harness ${q_rel_version:-unknown})"
   else q_record FAIL install.release "release $(q_short "$q_rel_id") is incomplete (lab, install.sh or contracts missing)"; fi
-  if [ -f "$q_rel/MANIFEST.json" ]; then q_record INFO install.manifest "bundle MANIFEST.json present"
-  else q_record SKIPPED install.manifest "no MANIFEST.json in this release (installed without the offline bundle)"; fi
+  if [ -f "$q_rel/.tmp/bundle-receipt.json" ]; then q_record PASS install.manifest "installed from the offline bundle (receipt present)"
+  else q_record SKIPPED install.manifest "no bundle receipt in this release (installed without the offline bundle)"; fi
   if grep -q -- '--version' "$q_rel/lab" 2>/dev/null; then
     q_ver=$(q_bounded 30 "$q_rel/lab" --version 2>/dev/null | head -n 1)
     if [ -n "$q_ver" ]; then q_record PASS install.version "lab --version: $q_ver"
