@@ -5,8 +5,8 @@ set -eu
 umask 077
 
 main() {
-  bootstrap_commit=05b0d3679ed36be43c7e907a6d27bdd7ad8af864
-  bootstrap_sha256=b889d53a1c3ea232a82bbd28e70a0d5fbc6d95854a96524b6f5c88ab0c69c58b
+  bootstrap_commit=773864ef283b012290bc596efcff77c88cc03c85
+  bootstrap_sha256=a05780a2c647078259828205249426a401a169a975472838d0c399fad234e6b7
   bootstrap_install_only=0
   case "${1:-}" in '') ;; --install-only) bootstrap_install_only=1; shift;; *) bootstrap_fail 'Usage: bootstrap.sh [--install-only]';; esac
   [ "$#" -eq 0 ] || bootstrap_fail 'Usage: bootstrap.sh [--install-only]'
