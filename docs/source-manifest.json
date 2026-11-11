@@ -1908,7 +1908,7 @@
       "status": "added"
     },
     "src/browser/windows.ts": {
-      "sha256": "79d831a2c04a1541ba320f0b2a93b7821c6664702e8d6957a1f921ff52e20e39",
+      "sha256": "2205f6fd9f15d231860e5c0272b55529d7e12cd37ac0fc0db996d6b3474c1bf7",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -2100,7 +2100,7 @@
       "status": "added"
     },
     "tests/browser-wsl.test.ts": {
-      "sha256": "7120011b3f944eecdf17d3ba6b059a02adf5711b1e938f06a09590bd6ea0c26d",
+      "sha256": "a52ff8073ae2091888fc116cc2247ecdc7acfe2b70f8c4236d489f05e59e600f",
       "status": "added"
     },
     "tests/browser.test.ts": {

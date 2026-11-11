@@ -20,14 +20,17 @@ export function interopFailure(command: string, diagnostic: string): Error {
 }
 export function interopEnvironment(env = process.env, wsl = isWSL()): NodeJS.ProcessEnv {
   if (wsl) return { PATH: '/usr/bin:/bin', WSL_INTEROP: env.WSL_INTEROP, WSL_DISTRO_NAME: env.WSL_DISTRO_NAME, WSLENV: '' };
-  return { SystemRoot: env.SystemRoot, WINDIR: env.WINDIR, LOCALAPPDATA: env.LOCALAPPDATA,
-    ProgramFiles: env.ProgramFiles, 'ProgramFiles(x86)': env['ProgramFiles(x86)'], USERPROFILE: env.USERPROFILE,
-    TEMP: env.TEMP, TMP: env.TMP, PATH: win32.join(env.SystemRoot ?? 'C:\\Windows', 'System32') };
+  const get = (name: string) => Object.entries(env).find(([k]) => k.toLowerCase() === name.toLowerCase())?.[1];
+  const system = get('SystemRoot') ?? 'C:\\Windows';
+  return { SystemRoot: system, WINDIR: system, SystemDrive: win32.parse(system).root.slice(0, 2),
+    ComSpec: win32.join(system, 'System32/cmd.exe'), LOCALAPPDATA: get('LOCALAPPDATA'), APPDATA: get('APPDATA'),
+    ProgramFiles: get('ProgramFiles'), 'ProgramFiles(x86)': get('ProgramFiles(x86)'), ProgramW6432: get('ProgramW6432'),
+    USERPROFILE: get('USERPROFILE'), TEMP: get('TEMP'), TMP: get('TMP'), PATH: win32.join(system, 'System32') };
 }
 export const systemInterop: Interop = (command, args) => {
   const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true, env: interopEnvironment() });
   if (r.error || r.status !== 0) {
-    throw interopFailure(command, String(r.stderr ?? ''));
+    throw interopFailure(command, String(r.stderr ?? '') + (r.error ? ' LAB_BROWSER_WINDOWS_' + (r.error as NodeJS.ErrnoException).code : ''));
   }
   return r.stdout.trim().replace(/^\uFEFF/, '');
 };
@@ -38,7 +41,7 @@ export const edgeError = 'LAB_BROWSER_EDGE_MISSING: organisation Edge was not fo
 export class WindowsInterop {
   constructor(readonly run: Interop = systemInterop, readonly wsl = isWSL()) {}
   powershell(script: string) {
-    return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : win32.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32/WindowsPowerShell/v1.0/powershell.exe'),
+    return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : win32.join(interopEnvironment().SystemRoot!, 'System32/WindowsPowerShell/v1.0/powershell.exe'),
       ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';$env:PSModulePath=Join-Path $PSHOME 'Modules';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
   }
   windowsPath(value: string): string {
@@ -74,7 +77,8 @@ export class WindowsInterop {
     };
     if (this.wsl) return { ...env, PATH: '/usr/bin:/bin', WSL_INTEROP: process.env.WSL_INTEROP, WSL_DISTRO_NAME: process.env.WSL_DISTRO_NAME, WSLENV: Object.keys(env).map(k => k + '/w').join(':') };
     // Windows needs system DLL and utility paths; do not inherit agent-browser or credential variables.
-    return { ...env, SystemRoot: process.env.SystemRoot, WINDIR: process.env.WINDIR, PATH: process.env.SystemRoot + '\\System32' };
+    const system = interopEnvironment();
+    return { ...system, ...env };
   }
   prepare(session: string, binary: string, executable: string, hostname: string) {
     this.policy(); const root = this.root(session);

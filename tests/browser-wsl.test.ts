@@ -93,3 +93,12 @@ test('interop helper retains the WSL socket but forwards no inherited credential
   expect(env).not.toHaveProperty('PRIVATE_KEY');
   expect(env).not.toHaveProperty('AGENT_BROWSER_CDP');
 });
+
+
+test('native Windows environment resolves case-insensitive system keys and preserves required system paths only', () => {
+  const env = interopEnvironment({ SYSTEMROOT: 'C:\\Windows', USERPROFILE: 'C:\\Users\\fixture', APPDATA: 'C:\\Users\\fixture\\AppData\\Roaming', PRIVATE_KEY: 'secret' }, false);
+  expect(env.SystemRoot).toBe('C:\\Windows');
+  expect(env.ComSpec).toBe('C:\\Windows\\System32\\cmd.exe');
+  expect(env.APPDATA).toBe('C:\\Users\\fixture\\AppData\\Roaming');
+  expect(env).not.toHaveProperty('PRIVATE_KEY');
+});
