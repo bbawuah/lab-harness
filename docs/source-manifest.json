@@ -381,6 +381,7 @@
     "scripts/refresh-publication.ts",
     "scripts/runtime-bun.sh",
     "scripts/start.ts",
+    "scripts/update.sh",
     "src/admission.ts",
     "src/bound-worker.ts",
     "src/browser/lifecycle.ts",
@@ -484,6 +485,7 @@
     "tests/search.test.ts",
     "tests/skills.test.ts",
     "tests/terminal-demo.test.ts",
+    "tests/update.test.ts",
     "tests/workspace-help.test.ts",
     "tests/workspace.test.ts",
     "tsconfig.json",
@@ -516,7 +518,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "5371ee72b79c861167525aa6ba4c6b6a5032d666593e7c81d17dfa3a7857207e",
+      "sha256": "9ef3a45448ce87bb5d6095de0a0076976784e4712eb639619ee408c6febc8871",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -1649,7 +1651,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "3232f66a0ddb560a9ddefd3d1364bff60de0e172f6e2072637ea8bdce2ece962",
+      "sha256": "0fbe987c28e0e68b6c0e0f28210d5258c4859590173b52f8773c34a9a4ef2aaf",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1785,7 +1787,7 @@
       "status": "added"
     },
     "lab": {
-      "sha256": "ba9dc83adaa3a185be331e85a5febb96dedd412e523a70a2d9e1479dcfe20190",
+      "sha256": "0f7ae5ff22d18cf762565b33f5f1902dc3d187d3d681df37986a68adea332ebd",
       "status": "added"
     },
     "package.json": {
@@ -1865,7 +1867,11 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "0374f7c456e95ff2c89392e7d9df9fb145dea6f7bf999c3e841a9aea49ef5e34",
+      "sha256": "43a8a07374a4f027b36a3f1f448b6c7dee14a7d2fd32bcb8d30a2737eb02da9c",
+      "status": "added"
+    },
+    "scripts/update.sh": {
+      "sha256": "3516df5f0a0fe1b28efd6fc16d99e2c9655ab69c709f8dfa04250f0de23a9f3a",
       "status": "added"
     },
     "src/admission.ts": {
@@ -1983,7 +1989,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "01ed4b8a05b45ee03d619a39a0be67eb273eecd937e44e30047efb7820e1421d",
+      "sha256": "0fc2b6ce13ec9cbe06aa5a0676a8ea44f4e4dfc4a605a81332d5b87ed83e6170",
       "status": "added"
     },
     "src/pi/composer.ts": {
@@ -2297,6 +2303,10 @@
     },
     "tests/terminal-demo.test.ts": {
       "sha256": "a8bb0854edd03ffa89ca466e26f895d6909dbdfbd60c0c60229f2ff9982b7f7d",
+      "status": "added"
+    },
+    "tests/update.test.ts": {
+      "sha256": "fc6a9cbc59960cc647bffc72f1e8ccc2b5c575afbeae05a052e2b0b9869852c5",
       "status": "added"
     },
     "tests/workspace-help.test.ts": {

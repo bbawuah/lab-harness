@@ -136,8 +136,22 @@ If installation reports a foreign lab command or file, it preserves it. Use the
 full launcher rather than blindly prepending a path to shadow another command.
 Check the reported path before using bare lab.
 
-Rerun the public install command to update to the verified pinned release and
-refresh LAB-owned launchers. Existing state and old releases are retained.
+Update from your terminal without opening a chat:
+
+~~~sh
+lab update
+~~~
+
+This downloads the public bootstrap and installs its verified pinned release,
+then refreshes LAB-owned launchers. Settings, sessions, and old releases remain.
+Already-running sessions keep their current release; new launches use the updated
+one. `lab update --help` explains the command without downloading anything.
+Run update separately from workspace options; offline updates are not supported.
+Unpublished local features are not included, nor are main commits beyond the
+bootstrap's published pin.
+
+If an older launcher does not recognize `update`, run the public install command
+once to install a launcher with this command.
 Offline launch is:
 
 ~~~sh

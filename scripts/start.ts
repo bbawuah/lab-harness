@@ -5,6 +5,11 @@ import { shellHelp } from "../src/pi/commands.ts";
 
 const root = resolve(import.meta.dir, "..");
 const args = process.argv.slice(2);
+if (args[0] === "update") {
+  const child = spawn("/bin/sh", [join(root, "scripts/update.sh"), ...args.slice(1)], { stdio: "inherit" });
+  const code = await new Promise<number>((done, reject) => { child.once("error", reject); child.once("exit", code => done(code ?? 1)); });
+  process.exit(code);
+}
 let project: string | undefined;
 let relayGroup: string | undefined;
 let browser: string | undefined, browserExecutable: string | undefined;

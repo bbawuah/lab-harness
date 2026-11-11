@@ -185,8 +185,12 @@ route, key, sessions and owned terminal state stay under
 `$HOME/.local/share/lab-harness/workspace`, including when releases use external
 `XDG_DATA_HOME`. Keys are private file contents, not command arguments.
 
-Rerun the public install command to verify/reuse the pinned release and update
-the LAB-owned launcher. Source archives and runtime artifacts have fixed hashes.
+Run `lab update` to install the published pinned release and update the LAB-owned
+launcher without opening a chat. Settings, sessions, and old releases are retained;
+running sessions continue using their existing release. This requires internet
+access and installs the bootstrap's published pin, not arbitrary changes on main.
+If your older launcher does not recognize `update`, run the public install command
+once to get a launcher that supports it. Source archives and runtime artifacts have fixed hashes.
 Modified release source and unrecognized existing launchers are refused rather
 than overwritten. Old releases and user state are retained.
 
