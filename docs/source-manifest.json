@@ -64,6 +64,7 @@
     "contracts/ripgrep-source.json",
     "docs/airgap-production-plan.md",
     "docs/architecture.md",
+    "docs/azure-openai.md",
     "docs/branding-preview.html",
     "docs/browser-evidence/native-browser.png",
     "docs/browser-evidence/native-result.json",
@@ -425,6 +426,7 @@
     "src/protocol.ts",
     "src/relay.ts",
     "src/relay/workspace.ts",
+    "src/runtime/azure.ts",
     "src/runtime/pi.ts",
     "src/runtime/verify.ts",
     "src/search/index.ts",
@@ -432,6 +434,9 @@
     "src/terminal-demo.ts",
     "src/util.ts",
     "src/workspace.ts",
+    "tests/azure-actual.test.ts",
+    "tests/azure-configure.test.ts",
+    "tests/azure-route.test.ts",
     "tests/bootstrap.test.ts",
     "tests/browser-ux.test.ts",
     "tests/browser.test.ts",
@@ -595,6 +600,10 @@
     },
     "docs/architecture.md": {
       "sha256": "5723c47ae4531a8b692c8de3edabf827168e1b03ee10d104723ccdbda58584b3",
+      "status": "added"
+    },
+    "docs/azure-openai.md": {
+      "sha256": "4a3d87fb6957b75cd60d6f0c75b30cd45edc9bfd4fae3f71265b58fff8907179",
       "status": "added"
     },
     "docs/branding-preview.html": {
@@ -1862,7 +1871,7 @@
       "status": "added"
     },
     "scripts/start.ts": {
-      "sha256": "0374f7c456e95ff2c89392e7d9df9fb145dea6f7bf999c3e841a9aea49ef5e34",
+      "sha256": "54019295d481287639dfc968d019f8395ee947c85419df15eb5e1bc50ba7c839",
       "status": "added"
     },
     "src/admission.ts": {
@@ -2012,7 +2021,7 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "647e4df40e91ecb018ad3bd97a0118c08cb03b4879a00abd64a11fa55189e05d",
+      "sha256": "a22d89856ab583098059e92b6687ffd9558571ea10ca846af3df0e57efdf8d86",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
@@ -2024,7 +2033,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "79b4036e4a8c06ad307a3a968d8c09250132efd0c3b9118d0a8f262a0eea5b1f",
+      "sha256": "fedd9c34ca8064a73a91363229d7133724a57292ee3e26fd0b5da7d2b471a6a9",
       "status": "added"
     },
     "src/project.ts": {
@@ -2043,6 +2052,10 @@
     },
     "src/relay/workspace.ts": {
       "sha256": "5be557bc597b051f9f5d2e8eb40510b78253db7db0f3302614ed619c1b3623ad",
+      "status": "added"
+    },
+    "src/runtime/azure.ts": {
+      "sha256": "f8c2e8d757a926c8712c2c6a1329336d39e9cabacf6d3420f6b08a16e23dd886",
       "status": "added"
     },
     "src/runtime/pi.ts": {
@@ -2074,6 +2087,18 @@
       "sha256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e",
       "status": "unchanged",
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
+    },
+    "tests/azure-actual.test.ts": {
+      "sha256": "efe8e91afd119b61d7f90a5bad87d9197c41d0a00ea3860787ef9b35b86ede7e",
+      "status": "added"
+    },
+    "tests/azure-configure.test.ts": {
+      "sha256": "789e56f59f260767d478834aca9c6bc0abeac2bfb382b2b814fbc9dec1a73b6f",
+      "status": "added"
+    },
+    "tests/azure-route.test.ts": {
+      "sha256": "472d80749c5b1a08cd6b761633dce91630d78b0943aa4cb9f030bc701c8808c3",
+      "status": "added"
     },
     "tests/bootstrap.test.ts": {
       "sha256": "031f1aaaf7db11575c72131e5c9f72872d87bc52b767cdd8b63a5f73c214db05",
@@ -2207,7 +2232,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "c64ae62fc70b83d44ed2e0195e6259e54ca7e396d4c7f851772fea685ef3abff",
+      "sha256": "fda9cc15f8d1ecf49eeeced84b3cabeeac62e6540d035b2f7aa06552a51cb148",
       "status": "added"
     },
     "tests/project.test.ts": {
