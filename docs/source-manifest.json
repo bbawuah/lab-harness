@@ -377,6 +377,7 @@
     "scripts/bundle/install.ts",
     "scripts/bundle/licenses.json",
     "scripts/bundle/pack.ts",
+    "scripts/bundle/test-offline.sh",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
@@ -444,6 +445,7 @@
     "tests/browser-ux.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
+    "tests/bundle-manifest.test.ts",
     "tests/bundle-version.test.ts",
     "tests/cleanup-child.ts",
     "tests/cleanup.test.ts",
@@ -474,6 +476,7 @@
     "tests/process-crash.test.ts",
     "tests/project-selection.test.ts",
     "tests/project.test.ts",
+    "tests/publication-git.test.ts",
     "tests/publication.test.ts",
     "tests/relay-bridge.test.ts",
     "tests/relay-extension.test.ts",
@@ -506,7 +509,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "137042d022788a974dc9caa149c91b53931c9f9bc283709b008e24791d38cc18",
+      "sha256": "0bd0644dc7ae390a175e6fc82feea2e0ab396866ade35d3efe7df7b7140e0e03",
       "status": "added"
     },
     ".gitignore": {
@@ -1854,6 +1857,10 @@
       "sha256": "634d987fe6e4dd47d6a215f38e746ba40417f096af8edf79a90d7f553da538d1",
       "status": "added"
     },
+    "scripts/bundle/test-offline.sh": {
+      "sha256": "1380cc63bbf9b545c917da0fc8db11a3dd1471022043ea77e144e9d3b79fb4aa",
+      "status": "added"
+    },
     "scripts/check-publication.ts": {
       "sha256": "0706d5852dff7db60a595c77e89def267ef9b5aee2f2117178bdda10a4f75646",
       "status": "added"
@@ -1891,7 +1898,7 @@
       "status": "added"
     },
     "scripts/publication-policy.ts": {
-      "sha256": "3b239f146de4fc141224bb4a1b291d0cff6bd7496b8001311a0576139cbfdc96",
+      "sha256": "f800b44721398ba772195eaa9a94aab9d7a432cc9a3763deb275cba2c9bcd037",
       "status": "added"
     },
     "scripts/refresh-publication.ts": {
@@ -2132,6 +2139,10 @@
       "sha256": "0faa47dcad069850c3b442155c8f50d2a50ee7d28f894d0158fbbcfef65c057a",
       "status": "added"
     },
+    "tests/bundle-manifest.test.ts": {
+      "sha256": "c0ce4044a9a893ab0994f28946eef95d55e2cfe34ad67a60ad241e742ead6829",
+      "status": "added"
+    },
     "tests/bundle-version.test.ts": {
       "sha256": "e66d01eb2666b6bea6640b903ac9c00a9fe5a555c696e1aabe0f68576829570a",
       "status": "added"
@@ -2257,6 +2268,10 @@
     },
     "tests/project.test.ts": {
       "sha256": "0d1a8a8de4ccfe06b2e55ed272f520d32051f50ebed663fc2c5784f86d809ddc",
+      "status": "added"
+    },
+    "tests/publication-git.test.ts": {
+      "sha256": "b1e1c464f836d12c11c99534c7ccb24574e92add781d8ff62e7bc876fe2c863b",
       "status": "added"
     },
     "tests/publication.test.ts": {
