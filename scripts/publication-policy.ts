@@ -1,6 +1,7 @@
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const root = fileURLToPath(new URL("../", import.meta.url));
@@ -18,26 +19,43 @@ export type Manifest = {
 export function sha256(path: string): string {
   return createHash("sha256").update(readFileSync(join(root, path))).digest("hex");
 }
-export function publicationFiles(): string[] {
+export function publicationFiles(base = root): string[] {
   const files: string[] = [];
   const generated = new Set([".git", ".tmp", "node_modules"]);
-  function walk(relative = ""): void {
-    for (const entry of readdirSync(join(root, relative), { withFileTypes: true })) {
-      if (!relative && generated.has(entry.name)) continue;
-      const path = relative ? `${relative}/${entry.name}` : entry.name;
-      if (entry.isSymbolicLink()) throw new Error(`Unexpected symlink: ${path}`);
-      if (entry.isDirectory()) { walk(path); continue; }
-      if (!entry.isFile()) throw new Error(`Unsupported publication entry: ${path}`);
-      if (/^(?:\.env.*|config\.(?:json|properties)|.*\.(?:pem|key|gguf|sqlite.*|log))$/i.test(entry.name)) throw new Error(`Sensitive publication filename: ${path}`);
-      const text = readFileSync(join(root, path), "utf8");
-      const homePath = new RegExp("/" + "(?:Users|home)/" + "[a-zA-Z0-9_.-]+/");
-      const privateKey = new RegExp("-----BEGIN " + "(?:[A-Z]+ )?PRIVATE KEY-----");
-      const token = new RegExp("(?:gh[pousr]_" + "[a-zA-Z0-9]{24,}|github_pat_" + "[a-zA-Z0-9_]{30,}|sk-" + "[a-zA-Z0-9]{24,})");
-      if (homePath.test(text) || privateKey.test(text) || token.test(text)) throw new Error(`Sensitive publication content: ${path}`);
-      files.push(path);
+  function check(path: string): void {
+    let ancestor = dirname(path);
+    while (ancestor !== ".") {
+      if (lstatSync(join(base, ancestor)).isSymbolicLink()) throw new Error(`Unexpected symlink: ${ancestor}`);
+      ancestor = dirname(ancestor);
     }
+    const stat = lstatSync(join(base, path));
+    if (stat.isSymbolicLink()) throw new Error(`Unexpected symlink: ${path}`);
+    if (!stat.isFile()) throw new Error(`Unsupported publication entry: ${path}`);
+    if (/^(?:\.env.*|config\.(?:json|properties)|.*\.(?:pem|key|gguf|sqlite.*|log))$/i.test(basename(path))) throw new Error(`Sensitive publication filename: ${path}`);
+    const text = readFileSync(join(base, path), "utf8");
+    const homePath = new RegExp("/" + "(?:Users|home)/" + "[a-zA-Z0-9_.-]+/");
+    const privateKey = new RegExp("-----BEGIN " + "(?:[A-Z]+ )?PRIVATE KEY-----");
+    const token = new RegExp("(?:gh[pousr]_" + "[a-zA-Z0-9]{24,}|github_pat_" + "[a-zA-Z0-9_]{30,}|sk-" + "[a-zA-Z0-9]{24,})");
+    if (homePath.test(text) || privateKey.test(text) || token.test(text)) throw new Error(`Sensitive publication content: ${path}`);
+    files.push(path);
   }
-  walk();
+  if (existsSync(join(base, ".git"))) {
+    // The index includes staged additions for the explicit publication refresh.
+    // Untracked files, ignored or otherwise, cannot enter git archive.
+    const result = spawnSync("git", ["ls-files", "--cached", "-z"], { cwd: base, encoding: "utf8" });
+    if (result.status !== 0) throw new Error("Cannot enumerate tracked publication files");
+    for (const path of [...new Set(result.stdout.split("\0").filter(Boolean))]) check(path);
+  } else {
+    function walk(relative = ""): void {
+      for (const entry of readdirSync(join(base, relative), { withFileTypes: true })) {
+        if (!relative && generated.has(entry.name)) continue;
+        const path = relative ? `${relative}/${entry.name}` : entry.name;
+        if (entry.isDirectory() && !entry.isSymbolicLink()) walk(path);
+        else check(path);
+      }
+    }
+    walk();
+  }
   return files.sort();
 }
 export function checkRelay(allowed: Set<string>): void {
