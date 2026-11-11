@@ -13,9 +13,9 @@ bun --no-env-file --no-install scripts/bundle/build.ts --commit HEAD --target li
 
 Builds use sorted USTAR entries, uid/gid zero, fixed modes, zero mtimes and gzip
 without a timestamp or host OS marker. No target runtime is executed. With the
-same source commit, pinned Bun and downloads, mini and Linux CI builds are
-intended to be byte-identical. Cross-host equality must be measured before it
-is claimed; fetching the published asset always preserves the CI hash.
+same source commit, pinned Bun and downloads, mini and Linux CI builds produce
+identical bytes in the measured comparison below. Fetching the published asset
+also preserves the CI hash. Verify SHA256SUMS for each release.
 
 See [offline installation](airgap-install.md) for receiving-side verification.
 
@@ -80,9 +80,15 @@ it. A build before that integration supports the Linux control binary only.
 
 The archive writer is platform-independent, and the builder never runs target
 binaries. Use the pinned .bun-version on both hosts. Repeated builds at one commit
-are compared in the regression suite; a full Mac/Linux comparison is required
-to establish the cross-host checksum. Until that comparison has run, fetching
-CI's published asset is the route that guarantees its exact hash.
+are compared in the regression suite and were repeated with the full bundle.
+
+The mini (macOS arm64) reproduced the [native Ubuntu CI build](https://github.com/bbawuah/lab-harness/actions/runs/42996184102/job/130440749700)
+for commit `31edf93dc47f88a943ab7351fbcf2c295b2d932c` exactly: 104,368,395 bytes,
+SHA-256 `ba92f1da6d77e58ad55099408559884e5406ccbb1a6577cd6e51a8d64bfdffab`.
+Both used Bun 1.4.2. That CI job later exposed an output file permission issue
+in the non-root install test; the builder now writes the outer tarball as 0644.
+The comparison establishes the archive bytes for that source commit, not WSL
+acceptance. Fetching an existing release always preserves that release's hash.
 
 Actual mini validation includes a real Linux-x64 build and a non-root Ubuntu
 24.04 amd64 install under Rosetta with networking disabled, real Herdr worker
