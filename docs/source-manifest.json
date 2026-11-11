@@ -1875,7 +1875,7 @@
       "status": "added"
     },
     "scripts/qualify-airgap.sh": {
-      "sha256": "d00a0b452f1b96b5b2df6e8d86fca9a49be8f6c3e5a7bd0f33892af2a07b29da",
+      "sha256": "53602880931ae0dadc0d31a181a8f01b54120303380696724818f07beff182bf",
       "status": "added"
     },
     "scripts/refresh-publication.ts": {
@@ -2037,7 +2037,7 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "d49088ea2f9d619a03a1e81f30ef297968408361ab9fe0211e6abfb1cd5290cc",
+      "sha256": "2b100a967795bf4a73c8430ba59461f3c949583c0efd2d990af4fb820fb4810c",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
@@ -2113,7 +2113,7 @@
       "status": "added"
     },
     "tests/azure-route.test.ts": {
-      "sha256": "8ce1696dc9630c04b3ab8e2d9ebe9b6375d3f462679be3dfe3396218c85da679",
+      "sha256": "9d3305690404964e5b84474560c3136faa5331191600421a2ab0cea8a3a6dd69",
       "status": "added"
     },
     "tests/bootstrap.test.ts": {

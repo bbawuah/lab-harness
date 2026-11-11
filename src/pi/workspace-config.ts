@@ -14,6 +14,7 @@ export type WorkspaceRoute = {
   auth?: { mode: "api-key" | "custom-header" | "bearer-command"; header?: string };
 };
 const defaults: ModelCapabilities = { contextWindow: 128000, maxTokens: 16384, reasoning: false, input: ["text"] };
+const legacyV1: ModelCapabilities = { contextWindow: 8192, maxTokens: 1024, reasoning: false, input: ["text"] };
 export function validateRoute(value: unknown): WorkspaceRoute {
   const route = value as Omit<WorkspaceRoute, "version"> & { version: 1 | 2 };
   if (!route || ![1, 2].includes(route.version) || !["local", "litellm", "azure"].includes(route.kind) || (route.version === 1 && route.kind === "azure")) throw new Error("Invalid workspace route; run ./lab --configure");
@@ -27,7 +28,10 @@ export function validateRoute(value: unknown): WorkspaceRoute {
     if (!Number.isSafeInteger(capabilities.contextWindow) || capabilities.contextWindow < 4096 || capabilities.contextWindow > 10000000 || !Number.isSafeInteger(capabilities.maxTokens) || capabilities.maxTokens < 1 || capabilities.maxTokens >= capabilities.contextWindow || typeof capabilities.reasoning !== "boolean" || !Array.isArray(capabilities.input) || capabilities.input[0] !== "text" || capabilities.input.length > 2 || capabilities.input.some(v => !["text", "image"].includes(v))) throw new Error("Invalid model capabilities; set contextWindow >= 4096, maxTokens < contextWindow, reasoning and input");
     capabilities = { contextWindow: capabilities.contextWindow, maxTokens: capabilities.maxTokens, reasoning: capabilities.reasoning, input: [...new Set(capabilities.input)] };
   }
-  const result: WorkspaceRoute = { version: 2, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model, ...(capabilities ? { capabilities } : route.kind !== "azure" ? { capabilities: { ...defaults } } : {}) };
+  // A saved v1 route was used with the old fixed 8192/1024 text-only limits; keep them so an
+  // upgrade never sends a small local model requests larger than it accepted before.
+  const fallback = route.version === 1 ? { ...legacyV1 } : { ...defaults };
+  const result: WorkspaceRoute = { version: 2, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model, ...(capabilities ? { capabilities } : route.kind !== "azure" ? { capabilities: fallback } : {}) };
   if (route.kind === "azure") {
     if (typeof route.deployment !== "string" || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,199}$/.test(route.deployment)) throw new Error("Azure deployment must be the exact deployment name, using letters, numbers, dots, underscores or hyphens");
     const apiVersion = route.apiVersion ?? "v1";

@@ -484,16 +484,19 @@ if [ "$q_model_test" = 1 ]; then
         const { verifyPiRuntime } = await import(rel + "/src/runtime/pi.ts");
         const { route, key } = cfg.loadWorkspaceRoute(process.env.LAB_Q_STATE);
         const models = cfg.modelsForRoute(route);
-        const provider = Object.keys(models.providers ?? {})[0];
+        const provider = typeof cfg.routeProvider === "function" ? cfg.routeProvider(route) : Object.keys(models.providers ?? {})[0];
         if (!provider) throw new Error("route produced no Pi provider");
         const agent = join(work, "agent");
         writeFileSync(join(agent, "models.json"), JSON.stringify(models), { mode: 0o600 });
-        writeFileSync(join(agent, "settings.json"), JSON.stringify({ defaultProvider: provider, defaultModel: route.model, packages: [] }), { mode: 0o600 });
+        const settings = typeof cfg.routeSettings === "function" ? cfg.routeSettings(route) : { defaultProvider: provider, defaultModel: route.model, packages: [] };
+        writeFileSync(join(agent, "settings.json"), JSON.stringify(settings), { mode: 0o600 });
         const pass = ["HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy", "NO_PROXY", "no_proxy", "ALL_PROXY", "NODE_EXTRA_CA_CERTS", "SSL_CERT_FILE", "SSL_CERT_DIR"];
         const env = { PATH: "/usr/bin:/bin", HOME: join(work, "home"), TMPDIR: join(work, "home"), LANG: "C.UTF-8", PI_CODING_AGENT_DIR: agent, PI_OFFLINE: "1", PI_SKIP_VERSION_CHECK: "1", LAB_WORKSPACE_API_KEY: key || "lab-local-no-key" };
         for (const n of pass) if (process.env[n]) env[n] = process.env[n];
-        if (typeof cfg.environmentForRoute === "function") Object.assign(env, cfg.environmentForRoute(route, key));
-        const cmd = [...verifyPiRuntime().command, "--mode", "json", "--offline", "--no-session", "--no-tools", "--no-extensions", "--no-mcp", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-context-files", "--provider", provider, "--model", route.model, "Reply with exactly one word: PONG"];
+        // Same launch environment as lab itself (Azure variables, header auth, proxy/CA, no pi.dev).
+        if (typeof cfg.routeEnvironment === "function") Object.assign(env, cfg.routeEnvironment(route, key));
+        const azureExtension = route.kind === "azure" ? ["-e", rel + "/src/runtime/azure.ts"] : [];
+        const cmd = [...verifyPiRuntime().command, "--mode", "json", "--offline", "--no-session", "--no-tools", "--no-extensions", ...azureExtension, "--no-mcp", "--no-skills", "--no-prompt-templates", "--no-themes", "--no-context-files", "--provider", provider, "--model", route.model, "Reply with exactly one word: PONG"];
         const started = performance.now();
         const child = Bun.spawn(cmd, { cwd: join(work, "cwd"), env, stdin: "ignore", stdout: "pipe", stderr: "ignore" });
         const timer = setTimeout(() => child.kill(), 120000);

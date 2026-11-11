@@ -29,13 +29,14 @@ test("route validation rejects credential URLs, remote plaintext, deployment map
   for (const deployment of ["a,b=c", "a/b", "a b", "a\n"]) expect(() => azureRoute(undefined, "api-key", { deployment })).toThrow();
   for (const header of ["Host", "Authorization", "Cookie", "a\r\nb"]) expect(() => azureRoute(undefined, "custom-header", { auth: { mode: "custom-header", header } })).toThrow();
 });
-test("v1 routes migrate in memory to bounded configurable v2 limits and still load their key", () => {
+test("v1 routes migrate in memory keeping their legacy limits and still load their key", () => {
   const root = temporary();
   for (const kind of ["local", "litellm"]) {
     writePrivate(join(root, "route.json"), JSON.stringify({ version: 1, kind, endpoint: "http://127.0.0.1:9/v1", model: "alias" }));
     writePrivate(join(root, "key"), "fixture");
     const { route } = loadWorkspaceRoute(root);
-    expect(route.version).toBe(2); expect(route.capabilities).toMatchObject({ contextWindow: 128000, maxTokens: 16384 });
+    expect(route.version).toBe(2); expect(route.capabilities).toEqual({ contextWindow: 8192, maxTokens: 1024, reasoning: false, input: ["text"] });
+    expect(validateRoute({ version: 2, kind, endpoint: "http://127.0.0.1:9/v1", model: "alias" }).capabilities).toMatchObject({ contextWindow: 128000, maxTokens: 16384 });
     const custom = validateRoute({ ...route, capabilities: { contextWindow: 32768, maxTokens: 4096, reasoning: true, input: ["text", "image"] } });
     expect(JSON.stringify(modelsForRoute(custom))).toContain('"contextWindow":32768');
     expect(routeSettings(custom)).toMatchObject({ compaction: { reserveTokens: 8192, keepRecentTokens: 8192 } });
