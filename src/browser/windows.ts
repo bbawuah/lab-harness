@@ -82,11 +82,11 @@ export class WindowsInterop {
   }
   prepare(session: string, binary: string, executable: string, hostname: string) {
     this.policy(); const root = this.root(session);
-    this.powershell(`$r=${psQuote(root)}; if(Test-Path -LiteralPath $r){throw 'LAB_BROWSER_STATE'}; [void][IO.Directory]::CreateDirectory($r); $acl=[Security.AccessControl.DirectorySecurity]::new(); $acl.SetOwner([Security.Principal.WindowsIdentity]::GetCurrent().User); $acl.SetAccessRuleProtection($true,$false); $rule=[Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.WindowsIdentity]::GetCurrent().User,'FullControl','ContainerInherit,ObjectInherit','None','Allow'); $acl.AddAccessRule($rule); Set-Acl -LiteralPath $r -AclObject $acl; foreach($d in @('s','t','home','cache','profile')){[void][IO.Directory]::CreateDirectory((Join-Path $r $d))}`);
+    this.powershell(`$r=${psQuote(root)}; if(Test-Path -LiteralPath $r){throw 'LAB_BROWSER_STATE'}; [void][IO.Directory]::CreateDirectory($r); $acl=[Security.AccessControl.DirectorySecurity]::new(); $acl.SetOwner([Security.Principal.WindowsIdentity]::GetCurrent().User); $acl.SetAccessRuleProtection($true,$false); $rule=[Security.AccessControl.FileSystemAccessRule]::new([Security.Principal.WindowsIdentity]::GetCurrent().User,'FullControl','ContainerInherit,ObjectInherit','None','Allow'); $acl.AddAccessRule($rule); Set-Acl -LiteralPath $r -AclObject $acl; foreach($d in @('s','t','home','cache')){[void][IO.Directory]::CreateDirectory((Join-Path $r $d))}`);
     const local = this.localPath(root);
     try {
       copyFileSync(binary, join(local, 'agent-browser.exe'));
-      writeFileSync(join(local, 'config.json'), JSON.stringify({ executablePath: executable, profile: win32.join(root, 'profile'), allowedDomains: [hostname], contentBoundaries: true, maxOutput: 12000, noWebmcp: true, idleTimeout: '15m' }));
+      writeFileSync(join(local, 'config.json'), JSON.stringify({ executablePath: executable, allowedDomains: [hostname], contentBoundaries: true, maxOutput: 12000, noWebmcp: true, idleTimeout: '15m' }));
     } catch (e) { this.cleanup(session); throw e; }
     return this.localPath(win32.join(root, 'agent-browser.exe'));
   }
@@ -100,10 +100,11 @@ export class WindowsInterop {
     // never taskkill by image name or a pid read from a file. Upstream's daemon owns the
     // Edge Job Object (KILL_ON_JOB_CLOSE), including grandchildren and startup failures.
     this.powershell(`$r=${psQuote(root)}; $exe=Join-Path $r 'agent-browser.exe';
+      $t=Join-Path $r 't'; $profiles=@(if(Test-Path -LiteralPath $t){Get-ChildItem -LiteralPath $t -Directory | Where-Object { $_.Name.StartsWith('agent-browser-chrome-') } | ForEach-Object { $_.FullName }});
       for($i=0;$i -lt 40;$i++) {
         $owned=@(Get-Process -Name 'agent-browser' -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $exe });
         foreach($p in $owned){ if(!$p.HasExited -and $p.Path -eq $exe){$p.Kill(); [void]$p.WaitForExit(1000)} };
-        $edge=@(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -and (($_.CommandLine.Contains('--user-data-dir='+ (Join-Path $r 'profile')+' ') -or $_.CommandLine.Contains('--user-data-dir='+ (Join-Path $r 'profile')+'"') -or $_.CommandLine.EndsWith('--user-data-dir='+ (Join-Path $r 'profile'))) -or $_.CommandLine.Contains('--user-data-dir="'+(Join-Path $r 'profile')+'"')) });
+        $edge=@(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $cmd=$_.CommandLine; $cmd -and @($profiles | Where-Object { $cmd.Contains('--user-data-dir='+$_+' ') -or $cmd.Contains('--user-data-dir='+$_+'"') -or $cmd.EndsWith('--user-data-dir='+$_) -or $cmd.Contains('--user-data-dir="'+$_+'"') }).Count -gt 0 });
         if($owned.Count -eq 0 -and $edge.Count -eq 0){try {if(Test-Path -LiteralPath $r){Remove-Item -LiteralPath $r -Recurse -Force}; if(!(Test-Path -LiteralPath $r)){exit}} catch {}};
         Start-Sleep -Milliseconds 100
       }; throw 'LAB_BROWSER_CLEANUP_FAILED'`);

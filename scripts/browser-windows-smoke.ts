@@ -1,6 +1,6 @@
 /** Actual Windows Edge fixture; no model, personal profile, external page or policy changes. */
 import { strict as assert } from 'node:assert';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { BrowserSession } from '../src/browser/session.ts';
 import { WindowsInterop, windowsBrowser } from '../src/browser/windows.ts';
@@ -16,7 +16,7 @@ try {
   console.log('fixture: opening installed Edge');
   const b = await BrowserSession.create(`http://127.0.0.1:${server.port}/`); sessions.push(b);
   const w = new WindowsInterop(); const root = w.localPath(w.root(b.descriptor.session));
-  assert(existsSync(join(root, 'profile')), 'owned profile created');
+  assert(readdirSync(join(root, 't')).some(n => n.startsWith('agent-browser-chrome-')), 'owned ephemeral profile created');
   console.log('fixture: opened; taking snapshot');
   let s: any = await b.execute({ operation: 'snapshot' });
   console.log('fixture: filling');

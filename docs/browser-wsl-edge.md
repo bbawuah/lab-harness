@@ -45,7 +45,7 @@ bundle workstream must include both Linux and Windows artifacts.
 Each session creates `%LOCALAPPDATA%\lab-harness\browser\lab-<random-id>` under
 the Windows account used by WSL interop, with inheritance disabled and access
 granted to that account. It contains a private copy of the verified executable,
-`config.json`, IPC state, temporary files and a dedicated `profile`. Linux keeps
+`config.json`, IPC state, temporary files and a fresh `t\agent-browser-chrome-<random-id>` profile. Linux keeps
 the private descriptor, failure marker and display activity in its existing
 owned control root. Reload rebinds the same Windows session; it does not adopt
 another Edge instance.
@@ -57,6 +57,10 @@ LAB runs the win32 executable directly through WSL interop for each
 `WSLENV` `/w` entries. They are already Windows paths, so `/p` translation is
 intentionally absent. Shell startup files are not loaded.
 
+agent-browser 0.41.0 refuses `allowedDomains` together with an explicit persistent
+`profile` (it cannot contain restored pages early enough). LAB keeps the allowlist
+and uses the launcher's fresh ephemeral profile in the private `TEMP` directory.
+
 The pinned implementation differs from the earlier Playwright bridge proposal:
 [connection.rs](https://github.com/vercel-labs/agent-browser/blob/1453dd37a40c730fe00f592bc32198a896ff8747/cli/src/connection.rs)
 and
@@ -65,8 +69,7 @@ use **Windows loopback TCP**, not a Unix socket or named pipe. The private socke
 directory holds `.pid` and `.port`; the daemon tries a session-derived port,
 falls back to an ephemeral port and writes the actual port for the CLI.
 [chrome.rs](https://github.com/vercel-labs/agent-browser/blob/1453dd37a40c730fe00f592bc32198a896ff8747/cli/src/native/cdp/chrome.rs)
-launches Edge headless with `--remote-debugging-port=0` and the explicit owned
-profile. Neither port is forwarded to WSL or the LAN. This is local browser
+launches Edge headless with `--remote-debugging-port=0` and a fresh ephemeral profile under the owned Windows `TEMP`. Neither port is forwarded to WSL or the LAN. This is local browser
 control, not an authenticated isolation boundary against hostile local users.
 
 [windows_process.rs](https://github.com/vercel-labs/agent-browser/blob/1453dd37a40c730fe00f592bc32198a896ff8747/cli/src/native/cdp/windows_process.rs)

@@ -49,7 +49,7 @@ test('fake interop stages only owned Windows config/profile, checks policy first
     const script = decode(args); scripts.push(script);
     if (script.includes('HKLM:')) { if (!policy) throw interopFailure(cmd, 'LAB_BROWSER_POLICY private diagnostic'); return ''; }
     if (script.includes("Join-Path $env:LOCALAPPDATA")) return remote;
-    if (script.includes('Set-Acl')) { mkdirSync(local); for (const p of ['profile', 's', 't', 'home', 'cache']) mkdirSync(join(local, p)); }
+    if (script.includes('Set-Acl')) { mkdirSync(local); for (const p of ['s', 't', 'home', 'cache']) mkdirSync(join(local, p)); }
     if (script.includes('$p.Kill()')) rmSync(local, { recursive: true });
     return '';
   };
@@ -57,7 +57,8 @@ test('fake interop stages only owned Windows config/profile, checks policy first
   try {
     expect(w.prepare(session, binary, edge, 'fixture.test')).toBe(join(local, 'agent-browser.exe'));
     expect(readFileSync(join(local, 'agent-browser.exe'), 'utf8')).toBe('fixture tool');
-    expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).toMatchObject({ executablePath: edge, profile: win32.join(remote, 'profile'), allowedDomains: ['fixture.test'], noWebmcp: true });
+    expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).toMatchObject({ executablePath: edge, allowedDomains: ['fixture.test'], noWebmcp: true });
+    expect(JSON.parse(readFileSync(join(local, 'config.json'), 'utf8'))).not.toHaveProperty('profile'); // upstream refuses persistent profile + allowlist
     w.cleanup(session); expect(existsSync(local)).toBe(false);
     const cleanup = scripts.find(s => s.includes('$p.Kill()'))!;
     expect(cleanup).toContain('$p.Path -eq $exe'); expect(cleanup).not.toContain('taskkill');
