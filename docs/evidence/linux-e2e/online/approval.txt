@@ -1,0 +1,57 @@
+
+███████ ███████████▄▄
+███████ ██████████████▄
+███████ ███████████████▄
+███████ ████████████████   LAB-HARNESS
+███████ ████████████████   Powered by Pi
+███████ ███████████████▀   Interactive coding workspace
+███████ ▄▄▄▄▄▄▄ ██████▀    Controlled LAB tasks: unavailable
+███████ ███████ ▀▀▀▀
+███████ ███████ ███▄▄
+████████ ▀▀████ ██████▄
+███████▀    ▀██ ███████▄
+▀▀▀▀▀▀▀       ▀ ▀▀▀▀▀▀▀▀
+███████████████ ████████
+███████████████ ███████▀
+███████████████ ██████▀
+ ▀█████████████ ███▀▀
+
+[Extensions]
+  workspace-extension.ts
+
+
+ Relay ready: fixture/01a1c9ea-a446-7005-9fb2--a6530b6bf587
+ (pi-655cf9046f2a372261d6683f5563b18976e4ab555356452f435b5aacc06ee346). Use /relay-peers.
+
+
+ LINUX_E2E_PROMPT: run the fixture shell command then finish.
+
+
+
+ $ printf 'LINUX_TOOL_OK\n' > approval-marker.txt; cat approval-marker.txt
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+
+ LAB ask mode · Run shell command?
+ $ printf 'LINUX_TOOL_OK\n' > approval-marker.txt; cat approval-marker.txt
+ cwd: /lab/fixture
+
+ → Allow once
+   Allow for this session (this exact command in this folder)
+   Deny
+   Deny with note…
+
+ ↑↓ navigate  enter select  escape/ctrl+c cancel
+
+──────────────────────────────────────────────────────────────────────────────────────────
+/lab/fixture
+26.5%/8.2k (auto)                                                        linux-e2e-fixture
+● mode: ask · /lab-mode

@@ -1,0 +1,9 @@
+{
+  "command": "./install.sh",
+  "sourceCommit": "f414f7c548f6a53815f824dda4df0433914a2986",
+  "uid": 1001,
+  "architecture": "x86_64",
+  "gitInstalled": false,
+  "exitCode": 0,
+  "seconds": 15.03
+}

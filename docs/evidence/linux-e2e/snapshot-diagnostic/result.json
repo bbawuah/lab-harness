@@ -1,0 +1,30 @@
+{
+  "ok": false,
+  "failure": "RuntimeError: LAB exited before opening Herdr: 1",
+  "sourceCommit": "f414f7c548f6a53815f824dda4df0433914a2986",
+  "platform": "linux-x86_64",
+  "uid": 1001,
+  "network": "none",
+  "command": [
+    "/lab/source/lab",
+    "--project",
+    "/lab/fixture"
+  ],
+  "testKind": "real Pi + Herdr, outer PTY input, scripted loopback SSE; no model inference",
+  "interfaces": [
+    "lo"
+  ],
+  "modelRequests": 0,
+  "seconds": 3.03,
+  "timings": {},
+  "exitCode": 1,
+  "checks": {
+    "nonRoot": true,
+    "linuxX86_64": true,
+    "noExternalInterface": true
+  },
+  "files": {
+    "failure-pty.txt": "3c29448fcead2ad92836c63f29e13f9f15cfcdb92cf075e02ec6f6bd8cdf4501",
+    "model.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  }
+}

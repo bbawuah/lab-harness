@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/v1/chat/completions",
+    "model": "linux-e2e-fixture",
+    "stream": true,
+    "toolsIncludeBash": true,
+    "lastUser": [
+      {
+        "type": "text",
+        "text": "LINUX_E2E_PROMPT: run the fixture shell command then finish."
+      }
+    ],
+    "toolResults": []
+  },
+  {
+    "path": "/v1/chat/completions",
+    "model": "linux-e2e-fixture",
+    "stream": true,
+    "toolsIncludeBash": true,
+    "lastUser": [
+      {
+        "type": "text",
+        "text": "LINUX_E2E_PROMPT: run the fixture shell command then finish."
+      }
+    ],
+    "toolResults": [
+      "LINUX_TOOL_OK\n"
+    ]
+  }
+]

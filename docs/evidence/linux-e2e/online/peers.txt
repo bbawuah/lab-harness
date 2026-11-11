@@ -1,0 +1,57 @@
+       "lineEnd": 1,
+       "text": "# Linux fixture"
+     }
+   ],
+   "engine": "fallback",
+   "truncated": false,
+   "omissions": []
+ }
+
+
+
+ [lab-skills]
+
+ {
+   "complete": false,
+   "skills": [
+     {
+       "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "name": "terminal-evidence",
+       "compatibility": "portable",
+       "loadable": true,
+       "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+       "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "origins": [
+         {
+           "originId": "examples",
+           "path": "terminal-evidence/SKILL.md"
+         }
+       ]
+     }
+   ]
+ }
+
+
+
+ [relay-peers]
+
+ {
+   "peers": [
+     {
+       "id": "pi-655cf9046f2a372261d6683f5563b18976e4ab555356452f435b5aacc06ee346",
+       "name": "fixture/01a1c9ea-a446-7005-9fb2--a6530b6bf587",
+       "presence": "online",
+       "lastSeenAt": 1794388962073,
+       "self": true
+     }
+   ],
+   "total": 1
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────
+/lab/fixture
+30.8%/8.2k (auto)                                                        linux-e2e-fixture
+● mode: ask · /lab-mode

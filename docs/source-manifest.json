@@ -62,6 +62,7 @@
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
     "contracts/ripgrep-source.json",
+    "docs/airgap-production-plan.md",
     "docs/architecture.md",
     "docs/branding-preview.html",
     "docs/browser-evidence/native-browser.png",
@@ -106,6 +107,63 @@
     "docs/evidence/hosted-project-terminal.ansi",
     "docs/evidence/hosted-project.json",
     "docs/evidence/interactive-terminal.ansi",
+    "docs/evidence/linux-e2e/README.md",
+    "docs/evidence/linux-e2e/base-image.json",
+    "docs/evidence/linux-e2e/docker-context.txt",
+    "docs/evidence/linux-e2e/fixture-selftest/result.json",
+    "docs/evidence/linux-e2e/install-result.json",
+    "docs/evidence/linux-e2e/install.txt",
+    "docs/evidence/linux-e2e/minimal-distro/install.txt",
+    "docs/evidence/linux-e2e/minimal-distro/optional-tools.txt",
+    "docs/evidence/linux-e2e/minimal-distro/packages.txt",
+    "docs/evidence/linux-e2e/minimal-distro/platform.txt",
+    "docs/evidence/linux-e2e/minimal-distro/result.json",
+    "docs/evidence/linux-e2e/minimal-distro/runtime-linkage.txt",
+    "docs/evidence/linux-e2e/offline-network.txt",
+    "docs/evidence/linux-e2e/offline/approval.txt",
+    "docs/evidence/linux-e2e/offline/attachment.json",
+    "docs/evidence/linux-e2e/offline/files.txt",
+    "docs/evidence/linux-e2e/offline/model.json",
+    "docs/evidence/linux-e2e/offline/peers.txt",
+    "docs/evidence/linux-e2e/offline/result.json",
+    "docs/evidence/linux-e2e/offline/search.txt",
+    "docs/evidence/linux-e2e/offline/skills.txt",
+    "docs/evidence/linux-e2e/offline/startup.txt",
+    "docs/evidence/linux-e2e/offline/tool-final.txt",
+    "docs/evidence/linux-e2e/online/approval.txt",
+    "docs/evidence/linux-e2e/online/attachment.json",
+    "docs/evidence/linux-e2e/online/files.txt",
+    "docs/evidence/linux-e2e/online/model.json",
+    "docs/evidence/linux-e2e/online/peers.txt",
+    "docs/evidence/linux-e2e/online/result.json",
+    "docs/evidence/linux-e2e/online/search.txt",
+    "docs/evidence/linux-e2e/online/skills.txt",
+    "docs/evidence/linux-e2e/online/startup.txt",
+    "docs/evidence/linux-e2e/online/tool-final.txt",
+    "docs/evidence/linux-e2e/packages.txt",
+    "docs/evidence/linux-e2e/qemu/README.md",
+    "docs/evidence/linux-e2e/qemu/base-image.json",
+    "docs/evidence/linux-e2e/qemu/diagnostics/ffi-import.txt",
+    "docs/evidence/linux-e2e/qemu/diagnostics/ffi-libc.txt",
+    "docs/evidence/linux-e2e/qemu/diagnostics/javascript.txt",
+    "docs/evidence/linux-e2e/qemu/diagnostics/relay-capability.txt",
+    "docs/evidence/linux-e2e/qemu/diagnostics/relay-import.txt",
+    "docs/evidence/linux-e2e/qemu/diagnostics/result.json",
+    "docs/evidence/linux-e2e/qemu/diagnostics/version.txt",
+    "docs/evidence/linux-e2e/qemu/exploratory-first-install/install-result.json",
+    "docs/evidence/linux-e2e/qemu/exploratory-first-install/install.txt",
+    "docs/evidence/linux-e2e/qemu/fixture-selftest/result.json",
+    "docs/evidence/linux-e2e/qemu/install-result.json",
+    "docs/evidence/linux-e2e/qemu/install.txt",
+    "docs/evidence/linux-e2e/qemu/packages.txt",
+    "docs/evidence/linux-e2e/qemu/runner-result.json",
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/failure-pty.txt",
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/model.json",
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/result.json",
+    "docs/evidence/linux-e2e/runner-result.json",
+    "docs/evidence/linux-e2e/snapshot-diagnostic/failure-pty.txt",
+    "docs/evidence/linux-e2e/snapshot-diagnostic/model.json",
+    "docs/evidence/linux-e2e/snapshot-diagnostic/result.json",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
     "docs/evidence/pixel-lb/README.md",
@@ -369,6 +427,11 @@
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
     "scripts/check-publication.ts",
+    "scripts/e2e-linux/Dockerfile",
+    "scripts/e2e-linux/diagnose.py",
+    "scripts/e2e-linux/install.py",
+    "scripts/e2e-linux/run.sh",
+    "scripts/e2e-linux/smoke.py",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
     "scripts/inventory-skills.ts",
@@ -548,7 +611,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "ee1d215fe7ea773285b61d31eebec15b7ac24307133a73be4a5b5d75af6e26fb",
+      "sha256": "7b288d8cff3f826480eb9c1d2deda623cbe9852bd5008a3a9b8629af661712b3",
       "status": "added"
     },
     "bun.lock": {
@@ -586,6 +649,10 @@
     },
     "contracts/ripgrep-source.json": {
       "sha256": "30b360f8066450ffbf12500e5bfe0af5bd1ddbd37b5aed46667c7a0ceae95f11",
+      "status": "added"
+    },
+    "docs/airgap-production-plan.md": {
+      "sha256": "036e12382e1109ae63f50bed5026cbb8076d7d0e2010b15441304b885dd46a8c",
       "status": "added"
     },
     "docs/architecture.md": {
@@ -762,6 +829,234 @@
     },
     "docs/evidence/interactive-terminal.ansi": {
       "sha256": "23536b34f802979184a489b30d0bea96652516ee1e8d146f68fda1510d479b20",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/README.md": {
+      "sha256": "92e5deaa96bed51f9d45477410e42c0a2337e6eba161d971a34a6d83835e1b2b",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/base-image.json": {
+      "sha256": "38886b432e74e0c60475c5e330c2f83f59e8e093fb2a99bea6c604b6c7bb587c",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/docker-context.txt": {
+      "sha256": "e25e399de03d86d1a4970ab795020ff781321660d9f17018ed90bee5ceb36334",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/fixture-selftest/result.json": {
+      "sha256": "d4fac81ef486bbe22421d657441945bd3927059d45016291e0f7c6dc888a0187",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/install-result.json": {
+      "sha256": "e0fca1b901d58f68ba565eaeb894dec86aa2b7eeaf9379341a0bb213624ef8df",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/install.txt": {
+      "sha256": "d7ae5f142750a9ad42ba3fc9807bef3440de0bda97ab218643f4247c874f2387",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/install.txt": {
+      "sha256": "964ba107f27ba762be742f8077f89aa90842a462bd157144816619d694112a3f",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/optional-tools.txt": {
+      "sha256": "ebdf1609a4065c7448f5f156731c58eb17e53be3392f821b6dc7f6f995eebf9d",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/packages.txt": {
+      "sha256": "4b95754b2913268f3d85eac9707295454bffba2f258fab0bdaacb717603d6f03",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/platform.txt": {
+      "sha256": "76580f68f422678fec3f4b6e04e6ebb91d4e7ece98875578ee2b99ce1f213c6c",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/result.json": {
+      "sha256": "3560a32519894d696816ca0feb9168f470e48906080a6f627ff4dce4c9b8258f",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/minimal-distro/runtime-linkage.txt": {
+      "sha256": "9dd841449af9431bf13afd97a03353e0ce29cf630dca9173bfca9d11bf9163bd",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline-network.txt": {
+      "sha256": "fcf33dfbe13c2354bf0e1b063f9fb422747a46cee00b7420bceff2b81457b345",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/approval.txt": {
+      "sha256": "d56f174c498368ea1083f2caef1e7a3057a96c430df4f7a7c146f9d16477c9e7",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/attachment.json": {
+      "sha256": "a5de18be3503c17e59965e7b3d5a36b2575a174aae4b98fa654c48847a66f6d0",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/files.txt": {
+      "sha256": "0c042e6034a012351bb6300753163f81a91bd3606e51a0de3ba0dc0d79833368",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/model.json": {
+      "sha256": "94e42f73b3e218f626d3bfe04e5cec46c902667eece7deeeaa0d52452e039cc3",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/peers.txt": {
+      "sha256": "f968e50721228f6a5a75fdd870f8843cb410e277578c23976587a2be283e207f",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/result.json": {
+      "sha256": "4f4018f8e9b88dc22513a8317189dc0418ad8176478d4d34ef08a9c617bdc692",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/search.txt": {
+      "sha256": "e51b704c054369d93955c8394a436f8a49fb03cd98cc1c2795d2a56e2de950ba",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/skills.txt": {
+      "sha256": "fe0f77853c3a97e2a28182a6be74dc124912a06d0e1c8a3d9cce6d938867d3bd",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/startup.txt": {
+      "sha256": "b455f2390b042e2b6e52ba1ac9ad5f0173eb4105f044054154ad3e04d4458ed0",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/offline/tool-final.txt": {
+      "sha256": "13b0cbc982a54a9d6d6d10787fa8b633c81b27ef4d40601cfafc94d56c26b30b",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/approval.txt": {
+      "sha256": "5b0edb46425cdf55f822bb1af399906713908224e9c490e9ef83b32630144b68",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/attachment.json": {
+      "sha256": "e8c5eaf5b83878327a88e4ed53d02be6b6fe356a1d27c2a1c23fdb1c1eb36fee",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/files.txt": {
+      "sha256": "16117b665cfaee4d7ac2d86b930f041e75b64b910d3743f86e6bb2028cbcab81",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/model.json": {
+      "sha256": "94e42f73b3e218f626d3bfe04e5cec46c902667eece7deeeaa0d52452e039cc3",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/peers.txt": {
+      "sha256": "95f773ad36cf9517ee524ab06cf4258aea5006239a848126af9aef18503158ec",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/result.json": {
+      "sha256": "022ec743360a4e1018d63ced5905613a1ff7e9328c5161b9241d5a9f73b78011",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/search.txt": {
+      "sha256": "cb02e8448ee7f195d50d0dc860df47011df2b421ec4e1e247da86cbedf972b73",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/skills.txt": {
+      "sha256": "fe0f77853c3a97e2a28182a6be74dc124912a06d0e1c8a3d9cce6d938867d3bd",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/startup.txt": {
+      "sha256": "ca954778d325609bdfbc9f442dbb9ac0fad788f3ef61771018f52c886e00fd0b",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/online/tool-final.txt": {
+      "sha256": "085fdcdf2ed5c4045efc7a925b7bc01ef234951f6edc71d150befdec36068337",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/packages.txt": {
+      "sha256": "6ab8e2826a129e5a3328dbcec78f510c33910ba32d810d6a57e3a13cc5126bef",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/README.md": {
+      "sha256": "7327c60ad4f7c202a547533a3ae14f2935c70f33830f192ef42c0249b7c562c6",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/base-image.json": {
+      "sha256": "38886b432e74e0c60475c5e330c2f83f59e8e093fb2a99bea6c604b6c7bb587c",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/ffi-import.txt": {
+      "sha256": "f0d08e0670099a418eac509c1efd6e07a1136f473c605f974a6c8b75591c1112",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/ffi-libc.txt": {
+      "sha256": "39984a81349a2b2775098af3264b714e82f1fc226d0c3e007f849ff566114628",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/javascript.txt": {
+      "sha256": "cb5bbc09ee6cfa19f42a617de658151521bb40c1007e252da3f72c2bf68e47f5",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/relay-capability.txt": {
+      "sha256": "ddba8507f971aa03f3dbb0af7af18b1db008c04ba070344c0bd6b050617dd729",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/relay-import.txt": {
+      "sha256": "148787e57234aec735d240a87e16e6e665b24e0ff4bc1047f66bb59d7366a2dd",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/result.json": {
+      "sha256": "af4124a39bb09ecf7b0c182e0655f0715e4659135748c91a43ba86fc4005a3bb",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/diagnostics/version.txt": {
+      "sha256": "b99b4c7cdf236f59bc9f65d963deaecae3b16a7dad87939cacb9057f7664daee",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/exploratory-first-install/install-result.json": {
+      "sha256": "821f34504268874ba9321e7291c994a8c2f2ff0a5d37eec2d69815154f624993",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/exploratory-first-install/install.txt": {
+      "sha256": "3ac0f1c376cea20f784dfd1c1297b3ff074fc71fd327d6da8c3896ad7eb2a9e9",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/fixture-selftest/result.json": {
+      "sha256": "98c36c9ca7b5340a66d05898d416bf8b0b072198bbd500c22b7c9363d35030ab",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/install-result.json": {
+      "sha256": "7d7374e5fe17defd0247430c1480215d21982c9a38083f2ad158d6ee22d3adbe",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/install.txt": {
+      "sha256": "517f0c46b9d1a4346da45057b99fcf7d86f581feab3e9a909a501432f914eaf2",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/packages.txt": {
+      "sha256": "6ab8e2826a129e5a3328dbcec78f510c33910ba32d810d6a57e3a13cc5126bef",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/runner-result.json": {
+      "sha256": "353c7de60b1bd456ab59cb4c14906e8473037bf90c434b28adbce3ca4f5e2a63",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/failure-pty.txt": {
+      "sha256": "7974b66642a147178ada3f8aa197c1e237a7b172995f6faf71884831457540e4",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/model.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/qemu/startup-after-failed-install/result.json": {
+      "sha256": "89739e9fbea43479c3b7f9a5b7355ab1a1c78f1ea4f222b23b9ae1e110c7e915",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/runner-result.json": {
+      "sha256": "f86aa20bc347c99d05384d9e8f68a2847fec223ac1ccf2b23a9fee1cf9709d9a",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/snapshot-diagnostic/failure-pty.txt": {
+      "sha256": "3c29448fcead2ad92836c63f29e13f9f15cfcdb92cf075e02ec6f6bd8cdf4501",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/snapshot-diagnostic/model.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/snapshot-diagnostic/result.json": {
+      "sha256": "45893a2a8c72956fc56bcf171693d2e07cada43a139feea3468704ffd8716ad7",
       "status": "added"
     },
     "docs/evidence/local-runtime.json": {
@@ -1810,6 +2105,26 @@
     },
     "scripts/check-publication.ts": {
       "sha256": "0706d5852dff7db60a595c77e89def267ef9b5aee2f2117178bdda10a4f75646",
+      "status": "added"
+    },
+    "scripts/e2e-linux/Dockerfile": {
+      "sha256": "8efba6f93a3bd57b80405c4a7be8e5c8e1bb9dcb5a6e332b88a99c81c612279c",
+      "status": "added"
+    },
+    "scripts/e2e-linux/diagnose.py": {
+      "sha256": "6f1c3809f2a8a34fc15349b23d2fb28644c4a887d99b375aa433ae2f20129631",
+      "status": "added"
+    },
+    "scripts/e2e-linux/install.py": {
+      "sha256": "b8e313c75012408411f9324b6b327b06aa46ad60e8b009e3ee3186cef0976059",
+      "status": "added"
+    },
+    "scripts/e2e-linux/run.sh": {
+      "sha256": "219b273bc33320da1efb67f97ea664f0d8bc6df988d2f48bfea05d2049eaf07e",
+      "status": "added"
+    },
+    "scripts/e2e-linux/smoke.py": {
+      "sha256": "f05bcf26938bf6439084a4a27bae868f5990c1f29638e78080ada77ab14dc916",
       "status": "added"
     },
     "scripts/herdr/acquire.ts": {
