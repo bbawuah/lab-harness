@@ -5,8 +5,8 @@ set -eu
 umask 077
 
 main() {
-  bootstrap_commit=05b0d3679ed36be43c7e907a6d27bdd7ad8af864
-  bootstrap_sha256=b889d53a1c3ea232a82bbd28e70a0d5fbc6d95854a96524b6f5c88ab0c69c58b
+  bootstrap_commit=773864ef283b012290bc596efcff77c88cc03c85
+  bootstrap_sha256=a05780a2c647078259828205249426a401a169a975472838d0c399fad234e6b7
   bootstrap_install_only=0
   case "${1:-}" in '') ;; --install-only) bootstrap_install_only=1; shift;; *) bootstrap_fail 'Usage: bootstrap.sh [--install-only]';; esac
   [ "$#" -eq 0 ] || bootstrap_fail 'Usage: bootstrap.sh [--install-only]'
@@ -47,6 +47,10 @@ main() {
     diff -qr -x .tmp -x node_modules "$bootstrap_stage/source" "$bootstrap_destination" >/dev/null || bootstrap_fail 'Installed release source changed or is partial; move it aside and rerun.'
   fi
   "$bootstrap_destination/install.sh" || bootstrap_fail 'Installation failed; rerun to reuse verified runtime caches.'
+  [ ! -L "$bootstrap_destination/.tmp" ] || bootstrap_fail "Unsafe release cache directory."
+  mkdir -p "$bootstrap_destination/.tmp"
+  printf "%s\n" "$bootstrap_commit" > "$bootstrap_stage/release-commit"
+  mv -f "$bootstrap_stage/release-commit" "$bootstrap_destination/.tmp/release-commit"
   bootstrap_launcher=$bootstrap_root/lab
   if [ -e "$bootstrap_launcher" ] || [ -L "$bootstrap_launcher" ]; then
     [ -f "$bootstrap_launcher" ] && [ ! -L "$bootstrap_launcher" ] && \

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "bun-LICENSE.md",
+    "url": "https://raw.githubusercontent.com/oven-sh/bun/bun-v1.4.2/LICENSE.md",
+    "sha256": "b9caf52728691b4057e371232c221a132883198be2f3d2ddf92c90404c984b1a",
+    "license": "MIT AND LGPL-2.1; upstream linked-library notices"
+  },
+  {
+    "name": "herdr-LICENSE",
+    "url": "https://raw.githubusercontent.com/herdrdev/herdr/2ecf19a92fc3a7fff75b6ce3655ef04f4625ec01/LICENSE",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "license": "Apache-2.0"
+  }
+]

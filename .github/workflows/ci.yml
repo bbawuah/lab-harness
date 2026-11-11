@@ -74,3 +74,39 @@ jobs:
         run: |
           .tmp/media-audit/bin/python docs/demos/audit.py --check
           python docs/evidence/pixel-lb/audit.py
+
+  offline-bundle:
+    name: offline bundle (linux-x64)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Build pinned Linux bundle without npm packages
+        run: bun --no-env-file --no-install scripts/bundle/build.ts --commit HEAD --target linux-x64
+      - name: Prepare base image while networking is available
+        run: docker pull --platform linux/amd64 ubuntu:24.04
+      - name: Install as a non-root user with networking disabled
+        run: scripts/bundle/test-offline.sh
+
+  bootstrap-release-pin:
+    name: bootstrap release pin
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Refuse a bootstrap older than the latest stable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bun --no-env-file --no-install scripts/release/pin.ts check
