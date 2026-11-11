@@ -62,6 +62,7 @@
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
     "contracts/ripgrep-source.json",
+    "docs/airgap-production-plan.md",
     "docs/architecture.md",
     "docs/branding-preview.html",
     "docs/browser-evidence/native-browser.png",
@@ -79,6 +80,7 @@
     "docs/browser-ux-contract.md",
     "docs/browser-workspace-contract.md",
     "docs/browser-workspace-evidence.md",
+    "docs/browser-wsl-edge.md",
     "docs/build-plan.md",
     "docs/ci.md",
     "docs/demos/README.md",
@@ -368,6 +370,8 @@
     "scripts/benchmark-search.ts",
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
+    "scripts/browser-windows-diagnostics.ts",
+    "scripts/browser-windows-smoke.ts",
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
@@ -388,6 +392,7 @@
     "src/browser/runtime.ts",
     "src/browser/session.ts",
     "src/browser/states.ts",
+    "src/browser/windows.ts",
     "src/candidate.ts",
     "src/cli.ts",
     "src/context.ts",
@@ -433,6 +438,7 @@
     "src/workspace.ts",
     "tests/bootstrap.test.ts",
     "tests/browser-ux.test.ts",
+    "tests/browser-wsl.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
     "tests/cleanup-child.ts",
@@ -496,7 +502,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "137042d022788a974dc9caa149c91b53931c9f9bc283709b008e24791d38cc18",
+      "sha256": "d741c116ed27829896dc301df855a8fd4308a5561cb6cd4beb0e1d04babd3c33",
       "status": "added"
     },
     ".gitignore": {
@@ -548,7 +554,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "ee1d215fe7ea773285b61d31eebec15b7ac24307133a73be4a5b5d75af6e26fb",
+      "sha256": "7b288d8cff3f826480eb9c1d2deda623cbe9852bd5008a3a9b8629af661712b3",
       "status": "added"
     },
     "bun.lock": {
@@ -556,7 +562,7 @@
       "status": "added"
     },
     "contracts/agent-browser-source.json": {
-      "sha256": "0f867335b0e9fdb67b68f88cb28b8df956987b41041cdc8f0953b5954129c8b9",
+      "sha256": "c854b278c7d925d0ab065d9043f3df4a6db9b28373763712ecf1332dc77e56ae",
       "status": "added"
     },
     "contracts/bun-runtime.txt": {
@@ -586,6 +592,10 @@
     },
     "contracts/ripgrep-source.json": {
       "sha256": "30b360f8066450ffbf12500e5bfe0af5bd1ddbd37b5aed46667c7a0ceae95f11",
+      "status": "added"
+    },
+    "docs/airgap-production-plan.md": {
+      "sha256": "036e12382e1109ae63f50bed5026cbb8076d7d0e2010b15441304b885dd46a8c",
       "status": "added"
     },
     "docs/architecture.md": {
@@ -654,6 +664,10 @@
     },
     "docs/browser-workspace-evidence.md": {
       "sha256": "b61372211601ea604ee2738fdcfdba0419741b40f2d1e473d10bc4fc018d5d08",
+      "status": "added"
+    },
+    "docs/browser-wsl-edge.md": {
+      "sha256": "34e6839944f18069f1e9b951ada5f0090bee1ce91e2ceb351a6493fd0720f646",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1785,7 +1799,7 @@
       "status": "added"
     },
     "scripts/acquire-browser.ts": {
-      "sha256": "40a2dead388ac3df7807c8d4f9f599a59f3fda599fc6a73c191648e1853fa411",
+      "sha256": "c39be06fb4209d1cea9553b59fe8416a58f2e705e2ed3eafd43c9d0d43d49fb6",
       "status": "added"
     },
     "scripts/acquire-fd.ts": {
@@ -1806,6 +1820,14 @@
     },
     "scripts/browser-smoke.ts": {
       "sha256": "31d37def9583d8ede8b517fe82d624b73f9f77062a82e4ca74f11fdc0e7d1bf1",
+      "status": "added"
+    },
+    "scripts/browser-windows-diagnostics.ts": {
+      "sha256": "07023e384e12f53e34d276f8ea5e7b64f8e4264d59b880aecc65eef89448518e",
+      "status": "added"
+    },
+    "scripts/browser-windows-smoke.ts": {
+      "sha256": "c14fb177a83ea2507658fdeaec71f7789445d7b85b6e9c08b14c288e6cf039be",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1879,15 +1901,19 @@
       "status": "added"
     },
     "src/browser/runtime.ts": {
-      "sha256": "2ac6b976a1f11f815cc352c783c311a4be310c41e35b87aa0d43172c3b08e752",
+      "sha256": "c8f918ad7530693ac29876c6ef14785e563d9dd00bf3d1f51c7c2d755ba0b14e",
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "89edddb831c7affe31614fee92d611e4684edd992f1171f12fbb86ed9ecfa327",
+      "sha256": "bb4b45a94a9612907fcab9e561d67c89ef22b25f8f5c7cd98868c534b0c9f224",
       "status": "added"
     },
     "src/browser/states.ts": {
-      "sha256": "95abc2661aab3d97f813c24d0e60ba0cc541bea9b33122bbdba52ee70b98acf2",
+      "sha256": "88ea7aaa69a19bfe648a192f7b7e7aa7078fb4d83849e5e38ba7710390fc1409",
+      "status": "added"
+    },
+    "src/browser/windows.ts": {
+      "sha256": "974145479aea5912f924729a4695586a07641a94e361e7a3a595e6f9e26c47bd",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -2076,6 +2102,10 @@
     },
     "tests/browser-ux.test.ts": {
       "sha256": "9bdd9eadb2af276ac0546fc5bf8ac625154ed01a9e3fe92cea30b0c0d0e67e0b",
+      "status": "added"
+    },
+    "tests/browser-wsl.test.ts": {
+      "sha256": "865533f6a83457bcebc3717b0a5db0b01f930b514f64a987478d3dd1d635e1b7",
       "status": "added"
     },
     "tests/browser.test.ts": {

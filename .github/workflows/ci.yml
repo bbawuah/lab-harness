@@ -74,3 +74,23 @@ jobs:
         run: |
           .tmp/media-audit/bin/python docs/demos/audit.py --check
           python docs/evidence/pixel-lb/audit.py
+
+  windows-edge:
+    name: Windows owned Edge
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - name: Acquire and verify pinned Windows browser tool
+        run: bun --no-env-file scripts/acquire-browser.ts
+      - name: Verify offline cache
+        run: bun --no-env-file scripts/acquire-browser.ts --offline
+      - name: Diagnose isolated upstream Windows launch
+        run: bun --no-env-file scripts/browser-windows-diagnostics.ts
+      - name: Exercise installed Edge with an owned fixture profile
+        run: bun --no-env-file scripts/browser-windows-smoke.ts
