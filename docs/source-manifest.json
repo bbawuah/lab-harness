@@ -1839,11 +1839,11 @@
       "status": "added"
     },
     "scripts/bundle/install.sh": {
-      "sha256": "d0d14deaa192e89fe70e773ceb17adff5558343d7fd87384101ae3199577736a",
+      "sha256": "a827a2917ece58ac1af337a1c5ede70636ea06459bad01caf48b39b7a4e14fd3",
       "status": "added"
     },
     "scripts/bundle/install.ts": {
-      "sha256": "b3cd892d6158451c41d7b1e74ca4ff0cad2f0b549b4f770b7a7474e82b00a21e",
+      "sha256": "3ab400f1a97fec90d13e35fd6a553e76350c0a6a22b962212536b1ce9dcd98dd",
       "status": "added"
     },
     "scripts/bundle/licenses.json": {

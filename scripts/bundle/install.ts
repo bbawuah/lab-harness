@@ -3,7 +3,9 @@ import { dirname, isAbsolute, join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { command, digest, verifyManifest } from "./common.ts";
 
+console.log("Verifying offline bundle manifest");
 const bundle = resolve(process.argv[2] ?? "."), manifest = verifyManifest(bundle);
+console.log(`Verified bundle ${manifest.version} (${manifest.commit}) for ${manifest.target}`);
 if (manifest.target !== `${process.platform}-${process.arch}`) throw new Error(`Bundle target ${manifest.target} does not match ${process.platform}-${process.arch}`);
 const home = process.env.HOME, data = process.env.XDG_DATA_HOME ?? (home ? join(home, ".local/share") : "");
 if (!home || !isAbsolute(home) || !isAbsolute(data)) throw new Error("HOME and XDG_DATA_HOME must be absolute");
@@ -28,6 +30,7 @@ function publish(path: string, text: string, marker: string) {
     else linkSync(temp, path); // An intervening foreign file must never be replaced.
   } finally { rmSync(temp, { force: true }); }
 }
+console.log("Checking owned installation paths");
 directories(releases);
 const lock = join(releases, ".bundle-install.lock");
 mkdirSync(lock, { mode: 0o700 });
