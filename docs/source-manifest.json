@@ -436,6 +436,7 @@
     "src/workspace.ts",
     "tests/bootstrap.test.ts",
     "tests/browser-ux.test.ts",
+    "tests/browser-wsl.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
     "tests/cleanup-child.ts",
@@ -1894,7 +1895,7 @@
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "a161b6f97d433ca7f3e242d30d0efad630ca0f73de4b79d7c6a080720f81cbe1",
+      "sha256": "8aec43d71edae313d7cededeca5089efd60c9d4021deab1988a47376883baae2",
       "status": "added"
     },
     "src/browser/states.ts": {
@@ -1902,7 +1903,7 @@
       "status": "added"
     },
     "src/browser/windows.ts": {
-      "sha256": "d5f2ea15be09c08ac5e6444e651b86847a771adbc13dd6cb9417c15c5f9da1d6",
+      "sha256": "0c3f82bd89a5cbf4c2557ff9c1ad39b23d58a58efa92ad9f743a2836edcf7311",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -2091,6 +2092,10 @@
     },
     "tests/browser-ux.test.ts": {
       "sha256": "9bdd9eadb2af276ac0546fc5bf8ac625154ed01a9e3fe92cea30b0c0d0e67e0b",
+      "status": "added"
+    },
+    "tests/browser-wsl.test.ts": {
+      "sha256": "f3aa71fb65c38ee40f56d491b03156418fc23f31a22c2b2702a7e32da4bdb627",
       "status": "added"
     },
     "tests/browser.test.ts": {

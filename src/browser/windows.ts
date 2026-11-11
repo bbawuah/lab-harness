@@ -10,15 +10,18 @@ export function isWSL(platform = process.platform, env = process.env, release?: 
   try { return /microsoft|wsl/i.test(release ?? readFileSync('/proc/sys/kernel/osrelease', 'utf8')); } catch { return false; }
 }
 export const windowsBrowser = () => process.platform === 'win32' || isWSL();
+export function interopFailure(command: string, diagnostic: string): Error {
+  if (diagnostic.includes('LAB_BROWSER_POLICY')) return new Error(policyError);
+  if (diagnostic.includes('LAB_BROWSER_EDGE_MISSING')) return new Error(edgeError);
+  if (diagnostic.includes('LAB_BROWSER_CLEANUP_FAILED')) return new Error('LAB_BROWSER_CLEANUP_FAILED: Windows owned state retained; retry /lab-browser close.');
+  if (command === 'wslpath') return new Error('LAB_BROWSER_WINDOWS_PATH: wslpath could not resolve the Windows path; check the drive mount and use a drive-absolute Windows path or /mnt/c path.');
+  const kind = /LAB_BROWSER_WINDOWS_([A-Za-z]{1,60})/.exec(diagnostic)?.[1];
+  return new Error('LAB_BROWSER_INTEROP: Windows command failed'+(kind?' ('+kind+')':'')+'. Check WSL [interop] enabled=true, Windows PowerShell availability and organisation application-control rules.');
+}
 export const systemInterop: Interop = (command, args) => {
   const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true });
   if (r.error || r.status !== 0) {
-    const diagnostic = String(r.stderr ?? '');
-    if (diagnostic.includes('LAB_BROWSER_POLICY')) throw new Error(policyError);
-    if (diagnostic.includes('LAB_BROWSER_EDGE_MISSING')) throw new Error(edgeError);
-    if (diagnostic.includes('LAB_BROWSER_CLEANUP_FAILED')) throw new Error('LAB_BROWSER_CLEANUP_FAILED: Windows owned state retained; retry /lab-browser close.');
-    if (command === 'wslpath') throw new Error('LAB_BROWSER_WINDOWS_PATH: wslpath could not resolve the Windows path; check the drive mount and use a drive-absolute Windows path or /mnt/c path.');
-    throw new Error('LAB_BROWSER_INTEROP: Windows command failed. Check WSL [interop] enabled=true, Windows PowerShell availability and organisation application-control rules.');
+    throw interopFailure(command, String(r.stderr ?? ''));
   }
   return r.stdout.trim().replace(/^\uFEFF/, '');
 };
@@ -30,14 +33,19 @@ export class WindowsInterop {
   constructor(readonly run: Interop = systemInterop, readonly wsl = isWSL()) {}
   powershell(script: string) {
     return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : 'powershell.exe',
-      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);" + script, 'utf16le').toString('base64')]);
+      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
   }
   windowsPath(value: string): string {
     const p = value.startsWith('/') && this.wsl ? this.run('wslpath', ['-w', value]) : value;
     if (!/^[A-Za-z]:[\\/]/.test(p) || /[\x00-\x1f]/.test(p)) throw new Error('LAB_BROWSER_WINDOWS_PATH: use a drive-absolute Windows path or a mounted /mnt/c path.');
     return win32.normalize(p);
   }
-  localPath(value: string) { return this.wsl ? this.run('wslpath', ['-u', this.windowsPath(value)]) : this.windowsPath(value); }
+  localPath(value: string) {
+    if (!this.wsl) return this.windowsPath(value);
+    const p = this.run('wslpath', ['-u', this.windowsPath(value)]);
+    if (!p.startsWith('/') || /[\x00-\x1f]/.test(p)) throw new Error('LAB_BROWSER_WINDOWS_PATH: wslpath did not return an absolute mounted path.');
+    return p;
+  }
   edge(explicit?: string) {
     const candidates = explicit ? [this.windowsPath(explicit)] : JSON.parse(this.powershell(
       `@(@($env:ProgramFiles,\u0024{env:ProgramFiles(x86)},$env:LOCALAPPDATA) | Where-Object { $_ } | ForEach-Object { Join-Path $_ 'Microsoft\\Edge\\Application\\msedge.exe' }) | ConvertTo-Json -Compress`)) as string[];
@@ -85,9 +93,19 @@ export class WindowsInterop {
       for($i=0;$i -lt 40;$i++) {
         $owned=@(Get-Process -Name 'agent-browser' -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $exe });
         foreach($p in $owned){ if(!$p.HasExited -and $p.Path -eq $exe){$p.Kill(); [void]$p.WaitForExit(1000)} };
-        $edge=@(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -and ($_.CommandLine.Contains('--user-data-dir='+ (Join-Path $r 'profile')+' ') -or $_.CommandLine.Contains('--user-data-dir="'+(Join-Path $r 'profile')+'"')) });
+        $edge=@(Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" | Where-Object { $_.CommandLine -and (($_.CommandLine.Contains('--user-data-dir='+ (Join-Path $r 'profile')+' ') -or $_.CommandLine.Contains('--user-data-dir='+ (Join-Path $r 'profile')+'"') -or $_.CommandLine.EndsWith('--user-data-dir='+ (Join-Path $r 'profile'))) -or $_.CommandLine.Contains('--user-data-dir="'+(Join-Path $r 'profile')+'"')) });
         if($owned.Count -eq 0 -and $edge.Count -eq 0){try {if(Test-Path -LiteralPath $r){Remove-Item -LiteralPath $r -Recurse -Force}; if(!(Test-Path -LiteralPath $r)){exit}} catch {}};
         Start-Sleep -Milliseconds 100
       }; throw 'LAB_BROWSER_CLEANUP_FAILED'`);
   }
+}
+
+/** Sanitized hint only; tool/page diagnostics can contain form values and are never echoed. */
+export function windowsResponseFailure(raw: string): Error | undefined {
+  try {
+    const o = JSON.parse(raw);
+    if (o?.isError === true || o?.structuredContent?.response?.success === false) {
+      return new Error('LAB_BROWSER_EDGE_START: Windows Edge action failed; outcome may be unknown. Check installed Edge and effective RemoteDebuggingAllowed / DeveloperToolsAvailability / target URL policies in edge://policy. No action was retried.');
+    }
+  } catch {}
 }

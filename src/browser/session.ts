@@ -1,4 +1,4 @@
-import { WindowsInterop, windowsBrowser } from './windows.ts';
+import { WindowsInterop, windowsBrowser, windowsResponseFailure } from './windows.ts';
 import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, readlinkSync, renameSync, rmSync, writeFileSync } from 'node:fs';
@@ -50,14 +50,14 @@ export class BrowserSession {
   private run(args: string[], signal?: AbortSignal): Promise<string> {
     if(signal?.aborted) return Promise.reject(new Error('LAB_BROWSER_CANCELLED'));
     return new Promise((done,reject)=>{const binary=this.descriptor.windows?new WindowsInterop().localPath(new WindowsInterop().root(this.descriptor.session)+'\\agent-browser.exe'):this.binary;const child=spawn(binary,args,{cwd:this.descriptor.root,env:this.environment(),stdio:['ignore','pipe','pipe'],detached:true});let output='',count=0,error:Error|undefined;
-      const kill=()=>{try{if(child.pid)process.kill(-child.pid,'SIGKILL');}catch{}};
+      const kill=()=>{try{if(process.platform==='win32')child.kill('SIGKILL');else if(child.pid)process.kill(-child.pid,'SIGKILL');}catch{}};
       const cancel=()=>{error=new Error('LAB_BROWSER_CANCELLED');kill();}; const timer=setTimeout(()=>{error=new Error('LAB_BROWSER_TIMEOUT');kill();},20000);
       signal?.addEventListener('abort',cancel,{once:true});child.on('error',()=>{error=new Error('LAB_BROWSER_SPAWN: browser tool could not start.');});
       child.stdout.on('data',c=>{count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();}else output+=c.toString();});child.stderr.on('data',c=>{error??=new Error('LAB_BROWSER_DIAGNOSTIC: command emitted diagnostics; action outcome uncertain.');count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();}});
       child.on('close',code=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);if(error||code!==0)reject(error??new Error('LAB_BROWSER_REFUSED: action failed; no automatic retry.'));else done(output);});
     });
   }
-  private call(tool:string,args:object,signal?:AbortSignal) {return this.run(['mcp','call',tool,JSON.stringify(args)],signal);}
+  private async call(tool:string,args:object,signal?:AbortSignal) {const raw=await this.run(['mcp','call',tool,JSON.stringify(args)],signal);if(this.descriptor.windows){const error=windowsResponseFailure(raw);if(error)throw error;}return raw;}
   private identity(data:any) {insist(data.lifecycle?.reused===true && data.lifecycle?.launched===false && data.lifecycle?.relaunchedBrowser===false && data.lifecycle?.effectiveLaunch?.launchHash===this.descriptor.launchHash,'LAB_BROWSER_SESSION_LOST');}
   private async scope(signal?:AbortSignal) {
     const e=envelope(await this.call('agent_browser_get_url',{},signal));this.identity(e.data);browserURL(e.data.url,this.descriptor.origin);
