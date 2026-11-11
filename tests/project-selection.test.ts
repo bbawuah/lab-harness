@@ -55,8 +55,10 @@ test("curl from fresh HOME selects a valid project before route setup, retries u
     const result = await terminalRun(f, ["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], f.home, [
       ["Project directory: ", "~\n"], ["Project directory: ", "missing\n"], ["Project directory: ", ".local/share/lab-harness\n"],
       ["Project directory: ", "project link\n"], ["Project directory: ", "~/Projects/project B with spaces\n"],
-      ["Route (local or litellm): ", "local\n"], ["base URL (including /v1 where required): ", "http://127.0.0.1:9/v1\n"],
-      ["model ID or existing LiteLLM alias: ", "fixture-no-inference\n"], ["API key (private; blank for unauthenticated local server): ", "\n"],
+      ["Route (local, litellm or azure): ", "local\n"], ["base URL (including /v1 where required): ", "http://127.0.0.1:9/v1\n"],
+      ["Exact local model ID or LiteLLM alias: ", "fixture-no-inference\n"],
+      ["Context window tokens [128000]: ", "\n"], ["Maximum output tokens [16384]: ", "\n"],
+      ["Reasoning support? [y/N]: ", "n\n"], ["Image input support? [y/N]: ", "n\n"], ["API key (private; blank for unauthenticated local server): ", "\n"],
     ]);
     expect(result.code, result.output.slice(-3000)).toBe(0); expect(result.remaining).toBe(0);
     expect(result.output).toContain("LAB will not search your home folder"); expect(result.output).toContain("FIXTURE_PROJECT_LAUNCHED");
