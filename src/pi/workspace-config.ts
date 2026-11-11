@@ -38,10 +38,10 @@ export function workspaceStatePath(override = process.env.LAB_WORKSPACE_STATE_RO
   if (!isAbsolute(selected) || !root.startsWith(home + sep) || root === home) throw new Error("LAB_WORKSPACE_STATE_ROOT must be an absolute application directory beneath this user's home");
   return root;
 }
-export function workspaceStateRoot(installRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT, projectRoot?: string): string {
+export function workspaceStateRoot(installRoot: string, override = process.env.LAB_WORKSPACE_STATE_ROOT, _projectRoot?: string): string {
   const home = resolve(homedir()), root = workspaceStatePath(override);
-  for (const excluded of [installRoot, projectRoot]) {
-    if (excluded && (root === resolve(excluded) || root.startsWith(resolve(excluded) + sep))) throw new Error("Workspace state must be outside the installed release and selected project; choose LAB_WORKSPACE_STATE_ROOT beneath your home");
+  for (const excluded of [installRoot]) {
+    if (excluded && (root === resolve(excluded) || root.startsWith(resolve(excluded) + sep))) throw new Error("Workspace state must be outside the installed release; choose LAB_WORKSPACE_STATE_ROOT beneath your home");
   }
   let cursor = root;
   while (cursor !== home) {

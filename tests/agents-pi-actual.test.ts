@@ -5,7 +5,7 @@ import { join, resolve } from "node:path";
 
 const actual = process.env.LAB_HERDR_ACTUAL === "1" ? test : test.skip;
 actual("native Pi spawns a visible child tab and receives its Relay result automatically while idle", async () => {
-  const root = mkdtempSync(join(homedir(), ".lab-agents-native-")), home = join(root, "home"), project = join(home, "project"), state = join(home, ".local/share/lab-harness/workspace");
+  const root = mkdtempSync(join(homedir(), ".lab-agents-native-")), home = join(root, "home"), project = home, state = join(home, ".local/share/lab-harness/workspace");
   for (const path of [project, state]) mkdirSync(path, { recursive: true, mode: 0o700 });
   const calls: string[] = [];
   const server = Bun.serve({ hostname: "127.0.0.1", port: 0, async fetch(req) {

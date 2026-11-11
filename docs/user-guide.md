@@ -13,16 +13,15 @@ LiteLLM service. Setup installs runtimes, not model weights or an inference serv
    curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.sh | sh
    ~~~
 
-2. From home, choose an existing project such as ~/Projects/my-app. Enter the
-   path without shell quotes; spaces work. Home and LAB's application folders
-   cannot be the project. Blank input, Ctrl-C or Ctrl-D cancels selection.
+2. LAB uses your current folder, including home or the harness checkout.
+   Use `--project DIR` to override it. There is no separate project picker.
 3. Choose anthropic or openai to connect directly with your API key, or choose
    local for a self-hosted **OpenAI-compatible** server (including LAN/tailnet),
    or litellm for your gateway. Cloud routes select the official URL automatically;
    local and litellm ask for a base URL. Enter the exact model ID/alias and key. Key input is hidden; blank
    is allowed for an unauthenticated self-hosted endpoint. No prompt is sent
    during setup. Review Pi's native project-trust prompt.
-4. Installation creates an owned ~/.local/bin/lab command when there is no
+4. Both source installation (`./install.sh`) and public bootstrap create an owned ~/.local/bin/lab command when there is no
    collision. If it reports the command is on PATH, use lab. Otherwise run the
    printed export PATH line in your own shell and verify command -v lab. The
    installer cannot change its parent shell's PATH and edits no profile.
@@ -171,7 +170,7 @@ Model tools are functions the model may call, rather than commands you type.
 
 | Where | Command | Purpose |
 | --- | --- | --- |
-| Shell | lab | Open current project; from home, choose a project |
+| Shell | lab | Open the current working directory |
 | Shell | lab --project DIR | Select an existing project, quote shell paths with spaces |
 | Shell | lab --configure | Change explicit endpoint/model/private key |
 | Shell | lab --single-pane | Open Pi alone, useful in a narrow terminal |

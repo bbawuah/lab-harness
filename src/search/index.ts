@@ -13,11 +13,12 @@ export type SearchOptions = ContractOptions & {
   allowRepositoryRoot?: boolean;
   /** Explicit interactive project; default callers retain owned-root rules. */
   projectBinding?: ProjectBinding;
+  excludedRoots?: string[];
   maxTotalBytes?: number;
   maxDepth?: number;
   maxSnippetBytes?: number;
 };
-type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot" | "projectBinding">>;
+type Bounds = Required<Omit<SearchOptions, "allowRepositoryRoot" | "projectBinding" | "excludedRoots">>;
 const defaults: Bounds = { engine: "auto", limit: 5, maxEntries: 10000, maxFileBytes: 1024 * 1024, maxTotalBytes: 32 * 1024 * 1024, maxDepth: 20, maxSnippetBytes: 400 };
 const caps = { limit: 1000, maxEntries: 100000, maxFileBytes: 1024 * 1024, maxTotalBytes: 256 * 1024 * 1024, maxDepth: 40, maxSnippetBytes: 4096 };
 const forbidden = (name: string): boolean => name === "config.properties" || name === "config.json" || name.startsWith(".env") ||
@@ -32,7 +33,7 @@ const snippet = (line: string, bytes: number): string => {
   return result;
 };
 function bounds(options: SearchOptions): Bounds {
-  const { allowRepositoryRoot, projectBinding, ...limits } = options;
+  const { allowRepositoryRoot, projectBinding, excludedRoots, ...limits } = options;
   requireThat(allowRepositoryRoot === undefined || typeof allowRepositoryRoot === "boolean", "INVALID_SEARCH_OPTIONS");
   const value = { ...defaults, ...limits };
   requireThat(["auto", "fallback", "rg"].includes(value.engine), "INVALID_SEARCH_OPTIONS");
@@ -45,8 +46,10 @@ export class SearchService {
   readonly root: string;
   private readonly options: Bounds;
   private readonly identity: Stats;
+  private readonly excludedRoots: string[];
   constructor(root: string, options: SearchOptions = {}) {
     this.options = bounds(options);
+    this.excludedRoots = (options.excludedRoots ?? []).map(path => realpathSync(path));
     const repositoryRoot = options.allowRepositoryRoot === true && root === CONCEPT_ROOT;
     const project = options.projectBinding && verifyProjectBinding(options.projectBinding);
     if (project) requireThat(root === project.root, "PROJECT_ROOT_BINDING_MISMATCH");
@@ -62,6 +65,8 @@ export class SearchService {
     requireThat(typeof path === "string" && !isAbsolute(path) && !path.includes("\0"), "OUTSIDE_WORKSPACE");
     const parts = path.split("/");
     requireThat(parts.length > 0 && parts.every(p => p && p !== "." && p !== ".." && !p.includes("\\") && !forbidden(p)), "EXCLUDED_PATH");
+    const candidate = join(this.root, path);
+    requireThat(!this.excludedRoots.some(root => candidate === root || candidate.startsWith(root + sep)), "EXCLUDED_PATH");
     let cursor = this.root;
     for (const part of parts) {
       cursor = join(cursor, part);
@@ -119,7 +124,7 @@ export class SearchService {
       for (const name of entries) {
         if (stop) return;
         const child = path ? `${path}/${name}` : name;
-        if (forbidden(name)) { omit(child, "excluded"); continue; }
+        if (forbidden(name) || this.excludedRoots.some(root => join(this.root, child) === root || join(this.root, child).startsWith(root + sep))) { omit(child, "excluded"); continue; }
         try {
           const full = this.path(child), stat = lstatSync(full);
           if (stat.isDirectory()) { visit(full, depth + 1); continue; }

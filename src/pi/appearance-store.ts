@@ -20,7 +20,7 @@ function run(options:{stateRoot:string;installRoot:string;scope:Scope;draft?:Dra
   binding(options.scope);
   const home=resolve(homedir()), state=options.stateRoot, install=options.installRoot;
   const inside=(p:string,root:string)=>{const rel=relative(root,p); return rel==="" || (rel!==".." && !rel.startsWith(".."+sep) && !isAbsolute(rel));};
-  if(typeof state!=="string" || typeof install!=="string" || !isAbsolute(state) || resolve(state)!==state || !isAbsolute(install) || resolve(install)!==install || state.includes("\0") || install.includes("\0") || !inside(state,home) || state===home || inside(state,install) || (options.scope.kind==="project" && inside(state,options.scope.binding.root))) fail("PRIVATE_PATH");
+  if(typeof state!=="string" || typeof install!=="string" || !isAbsolute(state) || resolve(state)!==state || !isAbsolute(install) || resolve(install)!==install || state.includes("\0") || install.includes("\0") || !inside(state,home) || state===home || inside(state,install) || (options.scope.kind==="project" && inside(options.scope.binding.root,state))) fail("PRIVATE_PATH");
   // Installation must itself be canonical: a symlink alias must not hide containment.
   let installCursor=install; for(;;) {const entry=lstatSync(installCursor); if(!entry.isDirectory() || entry.isSymbolicLink()) fail("PRIVATE_PATH"); if(dirname(installCursor)===installCursor) break; installCursor=dirname(installCursor);}
   const realInstall=realpathSync(install); const realState=realpathSync(state);

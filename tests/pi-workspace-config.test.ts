@@ -77,7 +77,7 @@ test("default state is private user app data, and overrides cannot write into co
   const install=join(root,"release A"), project=join(root,"project B");
   mkdirSync(install); mkdirSync(project);
   expect(()=>workspaceStateRoot(install,join(install,"state"),project)).toThrow("outside");
-  expect(()=>workspaceStateRoot(install,join(project,"state"),project)).toThrow("outside");
+  expect(workspaceStateRoot(install,join(project,"state"),project)).toBe(join(project,"state"));
   const state=workspaceStateRoot(install,join(root,"private app"),project);
   expect(statSync(state).mode & 0o777).toBe(0o700);
   const env:NodeJS.ProcessEnv={...process.env,HOME:root}; delete env.LAB_WORKSPACE_STATE_ROOT;

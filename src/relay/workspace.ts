@@ -177,7 +177,8 @@ function validateOptions(options: WorkspaceRelayRunOptions, create = false): voi
   verifyProjectBinding(options.projectBinding);
   if (create) workspaceStateRoot(options.installRoot, options.stateRoot, options.projectBinding.root);
   privateTree(options.stateRoot);
-  for (const excluded of [resolve(options.installRoot), options.projectBinding.root]) {
+  if (options.projectBinding.root === options.stateRoot || child(options.projectBinding.root, options.stateRoot)) fail("Relay project cannot be private state");
+  for (const excluded of [resolve(options.installRoot)]) {
     if (options.stateRoot === excluded || child(options.stateRoot, excluded) || child(excluded, options.stateRoot)) fail("Relay state must be separate from installation/project");
   }
   if (!isAbsolute(options.runRoot) || resolve(options.runRoot) !== options.runRoot || !child(options.runRoot, join(options.stateRoot, "runs"))) fail("Relay run must be a private child of stateRoot/runs");

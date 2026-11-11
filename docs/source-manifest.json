@@ -371,6 +371,7 @@
     "scripts/check-publication.ts",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
+    "scripts/install-command.sh",
     "scripts/inventory-skills.ts",
     "scripts/permission-actual.ts",
     "scripts/pi/acquire.ts",
@@ -456,6 +457,7 @@
     "tests/herdr-protocol.test.ts",
     "tests/herdr-shell.test.ts",
     "tests/herdr.test.ts",
+    "tests/install-command.test.ts",
     "tests/install.test.ts",
     "tests/ledger.test.ts",
     "tests/permission.test.ts",
@@ -519,7 +521,7 @@
       "status": "added"
     },
     "README.md": {
-      "sha256": "3ef1ea222c4e51491ea8a6097972e2cbc670aa9aa306b6fd76085b4c829d387b",
+      "sha256": "f44ec9ffe80f34b5a7ab4bc172c1f2bda0797b1a8f6ee9c68d630d1860a7ddbd",
       "status": "added"
     },
     "assets/branding/PROVENANCE.json": {
@@ -559,7 +561,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "ee1d215fe7ea773285b61d31eebec15b7ac24307133a73be4a5b5d75af6e26fb",
+      "sha256": "802de8a809c715c970a41b579e8269e45875baee471f23d965a0c37732b3599f",
       "status": "added"
     },
     "bun.lock": {
@@ -1652,7 +1654,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "2feca18d06832584f468485f878dc5926777d822ad08540d02675990dd9b5fad",
+      "sha256": "2bcd8d1887dedfef63de655c44e68255c5a8d94470eb255ce054ba52c3047225",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1784,7 +1786,7 @@
       "status": "added"
     },
     "install.sh": {
-      "sha256": "306192f582d73c91543c1cd6a72cc2e298bf9ca9c359851bab38f0a3d1818916",
+      "sha256": "af824326230de251de42c4ac189d33a3f6d493b049b5863bd745ab3851789aa5",
       "status": "added"
     },
     "lab": {
@@ -1829,6 +1831,10 @@
     },
     "scripts/herdr/smoke.ts": {
       "sha256": "64a5e0cf700dbf62a158fbd61bd1040b41db6656d468a43a2c2e598006cfc3a3",
+      "status": "added"
+    },
+    "scripts/install-command.sh": {
+      "sha256": "48ec31cbbb04a14840dfb94735695402b505f9765ebc5d335fe529fbcd325b2e",
       "status": "added"
     },
     "scripts/inventory-skills.ts": {
@@ -1974,7 +1980,7 @@
       "status": "added"
     },
     "src/pi/appearance-store.ts": {
-      "sha256": "06cb2a4eeebf29a660cbc653fd29abe899d9a27cccc66a21d71f32a6204afcff",
+      "sha256": "c9ff324b253dc6c6ce9d1a5cd8aee7bfa0064c8e69dbdbbc6e3e175faa9845ac",
       "status": "added"
     },
     "src/pi/appearance-theme.ts": {
@@ -1990,7 +1996,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "70a5247ff8e0525834afab25ee714ee0b1a06031901d7b4fcc55a4a9241f9598",
+      "sha256": "665089ff5d8d406155a4c384fc1d4c806cb50f854769dd13e10ff6ead38ad88f",
       "status": "added"
     },
     "src/pi/composer.ts": {
@@ -2042,15 +2048,15 @@
       "status": "added"
     },
     "src/pi/workspace-config.ts": {
-      "sha256": "63bb3319cf7a4704c106a9f9a0839fec4f84fc0b2d61312f50f41d0ae5b6a5ea",
+      "sha256": "585a217306873e8c4e41349f126b72cba1a11e8dd74b05455ef45af21f194116",
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "5e4d972f0cfab266f29103ddda5cb63f937b2beea5dd79bcdc40530756d525bc",
+      "sha256": "80f79df717c944fbd8fb4c5a305959552afbb58921904cd131dfef2ca6b4408a",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
-      "sha256": "ef75167b7ac4d1d81bd88ee5dcc27411eccd32ecbca92c16d381d57c66f0e812",
+      "sha256": "54de73a7caef922d936608686e0a9e75ca614d170a1ef2593d2cae760f02c0e5",
       "status": "added"
     },
     "src/pi/workspace.ts": {
@@ -2072,7 +2078,7 @@
       "originalSHA256": "9c861bdb7ac01f18126d1bb9303d2214e889d1caa4f1e90659ccbf135ef47e58"
     },
     "src/relay/workspace.ts": {
-      "sha256": "ab582744d6d2f99fcae7e0b3d946ebf6f8b2b07a06aeda5bcbb7b8e63b4244d0",
+      "sha256": "78cd0952aefdfaac31bfbb100b309be75fecf85252f5622a92eaf7778fb49f15",
       "status": "added"
     },
     "src/runtime/pi.ts": {
@@ -2084,7 +2090,7 @@
       "status": "added"
     },
     "src/search/index.ts": {
-      "sha256": "4b4bd645dce72e0b954f9f3baeedb8e58f72598e4d103a4128dace7360bf2248",
+      "sha256": "e00c118ab2301a79812362dd393dc8fad12cc55d96be1836c1fcfbde5c7c3e7e",
       "status": "added"
     },
     "src/skills/index.ts": {
@@ -2110,7 +2116,7 @@
       "status": "added"
     },
     "tests/agents-pi-actual.test.ts": {
-      "sha256": "5b4ec4cd7d39cff6e78b48fa99f38705e6a75e98a418248746f7ddb1202be641",
+      "sha256": "ff3e26b35f1d524d44fce50a8bb793f60e0817bd1d8708cc6c349d7c824a7221",
       "status": "added"
     },
     "tests/bootstrap.test.ts": {
@@ -2186,8 +2192,12 @@
       "sha256": "35f93c6624a9593500c5f532f8f0a6265608e5175aec91d22b748921260120c4",
       "status": "added"
     },
+    "tests/install-command.test.ts": {
+      "sha256": "5aea4071c126f0ae9a5db9bef2081b18804739198c70d2ff1532a3594731c5c3",
+      "status": "added"
+    },
     "tests/install.test.ts": {
-      "sha256": "c00db2343191353dca7056924d8fce4c0478a8e38a279fb3f529809cc3a69d32",
+      "sha256": "27b999ca4a47eefa77d29a73575265cce4cbb2f76dfa1e4e71028cc24fefa7bd",
       "status": "added"
     },
     "tests/ledger.test.ts": {
@@ -2232,7 +2242,7 @@
       "status": "added"
     },
     "tests/pi-workspace-config.test.ts": {
-      "sha256": "7205a31975cc8b4356363031cd0efff395ef7a6e5df3a43a6c15fe5c4805977b",
+      "sha256": "beb03b55af21c28a397fd0969dfab450372f2a4f11fb085b4887d34faf4550b7",
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
@@ -2249,7 +2259,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "07c9e9e61c82073be3233172d4d5a06781be22a44e4c18479e371b9e44502b04",
+      "sha256": "e55db7ff07f6ccbf183444f90aecce72dcbb6ad5822879d85ced7b7a3f229b47",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -2285,7 +2295,7 @@
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {
-      "sha256": "f2107c70dc8a0c60f96caeb410f6e459686c40321a5ba9632048c71cadf0fdfb",
+      "sha256": "5ecb10278ed3cb4e5864a46614724e31478719fb3ab12d97926bf9236b39e2aa",
       "status": "added"
     },
     "tests/relay.test.ts": {

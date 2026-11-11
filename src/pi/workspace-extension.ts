@@ -150,7 +150,7 @@ export async function executeWorkspaceRequest(request: Request): Promise<unknown
   if (["search", "files"].includes(request.action)) {
     const { SearchService } = await import("../search/index.ts");
     verifyProjectBinding(binding);
-    const search = new SearchService(root, { projectBinding: binding, engine: "rg", limit: 20 });
+    const search = new SearchService(root, { projectBinding: binding, engine: "rg", limit: 20, excludedRoots: process.env.LAB_WORKSPACE_STATE_DIR ? [process.env.LAB_WORKSPACE_STATE_DIR] : [] });
     return request.action === "search" ? search.text(sourceRequest.query!) : search.files(sourceRequest.query!);
   }
   if (!["skills", "load"].includes(request.action)) throw new Error("UNKNOWN_WORKSPACE_OPERATION");

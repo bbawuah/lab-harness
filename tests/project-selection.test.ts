@@ -50,57 +50,37 @@ async function terminalRun(f: ReturnType<typeof fixture>, command: string[], cwd
   finally { clearTimeout(timer); child.terminal!.close(); }
 }
 
-test("curl from fresh HOME selects a valid project before route setup, retries unsafe/bad paths and launches only B", async () => {
+test("bootstrap and global launcher use the caller directory, including HOME and the harness checkout", async () => {
   const f = fixture();
   try {
     const result = await terminalRun(f, ["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], f.home, [
-      ["Project directory: ", "~\n"], ["Project directory: ", "missing\n"], ["Project directory: ", ".local/share/lab-harness\n"],
-      ["Project directory: ", "project link\n"], ["Project directory: ", "~/Projects/project B with spaces\n"],
       ["Route (anthropic, openai, local or litellm): ", "local\n"], ["base URL (including /v1 where required): ", "http://127.0.0.1:9/v1\n"],
       ["model ID or existing LiteLLM alias: ", "fixture-no-inference\n"], ["API key (private; blank for unauthenticated local server): ", "\n"],
     ]);
-    expect(result.code, result.output.slice(-3000)).toBe(0); expect(result.remaining).toBe(0);
-    expect(result.output).toContain("LAB will not search your home folder"); expect(result.output).toContain("FIXTURE_PROJECT_LAUNCHED");
-    const launch = JSON.parse(readFileSync(f.capture, "utf8"));
-    expect(launch.cwd).toBe(f.project); expect(launch.environment.LAB_WORKSPACE_ROOT).toBe(f.project);
-    expect(launch.environment.LAB_INSTALL_ROOT).toBe(f.install); expect(launch.stateRoot.startsWith(join(f.state, "runs") + "/")).toBe(true);
-    expect(existsSync(join(f.project, ".local"))).toBe(false); expect(result.output).not.toContain("MUST_NOT_DISCOVER");
-    // The exact generated launcher still works from a known project without selection.
-    const again = await terminalRun(f, [f.launcher, "--offline"], f.project, []);
-    expect(again.code, again.output.slice(-2000)).toBe(0); expect(again.output).not.toContain("Project directory: ");
-    expect(JSON.parse(readFileSync(f.capture, "utf8")).cwd).toBe(f.project);
-    // Relative selections use the original caller, even when --project named
-    // another unsafe application ancestor with a different valid relative path.
-    const caller = join(f.home, "caller"), requested = join(f.home, ".local/share/lab-harness");
-    for (const path of [join(caller, "project"), join(requested, "project")]) mkdirSync(path, { recursive: true });
-    const selected = await terminalRun(f, [f.launcher, "--project", requested], caller, [["Project directory: ", "project\n"]]);
-    expect(selected.code, selected.output.slice(-2000)).toBe(0); expect(selected.remaining).toBe(0);
-    expect(JSON.parse(readFileSync(f.capture, "utf8")).cwd).toBe(join(caller, "project"));
+    expect(result.code, result.output).toBe(0); expect(result.remaining).toBe(0);
+    expect(result.output).not.toContain("Project directory:");
+    expect(JSON.parse(readFileSync(f.capture,"utf8")).cwd).toBe(f.home);
+    for (const cwd of [f.project, f.install, f.home]) {
+      const next = await terminalRun(f, [f.launcher, "--offline"], cwd, []);
+      expect(next.code, next.output).toBe(0); expect(next.output).not.toContain("Project directory:");
+      expect(JSON.parse(readFileSync(f.capture,"utf8")).cwd).toBe(cwd);
+    }
+    const selected = await terminalRun(f, [f.launcher, "--project", "Projects/project B with spaces"], f.home, []);
+    expect(selected.code, selected.output).toBe(0);
+    expect(JSON.parse(readFileSync(f.capture,"utf8")).cwd).toBe(f.project);
   } finally { f.clean(); }
 }, 20000);
 
-test("HOME selection blank, Ctrl-C and Ctrl-D cancel without private state or workspace startup", async () => {
-  for (const answer of ["\n", "\x03", "\x04"]) {
-    const f = fixture();
-    try {
-      const result = await terminalRun(f, ["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], f.home, [["Project directory: ", answer]]);
-      expect(result.code, result.output.slice(-2000)).toBe(1); expect(result.remaining).toBe(0);
-      expect(result.output).toContain("Project selection cancelled"); expect(existsSync(f.capture)).toBe(false); expect(existsSync(f.state)).toBe(false);
-    } finally { f.clean(); }
-  }
-}, 30000);
-
-test("noTTY HOME bootstrap is install-only; direct selection refuses; invalid explicit project never starts", async () => {
+test("invalid directories and private application state remain refused", async () => {
   const f = fixture();
   try {
-    const install = Bun.spawnSync(["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], { cwd: f.home, env: f.env });
-    expect(install.exitCode, install.stderr.toString()).toBe(0); expect(install.stdout.toString()).toContain("Installation only");
-    expect(existsSync(f.state)).toBe(false); expect(existsSync(f.capture)).toBe(false);
-    const script = `import {selectWorkspaceProject} from ${JSON.stringify(join(f.install, "src/pi/workspace-project.ts"))}; try { await selectWorkspaceProject(process.cwd(),${JSON.stringify(f.install)}); } catch(e) { console.log(e.code); process.exitCode=1; }`;
-    const noTTY = Bun.spawnSync([process.execPath, "--no-env-file", "--eval", script], { cwd: f.home, env: f.env });
-    expect(noTTY.exitCode).toBe(1); expect(noTTY.stdout.toString()).toContain("PROJECT_SELECTION_REQUIRES_TTY");
-    const invalid = await terminalRun(f, [f.launcher, "--project", join(f.home, "missing")], f.home, []);
-    expect(invalid.code, invalid.output).toBe(1); expect(invalid.output).not.toContain("Route (local");
-    expect(existsSync(f.state)).toBe(false); expect(existsSync(f.capture)).toBe(false);
+    const install = Bun.spawnSync(["/bin/sh", "-c", "curl -fsSL https://fixture.invalid/bootstrap.sh | sh"], { cwd:f.home, env:f.env });
+    expect(install.exitCode).toBe(0);
+    mkdirSync(f.state,{recursive:true});
+    for (const path of [f.state, join(f.home,"missing"), join(f.home,"project link")]) {
+      const result = await terminalRun(f,[f.launcher,"--project",path],f.home,[]);
+      expect(result.code,result.output).toBe(1);
+      expect(existsSync(f.capture)).toBe(false);
+    }
   } finally { f.clean(); }
 });

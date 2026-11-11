@@ -15,6 +15,7 @@ function fixture() {
   copyFileSync(join(source, "install.sh"), join(project, "install.sh"));
   copyFileSync(join(source, ".bun-version"), join(project, ".bun-version"));
   mkdirSync(join(project, "scripts")); mkdirSync(join(project, "contracts"));
+  writeFileSync(join(project,"scripts/install-command.sh"), "#!/bin/sh\nexit 0\n");
   copyFileSync(join(source, "scripts/runtime-bun.sh"), join(project, "scripts/runtime-bun.sh"));
   copyFileSync(join(source, "contracts/bun-runtime.txt"), join(project, "contracts/bun-runtime.txt"));
   const executable = (name: string, body: string) => {

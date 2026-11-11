@@ -43,7 +43,7 @@ export function shellHelp(): string {
   return ["LAB-HARNESS — interactive AI coding in your project",
     shellUsage(),
     "       lab update [--help] — Update the published pinned release without opening a chat.",
-    "Run lab from a project; from home, choose an existing project folder.",
+    "Run lab from any working folder, including home or the harness checkout.",
     "Default: fullscreen Pi on the left, your regular interactive shell on the right, both starting in the project.",
     ...shellOptions.map(([option, description]) => "  " + option + "  " + description),
     "Permission modes: ask confirms every edit, write, shell command, browser change and Relay send; edits",

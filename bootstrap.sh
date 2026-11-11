@@ -46,7 +46,7 @@ main() {
     [ -z "$bootstrap_links" ] || bootstrap_fail 'Unexpected symlink in installed source; move the release aside and rerun.'
     diff -qr -x .tmp -x node_modules "$bootstrap_stage/source" "$bootstrap_destination" >/dev/null || bootstrap_fail 'Installed release source changed or is partial; move it aside and rerun.'
   fi
-  "$bootstrap_destination/install.sh" || bootstrap_fail 'Installation failed; rerun to reuse verified runtime caches.'
+  LAB_BOOTSTRAP_INSTALL=1 "$bootstrap_destination/install.sh" || bootstrap_fail 'Installation failed; rerun to reuse verified runtime caches.'
   bootstrap_launcher=$bootstrap_root/lab
   if [ -e "$bootstrap_launcher" ] || [ -L "$bootstrap_launcher" ]; then
     [ -f "$bootstrap_launcher" ] && [ ! -L "$bootstrap_launcher" ] && \

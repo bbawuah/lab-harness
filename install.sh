@@ -37,6 +37,7 @@ step 'Checking immutable source publication integrity'
 "$lab_bun" --no-env-file run check:publication
 step 'Checking an actual owned Herdr worker with bounded cleanup; no model calls'
 "$lab_bun" --no-env-file run smoke:herdr
+if [ "${LAB_BOOTSTRAP_INSTALL:-0}" != 1 ]; then /bin/sh "$project_root/scripts/install-command.sh"; fi
 printf '\nInstallation complete. Start the interactive LAB workspace:\n  %s/lab\n' "$project_root"
 printf 'First start asks for your endpoint/model. No model weights or paid requests were selected.\n'
 printf 'Controlled LAB task execution remains unavailable; native Pi workspace is separate.\n'

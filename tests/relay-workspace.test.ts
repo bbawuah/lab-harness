@@ -351,7 +351,7 @@ test("unsafe HOME, state, run, reference and database paths fail before mailbox 
   const f = fixture(), valid = f.run();
   const invoke = (overrides: Partial<WorkspaceRelayRunOptions>) => provisionWorkspaceRelayRun({ ...valid.options, ...overrides }, f.timing);
   expect(() => invoke({ stateRoot: "/tmp/not-owned-relay-state" })).toThrow("home");
-  expect(() => invoke({ stateRoot: join(f.project, "state") })).toThrow("outside");
+  expect(() => invoke({ stateRoot: join(f.project, "state") })).toThrow("private child");
   expect(() => invoke({ stateRoot: join(f.installRoot, "state") })).toThrow("outside");
   expect(() => invoke({ runRoot: f.root })).toThrow("stateRoot/runs");
   expect(() => invoke({ runRoot: join(f.stateRoot, "runs") })).toThrow("stateRoot/runs");
@@ -507,4 +507,11 @@ catch { process.stdout.write('refused'); }
   expect(results.map(r => r.out).sort()).toEqual(["bound", "refused"]);
   const owner = sql(paths(a.ref).control, db => db.query("SELECT phase,generation FROM sessions").all());
   expect(owner).toEqual([{ phase: "active", generation: 0 }]);
+});
+
+test("a workspace containing private state supports Relay while private state itself is refused", () => {
+  const f = fixture();
+  const run = f.run({projectBinding:bindProjectRoot(f.root)});
+  expect(f.bind(run.ref,"ancestor-workspace").peerId).toStartWith("pi-");
+  expect(()=>f.run({projectBinding:bindProjectRoot(f.stateRoot)})).toThrow("private state");
 });

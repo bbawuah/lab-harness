@@ -26,10 +26,8 @@ curl -fsSL https://raw.githubusercontent.com/bbawuah/lab-harness/main/bootstrap.
 ```
 
 The command installs the harness in your user directory, then opens setup and
-the LAB TUI in your current project. From home (or a folder containing LAB's
-installation/state), it first asks you to select an existing project folder,
-such as `~/Projects/my-app`. Enter the path without shell quotes; spaces work.
-Blank input, Ctrl-C or Ctrl-D cancels. LAB never selects home for source search.
+the LAB TUI in your current directory, including home and the harness checkout.
+Use `--project DIR` to choose a different working directory.
 Model setup then asks for:
 
 1. `anthropic` or `openai` to use your API key directly, `local` for a self-hosted
@@ -195,11 +193,11 @@ once to get a launcher that supports it. Source archives and runtime artifacts h
 Modified release source and unrecognized existing launchers are refused rather
 than overwritten. Old releases and user state are retained.
 
-If startup asks for a project, choose an existing code folder outside LAB's
-release and private-state folders. Home itself cannot be the workspace. You
-can also `cd` into your project and run the launcher, or use `--project DIR`.
-Without a TTY, bootstrap installs only; open the printed launcher in a terminal
-to select the project and configure a model.
+Run `lab` from the folder you want to work in, or use `lab --project DIR`.
+The private LAB state directory itself and filesystem roots are not workspaces.
+Without a TTY, bootstrap installs only; open the launcher in a terminal to configure
+a model. Source installs also register `~/.local/bin/lab`. If necessary, add
+`export PATH="$HOME/.local/bin:$PATH"` to your shell configuration and current shell.
 
 ## Secondary demonstrations and developer checks
 
