@@ -1,5 +1,6 @@
 /** Pi-native Relay tools. All identity/scope comes from lifecycle context. */
 import type { WorkspaceContext, WorkspaceExtensionAPI } from "./workspace-extension.ts";
+import { relayInboxComponent, relayInboxText, type RelayTheme } from "./relay-display.ts";
 import type { RelayRequest } from "../relay/workspace.ts";
 
 export type RelayBridgeRequest =
@@ -42,6 +43,7 @@ export function relaySlashRequest(action: Action, args: string): RelayRequest {
 
 /** No timer invokes a model. Heartbeat maintains only the current owner lease. */
 export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge): void {
+  pi.registerMessageRenderer?.("relay-inbox", (message, options, theme) => relayInboxComponent(message.details, message.content, options.expanded, theme));
   type Active = { id: string; controller: AbortController; ready: boolean; timer?: ReturnType<typeof setInterval>; };
   let active: Active | undefined;
   function nativeId(ctx: WorkspaceContext): string {
@@ -99,6 +101,12 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
     pi.registerTool({
       name: definition.name, label: definition.name, description: definition.description,
       parameters: { type: "object", properties: definition.properties, required: definition.required, additionalProperties: false },
+      ...(definition.action === "inbox" ? {
+        renderResult(result: { details?: unknown; content?: { type: string; text?: string }[] }, options: { expanded?: boolean }, theme?: RelayTheme) {
+          const fallback = result.content?.filter(item => item.type === "text").map(item => item.text ?? "").join("\n") ?? "Relay inbox unavailable.";
+          return relayInboxComponent(result.details, fallback, options.expanded, theme);
+        },
+      } : {}),
       async execute(_id, params, signal, _update, ctx) {
         if (!ctx) throw new Error("RELAY_SESSION_BINDING_REQUIRED");
         const result = await run(relayToolRequest(definition.action, params), ctx, signal);
@@ -110,7 +118,7 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
       async handler(args, ctx) {
         try {
           const result = await run(relaySlashRequest(definition.action, args), ctx);
-          pi.sendMessage({ customType: "relay-" + definition.action, content: JSON.stringify(result, null, 2), display: true }, { triggerTurn: false });
+          pi.sendMessage({ customType: "relay-" + definition.action, content: definition.action === "inbox" ? relayInboxText(result) ?? JSON.stringify(result, null, 2) : JSON.stringify(result, null, 2), details: result, display: true }, { triggerTurn: false });
         } catch (error) {
           const message = error instanceof Error && /^(?:Use \/relay-|RELAY_[A-Z0-9_]+$)/.test(error.message) ? error.message : "RELAY_OPERATION_REFUSED";
           ctx.ui.notify(message, "error");

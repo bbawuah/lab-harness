@@ -1,4 +1,6 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
+import type { RelayTheme } from "./relay-display.ts";
+import { installComposer, type ComposerUI } from "./composer.ts";
 import { installBrowserExtension } from "./browser-extension.ts";
 import { installPermissionExtension, permissionOptionsFromEnvironment, type PermissionAPI } from "./permission-extension.ts";
 import { boundAppearanceCapability, configureAppearance, type AppearanceRequest, type AppearanceUI } from "./workspace-appearance.ts";
@@ -14,12 +16,13 @@ import { installRelayExtension, type RelayBridgeRequest } from "./relay-extensio
 type SourceRequest = { action: "search" | "files" | "skills" | "load"; query?: string };
 type Request = SourceRequest | RelayBridgeRequest | AppearanceRequest;
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
-export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void; setStatus?(key: string, text: string | undefined): void } };
+export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: ComposerUI & { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void; setStatus?(key: string, text: string | undefined): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
   // Pi 1.4.0 events used by LAB extensions beyond session lifecycle; payloads are untrusted shapes and are validated by handlers.
   on(name: "agent_start" | "agent_end" | "tool_execution_end", handler: (event: any, ctx: WorkspaceContext) => void | Promise<void>): unknown;
   appendEntry?(customType: string, data: unknown): void;
+  registerMessageRenderer?(customType: string, renderer: (message: { content: string; details?: unknown }, options: { expanded?: boolean }, theme?: RelayTheme) => { render(width: number): string[]; invalidate(): void }): void;
   registerEntryRenderer?(customType: string, renderer: (entry: { data?: unknown }, options: { expanded?: boolean }, theme?: unknown) => { render(width: number): string[]; invalidate(): void }): void;
   registerTool(tool: { name: string; label: string; description: string; parameters: unknown; renderCall?: (...args: any[]) => any; renderResult?: (...args: any[]) => any; execute(id: string, params: Record<string, unknown>, signal?: AbortSignal, update?: unknown, ctx?: WorkspaceContext): Promise<ToolResult> }): void;
   registerCommand(name: string, options: { description: string; handler(args: string, ctx: WorkspaceContext): Promise<void> }): void;
@@ -69,8 +72,9 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): ReturnTyp
     if (!ctx.isIdle || !ctx.reload || !("custom" in ctx.ui) || !("select" in ctx.ui) || !("input" in ctx.ui)) { ctx.ui.notify("Appearance requires the native interactive Pi UI.", "error"); return; }
     await configureAppearance(ctx.ui as unknown as AppearanceUI, callWorkspaceBridge, boundAppearanceCapability(process.env), () => ctx.isIdle!(), () => ctx.reload!());
   } });
-  pi.on("session_start", (_event, ctx) => {
+  pi.on("session_start", async (_event, ctx) => {
     if (ctx.mode !== "tui") return;
+    await installComposer(ctx.ui);
     ctx.ui.setHeader((_tui, theme) => ({ render: columns => renderHeader({ columns, appearance: theme.appearance, color: terminalHasColor(process.env), workspace: true }), invalidate() {} }));
   });
   for (const [action, name, description] of [["search", "lab_search", "Literal LAB source search with current SHA-256 hashes and line spans"], ["files", "lab_files", "LAB filename search with current source identities"]] as const) {

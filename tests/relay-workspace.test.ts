@@ -77,6 +77,7 @@ test("read is repeatable until explicit recipient ack; mixed foreign ack refuses
   const { alice, bob, sender, receiver } = pair();
   const own = send(sender, bob.name), foreign = send(receiver, alice.peerId);
   const first = await receiver.inbox();
+  expect(first.messages[0]?.senderName).toBe(alice.name);
   expect(first.messages.map(m => m.id)).toEqual([own.id]); expect(first.unread).toBe(1);
   expect(await receiver.inbox()).toEqual(first);
   expect(() => receiver.ack({ ids: [own.id, foreign.id] })).toThrow("foreign recipient");
