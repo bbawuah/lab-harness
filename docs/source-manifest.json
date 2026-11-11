@@ -63,6 +63,7 @@
     "contracts/protocol-v1.json",
     "contracts/ripgrep-source.json",
     "docs/airgap-production-plan.md",
+    "docs/airgap-qualification.md",
     "docs/architecture.md",
     "docs/branding-preview.html",
     "docs/browser-evidence/native-browser.png",
@@ -175,6 +176,7 @@
     "docs/media/terminal-lifecycle.txt",
     "docs/media/terminal-output.json",
     "docs/media/test-operator-accept.json",
+    "docs/mod-quickstart.md",
     "docs/permission-evidence/01-ask-edit-prompt.txt",
     "docs/permission-evidence/02-ask-edit-allowed.txt",
     "docs/permission-evidence/03-ask-bash-prompt.txt",
@@ -379,6 +381,7 @@
     "scripts/pi/render-header.ts",
     "scripts/pi/smoke-header.ts",
     "scripts/publication-policy.ts",
+    "scripts/qualify-airgap.sh",
     "scripts/refresh-publication.ts",
     "scripts/runtime-bun.sh",
     "scripts/start.ts",
@@ -466,6 +469,7 @@
     "tests/project-selection.test.ts",
     "tests/project.test.ts",
     "tests/publication.test.ts",
+    "tests/qualify-airgap.test.ts",
     "tests/relay-bridge.test.ts",
     "tests/relay-extension.test.ts",
     "tests/relay-loader-env-child.ts",
@@ -591,6 +595,10 @@
     },
     "docs/airgap-production-plan.md": {
       "sha256": "036e12382e1109ae63f50bed5026cbb8076d7d0e2010b15441304b885dd46a8c",
+      "status": "added"
+    },
+    "docs/airgap-qualification.md": {
+      "sha256": "87d60da77bdfb60544a8be347f14876a0b15351695447c9d91e3dd857070014b",
       "status": "added"
     },
     "docs/architecture.md": {
@@ -1039,6 +1047,10 @@
     },
     "docs/media/test-operator-accept.json": {
       "sha256": "22418208aaff9a25c437a23b9a1972797af9e55e6242aae2fc00685492c77964",
+      "status": "added"
+    },
+    "docs/mod-quickstart.md": {
+      "sha256": "9913dbab5955e50a371f737670cc359001a128ee748f862b0ee35d2d385a1c03",
       "status": "added"
     },
     "docs/permission-evidence/01-ask-edit-prompt.txt": {
@@ -1853,6 +1865,10 @@
       "sha256": "3b239f146de4fc141224bb4a1b291d0cff6bd7496b8001311a0576139cbfdc96",
       "status": "added"
     },
+    "scripts/qualify-airgap.sh": {
+      "sha256": "d00a0b452f1b96b5b2df6e8d86fca9a49be8f6c3e5a7bd0f33892af2a07b29da",
+      "status": "added"
+    },
     "scripts/refresh-publication.ts": {
       "sha256": "f9bad851b8c85842caf3b699101f8ed2b519d408464d65e6468cf07ec2edce19",
       "status": "added"
@@ -2216,6 +2232,10 @@
     },
     "tests/publication.test.ts": {
       "sha256": "db6a3500c2c8abfd5da2d12dde52e4abf54c2b3455d60215aedb58c963503790",
+      "status": "added"
+    },
+    "tests/qualify-airgap.test.ts": {
+      "sha256": "f6a5e04acccf18860e3cde4603398d5f59ba4b2c381fa19c6ab03b435ff6b3a1",
       "status": "added"
     },
     "tests/relay-bridge.test.ts": {
