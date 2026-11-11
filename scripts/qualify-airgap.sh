@@ -559,7 +559,7 @@ fi
 if [ "$q_browser_test" = 1 ]; then
   q_smoke=
   if [ -n "$q_rel" ]; then
-    for q_s in browser-wsl-smoke.ts browser-edge-smoke.ts browser-wsl-edge-smoke.ts; do [ -f "$q_rel/scripts/$q_s" ] && { q_smoke=scripts/$q_s; break; }; done
+    for q_s in browser-windows-smoke.ts; do [ -f "$q_rel/scripts/$q_s" ] && { q_smoke=scripts/$q_s; break; }; done
     if [ -z "$q_smoke" ] && grep -qsl 'WSLInterop\|wslpath' "$q_rel"/src/browser/*.ts && [ -f "$q_rel/scripts/browser-smoke.ts" ]; then q_smoke=scripts/browser-smoke.ts; fi
   fi
   if [ "$q_wsl" != 1 ]; then q_record SKIPPED browser.roundtrip "not WSL; on this host run: bun run scripts/browser-smoke.ts"

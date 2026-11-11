@@ -123,7 +123,7 @@ test("fake WSL2 target without runtimes: FAILs, SKIPs pending features, redacts 
     expect(line(r.stdout, "PASS", "net.endpoint")).toContain("curl direct: TLS/HTTP ok, HTTP 401");
     expect(line(r.stdout, "SKIPPED", "net.endpoint-runtime")).toContain("needs a verified Bun");
     expect(line(r.stdout, "PASS", "browser.edge")).toContain("Edge 130.0.2849.80");
-    expect(line(r.stdout, "SKIPPED", "browser.agent-win32")).toContain("no win32 agent-browser contract");
+    expect(line(r.stdout, "WARN", "browser.agent-win32")).toContain("not installed in this release");
     expect(r.stdout).toContain("Summary: FAIL");
     expectSanitized(f.home, r.stdout, r.text, r.json);
     expect(r.report.summary.result).toBe("FAIL");

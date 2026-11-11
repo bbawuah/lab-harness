@@ -84,6 +84,7 @@
     "docs/browser-ux-contract.md",
     "docs/browser-workspace-contract.md",
     "docs/browser-workspace-evidence.md",
+    "docs/browser-wsl-edge.md",
     "docs/build-plan.md",
     "docs/ci.md",
     "docs/demos/README.md",
@@ -432,6 +433,8 @@
     "scripts/benchmark-search.ts",
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
+    "scripts/browser-windows-diagnostics.ts",
+    "scripts/browser-windows-smoke.ts",
     "scripts/bundle/build.ts",
     "scripts/bundle/common.ts",
     "scripts/bundle/install.sh",
@@ -469,6 +472,7 @@
     "src/browser/runtime.ts",
     "src/browser/session.ts",
     "src/browser/states.ts",
+    "src/browser/windows.ts",
     "src/candidate.ts",
     "src/cli.ts",
     "src/context.ts",
@@ -518,6 +522,7 @@
     "tests/azure-route.test.ts",
     "tests/bootstrap.test.ts",
     "tests/browser-ux.test.ts",
+    "tests/browser-wsl.test.ts",
     "tests/browser.test.ts",
     "tests/bun-bootstrap.test.ts",
     "tests/bundle-fetch.test.ts",
@@ -588,7 +593,7 @@
       "status": "added"
     },
     ".github/workflows/ci.yml": {
-      "sha256": "1209d02217208319df44d863551ff8060883e8ade3b34afa8dad5969102d0568",
+      "sha256": "17722a932b9ff4be7c8fe73d391c232c90407a060958a90e98f386c1f8bf3678",
       "status": "added"
     },
     ".github/workflows/release.yml": {
@@ -652,7 +657,7 @@
       "status": "added"
     },
     "contracts/agent-browser-source.json": {
-      "sha256": "0f867335b0e9fdb67b68f88cb28b8df956987b41041cdc8f0953b5954129c8b9",
+      "sha256": "c854b278c7d925d0ab065d9043f3df4a6db9b28373763712ecf1332dc77e56ae",
       "status": "added"
     },
     "contracts/bun-runtime.txt": {
@@ -766,6 +771,10 @@
     },
     "docs/browser-workspace-evidence.md": {
       "sha256": "b61372211601ea604ee2738fdcfdba0419741b40f2d1e473d10bc4fc018d5d08",
+      "status": "added"
+    },
+    "docs/browser-wsl-edge.md": {
+      "sha256": "34e6839944f18069f1e9b951ada5f0090bee1ce91e2ceb351a6493fd0720f646",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -2133,7 +2142,7 @@
       "status": "added"
     },
     "scripts/acquire-browser.ts": {
-      "sha256": "40a2dead388ac3df7807c8d4f9f599a59f3fda599fc6a73c191648e1853fa411",
+      "sha256": "c39be06fb4209d1cea9553b59fe8416a58f2e705e2ed3eafd43c9d0d43d49fb6",
       "status": "added"
     },
     "scripts/acquire-fd.ts": {
@@ -2154,6 +2163,14 @@
     },
     "scripts/browser-smoke.ts": {
       "sha256": "31d37def9583d8ede8b517fe82d624b73f9f77062a82e4ca74f11fdc0e7d1bf1",
+      "status": "added"
+    },
+    "scripts/browser-windows-diagnostics.ts": {
+      "sha256": "07023e384e12f53e34d276f8ea5e7b64f8e4264d59b880aecc65eef89448518e",
+      "status": "added"
+    },
+    "scripts/browser-windows-smoke.ts": {
+      "sha256": "c14fb177a83ea2507658fdeaec71f7789445d7b85b6e9c08b14c288e6cf039be",
       "status": "added"
     },
     "scripts/bundle/build.ts": {
@@ -2253,7 +2270,7 @@
       "status": "added"
     },
     "scripts/qualify-airgap.sh": {
-      "sha256": "6afd4ee679ac6afbd0c1df8b71319504a77adf9d1351d2f76414373fc4df731c",
+      "sha256": "1a7da877ac4570ed821a4e2d754213e4cba832b1851425372b7cb2bb54d37656",
       "status": "added"
     },
     "scripts/refresh-publication.ts": {
@@ -2295,15 +2312,19 @@
       "status": "added"
     },
     "src/browser/runtime.ts": {
-      "sha256": "2ac6b976a1f11f815cc352c783c311a4be310c41e35b87aa0d43172c3b08e752",
+      "sha256": "c8f918ad7530693ac29876c6ef14785e563d9dd00bf3d1f51c7c2d755ba0b14e",
       "status": "added"
     },
     "src/browser/session.ts": {
-      "sha256": "89edddb831c7affe31614fee92d611e4684edd992f1171f12fbb86ed9ecfa327",
+      "sha256": "bb4b45a94a9612907fcab9e561d67c89ef22b25f8f5c7cd98868c534b0c9f224",
       "status": "added"
     },
     "src/browser/states.ts": {
-      "sha256": "95abc2661aab3d97f813c24d0e60ba0cc541bea9b33122bbdba52ee70b98acf2",
+      "sha256": "88ea7aaa69a19bfe648a192f7b7e7aa7078fb4d83849e5e38ba7710390fc1409",
+      "status": "added"
+    },
+    "src/browser/windows.ts": {
+      "sha256": "974145479aea5912f924729a4695586a07641a94e361e7a3a595e6f9e26c47bd",
       "status": "added"
     },
     "src/candidate.ts": {
@@ -2510,6 +2531,10 @@
       "sha256": "9bdd9eadb2af276ac0546fc5bf8ac625154ed01a9e3fe92cea30b0c0d0e67e0b",
       "status": "added"
     },
+    "tests/browser-wsl.test.ts": {
+      "sha256": "865533f6a83457bcebc3717b0a5db0b01f930b514f64a987478d3dd1d635e1b7",
+      "status": "added"
+    },
     "tests/browser.test.ts": {
       "sha256": "3a10142460e55b6f2f3f9ea42af34a186945865b8f503aeb27f99b678412d82a",
       "status": "added"
@@ -2670,7 +2695,7 @@
       "status": "added"
     },
     "tests/qualify-airgap.test.ts": {
-      "sha256": "f6a5e04acccf18860e3cde4603398d5f59ba4b2c381fa19c6ab03b435ff6b3a1",
+      "sha256": "5ca9e2055e77cd51dd02932f8157045d1888603e1f7644dea4b3e394cea1ee76",
       "status": "added"
     },
     "tests/relay-bridge.test.ts": {

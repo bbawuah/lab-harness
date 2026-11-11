@@ -27,6 +27,7 @@ export function classify(info: BrowserFailureInfo): FailureState {
 const action = (info: BrowserFailureInfo) => (info.operation ?? 'action') + (info.ref ? ' ' + info.ref : '');
 const cause = (info: BrowserFailureInfo) => {
   const c = info.code;
+  if (c === 'LAB_BROWSER_EDGE_START') return 'was refused by Windows Edge; review RemoteDebuggingAllowed / DeveloperToolsAvailability and target URL policies in edge://policy';
   if (c === 'LAB_BROWSER_TIMEOUT') return 'timed out';
   if (c === 'LAB_BROWSER_CANCELLED') return 'was cancelled';
   if (c === 'LAB_BROWSER_DIAGNOSTIC') return 'printed diagnostics';
