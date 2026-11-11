@@ -40,7 +40,8 @@ Choose one authentication mode:
 - `bearer-command`: enter a trusted command at the hidden prompt. Its stdout must
   contain only a token. For example, an already authenticated Azure CLI can use
   `az account get-access-token --resource https://cognitiveservices.azure.com/ --query accessToken -o tsv`
-  if that audience is approved by the owner. The command must not contain inline
+  if that audience is approved by the owner. See Microsoft's [Responses authentication reference](https://learn.microsoft.com/en-us/rest/api/aifoundry/azureopenai/responses)
+  for the documented scope. The command must not contain inline
   passwords, client secrets or tokens. Prefer an absolute executable path.
 
 The key or command lives only in the guarded private `key` file (0600), outside
@@ -169,7 +170,10 @@ action. They are not an OS network firewall.
 
 `LAB_AZURE_ACTUAL=1 bun --no-env-file test tests/azure*.test.ts` uses the pinned Pi
 binary and a `Bun.serve` loopback fixture. It checks Responses paths, deployment
-mapping, API version, all authentication modes and streamed output. No Azure
+mapping, API version, all authentication modes and streamed output. It also
+executes one harmless read-tool round trip, checks 401/403/404/429 repair messages,
+and observes zero connections to a recording HTTP proxy while loopback model
+requests succeed with NO_PROXY. No Azure
 account or paid model is used. Unit tests cover migration, private files and
 proxy/CA allowlisting. These results establish local protocol behavior; they do
 not establish real landing-zone access, corporate CA trust, deployment quality,

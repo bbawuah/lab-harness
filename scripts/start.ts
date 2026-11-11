@@ -36,6 +36,8 @@ if (args.includes("--help")) {
 
 try {
   if (args.includes("--configure") && process.env.LAB_ROUTE_CONFIG_FILE) {
+    const configureArgs = args.filter((_, index) => args[index - 1] !== "--project");
+    if (configureArgs.some(arg => !["--configure", "--offline", "--project"].includes(arg))) throw new Error("Invalid workspace route: use scripted --configure separately from workspace options");
     const { configureWorkspace, workspaceStateRoot } = await import("../src/pi/workspace-config.ts");
     await configureWorkspace(workspaceStateRoot(root, process.env.LAB_WORKSPACE_STATE_ROOT, project ?? caller));
     console.log("LAB: route saved. No model request was made. Run lab to open a fresh workspace.");

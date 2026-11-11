@@ -15,13 +15,13 @@ export type WorkspaceRoute = {
 };
 const defaults: ModelCapabilities = { contextWindow: 128000, maxTokens: 16384, reasoning: false, input: ["text"] };
 export function validateRoute(value: unknown): WorkspaceRoute {
-  const route = value as WorkspaceRoute;
-  if (!route || ![1, 2].includes(route.version) || !["local", "litellm", "azure"].includes(route.kind) || (Number(route.version) === 1 && route.kind === "azure")) throw new Error("Invalid workspace route; run ./lab --configure");
+  const route = value as Omit<WorkspaceRoute, "version"> & { version: 1 | 2 };
+  if (!route || ![1, 2].includes(route.version) || !["local", "litellm", "azure"].includes(route.kind) || (route.version === 1 && route.kind === "azure")) throw new Error("Invalid workspace route; run ./lab --configure");
   let url: URL;
   try { url = new URL(route.endpoint); } catch { throw new Error("Endpoint must be an explicit HTTP(S) URL"); }
-  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.search || url.hash || /[\x00-\x20\x7f]/.test(route.endpoint)) throw new Error("Endpoint cannot contain credentials, query, fragment or whitespace");
+  if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash || /[\x00-\x20\x7f]/.test(route.endpoint)) throw new Error("Endpoint cannot contain credentials, query, fragment or whitespace");
   if (route.kind === "azure" && url.protocol !== "https:" && !["127.0.0.1", "[::1]", "localhost"].includes(url.hostname)) throw new Error("Azure endpoint requires HTTPS (HTTP is allowed only for loopback fixtures)");
-  if (typeof route.model !== "string" || !/^[a-zA-Z0-9][a-zA-Z0-9._/+-]{0,199}$/.test(route.model)) throw new Error("Enter the exact model ID or LiteLLM alias without spaces or routing separators");
+  if (typeof route.model !== "string" || !route.model || route.model.length > 200 || /[\x00-\x20\x7f]/.test(route.model) || (route.kind === "azure" && !/^[a-zA-Z0-9][a-zA-Z0-9._/+-]{0,199}$/.test(route.model))) throw new Error("Enter the exact model ID or LiteLLM alias without spaces or routing separators");
   let capabilities = route.capabilities;
   if (capabilities) {
     if (!Number.isSafeInteger(capabilities.contextWindow) || capabilities.contextWindow < 4096 || capabilities.contextWindow > 10000000 || !Number.isSafeInteger(capabilities.maxTokens) || capabilities.maxTokens < 1 || capabilities.maxTokens >= capabilities.contextWindow || typeof capabilities.reasoning !== "boolean" || !Array.isArray(capabilities.input) || capabilities.input[0] !== "text" || capabilities.input.length > 2 || capabilities.input.some(v => !["text", "image"].includes(v))) throw new Error("Invalid model capabilities; set contextWindow >= 4096, maxTokens < contextWindow, reasoning and input");
@@ -30,10 +30,10 @@ export function validateRoute(value: unknown): WorkspaceRoute {
   const result: WorkspaceRoute = { version: 2, kind: route.kind, endpoint: url.toString().replace(/\/$/, ""), model: route.model, ...(capabilities ? { capabilities } : route.kind !== "azure" ? { capabilities: { ...defaults } } : {}) };
   if (route.kind === "azure") {
     if (typeof route.deployment !== "string" || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,199}$/.test(route.deployment)) throw new Error("Azure deployment must be the exact deployment name, using letters, numbers, dots, underscores or hyphens");
-    const apiVersion = route.apiVersion || "v1";
-    if (!/^[a-zA-Z0-9._-]{1,80}$/.test(apiVersion)) throw new Error("Invalid Azure API version");
+    const apiVersion = route.apiVersion ?? "v1";
+    if (typeof apiVersion !== "string" || !/^[a-zA-Z0-9._-]{1,80}$/.test(apiVersion)) throw new Error("Invalid Azure API version");
     if (!route.auth || !["api-key", "custom-header", "bearer-command"].includes(route.auth.mode)) throw new Error("Invalid Azure authentication mode");
-    if (route.auth.mode === "custom-header" && (typeof route.auth.header !== "string" || !/^[a-zA-Z][a-zA-Z0-9-]{0,99}$/.test(route.auth.header) || /^(authorization|proxy-authorization|host|content-length|connection|transfer-encoding|cookie)$/i.test(route.auth.header))) throw new Error("Invalid Azure custom authentication header");
+    if (route.auth.mode === "custom-header" && (typeof route.auth.header !== "string" || !/^[a-zA-Z][a-zA-Z0-9-]{0,99}$/.test(route.auth.header) || /^(api-key|authorization|proxy-authorization|host|content-length|connection|transfer-encoding|cookie)$/i.test(route.auth.header))) throw new Error("Invalid Azure custom authentication header");
     Object.assign(result, { deployment: route.deployment, apiVersion, auth: { mode: route.auth.mode, ...(route.auth.mode === "custom-header" ? { header: route.auth.header } : {}) } });
   }
   return result;

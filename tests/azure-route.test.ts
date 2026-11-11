@@ -1,6 +1,7 @@
 import { afterEach, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { azureErrorMessage } from "../src/runtime/azure.ts";
 import { assertAzureCatalogModel, loadWorkspaceRoute, modelsForRoute, routeEnvironment, routeSettings, validateRoute, workspaceNetworkEnvironment, writePrivate } from "../src/pi/workspace-config.ts";
 const roots: string[] = [];
 function temporary() { mkdirSync(resolve(".tmp"), { recursive: true }); const root = mkdtempSync(resolve(".tmp/azure-test-")); roots.push(root); return root; }
@@ -42,4 +43,13 @@ test("v1 routes migrate in memory to bounded configurable v2 limits and still lo
 });
 test("network allowlist preserves proxy and CA controls without ambient provider credentials", () => {
   expect(workspaceNetworkEnvironment({ HTTPS_PROXY: "http://proxy.invalid:8080", HTTP_PROXY: "http://proxy.invalid:8080", NO_PROXY: "127.0.0.1", NODE_EXTRA_CA_CERTS: "/private/ca.pem", OPENAI_API_KEY: "never", AZURE_OPENAI_BASE_URL: "never" })).toEqual({ PI_OFFLINE: "1", PI_SKIP_VERSION_CHECK: "1", PI_TELEMETRY: "0", HTTPS_PROXY: "http://proxy.invalid:8080", HTTP_PROXY: "http://proxy.invalid:8080", NO_PROXY: "127.0.0.1", NODE_EXTRA_CA_CERTS: "/private/ca.pem" });
+});
+
+test("local migration preserves colon-tagged IDs and Azure errors have actionable sanitized messages", () => {
+  expect(validateRoute({ version: 1, kind: "local", model: "qwen3:32b", endpoint: "http://127.0.0.1:9/v1" }).model).toBe("qwen3:32b");
+  for (const [status, advice] of [[401, "auth mode"], [403, "RBAC"], [404, "deployment"], [429, "quota"]] as const) {
+    expect(azureErrorMessage(`${status} upstream private-fixture-token`)).toContain(advice);
+    expect(azureErrorMessage(`${status} upstream private-fixture-token`)).not.toContain("private-fixture-token");
+  }
+  expect(azureErrorMessage("untrusted backend body")).toContain("proxy");
 });

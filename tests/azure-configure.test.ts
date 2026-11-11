@@ -22,6 +22,10 @@ test("scripted --configure saves all Azure auth modes without terminal, command 
       expect(code).toBe(0); expect(stderr).toBe(""); expect(stdout).toContain("No model request was made"); expect(stdout).not.toContain(credential);
       expect(loadWorkspaceRoute(state)).toMatchObject({ key: credential, route: { kind: "azure", auth: { mode } } });
       expect(readFileSync(join(state, "route.json"), "utf8")).not.toContain(credential);
+      const invalid = Bun.spawnSync([process.execPath, "--no-env-file", "--no-install", join(install, "scripts/start.ts"), "--configure", "--single-pane"], { cwd: project,
+        env: { HOME: home, PATH: "/usr/bin:/bin", LAB_WORKSPACE_STATE_ROOT: state, LAB_ROUTE_CONFIG_FILE: config, LAB_ROUTE_KEY_FILE: key } });
+      expect(invalid.exitCode).toBe(1);
+      expect(invalid.stderr.toString()).toContain("scripted --configure separately");
     }
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
