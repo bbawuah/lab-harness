@@ -548,7 +548,7 @@
       "status": "added"
     },
     "bootstrap.sh": {
-      "sha256": "ee1d215fe7ea773285b61d31eebec15b7ac24307133a73be4a5b5d75af6e26fb",
+      "sha256": "7b288d8cff3f826480eb9c1d2deda623cbe9852bd5008a3a9b8629af661712b3",
       "status": "added"
     },
     "bun.lock": {
