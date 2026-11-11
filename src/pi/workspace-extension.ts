@@ -1,4 +1,5 @@
 /** Explicit Pi extension and private stdin/stdout bridge to the existing LAB APIs. */
+import { installAgentExtension, agentFamily } from "./agent-extension.ts";
 import type { RelayTheme } from "./relay-display.ts";
 import { installComposer, type ComposerUI } from "./composer.ts";
 import { installBrowserExtension } from "./browser-extension.ts";
@@ -16,7 +17,7 @@ import { installRelayExtension, type RelayBridgeRequest } from "./relay-extensio
 type SourceRequest = { action: "search" | "files" | "skills" | "load"; query?: string };
 type Request = SourceRequest | RelayBridgeRequest | AppearanceRequest;
 type ToolResult = { content: { type: "text"; text: string }[]; details: unknown };
-export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: ComposerUI & { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void; setStatus?(key: string, text: string | undefined): void } };
+export type WorkspaceContext = { mode?: string; sessionManager?: { getSessionId(): string; getBranch?(): unknown[] }; shutdown(): void; isIdle?(): boolean; reload?(): Promise<void>; ui: ComposerUI & { setHeader(factory: HeaderFactory): void; notify(message: string, kind?: "error" | "info"): void; setStatus?(key: string, text: string | undefined): void } };
 export type WorkspaceExtensionAPI = {
   on(name: "session_start" | "session_shutdown", handler: (event: unknown, ctx: WorkspaceContext) => void | Promise<void>): unknown;
   // Pi 1.4.0 events used by LAB extensions beyond session lifecycle; payloads are untrusted shapes and are validated by handlers.
@@ -96,6 +97,8 @@ export default function workspaceExtension(pi: WorkspaceExtensionAPI): ReturnTyp
   // Approval gate for every model tool call (F01/F30); fails closed.
   // Other tool families (agent-desktop) register on this gate in the same load: gate.registerFamily({...alwaysAsk, ...}).
   const gate = installPermissionExtension(pi as unknown as PermissionAPI, { ...permissionOptionsFromEnvironment(), browser });
+  gate.registerFamily(agentFamily);
+  installAgentExtension(pi, () => gate.mode);
   return gate;
 }
 /** Runs under installed Bun against the bound project. No ledger or skill script executes. */

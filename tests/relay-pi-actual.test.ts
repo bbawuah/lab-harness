@@ -226,6 +226,7 @@ actual("two owned Pi TUIs automatically message/reply, read without ack, refuse 
       if (actor.socket) break;
     }
     if (!actor.socket) throw new Error("Owned native server socket missing: " + JSON.stringify(observations).slice(-2500));
+    await paste(actor, "/relay-auto off");
     return actor;
   }
   async function paste(actor: typeof actors[number], text: string) {

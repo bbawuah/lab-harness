@@ -6,6 +6,24 @@ vendor closure at dfe1b039bab45f4055ab39467e994a2981940c02 is immutable. Existin
 ledger RelayBus/receive/accept behavior is unchanged. Messaging never accepts a
 task or supplies controlled native request admission.
 
+## Native agent integration update
+
+The original message-store and ownership contract below remains the transport
+boundary. The interactive host now also owns agent creation in Herdr tabs and an
+idle-only delivery dispatcher. This supersedes the original no-wakeup closure:
+`LAB_RELAY_AUTO=1` enables local inbox checks and unseen messages start a native
+Pi turn when idle. `/relay-auto off` disables dispatch for that native session.
+Delivery markers are the transcript's `custom_message` entries; reload/resume
+reconstructs them on the selected branch. Delivery does not acknowledge mail or
+grant tool permissions. The dispatcher does not repeatedly wake on the same ID.
+
+Agent operations use a private workspace-owned socket, session-bound Relay
+identity, explicit task text, bounded child count, and the existing approval gate.
+Children get independent run references and inherit the parent's current mode;
+no model parameter selects a project, command, credential, browser or permission
+mode. Herdr owns their PTYs and workspace shutdown closes their tabs. Cross-project
+communication still requires the operator-selected allowlisted group below.
+
 ## Ownership and supported surface
 
 One isolated Codex high/default implementation specialist owns only new

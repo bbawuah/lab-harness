@@ -26,10 +26,12 @@ export function workspaceHelp(): string {
     "/lab-appearance — Preview light/dark/terminal mode, colors and spacing; Apply/Cancel/Reset.",
     "/lab-browser status|close — Inspect or close this run’s owned browser; start with --browser URL.",
     "/lab-mode [ask|edits|read-only|auto|next] — Show or change the permission mode (footer shows it).",
+    "/agents — List spawned agents and their Herdr tabs; ask the model to spawn or stop a child.",
+    "/relay-auto [on|off] — Automatically respond to incoming messages when idle (on by default).",
     "/lab-help — Show these LAB commands.",
     "/exit — Leave the workspace; native Pi /quit also works.",
     "Workspace panes: Ctrl+B then h/l changes focus; Tab cycles; z zooms; ? shows Herdr shortcuts.",
-    "Tool-capable models receive lab_search, lab_files and relay_peers/send/inbox/ack automatically. Skills load only through your explicit command.",
+    "Tool-capable models receive lab_search, lab_files and relay_peers/send/inbox/ack plus agent_spawn/list/stop automatically. Skills load only through your explicit command.",
     "Use native Pi /hotkeys for shortcuts; type / to browse native commands. Controlled LAB tasks remain unavailable.",
   ].join("\n");
 }

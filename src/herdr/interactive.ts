@@ -16,7 +16,7 @@ export function verifyHerdrInteractive(executable: string): void {
   const name = `herdr-${process.platform === "darwin" ? "macos" : process.platform}-${process.arch === "arm64" ? "aarch64" : "x86_64"}`;
   if (!stat.isFile() || stat.isSymbolicLink() || stat.nlink !== 1 || !provenance.runtime.artifacts.some(artifact => artifact.name === name && artifact.sha256 === hash)) throw new Error("Herdr is missing or unverified; run ./install.sh");
 }
-export type HerdrInteractiveOptions = { executable: string; command: string[]; cwd: string; stateRoot: string; environment: NodeJS.ProcessEnv; exitFile?: string; shell?: RegularShell };
+export type HerdrInteractiveOptions = { executable: string; command: string[]; cwd: string; stateRoot: string; environment: NodeJS.ProcessEnv; exitFile?: string; shell?: RegularShell; startAgents?: (socket: string, workspaceId: string, environment: Record<string, string>) => Promise<{ environment: Record<string, string>; close(): Promise<void> }> };
 function ended(child: ChildProcess): boolean { return child.exitCode !== null || child.signalCode !== null; }
 async function waitExit(child: ChildProcess, ms: number): Promise<boolean> { const until = Date.now() + ms; while (!ended(child) && Date.now() < until) await delay(25); return ended(child); }
 async function waitPidGone(pid: number, ms: number): Promise<boolean> {
@@ -62,6 +62,7 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
     await request(socket, "pane.send_keys", { pane_id: focused.pane_id, keys: ["ctrl+c"] });
   })().catch(error => { interruptError = error; }); };
   process.on("SIGINT", interrupt);
+  let agentHost: { close(): Promise<void> } | undefined;
   let result = 1, failure: unknown;
   try {
     session: {
@@ -86,6 +87,10 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
     const bootInfo = await request(socket, "pane.process_info", { pane_id: bootstrap.pane_id });
     const bootstrapPid = bootInfo.process_info?.shell_pid;
     if (!Number.isSafeInteger(bootstrapPid) || bootstrapPid <= 1) throw new Error("Herdr bootstrap process is unknown");
+    if (options.startAgents) {
+      const host = await options.startAgents(socket, workspaceId, piEnvironment);
+      agentHost = host; Object.assign(piEnvironment, host.environment);
+    }
     const pi = { type: "pane", label: "Pi interactive", cwd: options.cwd, command: options.command, env: piEnvironment };
     const root = regularLeaf ? { type: "split", direction: "right", ratio: 0.6, first: pi, second: regularLeaf } : pi;
     const launch = await request(socket, "layout.apply", { tab_id: bootstrapTab, tab_label: "LAB workspace", focus: true, root });
@@ -192,6 +197,7 @@ export async function runHerdrInteractive(options: HerdrInteractiveOptions): Pro
     process.off("SIGINT", interrupt); process.off("SIGTERM", onTerm); process.off("SIGHUP", onHup);
     if (client && !ended(client)) { client.kill("SIGTERM"); if (!await waitExit(client, 1000)) { client.kill("SIGKILL"); await waitExit(client, 1000); } }
     if (process.stdin.isTTY) process.stdin.setRawMode(rawBefore);
+    try { await agentHost?.close(); } catch (error) { failure ??= error; }
     if (workspaceId && server && !ended(server)) await request(socket, "workspace.close", { workspace_id: workspaceId }).catch(() => {});
     if (server && !ended(server)) await request(socket, "server.stop").catch(() => {});
     if (server && !await waitExit(server, 2000)) { server.kill("SIGTERM"); if (!await waitExit(server, 1000)) { server.kill("SIGKILL"); await waitExit(server, 1000); } }

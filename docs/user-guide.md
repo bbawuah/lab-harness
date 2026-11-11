@@ -288,15 +288,46 @@ Replace the displayed IDs. A foreign inbox cannot be acknowledged. Reply
 references preserve the conversation between those peers. Ack is message
 acknowledgement; it never completes or accepts a LAB task.
 
-The model is instructed to check inbox when coordinating or before handoff.
-Mail does not wake a model, start another agent or cause continuous model
-polling. Only explicit message bodies are shared; no transcript, skill body or
+Incoming mail appears as a Relay block and starts a model response when the
+recipient is idle. A busy recipient finishes its current turn first. LAB checks
+the inbox locally; these checks do not call the model. Each message starts at
+most one automatic turn on the current transcript branch, including after
+`/reload`. Reading and automatic delivery do not acknowledge mail; the model
+must acknowledge handled IDs with `relay_ack`.
+
+Use `/relay-auto off` to pause automatic responses, `/relay-auto on` to resume,
+and `/relay-inbox` to inspect mail manually. This setting persists in the native
+session. Automatic responses still obey the session's permission mode.
+Only explicit message bodies are shared; no transcript, skill body or
 private history is copied automatically. Same-project sessions share a private
 durable bus across runtime upgrades. Distinct projects/worktrees are isolated
 unless the operator explicitly selects a private allowlisted group with
 --relay-group ID. [Advanced scope/lifecycle contract](relay-workspace-contract.md)
 describes the private version1 project-binding manifest; no group setup is
 needed for normal same-project messaging.
+
+### Agents in Herdr tabs
+
+Ask the model to “spawn a reviewer to inspect the current diff and report back.”
+It receives `agent_spawn`, `agent_list`, and `agent_stop`. Each child opens in a
+visible Herdr tab without taking focus; use Ctrl+B then n/p to switch tabs.
+`/agents` lists the children and their process state. To message an existing
+session, ask the model to find it with `relay_peers` and use `relay_send`.
+
+Children receive the explicit task and the parent's Relay address. They inherit
+the configured model and current permission mode, with their own native session,
+inbox, settings, and permission state. They share project files: assign separate
+files or coordinate edits. They do not inherit the parent's transcript or owned
+browser. A child can report back with `relay_send`; the idle parent receives the
+result automatically. In ask mode, child tool approvals appear in the child's tab.
+
+Only the spawning session can stop its child through `agent_stop`. `/exit` in a
+child closes that tab; `/exit` in the original session closes the whole workspace
+and its children. Transcripts remain available through native session resume.
+There are at most eight active children per workspace and 64 launches during one
+workspace lifetime. Reusing a spawn request key with the same task returns the
+original result; an uncertain launch is reported as `unknown` and is not retried
+automatically. Inspect its Herdr tab before deciding what to do next.
 
 Presence is lease-based, not proof a model is listening. Normal exit marks its
 peer offline; a crashed process becomes stale after its 60-second lease.

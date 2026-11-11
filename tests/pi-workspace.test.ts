@@ -22,6 +22,7 @@ test("native launch uses caller or explicit project B while all startup writes s
   writeFileSync(join(install,"src/runtime/pi.ts"),'export function verifyPiRuntime(){return {command:["/verified/pi"],version:"fixture"};}\n');
   writeFileSync(join(install,"src/herdr/interactive.ts"),'import {writeFileSync} from "node:fs"; export function verifyHerdrInteractive(){} export async function runHerdrInteractive(options){writeFileSync(process.env.CAPTURE_PATH,JSON.stringify(options));return 0;}\n');
   writeFileSync(join(install,"src/relay/workspace.ts"),'import {writeFileSync} from "node:fs";import {join} from "node:path";export function provisionWorkspaceRelayRun(options){const path=join(options.runRoot,"relay-run.json");writeFileSync(path,"fixture",{mode:0o600});return path;}\n');
+  writeFileSync(join(install,"src/pi/agent-host.ts"), "export async function startAgentHost(){throw new Error(\"fixture does not start agents\");}\n");
   const rg="fixture pinned binary";
   writeFileSync(join(install,".tmp/rg/rg"),rg,{mode:0o700});
   writeFileSync(join(install,"contracts/ripgrep-source.json"),JSON.stringify({artifacts:[{platform:process.platform,arch:process.arch,binarySHA256:createHash("sha256").update(rg).digest("hex")}]}));

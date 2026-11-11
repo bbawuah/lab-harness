@@ -400,6 +400,8 @@
     "src/ledger.ts",
     "src/owned-processes.ts",
     "src/pi/advisory-extension.ts",
+    "src/pi/agent-extension.ts",
+    "src/pi/agent-host.ts",
     "src/pi/appearance-read.ts",
     "src/pi/appearance-store-helper.ts",
     "src/pi/appearance-store.ts",
@@ -412,6 +414,7 @@
     "src/pi/header.ts",
     "src/pi/permission-extension.ts",
     "src/pi/permission.ts",
+    "src/pi/relay-delivery.ts",
     "src/pi/relay-display.ts",
     "src/pi/relay-extension.ts",
     "src/pi/status-indicator.ts",
@@ -433,6 +436,8 @@
     "src/terminal-demo.ts",
     "src/util.ts",
     "src/workspace.ts",
+    "tests/agent-host.test.ts",
+    "tests/agents-pi-actual.test.ts",
     "tests/bootstrap.test.ts",
     "tests/browser-ux.test.ts",
     "tests/browser.test.ts",
@@ -468,6 +473,7 @@
     "tests/project.test.ts",
     "tests/publication.test.ts",
     "tests/relay-bridge.test.ts",
+    "tests/relay-delivery.test.ts",
     "tests/relay-extension.test.ts",
     "tests/relay-loader-env-child.ts",
     "tests/relay-loader-env.test.ts",
@@ -1139,7 +1145,7 @@
       "status": "added"
     },
     "docs/relay-workspace-contract.md": {
-      "sha256": "e4b1a6f0efdcb95ecca6acd69fca6cec7a4fe11d3112f88934e571c650e317a8",
+      "sha256": "911def83449c09723644d01145d5e51a106f584d88d36db5fe98e9a9b15389f3",
       "status": "added"
     },
     "docs/research/agent-tools/CONTINUATION-CONTRACT.md": {
@@ -1643,7 +1649,7 @@
       "status": "added"
     },
     "docs/user-guide.md": {
-      "sha256": "f0d5ca4406c8e458a08f2513ba565495c7201db1f6662ee8aaa2fce902b9e1c9",
+      "sha256": "3232f66a0ddb560a9ddefd3d1364bff60de0e172f6e2072637ea8bdce2ece962",
       "status": "added"
     },
     "examples/skills/terminal-evidence/SKILL.md": {
@@ -1915,7 +1921,7 @@
       "status": "added"
     },
     "src/herdr/interactive.ts": {
-      "sha256": "49daa6cf518b5b2119f739cd6a2bd274aef6ef6019c9d50457771ffc47492421",
+      "sha256": "d42e238fd3bd65e53456cc558f31a7c28f1235b9f9bc6a5d3a18c6e5dfc47f29",
       "status": "added"
     },
     "src/herdr/protocol.ts": {
@@ -1944,6 +1950,14 @@
       "sha256": "5fde5957afce517c04dd919e10ba59dcff84e02fcb901a54212732498cac85c6",
       "status": "added"
     },
+    "src/pi/agent-extension.ts": {
+      "sha256": "ce7f52d58859e0707847bdfb933c29edcdf9b20f91f247ba260e03094cca5358",
+      "status": "added"
+    },
+    "src/pi/agent-host.ts": {
+      "sha256": "fac253b490c4e2478b00d451823ef98ee84a4b049df9a81bb72bcac4d3b25897",
+      "status": "added"
+    },
     "src/pi/appearance-read.ts": {
       "sha256": "b25f1ba5b3e5a1023850d3ee840a078bab714d870f38d5d0fd54b3b44b75a459",
       "status": "added"
@@ -1969,7 +1983,7 @@
       "status": "added"
     },
     "src/pi/commands.ts": {
-      "sha256": "dfd95db53c6352de7da93aedbb6bf56001f0ba5ea0362ba67f74bea7767eaba3",
+      "sha256": "01ed4b8a05b45ee03d619a39a0be67eb273eecd937e44e30047efb7820e1421d",
       "status": "added"
     },
     "src/pi/composer.ts": {
@@ -1992,12 +2006,16 @@
       "sha256": "ce9aeb951decf348460f0c204aa08bba8cd3436c5e9914913b38683dd33a8b2e",
       "status": "added"
     },
+    "src/pi/relay-delivery.ts": {
+      "sha256": "6d3b4129b7631a7ed439bac87dc9fb41e3da9dc57e3bea42e25535ac58f3dfd2",
+      "status": "added"
+    },
     "src/pi/relay-display.ts": {
       "sha256": "126a1816eff38bb10663f9f7b0849d0b27cd68d07c12cfb9923b8767b67d8bfc",
       "status": "added"
     },
     "src/pi/relay-extension.ts": {
-      "sha256": "9674ed3511373ebf7739978d2a9e1fae087c41e197306d08327c66efa1ed4fef",
+      "sha256": "bf4ac04bb13f3ca6e53be4075e5e85a8fc08908451f9dc2f2296d894ab4cec40",
       "status": "added"
     },
     "src/pi/status-indicator.ts": {
@@ -2021,7 +2039,7 @@
       "status": "added"
     },
     "src/pi/workspace-extension.ts": {
-      "sha256": "0622c515635c6d36cd7684251be6f676b431faa10d60b03203f224be324a0e43",
+      "sha256": "5e4d972f0cfab266f29103ddda5cb63f937b2beea5dd79bcdc40530756d525bc",
       "status": "added"
     },
     "src/pi/workspace-project.ts": {
@@ -2029,7 +2047,7 @@
       "status": "added"
     },
     "src/pi/workspace.ts": {
-      "sha256": "79b4036e4a8c06ad307a3a968d8c09250132efd0c3b9118d0a8f262a0eea5b1f",
+      "sha256": "1144fb6fb3d854129ce2fe507b2f35d565767f5adac0b0868df17ff25ec438d1",
       "status": "added"
     },
     "src/project.ts": {
@@ -2079,6 +2097,14 @@
       "sha256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e",
       "status": "unchanged",
       "originalSHA256": "25d24e535f9226da7b6d90cc23996aa69e57993bfa931cf0c0c91edb5bceeb8e"
+    },
+    "tests/agent-host.test.ts": {
+      "sha256": "0ddcc22ef26fe42ff4f3263bcdd2b445ba64658d2b13f5f05a9484d55058993d",
+      "status": "added"
+    },
+    "tests/agents-pi-actual.test.ts": {
+      "sha256": "5b4ec4cd7d39cff6e78b48fa99f38705e6a75e98a418248746f7ddb1202be641",
+      "status": "added"
     },
     "tests/bootstrap.test.ts": {
       "sha256": "031f1aaaf7db11575c72131e5c9f72872d87bc52b767cdd8b63a5f73c214db05",
@@ -2199,11 +2225,11 @@
       "status": "added"
     },
     "tests/pi-workspace-extension.test.ts": {
-      "sha256": "13249827774954103c6e1293fe5d09e564f9c2448ca09786762dc9eb54c67176",
+      "sha256": "1a1734499023ffbd96dba76cb35b2806c1c0bfd63000483e27615b62a5431ca8",
       "status": "added"
     },
     "tests/pi-workspace.test.ts": {
-      "sha256": "2abbf1b0ce67b7b0c397e6a73db13958337446f27674d1604ccb84694d0ade04",
+      "sha256": "2caeacd870f278c10cbe63ec91d371a26c95808eac8f74347a94d8ca3152646e",
       "status": "added"
     },
     "tests/process-crash.test.ts": {
@@ -2212,7 +2238,7 @@
       "originalSHA256": "1bd2efc5d92cc1c0bdf7c1d769cb90b98e936ea4ac817e77571d303e1cb0fc52"
     },
     "tests/project-selection.test.ts": {
-      "sha256": "5c43346e83b1a41a5f0042beb1cd2fc258c635ab1e7474e4cf7758152e9b6a3f",
+      "sha256": "ec31f1c347b6f401d5742bb819a6386633ca72b011e9d1a50e222fbc28b7dfbf",
       "status": "added"
     },
     "tests/project.test.ts": {
@@ -2225,6 +2251,10 @@
     },
     "tests/relay-bridge.test.ts": {
       "sha256": "a584740b9fb29942e23806b7e0b26c1871793763b32193538f0a219826070405",
+      "status": "added"
+    },
+    "tests/relay-delivery.test.ts": {
+      "sha256": "d0d87d4950c5e2571138cf0c1b2dc5cdd8f768fa50b8b7305e1bc615a1d17871",
       "status": "added"
     },
     "tests/relay-extension.test.ts": {
@@ -2240,7 +2270,7 @@
       "status": "added"
     },
     "tests/relay-pi-actual.test.ts": {
-      "sha256": "49e816fc481a9e28bf7b5f0905a9bb74eec053fde77bb4ddff5f8c84531361d1",
+      "sha256": "6a2d7d94efa0eb3c5bdca246456d2c500504be57aeb75c2323dfa9ff386c0ea5",
       "status": "added"
     },
     "tests/relay-workspace.test.ts": {

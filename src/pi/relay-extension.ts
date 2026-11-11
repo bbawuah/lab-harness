@@ -1,4 +1,5 @@
 /** Pi-native Relay tools. All identity/scope comes from lifecycle context. */
+import { relayDelivery } from "./relay-delivery.ts";
 import type { WorkspaceContext, WorkspaceExtensionAPI } from "./workspace-extension.ts";
 import { relayInboxComponent, relayInboxText, type RelayTheme } from "./relay-display.ts";
 import type { RelayRequest } from "../relay/workspace.ts";
@@ -14,7 +15,7 @@ export const relayTools = [
     properties: { limit: { type: "integer", minimum: 1, maximum: 50 }, offset: { type: "integer", minimum: 0 } }, required: [] },
   { action: "send", name: "relay_send", usage: "PEER REQUEST_KEY [--reply-to MESSAGE_ID] MESSAGE", description: "Send explicit message text to a peer. Reuse requestKey with exactly the same payload after an unknown outcome; receipt is durable, not delivery/ack/task completion.",
     properties: { to: ref, body: { type: "string", maxLength: 16000 }, requestKey: ref, conversationId: ref, replyTo: ref }, required: ["to", "body", "requestKey"] },
-  { action: "inbox", name: "relay_inbox", usage: "[WAIT_MS]", description: "Read this session's unacknowledged mail. Reading never acknowledges. Wait is bounded; no automatic model wakeup.",
+  { action: "inbox", name: "relay_inbox", usage: "[WAIT_MS]", description: "Read this session's unacknowledged mail. Reading never acknowledges. Manual read; incoming messages also arrive automatically when idle.",
     properties: { limit: { type: "integer", minimum: 1, maximum: 10 }, waitMs: { type: "integer", minimum: 0, maximum: 10000 } }, required: [] },
   { action: "ack", name: "relay_ack", usage: "MESSAGE_ID [MESSAGE_ID ...]", description: "Explicitly acknowledge handled messages in this session's own inbox. Foreign inbox IDs are refused. This never accepts a LAB task.",
     properties: { ids: { type: "array", minItems: 1, maxItems: 100, items: ref } }, required: ["ids"] },
@@ -41,11 +42,18 @@ export function relaySlashRequest(action: Action, args: string): RelayRequest {
   return action === "peers" ? { action, ...(text ? { offset: Number(text) } : {}) } : { action, ...(text ? { waitMs: Number(text) } : {}) };
 }
 
-/** No timer invokes a model. Heartbeat maintains only the current owner lease. */
+/** Separate ownership heartbeats and idle-only incoming message delivery. */
 export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge): void {
   pi.registerMessageRenderer?.("relay-inbox", (message, options, theme) => relayInboxComponent(message.details, message.content, options.expanded, theme));
-  type Active = { id: string; controller: AbortController; ready: boolean; timer?: ReturnType<typeof setInterval>; };
+  type Active = { id: string; controller: AbortController; ready: boolean; timer?: ReturnType<typeof setInterval>; deliveryTimer?: ReturnType<typeof setInterval>; };
   let active: Active | undefined;
+  let automatic = process.env.LAB_RELAY_AUTO === "1";
+  pi.registerCommand("relay-auto", { description: "Incoming Relay responses: on, off, or show current setting", async handler(args, ctx) {
+    const value = args.trim();
+    if (value && value !== "on" && value !== "off") { ctx.ui.notify("Use /relay-auto [on|off]", "error"); return; }
+    if (value) { automatic = value === "on"; pi.appendEntry?.("relay-auto-setting", { automatic }); }
+    ctx.ui.notify(`Relay automatic responses ${automatic ? "on" : "off"}. Messages ${automatic ? "start a turn when idle" : "wait for /relay-inbox"}.`, "info");
+  } });
   function nativeId(ctx: WorkspaceContext): string {
     const id = ctx.sessionManager?.getSessionId();
     if (typeof id !== "string" || !id || id.length > 128) throw new Error("RELAY_SESSION_BINDING_REQUIRED");
@@ -55,12 +63,18 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
     const previous = active; active = undefined;
     if (!previous) return;
     if (previous.timer) clearInterval(previous.timer);
+    if (previous.deliveryTimer) clearInterval(previous.deliveryTimer);
     previous.controller.abort();
     // A stale release is deliberately refused by the backend; never touch a
     // replacement owner or manufacture an offline observation.
     await bridge({ action: "relay-release", sessionId: previous.id }).catch(() => {});
   }
   pi.on("session_start", async (_event, ctx) => {
+    automatic = process.env.LAB_RELAY_AUTO === "1";
+    for (const entry of ctx.sessionManager?.getBranch?.() ?? []) {
+      const item = entry as { type?: string; customType?: string; data?: { automatic?: unknown } };
+      if (item.type === "custom" && item.customType === "relay-auto-setting" && typeof item.data?.automatic === "boolean") automatic = item.data.automatic;
+    }
     let id: string;
     try { id = nativeId(ctx); } catch { ctx.ui.notify("Relay could not bind this native session.", "error"); ctx.shutdown(); return; }
     if (active?.id === id && active.ready) return;
@@ -72,6 +86,12 @@ export function installRelayExtension(pi: WorkspaceExtensionAPI, bridge: Bridge)
       if (active !== current || current.controller.signal.aborted) return;
       if (typeof identity?.peerId !== "string" || typeof identity.name !== "string") throw new Error("RELAY_BIND_FAILED");
       current.ready = true;
+      const deliver = relayDelivery(pi, ctx, () => run({ action: "inbox", limit: 10 }, ctx), () => automatic && active === current && current.ready && !current.controller.signal.aborted);
+      let deliveryFailed = false;
+      current.deliveryTimer = setInterval(() => { void deliver().then(() => { deliveryFailed = false; }).catch(() => {
+        if (active === current && !current.controller.signal.aborted && !deliveryFailed) ctx.ui.notify("Relay automatic delivery unavailable; use /relay-inbox to check messages.", "error");
+        deliveryFailed = true;
+      }); }, 1500);
       ctx.ui.notify("Relay ready: " + identity.name + " (" + identity.peerId + "). Use /relay-peers.", "info");
       current.timer = setInterval(() => {
         if (active !== current || !current.ready) return;
