@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve, win32 } from 'node:path';
-import { WindowsInterop, interopFailure, isWSL, windowsResponseFailure, type Interop } from '../src/browser/windows.ts';
+import { WindowsInterop, interopEnvironment, interopFailure, isWSL, windowsResponseFailure, type Interop } from '../src/browser/windows.ts';
 
 const session = 'lab-' + 'a'.repeat(24);
 const remote = 'C:\\Users\\Fixture User\\AppData\\Local\\lab-harness\\browser\\' + session;
@@ -83,4 +83,13 @@ test('Edge override accepts a Windows path and missing Edge gives an installatio
   const w = new WindowsInterop((_cmd, args) => decode(args).includes('Test-Path') ? 'True' : '', true);
   expect(w.edge(edge)).toBe(edge);
   expect(() => new WindowsInterop(() => 'False', true).edge(edge)).toThrow('LAB_BROWSER_EDGE_MISSING');
+});
+
+
+test('interop helper retains the WSL socket but forwards no inherited credentials or WSLENV entries', () => {
+  const env = interopEnvironment({ WSL_INTEROP: '/run/WSL/fixture_interop', WSL_DISTRO_NAME: 'Ubuntu', WSLENV: 'PRIVATE_KEY/w', PRIVATE_KEY: 'secret', AGENT_BROWSER_CDP: 'foreign' }, true);
+  expect(env.WSL_INTEROP).toBe('/run/WSL/fixture_interop');
+  expect(env.WSLENV).toBe('');
+  expect(env).not.toHaveProperty('PRIVATE_KEY');
+  expect(env).not.toHaveProperty('AGENT_BROWSER_CDP');
 });

@@ -30,7 +30,12 @@ export class BrowserSession {
     writeFileSync(join(root,'config.json'),JSON.stringify({executablePath:browser,allowedDomains:[u.hostname],contentBoundaries:true,maxOutput:12000,noWebmcp:true,idleTimeout:'15m'}),{mode:0o600});
     const b=new BrowserSession({root,session,origin:u.origin,...(windowsBrowser()?{windows:true as const}:{})});
     try { if(b.descriptor.windows) new WindowsInterop().prepare(session,b.binary,browser,u.hostname); const raw=await b.call('agent_browser_open',{url:u.href},signal); const e=envelope(raw); insist(e.data.lifecycle?.effectiveLaunch?.browserLaunched===true,'LAB_BROWSER_NOT_OWNED'); b.descriptor.launchHash=e.data.lifecycle.effectiveLaunch.launchHash; await b.scope(signal); return b; }
-    catch(e) { await b.close().catch(()=>{});throw e; }
+    catch(e) {
+      try { await b.close(); } catch {
+        if(b.descriptor.windows){b.save(join(root,'recovery.json'));throw new Error('LAB_BROWSER_CLEANUP_FAILED: Windows startup failed ('+codeOf(e instanceof Error?e.message:'')+'); owned state retained in '+root+'. Retry cleanup from recovery.json; no browser action was retried.');}
+      }
+      throw e;
+    }
   }
   static rebind(path: string) { const s=lstatSync(path);insist(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&(s.mode&0o077)===0,'LAB_BROWSER_STATE'); return new BrowserSession(JSON.parse(readFileSync(path,'utf8'))); }
   save(path: string) {writeFileSync(path,JSON.stringify(this.descriptor),{flag:'wx',mode:0o600});}
@@ -51,10 +56,11 @@ export class BrowserSession {
     if(signal?.aborted) return Promise.reject(new Error('LAB_BROWSER_CANCELLED'));
     return new Promise((done,reject)=>{const binary=this.descriptor.windows?new WindowsInterop().localPath(new WindowsInterop().root(this.descriptor.session)+'\\agent-browser.exe'):this.binary;const child=spawn(binary,args,{cwd:this.descriptor.root,env:this.environment(),stdio:['ignore','pipe','pipe'],detached:true});let output='',count=0,error:Error|undefined;
       const kill=()=>{try{if(process.platform==='win32')child.kill('SIGKILL');else if(child.pid)process.kill(-child.pid,'SIGKILL');}catch{}};
-      const cancel=()=>{error=new Error('LAB_BROWSER_CANCELLED');kill();}; const timer=setTimeout(()=>{error=new Error('LAB_BROWSER_TIMEOUT');kill();},20000);
+      const failWindows=()=>{if(this.descriptor.windows){child.stdout.destroy();child.stderr.destroy();clearTimeout(timer);signal?.removeEventListener('abort',cancel);reject(error);}};
+      const cancel=()=>{error=new Error('LAB_BROWSER_CANCELLED');kill();failWindows();}; const timer=setTimeout(()=>{error=new Error('LAB_BROWSER_TIMEOUT');kill();failWindows();},20000);
       signal?.addEventListener('abort',cancel,{once:true});child.on('error',()=>{error=new Error('LAB_BROWSER_SPAWN: browser tool could not start.');});
-      child.stdout.on('data',c=>{count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();}else output+=c.toString();});child.stderr.on('data',c=>{error??=new Error('LAB_BROWSER_DIAGNOSTIC: command emitted diagnostics; action outcome uncertain.');count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();}});
-      child.on('close',code=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);if(error||code!==0)reject(error??new Error('LAB_BROWSER_REFUSED: action failed; no automatic retry.'));else done(output);});
+      child.stdout.on('data',c=>{count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();failWindows();}else output+=c.toString();});child.stderr.on('data',c=>{error??=new Error('LAB_BROWSER_DIAGNOSTIC: command emitted diagnostics; action outcome uncertain.');count+=c.length;if(count>65536){error=new Error('LAB_BROWSER_OUTPUT_LIMIT');kill();failWindows();}});
+      child.on('close',code=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);if(this.descriptor.windows&&code!==0)error=windowsResponseFailure(output)??error;if(error||code!==0)reject(error??new Error('LAB_BROWSER_REFUSED: action failed; no automatic retry.'));else done(output);});
     });
   }
   private async call(tool:string,args:object,signal?:AbortSignal) {const raw=await this.run(['mcp','call',tool,JSON.stringify(args)],signal);if(this.descriptor.windows){const error=windowsResponseFailure(raw);if(error)throw error;}return raw;}

@@ -18,8 +18,14 @@ export function interopFailure(command: string, diagnostic: string): Error {
   const kind = /LAB_BROWSER_WINDOWS_([A-Za-z]{1,60})/.exec(diagnostic)?.[1];
   return new Error('LAB_BROWSER_INTEROP: Windows command failed'+(kind?' ('+kind+')':'')+'. Check WSL [interop] enabled=true, Windows PowerShell availability and organisation application-control rules.');
 }
+export function interopEnvironment(env = process.env, wsl = isWSL()): NodeJS.ProcessEnv {
+  if (wsl) return { PATH: '/usr/bin:/bin', WSL_INTEROP: env.WSL_INTEROP, WSL_DISTRO_NAME: env.WSL_DISTRO_NAME, WSLENV: '' };
+  return { SystemRoot: env.SystemRoot, WINDIR: env.WINDIR, LOCALAPPDATA: env.LOCALAPPDATA,
+    ProgramFiles: env.ProgramFiles, 'ProgramFiles(x86)': env['ProgramFiles(x86)'], USERPROFILE: env.USERPROFILE,
+    TEMP: env.TEMP, TMP: env.TMP, PATH: win32.join(env.SystemRoot ?? 'C:\\Windows', 'System32') };
+}
 export const systemInterop: Interop = (command, args) => {
-  const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true });
+  const r = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true, env: interopEnvironment() });
   if (r.error || r.status !== 0) {
     throw interopFailure(command, String(r.stderr ?? ''));
   }
@@ -66,7 +72,7 @@ export class WindowsInterop {
       AGENT_BROWSER_SESSION: session, HOME: win32.join(root, 'home'), USERPROFILE: win32.join(root, 'home'),
       TEMP: win32.join(root, 't'), TMP: win32.join(root, 't'), LOCALAPPDATA: win32.join(root, 'cache'), NO_COLOR: '1',
     };
-    if (this.wsl) return { ...env, PATH: '/usr/bin:/bin', WSLENV: Object.keys(env).map(k => k + '/w').join(':') };
+    if (this.wsl) return { ...env, PATH: '/usr/bin:/bin', WSL_INTEROP: process.env.WSL_INTEROP, WSL_DISTRO_NAME: process.env.WSL_DISTRO_NAME, WSLENV: Object.keys(env).map(k => k + '/w').join(':') };
     // Windows needs system DLL and utility paths; do not inherit agent-browser or credential variables.
     return { ...env, SystemRoot: process.env.SystemRoot, WINDIR: process.env.WINDIR, PATH: process.env.SystemRoot + '\\System32' };
   }

@@ -117,6 +117,13 @@ LAB does not weaken, bypass or write policy.
 `LAB_BROWSER_INTEROP` identifies disabled interop, unavailable PowerShell or
 application-control restrictions. `LAB_BROWSER_WINDOWS_PATH` identifies failed
 conversion, unsupported path forms or an unavailable mount.
+If startup cleanup cannot be verified, LAB keeps a private `recovery.json` in
+its reported control root. From WSL, retry only owned cleanup (no page action):
+
+```sh
+bun --no-env-file -e 'import {BrowserSession} from "./src/browser/session.ts"; await BrowserSession.rebind(process.argv[1]).close()' /reported/control/root/recovery.json
+```
+
 `LAB_BROWSER_POLICY` identifies the registry gate; `LAB_BROWSER_EDGE_START`
 asks the owner to review Edge and effective debugging/target policies when a
 tool reports failure. Tool/page diagnostics and form values are not echoed.
