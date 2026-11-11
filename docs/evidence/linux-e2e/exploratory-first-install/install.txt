@@ -1,0 +1,35 @@
+LAB: acquiring verified project-local Bun 1.4.2
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+  0 34.9M    0 39605    0     0  59583      0  0:10:15 --:--:--  0:10:15 59583
+ 61 34.9M   61 21.6M    0     0  13.1M      0  0:00:02  0:00:01  0:00:01 22.1M
+100 34.9M  100 34.9M    0     0  15.7M      0  0:00:02  0:00:02 --:--:-- 22.5M
+
+install: Checking real Relay publication capability (loader refusals remain visible)
+
+install: Installing frozen dependencies without lifecycle scripts
+bun install v1.4.2 (744846f84)
+============================================================
+Bun v1.4.2 (744846f84) Linux x64
+Linux Kernel v6.8.0 | glibc v2.39
+CPU: sse42 popcnt
+Args: "/lab/source/.tmp/bun/1.4.2/bun" "--no-env-file" "install" "--frozen-lockfile" "--ignore-scripts" "--prefer-offline" "--cache-dir" "/lab/source/.tmp/bun-cache"
+Features: extracted_packages(3) text_lockfile hoisted_bun_install no_avx2 no_avx
+
+Elapsed: 1160ms | User: 528ms | Sys: 48ms
+RSS: 63.12 MB | Peak: 62.66 MB | Commit: 78.19 MB | Faults: 0
+
+CPU lacks AVX support. Please consider upgrading to a newer CPU.
+panic: Segmentation fault at address 0x545B44FDE0
+oh no: Bun has crashed. This indicates a bug in Bun, not your code.
+
+To send a redacted crash report to Bun's team,
+please file a GitHub issue using the link below:
+
+ https://bun.report/1.4.2/li1744846fAggkggqDotinvBA2oFg++zo7C
+
+Segmentation fault (core dumped)

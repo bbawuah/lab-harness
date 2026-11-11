@@ -1,0 +1,70 @@
+{
+  "sourceCommit": "f414f7c548f6a53815f824dda4df0433914a2986",
+  "probes": {
+    "version": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "--version"
+      ],
+      "exitCode": 0,
+      "seconds": 0.04
+    },
+    "javascript": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "-e",
+        "console.log(\"JS_OK\")"
+      ],
+      "exitCode": 0,
+      "seconds": 0.17
+    },
+    "ffi-import": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "-e",
+        "import { dlopen } from \"bun:ffi\"; console.log(typeof dlopen)"
+      ],
+      "exitCode": 0,
+      "seconds": 0.18
+    },
+    "ffi-libc": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "-e",
+        "import { dlopen, FFIType } from \"bun:ffi\"; const lib = dlopen(\"/lib/x86_64-linux-gnu/libc.so.6\", { __errno_location: { args: [], returns: FFIType.ptr } }); console.log(\"DLOPEN_OK\"); lib.close();"
+      ],
+      "exitCode": 0,
+      "seconds": 0.19
+    },
+    "relay-import": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "-e",
+        "import { assertPublishCapability } from \"./vendor/relay/src/storage/publish.ts\"; console.log(typeof assertPublishCapability)"
+      ],
+      "exitCode": -11,
+      "seconds": 0.2
+    },
+    "relay-capability": {
+      "command": [
+        "/lab/source/.tmp/bun/1.4.2/bun",
+        "--no-env-file",
+        "--no-install",
+        "-e",
+        "import { assertPublishCapability } from \"./vendor/relay/src/storage/publish.ts\"; assertPublishCapability(); console.log(\"RELAY_OK\")"
+      ],
+      "exitCode": -11,
+      "seconds": 0.18
+    }
+  }
+}

@@ -107,6 +107,25 @@
     "docs/evidence/hosted-project-terminal.ansi",
     "docs/evidence/hosted-project.json",
     "docs/evidence/interactive-terminal.ansi",
+    "docs/evidence/linux-e2e/README.md",
+    "docs/evidence/linux-e2e/base-image.json",
+    "docs/evidence/linux-e2e/diagnostics/ffi-import.txt",
+    "docs/evidence/linux-e2e/diagnostics/ffi-libc.txt",
+    "docs/evidence/linux-e2e/diagnostics/javascript.txt",
+    "docs/evidence/linux-e2e/diagnostics/relay-capability.txt",
+    "docs/evidence/linux-e2e/diagnostics/relay-import.txt",
+    "docs/evidence/linux-e2e/diagnostics/result.json",
+    "docs/evidence/linux-e2e/diagnostics/version.txt",
+    "docs/evidence/linux-e2e/exploratory-first-install/install-result.json",
+    "docs/evidence/linux-e2e/exploratory-first-install/install.txt",
+    "docs/evidence/linux-e2e/fixture-selftest/result.json",
+    "docs/evidence/linux-e2e/install-result.json",
+    "docs/evidence/linux-e2e/install.txt",
+    "docs/evidence/linux-e2e/packages.txt",
+    "docs/evidence/linux-e2e/runner-result.json",
+    "docs/evidence/linux-e2e/startup-after-failed-install/failure-pty.txt",
+    "docs/evidence/linux-e2e/startup-after-failed-install/model.json",
+    "docs/evidence/linux-e2e/startup-after-failed-install/result.json",
     "docs/evidence/local-runtime.json",
     "docs/evidence/pi-local-tool-events.jsonl",
     "docs/evidence/pixel-lb/README.md",
@@ -370,6 +389,11 @@
     "scripts/browser-native-smoke.ts",
     "scripts/browser-smoke.ts",
     "scripts/check-publication.ts",
+    "scripts/e2e-linux/Dockerfile",
+    "scripts/e2e-linux/diagnose.py",
+    "scripts/e2e-linux/install.py",
+    "scripts/e2e-linux/run.sh",
+    "scripts/e2e-linux/smoke.py",
     "scripts/herdr/acquire.ts",
     "scripts/herdr/smoke.ts",
     "scripts/inventory-skills.ts",
@@ -767,6 +791,82 @@
     },
     "docs/evidence/interactive-terminal.ansi": {
       "sha256": "23536b34f802979184a489b30d0bea96652516ee1e8d146f68fda1510d479b20",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/README.md": {
+      "sha256": "5d3f61f8fd94926f828a0d1a3008d38f234f70d66eedec887a0b0240859bac1b",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/base-image.json": {
+      "sha256": "38886b432e74e0c60475c5e330c2f83f59e8e093fb2a99bea6c604b6c7bb587c",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/ffi-import.txt": {
+      "sha256": "f0d08e0670099a418eac509c1efd6e07a1136f473c605f974a6c8b75591c1112",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/ffi-libc.txt": {
+      "sha256": "39984a81349a2b2775098af3264b714e82f1fc226d0c3e007f849ff566114628",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/javascript.txt": {
+      "sha256": "cb5bbc09ee6cfa19f42a617de658151521bb40c1007e252da3f72c2bf68e47f5",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/relay-capability.txt": {
+      "sha256": "ddba8507f971aa03f3dbb0af7af18b1db008c04ba070344c0bd6b050617dd729",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/relay-import.txt": {
+      "sha256": "148787e57234aec735d240a87e16e6e665b24e0ff4bc1047f66bb59d7366a2dd",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/result.json": {
+      "sha256": "af4124a39bb09ecf7b0c182e0655f0715e4659135748c91a43ba86fc4005a3bb",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/diagnostics/version.txt": {
+      "sha256": "b99b4c7cdf236f59bc9f65d963deaecae3b16a7dad87939cacb9057f7664daee",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/exploratory-first-install/install-result.json": {
+      "sha256": "821f34504268874ba9321e7291c994a8c2f2ff0a5d37eec2d69815154f624993",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/exploratory-first-install/install.txt": {
+      "sha256": "3ac0f1c376cea20f784dfd1c1297b3ff074fc71fd327d6da8c3896ad7eb2a9e9",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/fixture-selftest/result.json": {
+      "sha256": "98c36c9ca7b5340a66d05898d416bf8b0b072198bbd500c22b7c9363d35030ab",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/install-result.json": {
+      "sha256": "7d7374e5fe17defd0247430c1480215d21982c9a38083f2ad158d6ee22d3adbe",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/install.txt": {
+      "sha256": "517f0c46b9d1a4346da45057b99fcf7d86f581feab3e9a909a501432f914eaf2",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/packages.txt": {
+      "sha256": "6ab8e2826a129e5a3328dbcec78f510c33910ba32d810d6a57e3a13cc5126bef",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/runner-result.json": {
+      "sha256": "353c7de60b1bd456ab59cb4c14906e8473037bf90c434b28adbce3ca4f5e2a63",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/startup-after-failed-install/failure-pty.txt": {
+      "sha256": "7974b66642a147178ada3f8aa197c1e237a7b172995f6faf71884831457540e4",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/startup-after-failed-install/model.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "status": "added"
+    },
+    "docs/evidence/linux-e2e/startup-after-failed-install/result.json": {
+      "sha256": "89739e9fbea43479c3b7f9a5b7355ab1a1c78f1ea4f222b23b9ae1e110c7e915",
       "status": "added"
     },
     "docs/evidence/local-runtime.json": {
@@ -1815,6 +1915,26 @@
     },
     "scripts/check-publication.ts": {
       "sha256": "0706d5852dff7db60a595c77e89def267ef9b5aee2f2117178bdda10a4f75646",
+      "status": "added"
+    },
+    "scripts/e2e-linux/Dockerfile": {
+      "sha256": "8efba6f93a3bd57b80405c4a7be8e5c8e1bb9dcb5a6e332b88a99c81c612279c",
+      "status": "added"
+    },
+    "scripts/e2e-linux/diagnose.py": {
+      "sha256": "6f1c3809f2a8a34fc15349b23d2fb28644c4a887d99b375aa433ae2f20129631",
+      "status": "added"
+    },
+    "scripts/e2e-linux/install.py": {
+      "sha256": "b8e313c75012408411f9324b6b327b06aa46ad60e8b009e3ee3186cef0976059",
+      "status": "added"
+    },
+    "scripts/e2e-linux/run.sh": {
+      "sha256": "f65d6ec09e43c207ae7b047d95754e517e090b1c021038ced809ceab35aef7cf",
+      "status": "added"
+    },
+    "scripts/e2e-linux/smoke.py": {
+      "sha256": "76f97b1f4d5ca316be4e41a82ad9c786f520eb27075b5a58e775412a78378ee3",
       "status": "added"
     },
     "scripts/herdr/acquire.ts": {

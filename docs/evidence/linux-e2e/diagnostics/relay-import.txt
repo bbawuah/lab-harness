@@ -1,0 +1,21 @@
+============================================================
+Bun v1.4.2 (744846f84) Linux x64
+Linux Kernel v6.8.0 | glibc v2.39
+CPU: sse42 popcnt
+Args: "/lab/source/.tmp/bun/1.4.2/bun" "--no-env-file" "--no-install" "-e" "import { assertPublishCapability } from \"./vendor/relay/src/storage/publish.ts\"; console.log(typeof assertPublishCapability)"
+Features: jsc no_avx2 no_avx tsconfig
+Builtins: "bun:main"
+
+Elapsed: 185ms | User: 158ms | Sys: 25ms
+RSS: 107.0 MB | Peak: 107.69 MB | Commit: 35.72 MB | Faults: 0 | Machine: 8.31 GB
+
+CPU lacks AVX support. Please consider upgrading to a newer CPU.
+panic: Segmentation fault at address 0x8C8
+oh no: Bun has crashed. This indicates a bug in Bun, not your code.
+
+To send a redacted crash report to Bun's team,
+please file a GitHub issue using the link below:
+
+ https://bun.report/1.4.2/la1744846fgCggggigD8+krzB_A2AwsE
+
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped

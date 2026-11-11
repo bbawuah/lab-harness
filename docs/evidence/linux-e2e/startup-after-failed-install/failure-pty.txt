@@ -1,0 +1,21 @@
+============================================================
+Bun v1.4.2 (744846f84) Linux x64
+Linux Kernel v6.8.0 | glibc v2.39
+CPU: sse42 popcnt
+Args: "/lab/source/.tmp/bun/1.4.2/bun" "--no-env-file" "--no-install" "/lab/source/scripts/start.ts" "--project" "/lab/fixture"
+Features: jsc no_avx2 no_avx tsconfig
+Builtins: "bun:main" "node:child_process" "node:path"
+
+Elapsed: 178ms | User: 160ms | Sys: 39ms
+RSS: 110.74 MB | Peak: 110.48 MB | Commit: 35.33 MB | Faults: 0 | Machine: 8.31 GB
+
+CPU lacks AVX support. Please consider upgrading to a newer CPU.
+panic: Segmentation fault at address 0x2010000D8
+oh no: Bun has crashed. This indicates a bug in Bun, not your code.
+
+To send a redacted crash report to Bun's team,
+please file a GitHub issue using the link below:
+
+ https://bun.report/1.4.2/la1744846fgCggggigD4ipgvB_A2EwtgggB
+
+qemu: uncaught target signal 11 (Segmentation fault) - core dumped
