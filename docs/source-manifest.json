@@ -1878,7 +1878,7 @@
       "status": "added"
     },
     "scripts/bundle/uninstall.ts": {
-      "sha256": "4bc3ab8c3d6b7b0bc5ac63cb3e7ee077855e07c1dd31f33f2a4e9f8ad29be527",
+      "sha256": "7578c922392cc2924740d84b37ac29976bab3d4cefd58d42d223bfe5e5696f2a",
       "status": "added"
     },
     "scripts/check-publication.ts": {

@@ -1,4 +1,4 @@
-import { lstatSync, readFileSync, readdirSync, rmdirSync, unlinkSync } from "node:fs";
+import { lstatSync, readFileSync, readdirSync, rmdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { digest, type Manifest } from "./common.ts";
 
@@ -73,6 +73,6 @@ if (import.meta.main) {
   const data = process.env.XDG_DATA_HOME ?? join(home, ".local/share");
   if (!data.startsWith("/")) throw new Error("An absolute XDG_DATA_HOME is required");
   const selected = uninstall(resolve(import.meta.dir, "../.."), home, data, args.includes("--apply"));
-  console.log(`${args.includes("--apply") ? "Removed" : "Would remove"} ${selected.length} unchanged LAB-owned files. Changed/unknown files and private workspace state are retained.`);
-  if (!args.includes("--apply")) { console.log(selected.join("\n")); console.log("Run with --apply to remove these files."); }
+  const summary = `${args.includes("--apply") ? "Removed" : "Would remove"} ${selected.length} unchanged LAB-owned files. Changed/unknown files and private workspace state are retained.\n`;
+  writeFileSync(1, summary + (args.includes("--apply") ? "" : selected.join("\n") + "\nRun with --apply to remove these files.\n"));
 }
