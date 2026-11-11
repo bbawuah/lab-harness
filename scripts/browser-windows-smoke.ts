@@ -3,12 +3,12 @@ import { strict as assert } from 'node:assert';
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { BrowserSession } from '../src/browser/session.ts';
-import { WindowsInterop } from '../src/browser/windows.ts';
-assert.equal(process.platform, 'win32');
+import { WindowsInterop, windowsBrowser } from '../src/browser/windows.ts';
+assert(windowsBrowser(), 'run on Windows CI or the real WSL target');
 mkdirSync(join(process.cwd(), '.tmp', 'windows-smoke'), { recursive: true });
-process.env.TEMP = process.env.TMP = join(process.cwd(), '.tmp', 'windows-smoke');
+process.env.TMPDIR = process.env.TEMP = process.env.TMP = join(process.cwd(), '.tmp', 'windows-smoke');
 const server = Bun.serve({ hostname: '127.0.0.1', port: 0, fetch() {
-  return new Response('<!doctype html><label>Name<input aria-label="Name"></label><button onclick="document.querySelector(\'input\').setAttribute(\'aria-label\',\'Saved \'+document.querySelector(\'input\').value)">Save</button>');
+  return new Response('<!doctype html><label>Name<input aria-label="Name"></label><button onclick="document.querySelector(\'input\').setAttribute(\'aria-label\',\'Saved \'+document.querySelector(\'input\').value)">Save</button>', { headers: { 'content-type': 'text/html' } });
 }});
 const sessions: BrowserSession[] = [];
 const ref = (snapshot: any, name: string) => '@' + Object.entries(snapshot.result.refs).find(([, v]: any) => v.name === name)![0];

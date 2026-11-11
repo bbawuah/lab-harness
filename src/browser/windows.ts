@@ -32,8 +32,8 @@ export const edgeError = 'LAB_BROWSER_EDGE_MISSING: organisation Edge was not fo
 export class WindowsInterop {
   constructor(readonly run: Interop = systemInterop, readonly wsl = isWSL()) {}
   powershell(script: string) {
-    return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : 'powershell.exe',
-      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
+    return this.run(this.wsl ? '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' : win32.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32/WindowsPowerShell/v1.0/powershell.exe'),
+      ['-NoLogo', '-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from("$ErrorActionPreference='Stop';$env:PSModulePath=Join-Path $PSHOME 'Modules';[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false);try {" + script + "} catch { if($_.Exception.Message -match '^LAB_BROWSER_[A-Z_]+$'){[Console]::Error.WriteLine($_.Exception.Message)};[Console]::Error.WriteLine('LAB_BROWSER_WINDOWS_'+$_.Exception.GetType().Name); exit 1 }", 'utf16le').toString('base64')]);
   }
   windowsPath(value: string): string {
     const p = value.startsWith('/') && this.wsl ? this.run('wslpath', ['-w', value]) : value;

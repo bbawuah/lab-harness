@@ -80,6 +80,7 @@
     "docs/browser-ux-contract.md",
     "docs/browser-workspace-contract.md",
     "docs/browser-workspace-evidence.md",
+    "docs/browser-wsl-edge.md",
     "docs/build-plan.md",
     "docs/ci.md",
     "docs/demos/README.md",
@@ -662,6 +663,10 @@
     },
     "docs/browser-workspace-evidence.md": {
       "sha256": "b61372211601ea604ee2738fdcfdba0419741b40f2d1e473d10bc4fc018d5d08",
+      "status": "added"
+    },
+    "docs/browser-wsl-edge.md": {
+      "sha256": "c4ada9c281f3cdd6fceeed43b8486e499b85db636cb4f598d3ebe1f3ea27cb9a",
       "status": "added"
     },
     "docs/build-plan.md": {
@@ -1817,7 +1822,7 @@
       "status": "added"
     },
     "scripts/browser-windows-smoke.ts": {
-      "sha256": "121012b8fa85e22b0f479520e6106bc04aad112dd2ca040d19acf269cbabf435",
+      "sha256": "c31c5d18c7334e15128c7d0cb810fe5e9d4050544da6dc768fcbf1cb4d711753",
       "status": "added"
     },
     "scripts/check-publication.ts": {
@@ -1903,7 +1908,7 @@
       "status": "added"
     },
     "src/browser/windows.ts": {
-      "sha256": "0c3f82bd89a5cbf4c2557ff9c1ad39b23d58a58efa92ad9f743a2836edcf7311",
+      "sha256": "b82eb49f5958ca02da1ebf2d741330308adbd3d9676aa8096db8ca54d7a2bb33",
       "status": "added"
     },
     "src/candidate.ts": {
