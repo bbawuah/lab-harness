@@ -1,0 +1,18 @@
+.tmp/bun/1.4.2/bun:
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff5ae000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007ffffffc6000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fffff5a9000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fffff5a4000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fffff4bb000)
+.tmp/pi/1.4.0/linux-x64/pi/pi:
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fffff5ae000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007ffffffc6000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007fffff5a9000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fffff5a4000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fffff4bb000)
+.tmp/herdr/herdr:
+	statically linked
+.tmp/rg/rg:
+	statically linked
+.tmp/fd/fd:
+	statically linked

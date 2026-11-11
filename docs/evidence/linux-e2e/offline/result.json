@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "failure": null,
+  "sourceCommit": "f414f7c548f6a53815f824dda4df0433914a2986",
+  "platform": "linux-x86_64",
+  "uid": 1001,
+  "network": "none",
+  "command": [
+    "/lab/source/lab",
+    "--project",
+    "/lab/fixture"
+  ],
+  "projectIdentity": {
+    "device": 64785,
+    "inode": 786466
+  },
+  "testKind": "real Pi + Herdr, outer PTY input, scripted loopback SSE; no model inference",
+  "interfaces": [
+    "lo"
+  ],
+  "modelRequests": 2,
+  "seconds": 11.95,
+  "timings": {
+    "startupSeconds": 6.22,
+    "toolRoundTripSeconds": 0.86
+  },
+  "exitCode": 0,
+  "checks": {
+    "nonRoot": true,
+    "linuxX86_64": true,
+    "noExternalInterface": true,
+    "herdrSocket": true,
+    "piPane": true,
+    "tuiStarts": true,
+    "defaultAsk": true,
+    "regularShellPane": true,
+    "promptReachedFixture": true,
+    "streamingChatCompletions": true,
+    "noMutationBeforeApproval": true,
+    "approvedToolRan": true,
+    "toolResultRoundTrip": true,
+    "/lab-search": true,
+    "/lab-files": true,
+    "/lab-skills": true,
+    "/relay-peers": true,
+    "slashCommandsMakeNoModelRequest": true,
+    "exitZero": true,
+    "attachmentCleanup": true,
+    "ownedPidsGone": true,
+    "socketDirectoryRemoved": true,
+    "unrelatedProcessSurvives": true
+  },
+  "files": {
+    "startup.txt": "b455f2390b042e2b6e52ba1ac9ad5f0173eb4105f044054154ad3e04d4458ed0",
+    "approval.txt": "d56f174c498368ea1083f2caef1e7a3057a96c430df4f7a7c146f9d16477c9e7",
+    "tool-final.txt": "13b0cbc982a54a9d6d6d10787fa8b633c81b27ef4d40601cfafc94d56c26b30b",
+    "search.txt": "e51b704c054369d93955c8394a436f8a49fb03cd98cc1c2795d2a56e2de950ba",
+    "files.txt": "0c042e6034a012351bb6300753163f81a91bd3606e51a0de3ba0dc0d79833368",
+    "skills.txt": "fe0f77853c3a97e2a28182a6be74dc124912a06d0e1c8a3d9cce6d938867d3bd",
+    "peers.txt": "f968e50721228f6a5a75fdd870f8843cb410e277578c23976587a2be283e207f",
+    "attachment.json": "a5de18be3503c17e59965e7b3d5a36b2575a174aae4b98fa654c48847a66f6d0",
+    "model.json": "94e42f73b3e218f626d3bfe04e5cec46c902667eece7deeeaa0d52452e039cc3"
+  }
+}

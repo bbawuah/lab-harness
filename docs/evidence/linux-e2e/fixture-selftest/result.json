@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "kind": "fixture self-test only; no LAB process or tool execution",
+  "checks": {
+    "fragmentedToolArguments": true,
+    "streamedFinalText": true,
+    "privateRouteAndKey": true
+  },
+  "seconds": 0.39
+}

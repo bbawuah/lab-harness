@@ -1,0 +1,57 @@
+     }
+   ],
+   "engine": "rg",
+   "truncated": false,
+   "omissions": []
+ }
+
+
+
+ [lab-files]
+
+ {
+   "hits": [
+     {
+       "path": "README.md",
+       "contentHash": "5d764fb40ee884f0b349e0f608b20d60d4b52d8767d85e5f08cdd0d867a6a37b",
+       "lineStart": 1,
+       "lineEnd": 1,
+       "text": "# Linux fixture"
+     }
+   ],
+   "engine": "fallback",
+   "truncated": false,
+   "omissions": []
+ }
+
+
+
+ [lab-skills]
+
+ {
+   "complete": false,
+   "skills": [
+     {
+       "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "name": "terminal-evidence",
+       "compatibility": "portable",
+       "loadable": true,
+       "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+       "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "origins": [
+         {
+           "originId": "examples",
+           "path": "terminal-evidence/SKILL.md"
+         }
+       ]
+     }
+   ]
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────
+/lab/fixture
+30.0%/8.2k (auto)                                                        linux-e2e-fixture
+● mode: ask · /lab-mode

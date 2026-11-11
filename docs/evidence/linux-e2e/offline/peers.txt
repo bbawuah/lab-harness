@@ -1,0 +1,57 @@
+ }
+
+
+
+ [lab-skills]
+
+ {
+   "complete": false,
+   "skills": [
+     {
+       "id": "skill:9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "name": "terminal-evidence",
+       "compatibility": "portable",
+       "loadable": true,
+       "contentHash": "baa3523784481a00524048873b90eb0654558fc64326230cd8a00bf980cd1c81",
+       "bundleHash": "9f678c0302dd4821ba70d570bffe1e68bf519be03a036c029920e44f2d1f7088",
+       "origins": [
+         {
+           "originId": "examples",
+           "path": "terminal-evidence/SKILL.md"
+         }
+       ]
+     }
+   ]
+ }
+
+
+
+ [relay-peers]
+
+ {
+   "peers": [
+     {
+       "id": "pi-655cf9046f2a372261d6683f5563b18976e4ab555356452f435b5aacc06ee346",
+       "name": "fixture/01a1c9ea-a446-7005-9fb2--a6530b6bf587",
+       "presence": "offline",
+       "lastSeenAt": 1794388966657,
+       "self": false
+     },
+     {
+       "id": "pi-a5df615b0e3d0ec168538072bef826d1f3d65af588a35de7d6c4c63c50e03992",
+       "name": "fixture/01a1c9ea-d1e5-70b3-a784--26c71e363d51",
+       "presence": "online",
+       "lastSeenAt": 1794388973763,
+       "self": true
+     }
+   ],
+   "total": 2
+ }
+
+
+──────────────────────────────────────────────────────────────────────────────────────────
+
+──────────────────────────────────────────────────────────────────────────────────────────
+/lab/fixture
+31.6%/8.2k (auto)                                                        linux-e2e-fixture
+● mode: ask · /lab-mode
