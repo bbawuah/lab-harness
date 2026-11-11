@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { digest, verifyManifest, type Manifest } from "../scripts/bundle/common.ts";
 import { pack } from "../scripts/bundle/pack.ts";
@@ -27,6 +27,7 @@ test("packing fixes gzip metadata and repeats byte for byte", async () => {
   try {
     await pack(f.root, first); await pack(f.root, second);
     expect(readFileSync(first)).toEqual(readFileSync(second));
+    expect(lstatSync(first).mode & 0o444).toBe(0o444);
     expect([...readFileSync(first).subarray(4, 10)]).toEqual([0, 0, 0, 0, 2, 255]);
     const r = Bun.spawnSync(["tar", "-tzf", first]);
     expect(r.exitCode).toBe(0); expect(r.stdout.toString()).toBe("MANIFEST.json\npayload\n");

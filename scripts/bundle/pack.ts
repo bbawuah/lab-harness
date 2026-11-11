@@ -1,4 +1,4 @@
-import { createWriteStream, lstatSync, openSync, closeSync, writeSync, readFileSync } from "node:fs";
+import { chmodSync, createWriteStream, lstatSync, openSync, closeSync, writeSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createGzip } from "node:zlib";
 import { once } from "node:events";
@@ -6,7 +6,7 @@ import { files } from "./common.ts";
 
 // USTAR has no host-specific pax headers, owner names or timestamps.
 export async function pack(root: string, destination: string): Promise<void> {
-  const gzip = createGzip({ level: 9 }), output = createWriteStream(destination, { mode: 0o600 });
+  const gzip = createGzip({ level: 9 }), output = createWriteStream(destination, { mode: 0o644 });
   const finished = new Promise<void>((done, reject) => { output.on("finish", done); output.on("error", reject); gzip.on("error", reject); });
   gzip.pipe(output);
   const put = async (bytes: Buffer) => { if (!gzip.write(bytes)) await once(gzip, "drain"); };
@@ -27,5 +27,6 @@ export async function pack(root: string, destination: string): Promise<void> {
   }
   await put(Buffer.alloc(1024)); gzip.end(); await finished;
   // Normalize gzip OS byte as well as the default zero mtime.
+  chmodSync(destination, 0o644);
   const fd = openSync(destination, "r+"); try { writeSync(fd, Buffer.from([255]), 0, 1, 9); } finally { closeSync(fd); }
 }

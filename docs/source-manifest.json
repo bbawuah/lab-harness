@@ -1866,7 +1866,7 @@
       "status": "added"
     },
     "scripts/bundle/pack.ts": {
-      "sha256": "634d987fe6e4dd47d6a215f38e746ba40417f096af8edf79a90d7f553da538d1",
+      "sha256": "98dfdbe857141ed4db67fb91d655837dc264c16dfebe70b79601d3dee48fef17",
       "status": "added"
     },
     "scripts/bundle/test-offline.sh": {
@@ -2172,7 +2172,7 @@
       "status": "added"
     },
     "tests/bundle-manifest.test.ts": {
-      "sha256": "c0ce4044a9a893ab0994f28946eef95d55e2cfe34ad67a60ad241e742ead6829",
+      "sha256": "84382daf516b2078382d2ba9484988436e0b7c12d9920dd8439e0015f17f0816",
       "status": "added"
     },
     "tests/bundle-pin.test.ts": {
