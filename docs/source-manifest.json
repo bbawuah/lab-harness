@@ -62,6 +62,7 @@
     "contracts/pi-source.json",
     "contracts/protocol-v1.json",
     "contracts/ripgrep-source.json",
+    "docs/airgap-production-plan.md",
     "docs/architecture.md",
     "docs/branding-preview.html",
     "docs/browser-evidence/native-browser.png",
@@ -586,6 +587,10 @@
     },
     "contracts/ripgrep-source.json": {
       "sha256": "30b360f8066450ffbf12500e5bfe0af5bd1ddbd37b5aed46667c7a0ceae95f11",
+      "status": "added"
+    },
+    "docs/airgap-production-plan.md": {
+      "sha256": "036e12382e1109ae63f50bed5026cbb8076d7d0e2010b15441304b885dd46a8c",
       "status": "added"
     },
     "docs/architecture.md": {
